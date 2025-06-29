@@ -37,7 +37,7 @@ const PersonalPortfolio: React.FC = () => {
   ];
 
   const hobbies = [
-    { icon: <Code className="w-4 h-4" />, text: "Frontend Development", color: "from-blue-500/20 to-cyan-500/20" },
+    { icon: <Code className="w-4 h-4" />, text: "Programming", color: "from-blue-500/20 to-cyan-500/20" },
     { icon: <Gamepad2 className="w-4 h-4" />, text: "Playing Game", color: "from-purple-500/20 to-pink-500/20" },
     { icon: <Music className="w-4 h-4" />, text: "Listening Music", color: "from-green-500/20 to-emerald-500/20" },
     { icon: <BookOpen className="w-4 h-4" />, text: "Reading Comic", color: "from-orange-500/20 to-red-500/20" },
@@ -281,7 +281,7 @@ const PersonalPortfolio: React.FC = () => {
                               <br />
                               <span className="ml-3 sm:ml-4 text-white/40">name:</span> <span className="text-green-400">"Phy0n"</span>,
                               <br />
-                              <span className="ml-3 sm:ml-4 text-white/40">role:</span> <span className="text-green-400">"Developer"</span>,
+                              <span className="ml-3 sm:ml-4 text-white/40">role:</span> <span className="text-green-400">"Frontend Developer"</span>,
                               <br />
                               <span className="ml-3 sm:ml-4 text-white/40">passion:</span> <span className="text-green-400">"Make good website"</span>,
                               <br />
