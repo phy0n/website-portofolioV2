@@ -63,16 +63,35 @@ const PersonalPortfolio: React.FC = () => {
   useEffect(() => {
     audioRef.current = new Audio('/music/music.mp3'); 
     audioRef.current.volume = volume / 100;
-
+    audioRef.current.loop = true; 
     const handleMouseMove = (e: MouseEvent) => {
       setMousePosition({ x: e.clientX, y: e.clientY });
     };
 
+    const handleEnded = () => {
+      setIsPlaying(true);
+    };
+
     window.addEventListener('mousemove', handleMouseMove);
+    audioRef.current.addEventListener('ended', handleEnded);
+
+    // Auto-play when component mounts
+    const playAudio = async () => {
+      try {
+        await audioRef.current?.play();
+        setIsPlaying(true);
+      } catch (err) {
+        console.log("Auto-play was prevented:", err);
+        setIsPlaying(false);
+      }
+    };
+
+    playAudio();
 
     return () => {
       if (audioRef.current) {
         audioRef.current.pause();
+        audioRef.current.removeEventListener('ended', handleEnded);
       }
       window.removeEventListener('mousemove', handleMouseMove);
     };
