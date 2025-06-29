@@ -281,7 +281,7 @@ const PersonalPortfolio: React.FC = () => {
                               <br />
                               <span className="ml-3 sm:ml-4 text-white/40">name:</span> <span className="text-green-400">"Phy0n"</span>,
                               <br />
-                              <span className="ml-3 sm:ml-4 text-white/40">role:</span> <span className="text-green-400">"Frontend Developer"</span>,
+                              <span className="ml-3 sm:ml-4 text-white/40">role:</span> <span className="text-green-400">"Developer"</span>,
                               <br />
                               <span className="ml-3 sm:ml-4 text-white/40">passion:</span> <span className="text-green-400">"Make good website"</span>,
                               <br />
