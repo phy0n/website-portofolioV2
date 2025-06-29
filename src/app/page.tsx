@@ -470,7 +470,7 @@ const PersonalPortfolio: React.FC = () => {
                 <div className="flex items-center justify-center gap-1 sm:gap-2 text-white/40 text-xs font-mono">
                   <span>© {new Date().getFullYear()} Phy0n.dev</span>
                   <div className="w-1 h-1 bg-white/40 rounded-full"></div>
-                  <span>Built with ❤️ & ☕</span>
+                  <span>Always withyou ❤️</span>
                 </div>
               </div>
             </div>
