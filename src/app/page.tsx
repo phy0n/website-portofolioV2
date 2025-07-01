@@ -3,7 +3,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import React, { useState, useEffect, useRef } from 'react';
-import { Play, Pause, SkipBack, SkipForward, Volume2, Github, Instagram, Twitter, Linkedin, Code, Gamepad2, Music, Monitor, Heart, BookOpen, Briefcase, Award, Smile, Mail, Star, Zap, Coffee, Terminal, Cpu } from 'lucide-react';
+import { Play, Pause, SkipBack, SkipForward, Volume2, Github, Instagram, Twitter, Linkedin, Code, Gamepad2, Music, Monitor, Heart, BookOpen, Briefcase, Award, Smile, Mail, Star, Zap, Coffee, Terminal, Cpu, MessageCircle } from 'lucide-react';
 
 const PersonalPortfolio: React.FC = () => {
   const [isPlaying, setIsPlaying] = useState(false);
@@ -14,7 +14,8 @@ const PersonalPortfolio: React.FC = () => {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [isMobile, setIsMobile] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
-  
+  const [isDraggingVolume, setIsDraggingVolume] = useState(false);
+
   const experiences = [
     {
       role: "Website Developer",
@@ -44,26 +45,27 @@ const PersonalPortfolio: React.FC = () => {
     { icon: <Coffee className="w-4 h-4" />, text: "Coffee & Code", color: "from-amber-500/20 to-yellow-500/20" }
   ];
 
-  const skills = ["React", "TypeScript", "Next.js", "TailwindCSS", "JavaScript", "CSS"];
+  const skills = ["React", "Next.js", "TypeScript", "JavaScript", "TailwindCSS", "CSS"];
 
   // Check for mobile on mount and resize
   useEffect(() => {
     const checkIfMobile = () => {
       setIsMobile(window.innerWidth < 768);
     };
-    
+
     checkIfMobile();
     window.addEventListener('resize', checkIfMobile);
-    
+
     return () => {
       window.removeEventListener('resize', checkIfMobile);
     };
   }, []);
 
   useEffect(() => {
-    audioRef.current = new Audio('/music/music.mp3'); 
+    audioRef.current = new Audio('/music/music.mp3');
     audioRef.current.volume = volume / 100;
-    audioRef.current.loop = true; 
+    audioRef.current.loop = true;
+
     const handleMouseMove = (e: MouseEvent) => {
       setMousePosition({ x: e.clientX, y: e.clientY });
     };
@@ -76,17 +78,28 @@ const PersonalPortfolio: React.FC = () => {
     audioRef.current.addEventListener('ended', handleEnded);
 
     // Auto-play when component mounts
-    const playAudio = async () => {
+    const handleFirstInteraction = async () => {
       try {
         await audioRef.current?.play();
         setIsPlaying(true);
+        // Remove listeners setelah berhasil play
+        document.removeEventListener('click', handleFirstInteraction);
+        document.removeEventListener('keydown', handleFirstInteraction);
+        document.removeEventListener('scroll', handleFirstInteraction);
+        document.removeEventListener('mousemove', handleFirstInteraction);
       } catch (err) {
-        console.log("Auto-play was prevented:", err);
-        setIsPlaying(false);
+        console.log("Auto-play failed:", err);
       }
     };
 
-    playAudio();
+    // Listen untuk interaksi user pertama
+    document.addEventListener('click', handleFirstInteraction);
+    document.addEventListener('keydown', handleFirstInteraction);
+    document.addEventListener('scroll', handleFirstInteraction);
+    document.addEventListener('mousemove', handleFirstInteraction);
+
+    window.addEventListener('mousemove', handleMouseMove);
+    audioRef.current.addEventListener('ended', handleEnded);
 
     return () => {
       if (audioRef.current) {
@@ -94,6 +107,11 @@ const PersonalPortfolio: React.FC = () => {
         audioRef.current.removeEventListener('ended', handleEnded);
       }
       window.removeEventListener('mousemove', handleMouseMove);
+      // Cleanup interaction listeners
+      document.removeEventListener('click', handleFirstInteraction);
+      document.removeEventListener('keydown', handleFirstInteraction);
+      document.removeEventListener('scroll', handleFirstInteraction);
+      document.removeEventListener('mousemove', handleFirstInteraction);
     };
   }, []);
 
@@ -148,29 +166,45 @@ const PersonalPortfolio: React.FC = () => {
     setVolume(newVolume);
   };
 
+  const socialMedia = [
+    {
+      name: "Discord",
+      icon: <MessageCircle className="w-4 h-4" />,
+      url: "https://discord.gg/MwNE7Vfb6t",
+      color: "from-indigo-500/20 to-purple-500/20"
+    },
+    {
+      name: "Instagram",
+      icon: <Instagram className="w-4 h-4" />,
+      url: "https://instagram.com/ic.phionkhievrushandle/",
+      color: "from-pink-500/20 to-red-500/20"
+    },
+    {
+      name: "TikTok",
+      icon: <Music className="w-4 h-4" />,
+      url: "https://tiktok.com/@phy0n",
+      color: "from-black/20 to-gray-500/20"
+    },
+  ]
+
   return (
     <div className="min-h-screen bg-black relative overflow-hidden" style={{ fontFamily: '"JetBrains Mono", "Fira Code", "Source Code Pro", monospace' }}>
-      {/* Dynamic Background */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        {/* Animated Grid */}
         <div className="absolute inset-0 opacity-[0.03]"
              style={{
                backgroundImage: `
                  linear-gradient(white 1px, transparent 1px),
-                 linear-gradient(90deg, white 1px, transparent 1px)
-               `,
+                 linear-gradient(90deg, white 1px, transparent 1px) `,
                backgroundSize: '50px 50px'
              }}>
         </div>
-        
-        {/* Floating Orbs */}
+
         <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-gradient-to-r from-white/[0.02] to-white/[0.05] rounded-full blur-3xl animate-pulse"></div>
         <div className="absolute bottom-1/3 right-1/4 w-80 h-80 bg-gradient-to-l from-white/[0.03] to-transparent rounded-full blur-3xl"></div>
         <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-gradient-to-br from-white/[0.01] via-white/[0.02] to-transparent rounded-full blur-3xl"></div>
-        
-        {/* Mouse Follower - Only on desktop */}
+
         {!isMobile && (
-          <div 
+          <div
             className="absolute w-32 h-32 bg-white/[0.02] rounded-full blur-2xl transition-all duration-300 ease-out pointer-events-none"
             style={{
               left: mousePosition.x - 64,
@@ -182,7 +216,6 @@ const PersonalPortfolio: React.FC = () => {
 
       <div className="relative z-10 min-h-screen flex items-center justify-center p-4 sm:p-6">
         <div className="max-w-6xl w-full">
-          {/* Terminal Header */}
           <div className="bg-white/[0.02] backdrop-blur-xl rounded-t-2xl border border-white/10 border-b-0 p-2 sm:p-3">
             <div className="flex items-center gap-2">
               <div className="flex gap-1.5">
@@ -200,9 +233,7 @@ const PersonalPortfolio: React.FC = () => {
           {/* Main Content */}
           <div className="bg-white/[0.03] backdrop-blur-xl rounded-b-2xl shadow-2xl border border-white/10 border-t-0 overflow-hidden">
             <div className="p-4 sm:p-6 md:p-8">
-              {/* Header Section */}
               <div className="flex flex-col lg:flex-row gap-6 sm:gap-8 mb-6 sm:mb-8">
-                {/* Profile Section */}
                 <div className="text-center lg:text-left lg:min-w-[250px] xl:min-w-[300px]">
                   <div className="relative inline-block mb-4 sm:mb-6 group">
                     <div className="absolute inset-0 bg-gradient-to-r from-white/20 via-white/10 to-white/20 rounded-full animate-pulse"></div>
@@ -224,7 +255,7 @@ const PersonalPortfolio: React.FC = () => {
                       <Zap className="w-2 h-2 sm:w-3 sm:h-3 text-black" />
                     </div>
                   </div>
-                  
+
                   <div className="mb-4 sm:mb-6">
                     <h1 className="text-2xl sm:text-3xl font-bold text-white mb-1 sm:mb-2 tracking-wide">
                       <span className="bg-gradient-to-r from-white via-white/90 to-white/80 bg-clip-text text-transparent">
@@ -238,11 +269,10 @@ const PersonalPortfolio: React.FC = () => {
                       <span className="text-white/40 text-xs">Frontend Dev</span>
                     </div>
                   </div>
-                  
-                  {/* Skills Tags */}
+
                   <div className="flex flex-wrap justify-center lg:justify-start gap-1 sm:gap-2 mb-4 sm:mb-6">
                     {skills.map((skill, index) => (
-                      <span 
+                      <span
                         key={index}
                         className="px-2 py-1 sm:px-3 sm:py-1.5 bg-white/[0.05] hover:bg-white/[0.08] text-white/80 rounded-full text-[10px] xs:text-xs sm:text-xs border border-white/10 hover:border-white/20 transition-all duration-300 cursor-pointer font-mono">
                         <span className="text-white/40">&lt;</span>
@@ -252,7 +282,28 @@ const PersonalPortfolio: React.FC = () => {
                     ))}
                   </div>
 
-                  {/* Status Card */}
+                  <div>
+                    <h3 className="text-white/60 text-xs sm:text-sm uppercase tracking-wider mb-3 sm:mb-4 font-mono flex items-center gap-1 sm:gap-2">
+                      <Heart className="w-3 h-3 sm:w-4 sm:h-4" />
+                      connect.social
+                    </h3>
+                    <div className="flex gap-3 sm:gap-4 mb-4 sm:mb-6">
+                      {socialMedia.map((social, index) => (
+                        <a
+                          key={index}
+                          href={social.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="group w-10 h-10 sm:w-12 sm:h-12 bg-white/[0.05] hover:bg-white/[0.1] rounded-full flex items-center justify-center border border-white/10 hover:border-white/30 transition-all duration-300 hover:scale-110 transform"
+                          title={social.name}>
+                          <div className="text-white/60 group-hover:text-white transition-colors duration-300">
+                            {social.icon}
+                          </div>
+                        </a>
+                      ))}
+                    </div>
+                  </div>
+
                   <div className="bg-white/[0.02] rounded-lg sm:rounded-xl p-3 sm:p-4 border border-white/10 hover:border-white/15 transition-all duration-300">
                     <div className="flex items-center gap-2 sm:gap-3 mb-1 sm:mb-2">
                       <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-green-400 rounded-full animate-pulse"></div>
@@ -263,18 +314,16 @@ const PersonalPortfolio: React.FC = () => {
                     </p>
                   </div>
                 </div>
-                
-                {/* Tab Content */}
+
                 <div className="flex-1">
-                  {/* Tab Navigation */}
                   <div className="flex border-b border-white/10 mb-4 sm:mb-6 md:mb-8 overflow-x-auto">
                     {['about', 'experience', 'projects'].map((tab) => (
                       <button
                         key={tab}
                         onClick={() => setActiveTab(tab)}
                         className={`px-4 py-2 sm:px-6 sm:py-3 text-xs sm:text-sm font-mono font-medium relative transition-all duration-300 whitespace-nowrap cursor-pointer ${
-                          activeTab === tab 
-                            ? 'text-white' 
+                          activeTab === tab
+                            ? 'text-white'
                             : 'text-white/50 hover:text-white/80'
                         }`}>
                         <span className="text-white/40">{activeTab === tab ? '>' : ''}</span>
@@ -285,8 +334,7 @@ const PersonalPortfolio: React.FC = () => {
                       </button>
                     ))}
                   </div>
-                  
-                  {/* Tab Content */}
+
                   <div className="min-h-[300px] sm:min-h-[350px] md:min-h-[400px]">
                     {activeTab === 'about' && (
                       <div className="space-y-4 sm:space-y-6 md:space-y-8">
@@ -310,7 +358,7 @@ const PersonalPortfolio: React.FC = () => {
                             </p>
                           </div>
                         </div>
-                        
+
                         <div>
                           <h3 className="text-white/60 text-xs sm:text-sm uppercase tracking-wider mb-3 sm:mb-4 md:mb-6 font-mono flex items-center gap-1 sm:gap-2">
                             <Star className="w-3 h-3 sm:w-4 sm:h-4" />
@@ -318,7 +366,7 @@ const PersonalPortfolio: React.FC = () => {
                           </h3>
                           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3 md:gap-4">
                             {hobbies.map((hobby, index) => (
-                              <div 
+                              <div
                                 key={index}
                                 className={`group relative bg-gradient-to-br ${hobby.color} rounded-lg sm:rounded-xl p-3 sm:p-4 border border-white/10 hover:border-white/20 transition-all duration-300 cursor-pointer overflow-hidden`}>
                                 <div className="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-all duration-300"></div>
@@ -336,7 +384,7 @@ const PersonalPortfolio: React.FC = () => {
                         </div>
                       </div>
                     )}
-                    
+
                     {activeTab === 'experience' && (
                       <div>
                         <h2 className="text-lg sm:text-xl font-bold text-white mb-4 sm:mb-6 font-mono">
@@ -367,7 +415,7 @@ const PersonalPortfolio: React.FC = () => {
                         </div>
                       </div>
                     )}
-                    
+
                     {activeTab === 'projects' && (
                       <div>
                         <h2 className="text-lg sm:text-xl font-bold text-white mb-4 sm:mb-6 font-mono">
@@ -412,7 +460,6 @@ const PersonalPortfolio: React.FC = () => {
                 </div>
               </div>
 
-              {/* Music Player */}
               <div className="bg-white/[0.02] rounded-lg sm:rounded-xl p-4 sm:p-6 border border-white/10 hover:border-white/15 transition-all duration-300 group">
                 <div className="flex items-center gap-1 sm:gap-2 mb-2 sm:mb-4">
                   <Music className="w-3 h-3 sm:w-4 sm:h-4 text-white/60" />
@@ -420,9 +467,9 @@ const PersonalPortfolio: React.FC = () => {
                   <div className="w-1 h-1 bg-white/40 rounded-full animate-pulse"></div>
                   <span className="text-white/40 text-xs font-mono">{currentTrack}</span>
                 </div>
-                
+
                 <div className="flex items-center justify-center gap-4 sm:gap-6 mb-4 sm:mb-6">
-                  <button 
+                  <button
                     onClick={() => {
                       if (audioRef.current) {
                         audioRef.current.currentTime = Math.max(0, currentTime - 10);
@@ -431,8 +478,8 @@ const PersonalPortfolio: React.FC = () => {
                     className="text-white/50 hover:text-white transition-all duration-200 hover:scale-110 transform p-1 sm:p-2 rounded-full hover:bg-white/[0.05]">
                     <SkipBack className="w-4 h-4 sm:w-5 sm:h-5" />
                   </button>
-                  
-                  <button 
+
+                  <button
                     onClick={togglePlay}
                     className="w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 bg-white hover:bg-white/90 rounded-full flex items-center justify-center transition-all duration-300 shadow-lg hover:scale-105 transform group-hover:shadow-xl">
                     {isPlaying ? (
@@ -441,8 +488,8 @@ const PersonalPortfolio: React.FC = () => {
                       <Play className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 text-black ml-0.5 sm:ml-1" />
                     )}
                   </button>
-                  
-                  <button 
+
+                  <button
                     onClick={() => {
                       if (audioRef.current) {
                         audioRef.current.currentTime = Math.min(audioRef.current.duration || 180, currentTime + 10);
@@ -456,10 +503,10 @@ const PersonalPortfolio: React.FC = () => {
                 <div className="space-y-2 sm:space-y-3 md:space-y-4">
                   <div className="flex items-center gap-2 sm:gap-3 text-xs text-white/60 font-mono">
                     <span className="min-w-[35px] sm:min-w-[40px]">{formatTime(currentTime)}</span>
-                    <div 
+                    <div
                       onClick={handleSeek}
                       className="flex-1 bg-white/10 rounded-full h-1.5 sm:h-2 cursor-pointer hover:bg-white/15 transition-colors duration-200 overflow-hidden">
-                      <div 
+                      <div
                         className="bg-gradient-to-r from-white/80 to-white/60 h-1.5 sm:h-2 rounded-full transition-all duration-200 relative"
                         style={{ width: `${(currentTime / (audioRef.current?.duration || 180)) * 100}%` }}>
                         <div className="absolute right-0 top-1/2 transform -translate-y-1/2 w-2 h-2 sm:w-3 sm:h-3 bg-white rounded-full shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200"></div>
@@ -468,12 +515,12 @@ const PersonalPortfolio: React.FC = () => {
                     <span className="min-w-[35px] sm:min-w-[40px]">{formatTime(audioRef.current?.duration || 180)}</span>
                   </div>
 
-                  <div className="flex items-center gap-2 sm:gap-3">
+                  {/* <div className="flex items-center gap-2 sm:gap-3">
                     <Volume2 className="w-3 h-3 sm:w-4 sm:h-4 text-white/60" />
-                    <div 
+                    <div
                       onClick={handleVolumeChange}
                       className="flex-1 bg-white/10 rounded-full h-1.5 sm:h-2 cursor-pointer hover:bg-white/15 transition-colors duration-200 overflow-hidden">
-                      <div 
+                      <div
                         className="bg-gradient-to-r from-white/60 to-white/40 h-1.5 sm:h-2 rounded-full transition-all duration-200 relative"
                         style={{ width: `${volume}%` }}>
                         <div className="absolute right-0 top-1/2 transform -translate-y-1/2 w-2 h-2 sm:w-3 sm:h-3 bg-white rounded-full shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200"></div>
@@ -481,21 +528,21 @@ const PersonalPortfolio: React.FC = () => {
                     </div>
                     <span className="text-white/60 text-xs font-mono min-w-[25px] sm:min-w-[30px]">{volume}%</span>
                   </div>
-                </div>
+                </div> */}
               </div>
 
-              {/* Footer */}
               <div className="text-center mt-6 sm:mt-8 pt-4 sm:pt-6 border-t border-white/10">
                 <div className="flex items-center justify-center gap-1 sm:gap-2 text-white/40 text-xs font-mono">
                   <span>© {new Date().getFullYear()} Phy0n.dev</span>
                   <div className="w-1 h-1 bg-white/40 rounded-full"></div>
-                  <span>Always withyou ❤️</span>
+                  <span>Always #W1thyou</span>
                 </div>
               </div>
             </div>
           </div>
         </div>
       </div>
+    </div>
     </div>
   );
 };
