@@ -3,9 +3,10 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import React, { useState, useEffect, useRef } from 'react';
-import { Play, Pause, SkipBack, SkipForward, Volume2, Github, Instagram, Twitter, Linkedin, Code, Gamepad2, Music, Monitor, Heart, BookOpen, Briefcase, Award, Smile, Mail, Star, Zap, Coffee, Terminal, Cpu, MessageCircle } from 'lucide-react';
+import { Play, Pause, SkipBack, SkipForward, Volume2, Github, Instagram, Twitter, Linkedin, Code, Gamepad2, Music, Monitor, Heart, BookOpen, Briefcase, Award, Smile, Mail, Star, Zap, Coffee, Terminal, Cpu, MessageCircle, MousePointer } from 'lucide-react';
 
 const PersonalPortfolio: React.FC = () => {
+  const [hasEntered, setHasEntered] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [volume, setVolume] = useState(75);
@@ -13,6 +14,7 @@ const PersonalPortfolio: React.FC = () => {
   const [activeTab, setActiveTab] = useState('about');
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [isMobile, setIsMobile] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const [isDraggingVolume, setIsDraggingVolume] = useState(false);
 
@@ -47,7 +49,26 @@ const PersonalPortfolio: React.FC = () => {
 
   const skills = ["React", "Next.js", "TypeScript", "JavaScript", "TailwindCSS", "CSS"];
 
-  // Check for mobile on mount and resize
+  // Handle entrance and music activation
+  const handleEnter = async () => {
+    setIsLoading(true);
+    await new Promise(resolve => setTimeout(resolve, 1500));
+
+    setIsLoading(false);
+    setHasEntered(true);
+
+    try {
+      audioRef.current = new Audio('/music/music.mp3');
+      audioRef.current.volume = volume / 100;
+      audioRef.current.loop = true;
+
+      await audioRef.current.play();
+      setIsPlaying(true);
+    } catch (err) {
+      console.log("Auto-play failed:", err);
+    }
+  };
+
   useEffect(() => {
     const checkIfMobile = () => {
       setIsMobile(window.innerWidth < 768);
@@ -62,56 +83,14 @@ const PersonalPortfolio: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    audioRef.current = new Audio('/music/music.mp3');
-    audioRef.current.volume = volume / 100;
-    audioRef.current.loop = true;
-
     const handleMouseMove = (e: MouseEvent) => {
       setMousePosition({ x: e.clientX, y: e.clientY });
     };
 
-    const handleEnded = () => {
-      setIsPlaying(true);
-    };
-
     window.addEventListener('mousemove', handleMouseMove);
-    audioRef.current.addEventListener('ended', handleEnded);
-
-    // Auto-play when component mounts
-    const handleFirstInteraction = async () => {
-      try {
-        await audioRef.current?.play();
-        setIsPlaying(true);
-        // Remove listeners setelah berhasil play
-        document.removeEventListener('click', handleFirstInteraction);
-        document.removeEventListener('keydown', handleFirstInteraction);
-        document.removeEventListener('scroll', handleFirstInteraction);
-        document.removeEventListener('mousemove', handleFirstInteraction);
-      } catch (err) {
-        console.log("Auto-play failed:", err);
-      }
-    };
-
-    // Listen untuk interaksi user pertama
-    document.addEventListener('click', handleFirstInteraction);
-    document.addEventListener('keydown', handleFirstInteraction);
-    document.addEventListener('scroll', handleFirstInteraction);
-    document.addEventListener('mousemove', handleFirstInteraction);
-
-    window.addEventListener('mousemove', handleMouseMove);
-    audioRef.current.addEventListener('ended', handleEnded);
 
     return () => {
-      if (audioRef.current) {
-        audioRef.current.pause();
-        audioRef.current.removeEventListener('ended', handleEnded);
-      }
       window.removeEventListener('mousemove', handleMouseMove);
-      // Cleanup interaction listeners
-      document.removeEventListener('click', handleFirstInteraction);
-      document.removeEventListener('keydown', handleFirstInteraction);
-      document.removeEventListener('scroll', handleFirstInteraction);
-      document.removeEventListener('mousemove', handleFirstInteraction);
     };
   }, []);
 
@@ -185,7 +164,125 @@ const PersonalPortfolio: React.FC = () => {
       url: "https://tiktok.com/@phy0n",
       color: "from-black/20 to-gray-500/20"
     },
-  ]
+  ];
+
+  if (!hasEntered) {
+    return (
+      <div className="min-h-screen bg-black relative overflow-hidden flex items-center justify-center" style={{ fontFamily: '"JetBrains Mono", "Fira Code", "Source Code Pro", monospace' }}>
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <div className="absolute inset-0 opacity-[0.03]"
+               style={{
+                 backgroundImage: `
+                   linear-gradient(white 1px, transparent 1px),
+                   linear-gradient(90deg, white 1px, transparent 1px) `,
+                 backgroundSize: '50px 50px'
+               }}>
+          </div>
+
+          <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-gradient-to-r from-white/[0.02] to-white/[0.05] rounded-full blur-3xl animate-pulse"></div>
+          <div className="absolute bottom-1/3 right-1/4 w-80 h-80 bg-gradient-to-l from-white/[0.03] to-transparent rounded-full blur-3xl"></div>
+          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-gradient-to-br from-white/[0.01] via-white/[0.02] to-transparent rounded-full blur-3xl"></div>
+
+          {!isMobile && (
+            <div
+              className="absolute w-32 h-32 bg-white/[0.02] rounded-full blur-2xl transition-all duration-300 ease-out pointer-events-none"
+              style={{
+                left: mousePosition.x - 64,
+                top: mousePosition.y - 64,
+              }}>
+            </div>
+          )}
+        </div>
+
+        <div className="relative z-10 text-center">
+          {isLoading ? (
+            <div className="space-y-6">
+              <div className="relative">
+                <div className="w-16 h-16 mx-auto border-2 border-white/20 border-t-white rounded-full animate-spin"></div>
+                <div className="absolute inset-0 w-16 h-16 mx-auto border-2 border-transparent border-t-white/40 rounded-full animate-spin" style={{ animationDuration: '0.8s', animationDirection: 'reverse' }}></div>
+              </div>
+              <div className="space-y-2">
+                <p className="text-white/80 font-mono text-sm">Loading portfolio...</p>
+                <p className="text-white/60 font-mono text-xs mb-5">Music will start automatically</p>
+                <div className="flex items-center justify-center gap-1">
+                  <div className="w-2 h-2 bg-white/60 rounded-full animate-bounce"></div>
+                  <div className="w-2 h-2 bg-white/60 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
+                  <div className="w-2 h-2 bg-white/60 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+                </div>
+              </div>
+            </div>
+          ) : (
+            <div className="space-y-8 animate-pulse">
+              <div className="relative inline-block group">
+                <div className="absolute inset-0 bg-gradient-to-r from-white/20 via-white/10 to-white/20 rounded-full animate-pulse"></div>
+                <div className="relative w-32 h-32 bg-gradient-to-br from-white/10 to-white/[0.05] rounded-full p-1 shadow-2xl border border-white/20 group-hover:border-white/30 transition-all duration-500">
+                  <div className="w-full h-full bg-black/60 rounded-full flex items-center justify-center overflow-hidden border border-white/10">
+                    <div className="relative w-28 h-28 rounded-full overflow-hidden">
+                      <Image
+                        src="/image/phion.jpg"
+                        alt="Profile Photo"
+                        width={112}
+                        height={112}
+                        className="object-cover hover:scale-110 transition-transform duration-500"
+                        priority
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div className="absolute -bottom-2 -right-2 w-8 h-8 bg-green-400 rounded-full border-3 border-black animate-pulse flex items-center justify-center">
+                  <Zap className="w-4 h-4 text-black" />
+                </div>
+              </div>
+
+              <div className="space-y-4">
+                <div className="space-y-2">
+                  <h1 className="text-xl md:text-2xl font-bold text-white tracking-wide">
+                    <span className="bg-gradient-to-r from-white via-white/90 to-white/80 bg-clip-text text-transparent">
+                      Welcome to
+                    </span>
+                  </h1>
+                  <h2 className="text-xl md:text-3xl font-bold font-mono">
+                    <span className="bg-gradient-to-r from-white via-white/90 to-white/80 bg-clip-text text-transparent">
+                      Phy0n Portofolio
+                    </span>
+                  </h2>
+                </div>
+                <p className="text-white/60 font-mono text-sm md:text-base max-w-md mx-auto">
+                  Just Good People
+                </p>
+              </div>
+
+              <div className="space-y-4">
+                <button
+                  onClick={handleEnter}
+                  className="group relative px-8 py-4 bg-white/[0.05] hover:bg-white/[0.1] border border-white/20 hover:border-white/40 rounded-xl transition-all duration-300 hover:scale-105 transform font-mono text-white/80 hover:text-white cursor-pointer">
+                  <div className="flex items-center gap-3">
+                    <div className="relative">
+                      <MousePointer className="w-4 h-4 sm:w-5 sm:h-5 group-hover:animate-bounce" />
+                      <div className="absolute inset-0 bg-white/20 rounded-full blur-lg group-hover:blur-xl transition-all duration-300 opacity-0 group-hover:opacity-100"></div>
+                    </div>
+                    <span className="text-sm sm:text-md font-medium">Click to Enter</span>
+                  </div>
+                  <div className="absolute inset-0 bg-gradient-to-r from-white/[0.02] to-white/[0.05] rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                </button>
+
+                <div className="flex items-center justify-center gap-2 text-white/40 text-xs font-mono">
+                  <Music className="w-3 h-3" />
+                  <span className='text-xs sm:text-base'>Music will start playing automatically</span>
+                </div>
+              </div>
+
+              <div className="flex justify-center gap-4 mt-8">
+                <div className="w-2 h-2 bg-white/30 rounded-full animate-ping"></div>
+                <div className="w-2 h-2 bg-white/30 rounded-full animate-ping" style={{ animationDelay: '0.5s' }}></div>
+                <div className="w-2 h-2 bg-white/30 rounded-full animate-ping" style={{ animationDelay: '1s' }}></div>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-black relative overflow-hidden" style={{ fontFamily: '"JetBrains Mono", "Fira Code", "Source Code Pro", monospace' }}>
