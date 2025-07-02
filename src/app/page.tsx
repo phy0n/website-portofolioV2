@@ -444,7 +444,7 @@ const PersonalPortfolio: React.FC = () => {
                       <span className="text-white/60 text-xs sm:text-sm font-mono">status:</span>
                     </div>
                     <p className="text-white/80 text-xs sm:text-sm leading-relaxed">
-                      Currently building amazing web experiences & exploring new technologies 🚀
+                      Balas dendam terbaik adalah menjadikan dirimu menjadi lebih baik
                     </p>
                   </div>
                 </div>
