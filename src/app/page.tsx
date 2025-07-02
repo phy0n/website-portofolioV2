@@ -286,6 +286,43 @@ const PersonalPortfolio: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-black relative overflow-hidden" style={{ fontFamily: '"JetBrains Mono", "Fira Code", "Source Code Pro", monospace' }}>
+      {/* Video Background */}
+      <div className="absolute inset-0 z-9 overflow-hidden">
+        <video
+          autoPlay
+          loop
+          muted
+          playsInline
+          className="absolute inset-0 w-full h-full object-cover opacity-50"
+          poster="/video/anime-bg-poster.jpg">
+          <source src="/video/video.mp4 " type="video/mp4" />
+        </video>
+      </div>
+
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute inset-0 opacity-[0.03]"
+             style={{
+               backgroundImage: `
+                 linear-gradient(white 1px, transparent 1px),
+                 linear-gradient(90deg, white 1px, transparent 1px) `,
+               backgroundSize: '50px 50px'
+             }}>
+        </div>
+
+        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-gradient-to-r from-white/[0.02] to-white/[0.05] rounded-full blur-3xl animate-pulse"></div>
+        <div className="absolute bottom-1/3 right-1/4 w-80 h-80 bg-gradient-to-l from-white/[0.03] to-transparent rounded-full blur-3xl"></div>
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-gradient-to-br from-white/[0.01] via-white/[0.02] to-transparent rounded-full blur-3xl"></div>
+
+        {!isMobile && (
+          <div
+            className="absolute w-32 h-32 bg-white/[0.02] rounded-full blur-2xl transition-all duration-300 ease-out pointer-events-none"
+            style={{
+              left: mousePosition.x - 64,
+              top: mousePosition.y - 64,
+            }}>
+          </div>
+        )}
+      </div>
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute inset-0 opacity-[0.03]"
              style={{
