@@ -3,7 +3,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import React, { useState, useEffect, useRef } from 'react';
-import { Play, Pause, SkipBack, SkipForward, Volume2, Github, Instagram, Twitter, Linkedin, Code, Gamepad2, Music, Monitor, Heart, BookOpen, Briefcase, Award, Smile, Mail, Star, Zap, Coffee, Terminal, Cpu, MessageCircle, MousePointer } from 'lucide-react';
+import { Play, Pause, SkipBack, SkipForward, Volume2, Github, Instagram, Twitter, Linkedin, Code, Gamepad2, Music, Monitor, Heart, BookOpen, Briefcase, Award, Smile, Mail, Star, Zap, Coffee, Terminal, Cpu, MessageCircle, MousePointer, Phone, MapPin, Clock, CheckCircle, ExternalLink, User, Lightbulb, Target, Users, Palette, Database, Globe, Smartphone } from 'lucide-react';
 
 const PersonalPortfolio: React.FC = () => {
   const [hasEntered, setHasEntered] = useState(false);
@@ -13,10 +13,22 @@ const PersonalPortfolio: React.FC = () => {
   const [currentTrack, setCurrentTrack] = useState("YNW");
   const [activeTab, setActiveTab] = useState('about');
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const [isCertificateModalOpen, setIsCertificateModalOpen] = useState(false);
+  const [selectedCertificate, setSelectedCertificate] = useState<Certificate | null>(null);
   const [isMobile, setIsMobile] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const [isDraggingVolume, setIsDraggingVolume] = useState(false);
+
+  interface Certificate {
+    title: string;
+    issuer: string;
+    date: string;
+    status: string;
+    description: string;
+    image: string;
+    icon: React.ReactNode;
+  }
 
   const experiences = [
     {
@@ -30,10 +42,10 @@ const PersonalPortfolio: React.FC = () => {
 
   const projects = [
     {
-      title: "Kh1ev Community Website",
-      description: "A modern, responsive website for the Kh1ev Community, built with ReactJS. Features include dynamic content management and seamless user experience.",
+      title: "Kh1ev Project",
+      description: "This is my kh1ev community website",
       tags: ["React", "TailwindCSS", "TypeScript"],
-      link: "https://kh1ev.my.id",
+      link: "https://kh1ev.my.id/",
       status: "Live",
       icon: <Monitor className="w-4 h-4" />
     },
@@ -44,10 +56,49 @@ const PersonalPortfolio: React.FC = () => {
     { icon: <Gamepad2 className="w-4 h-4" />, text: "Playing Game", color: "from-purple-500/20 to-pink-500/20" },
     { icon: <Music className="w-4 h-4" />, text: "Listening Music", color: "from-green-500/20 to-emerald-500/20" },
     { icon: <BookOpen className="w-4 h-4" />, text: "Reading Comic", color: "from-orange-500/20 to-red-500/20" },
-    { icon: <Coffee className="w-4 h-4" />, text: "Coffee & Code", color: "from-amber-500/20 to-yellow-500/20" }
   ];
 
-  const skills = ["React", "Next.js", "TypeScript", "JavaScript", "TailwindCSS", "CSS"];
+  const hardSkills = [
+    { name: "React", level: 85, icon: <Code className="w-4 h-4" />, category: "Frontend" },
+    { name: "Next.js", level: 80, icon: <Globe className="w-4 h-4" />, category: "Framework" },
+    { name: "TailwindCSS", level: 90, icon: <Palette className="w-4 h-4" />, category: "Styling" },
+  ];
+
+  const softSkills = [
+    { name: "Problem Solving", level: 90, icon: <Lightbulb className="w-4 h-4" />},
+    { name: "Adaptability", level: 88, icon: <Target className="w-4 h-4" /> },
+    { name: "Time Management", level: 82, icon: <Clock className="w-4 h-4" />},
+    { name: "Creativity", level: 87, icon: <Palette className="w-4 h-4" />}
+  ];
+
+  const certificates: Certificate[] = [
+    {
+      title: "Intro to Software Engineering",
+      issuer: "RevoU",
+      date: "2024",
+      status: "Completed",
+      description: "Just Intro to Software Engineering",
+      image: "/image/certificates/certificate1.png",
+      icon: <Award className="w-4 h-4" />
+    },
+  ];
+
+  const contactInfo = [
+    {
+      type: "Discord Account",
+      value: "Phy0n",
+      icon: <Mail className="w-4 h-4" />,
+      color: "from-red-500/20 to-pink-500/20"
+    },
+    {
+      type: "Location",
+      value: "Surabaya, Indonesia",
+      icon: <MapPin className="w-4 h-4" />,
+      color: "from-blue-500/20 to-cyan-500/20"
+    },
+  ];
+
+  const skills = ["Developer","Admin","Member"];
 
   // Handle entrance and music activation
   const handleEnter = async () => {
@@ -147,24 +198,19 @@ const PersonalPortfolio: React.FC = () => {
 
   const socialMedia = [
     {
-      name: "Discord",
-      icon: <MessageCircle className="w-4 h-4" />,
-      url: "https://discord.gg/MwNE7Vfb6t",
-      color: "from-indigo-500/20 to-purple-500/20"
-    },
-    {
       name: "Instagram",
       icon: <Instagram className="w-4 h-4" />,
-      url: "https://instagram.com/ic.phionkhievrushandle/",
+      url: "https://www.instagram.com/ic.phionkhievrushandle/",
       color: "from-pink-500/20 to-red-500/20"
     },
     {
-      name: "TikTok",
-      icon: <Music className="w-4 h-4" />,
-      url: "https://tiktok.com/@phy0n",
-      color: "from-black/20 to-gray-500/20"
+      name: "Discord Server",
+      icon: <Globe className="w-4 h-4" />,
+      url: "https://discord.gg/MwNE7Vfb6t/",
+      color: "from-pink-500/20 to-red-500/20"
     },
   ];
+
 
   if (!hasEntered) {
     return (
@@ -248,7 +294,7 @@ const PersonalPortfolio: React.FC = () => {
                   </h2>
                 </div>
                 <p className="text-white/60 font-mono text-sm md:text-base max-w-md mx-auto">
-                  Just Good People
+                  Im Just Crazy People
                 </p>
               </div>
 
@@ -323,30 +369,6 @@ const PersonalPortfolio: React.FC = () => {
           </div>
         )}
       </div>
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute inset-0 opacity-[0.03]"
-             style={{
-               backgroundImage: `
-                 linear-gradient(white 1px, transparent 1px),
-                 linear-gradient(90deg, white 1px, transparent 1px) `,
-               backgroundSize: '50px 50px'
-             }}>
-        </div>
-
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-gradient-to-r from-white/[0.02] to-white/[0.05] rounded-full blur-3xl animate-pulse"></div>
-        <div className="absolute bottom-1/3 right-1/4 w-80 h-80 bg-gradient-to-l from-white/[0.03] to-transparent rounded-full blur-3xl"></div>
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-gradient-to-br from-white/[0.01] via-white/[0.02] to-transparent rounded-full blur-3xl"></div>
-
-        {!isMobile && (
-          <div
-            className="absolute w-32 h-32 bg-white/[0.02] rounded-full blur-2xl transition-all duration-300 ease-out pointer-events-none"
-            style={{
-              left: mousePosition.x - 64,
-              top: mousePosition.y - 64,
-            }}>
-          </div>
-        )}
-      </div>
 
       <div className="relative z-10 min-h-screen flex items-center justify-center p-4 sm:p-6">
         <div className="max-w-6xl w-full">
@@ -358,7 +380,7 @@ const PersonalPortfolio: React.FC = () => {
                 <div className="w-2 h-2 sm:w-3 sm:h-3 bg-green-500/80 rounded-full"></div>
               </div>
               <div className="flex-1 text-center">
-                <span className="text-white/60 text-xs sm:text-sm font-mono">~/phy0n/portfolio</span>
+                <span className="text-white/60 text-xs sm:text-sm font-mono">~/Phy0n/portfolio</span>
               </div>
               <Terminal className="w-3 h-3 sm:w-4 sm:h-4 text-white/40" />
             </div>
@@ -395,12 +417,12 @@ const PersonalPortfolio: React.FC = () => {
                       <span className="bg-gradient-to-r from-white via-white/90 to-white/80 bg-clip-text text-transparent">
                         Phy0n
                       </span>
-                      <span className="text-white/50 text-sm sm:text-base md:text-lg ml-1 sm:ml-2">#Region</span>
+                      <span className="text-white/50 text-sm sm:text-base md:text-lg ml-1 sm:ml-2">#LoveYou.</span>
                     </h1>
                     <div className="flex items-center justify-center lg:justify-start gap-1 sm:gap-2 mb-2 sm:mb-4">
-                      <span className="text-white/60 text-xs sm:text-sm font-mono">@phy0n</span>
+                      <span className="text-white/60 text-xs sm:text-sm font-mono">@Phy0n</span>
                       <div className="w-1 h-1 bg-white/40 rounded-full"></div>
-                      <span className="text-white/40 text-xs">Frontend Dev</span>
+                      <span className="text-white/40 text-xs">Orang Gila</span>
                     </div>
                   </div>
 
@@ -428,10 +450,13 @@ const PersonalPortfolio: React.FC = () => {
                           href={social.url}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="group w-10 h-10 sm:w-12 sm:h-12 bg-white/[0.05] hover:bg-white/[0.1] rounded-full flex items-center justify-center border border-white/10 hover:border-white/30 transition-all duration-300 hover:scale-110 transform"
+                          className="group px-5 w-auto h-10 sm:w-auto sm:h-12 bg-white/[0.05] hover:bg-white/[0.1] rounded-xl flex items-center justify-center border border-white/10 hover:border-white/30 transition-all duration-300 hover:scale-110 transform"
                           title={social.name}>
-                          <div className="text-white/60 group-hover:text-white transition-colors duration-300">
+                          <div className="text-white/60 group-hover:text-white transition-colors duration-300 pr-3">
                             {social.icon}
+                          </div>
+                          <div>
+                            {social.name}
                           </div>
                         </a>
                       ))}
@@ -444,18 +469,18 @@ const PersonalPortfolio: React.FC = () => {
                       <span className="text-white/60 text-xs sm:text-sm font-mono">status:</span>
                     </div>
                     <p className="text-white/80 text-xs sm:text-sm leading-relaxed">
-                      Balas dendam terbaik adalah menjadikan dirimu menjadi lebih baik
+                      The best revenge is to make yourself better
                     </p>
                   </div>
                 </div>
 
                 <div className="flex-1">
                   <div className="flex border-b border-white/10 mb-4 sm:mb-6 md:mb-8 overflow-x-auto">
-                    {['about', 'experience', 'projects'].map((tab) => (
+                    {['about', 'skills', 'experience', 'projects', 'certificates', 'contact'].map((tab) => (
                       <button
                         key={tab}
                         onClick={() => setActiveTab(tab)}
-                        className={`px-4 py-2 sm:px-6 sm:py-3 text-xs sm:text-sm font-mono font-medium relative transition-all duration-300 whitespace-nowrap cursor-pointer ${
+                        className={`px-3 py-2 sm:px-4 sm:py-3 text-xs sm:text-sm font-mono font-medium relative transition-all duration-300 whitespace-nowrap cursor-pointer ${
                           activeTab === tab
                             ? 'text-white'
                             : 'text-white/50 hover:text-white/80'
@@ -472,15 +497,18 @@ const PersonalPortfolio: React.FC = () => {
                   <div className="min-h-[300px] sm:min-h-[350px] md:min-h-[400px]">
                     {activeTab === 'about' && (
                       <div className="space-y-4 sm:space-y-6 md:space-y-8">
+                        {/* About Section */}
                         <div>
                           <h2 className="text-lg sm:text-xl font-bold text-white mb-2 sm:mb-4 font-mono">
                             <span className="text-white/40">~/</span>about.md
                           </h2>
-                          <div className="bg-white/[0.02] rounded-lg sm:rounded-xl p-4 sm:p-6 border border-white/10 hover:border-white/15 transition-all duration-300">
+                          <div className="bg-white/[0.02] rounded-lg sm:rounded-xl p-4 sm:p-6 border border-white/10 hover:border-white/15 transition-all duration-300 backdrop-blur-sm">
                             <p className="text-white/70 leading-relaxed font-mono text-xs sm:text-sm">
                               <span className="text-white/40">const</span> <span className="text-white">developer</span> = {'{'}
                               <br />
-                              <span className="ml-3 sm:ml-4 text-white/40">name:</span> <span className="text-green-400">"Phy0n"</span>,
+                              <span className="ml-3 sm:ml-4 text-white/40">name:</span> <span className="text-green-400">"Panggil Aja Phy0n"</span>,
+                              <br />
+                              <span className="ml-3 sm:ml-4 text-white/40">age:</span> <span className="text-green-400">"17 years old"</span>,
                               <br />
                               <span className="ml-3 sm:ml-4 text-white/40">role:</span> <span className="text-green-400">"Frontend Developer"</span>,
                               <br />
@@ -493,6 +521,7 @@ const PersonalPortfolio: React.FC = () => {
                           </div>
                         </div>
 
+                        {/* Interests Section */}
                         <div>
                           <h3 className="text-white/60 text-xs sm:text-sm uppercase tracking-wider mb-3 sm:mb-4 md:mb-6 font-mono flex items-center gap-1 sm:gap-2">
                             <Star className="w-3 h-3 sm:w-4 sm:h-4" />
@@ -502,15 +531,60 @@ const PersonalPortfolio: React.FC = () => {
                             {hobbies.map((hobby, index) => (
                               <div
                                 key={index}
-                                className={`group relative bg-gradient-to-br ${hobby.color} rounded-lg sm:rounded-xl p-3 sm:p-4 border border-white/10 hover:border-white/20 transition-all duration-300 cursor-pointer overflow-hidden`}>
-                                <div className="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-all duration-300"></div>
-                                <div className="relative flex items-center gap-2 sm:gap-3">
-                                  <div className="text-white/60 group-hover:text-white transition-colors duration-300">
+                                className="group relative rounded-lg sm:rounded-xl p-3 sm:p-4 border border-white/10 hover:border-white/20 transition-all duration-300 cursor-pointer overflow-hidden bg-white/[0.02] backdrop-blur-sm">
+                                <div className="absolute inset-0 bg-black/10 transition-all duration-300 backdrop-blur-sm z-0"></div>
+                                <div className="relative flex items-center gap-2 sm:gap-3 z-10">
+                                  <div className="p-2 bg-white/[0.05] rounded-lg border border-white/10 group-hover:bg-white/[0.08] transition-colors duration-300">
                                     {hobby.icon}
                                   </div>
                                   <span className="text-xs sm:text-sm font-mono text-white/80 group-hover:text-white transition-colors duration-300">
                                     {hobby.text}
                                   </span>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
+                    {activeTab === 'skills' && (
+                      <div className="space-y-6 sm:space-y-8">
+                        <div>
+                          <h2 className="text-lg sm:text-xl font-bold text-white mb-4 sm:mb-6 font-mono">
+                            <span className="text-white/40">~/</span>hard_skills.json
+                          </h2>
+                          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
+                            {hardSkills.map((skill, index) => (
+                              <div key={index} className="bg-white/[0.02] rounded-lg p-3 sm:p-4 border border-white/10 hover:border-white/15 hover:bg-white/[0.04] transition-all duration-300 group">
+                                <div className="flex flex-col items-center text-center gap-2 sm:gap-3">
+                                  <div className="p-2 bg-white/[0.05] rounded-lg border border-white/10 group-hover:bg-white/[0.08] transition-colors duration-300">
+                                    {skill.icon}
+                                  </div>
+                                  <div>
+                                    <h3 className="text-xs sm:text-sm font-semibold text-white font-mono">{skill.name}</h3>
+                                    <p className="text-white/50 text-xs">{skill.category}</p>
+                                  </div>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+
+                        <div>
+                          <h2 className="text-lg sm:text-xl font-bold text-white mb-4 sm:mb-6 font-mono">
+                            <span className="text-white/40">~/</span>soft_skills.json
+                          </h2>
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+                            {softSkills.map((skill, index) => (
+                              <div key={index} className="bg-white/[0.02] rounded-lg p-3 sm:p-4 border border-white/10 hover:border-white/15 hover:bg-white/[0.04] transition-all duration-300 group">
+                                <div className="flex items-center gap-3">
+                                  <div className="p-2 bg-white/[0.05] rounded-lg border border-white/10 group-hover:bg-white/[0.08] transition-colors duration-300">
+                                    {skill.icon}
+                                  </div>
+                                  <div className="flex-1">
+                                    <h3 className="text-sm sm:text-base font-semibold text-white font-mono">{skill.name}</h3>
+                                  </div>
                                 </div>
                               </div>
                             ))}
@@ -563,7 +637,6 @@ const PersonalPortfolio: React.FC = () => {
                               target="_blank"
                               rel="noopener noreferrer"
                               className="block group bg-white/[0.02] hover:bg-white/[0.04] rounded-lg sm:rounded-xl p-4 sm:p-6 border border-white/10 hover:border-white/20 transition-all duration-300 relative overflow-hidden">
-                              <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500/50 via-purple-500/50 to-pink-500/50"></div>
                               <div className="flex items-start justify-between mb-3 sm:mb-4">
                                 <div className="flex items-center gap-2 sm:gap-3">
                                   <div className="text-white/60 group-hover:text-white transition-colors duration-300">
@@ -588,6 +661,104 @@ const PersonalPortfolio: React.FC = () => {
                             </a>
                           ))}
                         </div>
+                      </div>
+                    )}
+
+                    {activeTab === 'certificates' && (
+                      <div>
+                        <h2 className="text-lg sm:text-xl font-bold text-white mb-4 sm:mb-6 font-mono">
+                          <span className="text-white/40">~/</span>certificates/
+                        </h2>
+                        <div className="grid gap-4 sm:gap-6">
+                          {certificates.map((cert, index) => (
+                            <div key={index} className="bg-white/[0.02] rounded-lg sm:rounded-xl p-4 sm:p-6 border border-white/10 hover:border-white/20 transition-all duration-300 group">
+                              <div className="flex items-start gap-3 sm:gap-4 mb-3 sm:mb-4">
+                                <div className="p-2 sm:p-3 bg-white/[0.05] rounded-lg border border-white/10 group-hover:bg-white/[0.08] transition-colors duration-300">
+                                  {cert.icon}
+                                </div>
+                                <div className="flex-1">
+                                  <h3 className="text-base sm:text-lg font-semibold text-white font-mono">{cert.title}</h3>
+                                  <div className="flex items-center gap-2 text-xs sm:text-sm text-white/60 font-mono mt-1 mb-2">
+                                    <span>{cert.issuer}</span>
+                                    <span className="text-white/40">•</span>
+                                    <span>{cert.date}</span>
+                                    <span className="ml-2 px-2 py-0.5 bg-green-500/20 text-green-400 rounded-full text-xs border border-green-500/30">
+                                      {cert.status}
+                                    </span>
+                                  </div>
+                                  <p className="text-white/70 text-xs sm:text-sm leading-relaxed">{cert.description}</p>
+                                </div>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {activeTab === 'contact' && (
+                      <div>
+                        <h2 className="text-lg sm:text-xl font-bold text-white mb-4 sm:mb-6 font-mono">
+                          <span className="text-white/40">~/</span>contact.json
+                        </h2>
+                        <div className="grid grid-cols-1 sm:grid-cols-1 gap-4 sm:gap-6">
+                          {contactInfo.map((contact, index) => (
+                            <a
+                              key={index}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="group relative rounded-lg sm:rounded-xl p-4 sm:p-5 border border-white/10 hover:border-white/20 transition-all duration-300 overflow-hidden bg-white/[0.02] backdrop-blur-sm">
+                              <div className="absolute inset-0 bg-black/10 transition-all duration-300 backdrop-blur-sm z-0"></div>
+                              <div className="relative flex items-center gap-3 sm:gap-4 z-10">
+                                <div className="p-2 sm:p-2.5 bg-white/[0.05] rounded-lg border border-white/10 group-hover:bg-white/[0.08] transition-colors duration-300">
+                                  {contact.icon}
+                                </div>
+                                <div>
+                                  <p className="text-white/60 text-xs sm:text-sm font-mono">{contact.type}</p>
+                                  <h3 className="text-white text-sm sm:text-base font-medium">{contact.value}</h3>
+                                </div>
+                              </div>
+                            </a>
+                          ))}
+                        </div>
+                        {/* <div className="mt-6 sm:mt-8 bg-white/[0.02] rounded-lg sm:rounded-xl p-4 sm:p-6 border border-white/10 hover:border-white/15 transition-all duration-300">
+                          <h3 className="text-white text-sm sm:text-base font-mono mb-3 sm:mb-4 flex items-center gap-2">
+                            <MessageCircle className="w-4 h-4" />
+                            Send me a message
+                          </h3>
+                          <form className="space-y-3 sm:space-y-4">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+                              <div>
+                                <label className="block text-white/60 text-xs sm:text-sm font-mono mb-1">Name</label>
+                                <input
+                                  type="text"
+                                  className="w-full bg-white/[0.05] border border-white/10 rounded-lg px-3 py-2 text-white text-sm sm:text-base font-mono focus:outline-none focus:border-white/20 transition-colors duration-300"
+                                  placeholder="Your name"
+                                />
+                              </div>
+                              <div>
+                                <label className="block text-white/60 text-xs sm:text-sm font-mono mb-1">Email</label>
+                                <input
+                                  type="email"
+                                  className="w-full bg-white/[0.05] border border-white/10 rounded-lg px-3 py-2 text-white text-sm sm:text-base font-mono focus:outline-none focus:border-white/20 transition-colors duration-300"
+                                  placeholder="your@email.com"
+                                />
+                              </div>
+                            </div>
+                            <div>
+                              <label className="block text-white/60 text-xs sm:text-sm font-mono mb-1">Message</label>
+                              <textarea
+                                className="w-full bg-white/[0.05] border border-white/10 rounded-lg px-3 py-2 text-white text-sm sm:text-base font-mono focus:outline-none focus:border-white/20 transition-colors duration-300 min-h-[100px]"
+                                placeholder="Your message here..."
+                              ></textarea>
+                            </div>
+                            <button
+                              type="submit"
+                              className="px-4 py-2 sm:px-5 sm:py-2.5 bg-gradient-to-r from-blue-500 to-cyan-500 text-white text-sm sm:text-base font-mono rounded-lg hover:opacity-90 transition-opacity duration-300 flex items-center gap-2">
+                              <Mail className="w-4 h-4" />
+                              Send Message
+                            </button>
+                          </form>
+                        </div> */}
                       </div>
                     )}
                   </div>
@@ -648,26 +819,11 @@ const PersonalPortfolio: React.FC = () => {
                     </div>
                     <span className="min-w-[35px] sm:min-w-[40px]">{formatTime(audioRef.current?.duration || 180)}</span>
                   </div>
-
-                  {/* <div className="flex items-center gap-2 sm:gap-3">
-                    <Volume2 className="w-3 h-3 sm:w-4 sm:h-4 text-white/60" />
-                    <div
-                      onClick={handleVolumeChange}
-                      className="flex-1 bg-white/10 rounded-full h-1.5 sm:h-2 cursor-pointer hover:bg-white/15 transition-colors duration-200 overflow-hidden">
-                      <div
-                        className="bg-gradient-to-r from-white/60 to-white/40 h-1.5 sm:h-2 rounded-full transition-all duration-200 relative"
-                        style={{ width: `${volume}%` }}>
-                        <div className="absolute right-0 top-1/2 transform -translate-y-1/2 w-2 h-2 sm:w-3 sm:h-3 bg-white rounded-full shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200"></div>
-                      </div>
-                    </div>
-                    <span className="text-white/60 text-xs font-mono min-w-[25px] sm:min-w-[30px]">{volume}%</span>
-                  </div>
-                </div> */}
               </div>
 
               <div className="text-center mt-6 sm:mt-8 pt-4 sm:pt-6 border-t border-white/10">
                 <div className="flex items-center justify-center gap-1 sm:gap-2 text-white/40 text-xs font-mono">
-                  <span>© {new Date().getFullYear()} Phy0n.dev</span>
+                  <span>© {new Date().getFullYear()} Phy0n</span>
                   <div className="w-1 h-1 bg-white/40 rounded-full"></div>
                   <span>Always #W1thyou</span>
                 </div>
