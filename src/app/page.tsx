@@ -13,12 +13,9 @@ const PersonalPortfolio: React.FC = () => {
   const [currentTrack, setCurrentTrack] = useState("YNW");
   const [activeTab, setActiveTab] = useState('about');
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
-  const [isCertificateModalOpen, setIsCertificateModalOpen] = useState(false);
-  const [selectedCertificate, setSelectedCertificate] = useState<Certificate | null>(null);
   const [isMobile, setIsMobile] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
-  const [isDraggingVolume, setIsDraggingVolume] = useState(false);
 
   interface Certificate {
     title: string;
@@ -189,13 +186,6 @@ const PersonalPortfolio: React.FC = () => {
     }
   };
 
-  const handleVolumeChange = (e: React.MouseEvent<HTMLDivElement>) => {
-    const rect = e.currentTarget.getBoundingClientRect();
-    const pos = (e.clientX - rect.left) / rect.width;
-    const newVolume = Math.min(100, Math.max(0, Math.round(pos * 100)));
-    setVolume(newVolume);
-  };
-
   const socialMedia = [
     {
       name: "Instagram",
@@ -224,10 +214,6 @@ const PersonalPortfolio: React.FC = () => {
                  backgroundSize: '50px 50px'
                }}>
           </div>
-
-          <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-gradient-to-r from-white/[0.02] to-white/[0.05] rounded-full blur-3xl animate-pulse"></div>
-          <div className="absolute bottom-1/3 right-1/4 w-80 h-80 bg-gradient-to-l from-white/[0.03] to-transparent rounded-full blur-3xl"></div>
-          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-gradient-to-br from-white/[0.01] via-white/[0.02] to-transparent rounded-full blur-3xl"></div>
 
           {!isMobile && (
             <div
@@ -258,7 +244,7 @@ const PersonalPortfolio: React.FC = () => {
               </div>
             </div>
           ) : (
-            <div className="space-y-8 animate-pulse">
+            <div className="space-y-8">
               <div className="relative inline-block group">
                 <div className="absolute inset-0 bg-gradient-to-r from-white/20 via-white/10 to-white/20 rounded-full animate-pulse"></div>
                 <div className="relative w-32 h-32 bg-gradient-to-br from-white/10 to-white/[0.05] rounded-full p-1 shadow-2xl border border-white/20 group-hover:border-white/30 transition-all duration-500">
@@ -274,9 +260,6 @@ const PersonalPortfolio: React.FC = () => {
                       />
                     </div>
                   </div>
-                </div>
-                <div className="absolute -bottom-2 -right-2 w-8 h-8 bg-green-400 rounded-full border-3 border-black animate-pulse flex items-center justify-center">
-                  <Zap className="w-4 h-4 text-black" />
                 </div>
               </div>
 
@@ -304,24 +287,13 @@ const PersonalPortfolio: React.FC = () => {
                   className="group relative px-8 py-4 bg-white/[0.05] hover:bg-white/[0.1] border border-white/20 hover:border-white/40 rounded-xl transition-all duration-300 hover:scale-105 transform font-mono text-white/80 hover:text-white cursor-pointer">
                   <div className="flex items-center gap-3">
                     <div className="relative">
-                      <MousePointer className="w-4 h-4 sm:w-5 sm:h-5 group-hover:animate-bounce" />
+                      <MousePointer className="w-4 h-4 sm:w-5 sm:h-5" />
                       <div className="absolute inset-0 bg-white/20 rounded-full blur-lg group-hover:blur-xl transition-all duration-300 opacity-0 group-hover:opacity-100"></div>
                     </div>
                     <span className="text-sm sm:text-md font-medium">Click to Enter</span>
                   </div>
                   <div className="absolute inset-0 bg-gradient-to-r from-white/[0.02] to-white/[0.05] rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                 </button>
-
-                <div className="flex items-center justify-center gap-2 text-white/40 text-xs font-mono">
-                  <Music className="w-3 h-3" />
-                  <span className='text-xs sm:text-base'>Music will start playing automatically</span>
-                </div>
-              </div>
-
-              <div className="flex justify-center gap-4 mt-8">
-                <div className="w-2 h-2 bg-white/30 rounded-full animate-ping"></div>
-                <div className="w-2 h-2 bg-white/30 rounded-full animate-ping" style={{ animationDelay: '0.5s' }}></div>
-                <div className="w-2 h-2 bg-white/30 rounded-full animate-ping" style={{ animationDelay: '1s' }}></div>
               </div>
             </div>
           )}
@@ -406,9 +378,6 @@ const PersonalPortfolio: React.FC = () => {
                           />
                         </div>
                       </div>
-                    </div>
-                    <div className="absolute -bottom-1 -right-1 w-5 h-5 sm:w-6 sm:h-6 md:w-7 md:h-7 bg-green-400 rounded-full border-2 sm:border-3 border-black animate-pulse flex items-center justify-center">
-                      <Zap className="w-2 h-2 sm:w-3 sm:h-3 text-black" />
                     </div>
                   </div>
 
