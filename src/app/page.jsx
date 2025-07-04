@@ -410,7 +410,7 @@ const PersonalPortfolio = () => {
                           <div className="text-white/60 group-hover:text-white transition-colors duration-300 pr-3">
                             {social.icon}
                           </div>
-                          <div>
+                          <div className="text-xs sm:text-sm">
                             {social.name}
                           </div>
                         </a>
