@@ -592,9 +592,6 @@ const PersonalPortfolio = () => {
                               className="block group bg-white/[0.02] hover:bg-white/[0.04] rounded-lg sm:rounded-xl p-4 sm:p-6 border border-white/10 hover:border-white/20 transition-all duration-300 relative overflow-hidden">
                               <div className="flex items-start justify-between mb-3 sm:mb-4">
                                 <div className="flex items-center gap-2 sm:gap-3">
-                                  <div className="text-white/60 group-hover:text-white transition-colors duration-300">
-                                    {project.icon}
-                                  </div>
                                   <h3 className="text-base sm:text-lg font-semibold text-white font-mono group-hover:text-white transition-colors duration-300">
                                     {project.title}
                                   </h3>
@@ -626,9 +623,6 @@ const PersonalPortfolio = () => {
                           {certificates.map((cert, index) => (
                             <div key={index} className="bg-white/[0.02] rounded-lg sm:rounded-xl p-4 sm:p-6 border border-white/10 hover:border-white/20 transition-all duration-300 group">
                               <div className="flex items-start gap-3 sm:gap-4 mb-3 sm:mb-4">
-                                <div className="p-2 sm:p-3 bg-white/[0.05] rounded-lg border border-white/10 group-hover:bg-white/[0.08] transition-colors duration-300">
-                                  {cert.icon}
-                                </div>
                                 <div className="flex-1">
                                   <h3 className="text-base sm:text-lg font-semibold text-white font-mono">{cert.title}</h3>
                                   <div className="flex items-center gap-2 text-xs sm:text-sm text-white/60 font-mono mt-1 mb-2">
