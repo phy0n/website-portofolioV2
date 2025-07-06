@@ -254,7 +254,7 @@ const PersonalPortfolio = () => {
               <div className="space-y-4">
                 <div className="space-y-2">
                   <h1 className="text-xl md:text-2xl font-bold text-white tracking-wide">
-                    <span className="bg-gradient-to-r from-white via-white/90 to-white/80 bg-clip-text text-transparent">
+                    <span className="bg-gradient-to-r from-white via-white/90 to-white/80 bg-clip-text text-transparent font-mono">
                       Welcome to
                     </span>
                   </h1>
@@ -369,15 +369,15 @@ const PersonalPortfolio = () => {
 
                   <div className="mb-4 sm:mb-6">
                     <h1 className="text-2xl sm:text-3xl font-bold text-white mb-1 sm:mb-2 tracking-wide">
-                      <span className="bg-gradient-to-r from-white via-white/90 to-white/80 bg-clip-text text-transparent">
+                      <span className="bg-gradient-to-r from-white via-white/90 to-white/80 bg-clip-text text-transparent font-mono">
                         Phy0n
                       </span>
-                      <span className="text-white/50 text-sm sm:text-base md:text-lg ml-1 sm:ml-2">#LoveYou.</span>
+                      <span className="text-white/50 text-sm sm:text-base md:text-lg ml-1 sm:ml-2 font-mono">#LoveYou.</span>
                     </h1>
                     <div className="flex items-center justify-center lg:justify-start gap-1 sm:gap-2 mb-2 sm:mb-4">
                       <span className="text-white/60 text-xs sm:text-sm font-mono">@Phy0n</span>
                       <div className="w-1 h-1 bg-white/40 rounded-full"></div>
-                      <span className="text-white/40 text-xs">Orang Gila</span>
+                      <span className="text-white/40 text-xs font-mono">Orang Gila</span>
                     </div>
                   </div>
 
@@ -398,7 +398,7 @@ const PersonalPortfolio = () => {
                       <Heart className="w-3 h-3 sm:w-4 sm:h-4" />
                       connect.social
                     </h3>
-                    <div className="flex gap-3 sm:gap-4 mb-4 sm:mb-6">
+                    <div className="flex gap-3 sm:gap-4 mb-4 sm:mb-6 font-mono">
                       {socialMedia.map((social, index) => (
                         <a
                           key={index}
@@ -418,7 +418,7 @@ const PersonalPortfolio = () => {
                     </div>
                   </div>
 
-                  <div className="bg-white/[0.02] rounded-lg sm:rounded-xl p-3 sm:p-4 border border-white/10 hover:border-white/15 transition-all duration-300">
+                  <div className="bg-white/[0.02] rounded-lg sm:rounded-xl p-3 sm:p-4 border border-white/10 hover:border-white/15 transition-all duration-300 font-mono">
                     <div className="flex items-center gap-2 sm:gap-3 mb-1 sm:mb-2">
                       <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-green-400 rounded-full animate-pulse"></div>
                       <span className="text-white/60 text-xs sm:text-sm font-mono">status:</span>
@@ -502,7 +502,7 @@ const PersonalPortfolio = () => {
                     )}
 
                     {activeTab === 'skills' && (
-                      <div className="space-y-6 sm:space-y-8">
+                      <div className="space-y-6 sm:space-y-8 font-mono">
                         <div>
                           <h2 className="text-lg sm:text-xl font-bold text-white mb-4 sm:mb-6 font-mono">
                             <span className="text-white/40">~/</span>hard_skills.json
@@ -570,7 +570,7 @@ const PersonalPortfolio = () => {
                                   <span>{exp.period}</span>
                                 </div>
                               </div>
-                              <p className="text-white/70 text-xs sm:text-sm leading-relaxed">{exp.description}</p>
+                              <p className="text-white/70 text-xs sm:text-sm leading-relaxed font-mono">{exp.description}</p>
                             </div>
                           ))}
                         </div>
@@ -600,7 +600,7 @@ const PersonalPortfolio = () => {
                                   {project.status}
                                 </span>
                               </div>
-                              <p className="text-white/70 text-xs sm:text-sm mb-3 sm:mb-4 leading-relaxed">{project.description}</p>
+                              <p className="text-white/70 text-xs sm:text-sm mb-3 sm:mb-4 leading-relaxed font-mono">{project.description}</p>
                               <div className="flex flex-wrap gap-1 sm:gap-2">
                                 {project.tags.map((tag, i) => (
                                   <span key={i} className="px-2 py-0.5 sm:px-3 sm:py-1 bg-white/[0.05] text-white/70 rounded-full text-xs border border-white/10 font-mono">
@@ -633,7 +633,7 @@ const PersonalPortfolio = () => {
                                       {cert.status}
                                     </span>
                                   </div>
-                                  <p className="text-white/70 text-xs sm:text-sm leading-relaxed">{cert.description}</p>
+                                  <p className="text-white/70 text-xs sm:text-sm leading-relaxed font-mono">{cert.description}</p>
                                 </div>
                               </div>
                             </div>
@@ -647,7 +647,7 @@ const PersonalPortfolio = () => {
                         <h2 className="text-lg sm:text-xl font-bold text-white mb-4 sm:mb-6 font-mono">
                           <span className="text-white/40">~/</span>contact.json
                         </h2>
-                        <div className="grid grid-cols-1 sm:grid-cols-1 gap-4 sm:gap-6">
+                        <div className="grid grid-cols-1 sm:grid-cols-1 gap-4 sm:gap-6 font-mono">
                           {contactInfo.map((contact, index) => (
                             <a
                               key={index}
