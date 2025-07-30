@@ -5,19 +5,76 @@ import Link from 'next/link';
 import React, { useState, useEffect, useRef } from 'react';
 import { Play, Pause, SkipBack, SkipForward, Volume2, Github, Instagram, Twitter, Linkedin, Code, Gamepad2, Music, Monitor, Heart, BookOpen, Briefcase, Award, Smile, Mail, Star, Zap, Coffee, Terminal, Cpu, MessageCircle, MousePointer, Phone, MapPin, Clock, CheckCircle, ExternalLink, User, Lightbulb, Target, Users, Palette, Database, Globe, Smartphone } from 'lucide-react';
 
-const PersonalPortfolio = () => {
-  const [hasEntered, setHasEntered] = useState(false);
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [currentTime, setCurrentTime] = useState(0);
-  const [volume, setVolume] = useState(75);
-  const [currentTrack, setCurrentTrack] = useState("YNW");
-  const [activeTab, setActiveTab] = useState('about');
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
-  const [isMobile, setIsMobile] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const audioRef = useRef(null);
+interface Experience {
+  role: string;
+  company: string;
+  period: string;
+  description: string;
+  status: string;
+}
 
-  const experiences = [
+interface Project {
+  title: string;
+  description: string;
+  tags: string[];
+  link: string;
+  status: string;
+  icon: React.ReactNode;
+}
+
+interface Hobby {
+  icon: React.ReactNode;
+  text: string;
+  color: string;
+}
+
+interface Skill {
+  name: string;
+  level: number;
+  icon: React.ReactNode;
+  category?: string;
+}
+
+interface Certificate {
+  title: string;
+  issuer: string;
+  date: string;
+  status: string;
+  description: string;
+  image: string;
+  icon: React.ReactNode;
+}
+
+interface ContactInfo {
+  type: string;
+  value: string;
+  icon: React.ReactNode;
+  color: string;
+}
+
+interface SocialMedia {
+  name: string;
+  icon: React.ReactNode;
+  url: string;
+  color: string;
+}
+
+const PersonalPortfolio: React.FC = () => {
+  const [hasEntered, setHasEntered] = useState<boolean>(false);
+  const [isPlaying, setIsPlaying] = useState<boolean>(false);
+  const [currentTime, setCurrentTime] = useState<number>(0);
+  const [volume, setVolume] = useState<number>(75);
+  const [currentTrack, setCurrentTrack] = useState<string>("YNW");
+  const [activeTab, setActiveTab] = useState<string>('about');
+  const [mousePosition, setMousePosition] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
+  const [isMobile, setIsMobile] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
+
+
+  const experiences: Experience[] = [
     {
       role: "Website Developer",
       company: "Kh1ev Community",
@@ -27,7 +84,7 @@ const PersonalPortfolio = () => {
     },
   ];
 
-  const projects = [
+  const projects: Project[] = [
     {
       title: "Kh1ev Project",
       description: "This is my kh1ev community website",
@@ -38,27 +95,27 @@ const PersonalPortfolio = () => {
     },
   ];
 
-  const hobbies = [
+  const hobbies: Hobby[] = [
     { icon: <Code className="w-4 h-4" />, text: "Programming", color: "from-blue-500/20 to-cyan-500/20" },
     { icon: <Gamepad2 className="w-4 h-4" />, text: "Playing Game", color: "from-purple-500/20 to-pink-500/20" },
     { icon: <Music className="w-4 h-4" />, text: "Listening Music", color: "from-green-500/20 to-emerald-500/20" },
     { icon: <BookOpen className="w-4 h-4" />, text: "Reading Comic", color: "from-orange-500/20 to-red-500/20" },
   ];
 
-  const hardSkills = [
+  const hardSkills: Skill[] = [
     { name: "React", level: 85, icon: <Code className="w-4 h-4" />, category: "Frontend" },
     { name: "Next.js", level: 80, icon: <Globe className="w-4 h-4" />, category: "Framework" },
     { name: "TailwindCSS", level: 90, icon: <Palette className="w-4 h-4" />, category: "Styling" },
   ];
 
-  const softSkills = [
-    { name: "Problem Solving", level: 90, icon: <Lightbulb className="w-4 h-4" />},
+  const softSkills: Skill[] = [
+    { name: "Problem Solving", level: 90, icon: <Lightbulb className="w-4 h-4" /> },
     { name: "Adaptability", level: 88, icon: <Target className="w-4 h-4" /> },
-    { name: "Time Management", level: 82, icon: <Clock className="w-4 h-4" />},
-    { name: "Creativity", level: 87, icon: <Palette className="w-4 h-4" />}
+    { name: "Time Management", level: 82, icon: <Clock className="w-4 h-4" /> },
+    { name: "Creativity", level: 87, icon: <Palette className="w-4 h-4" /> }
   ];
 
-  const certificates = [
+  const certificates: Certificate[] = [
     {
       title: "Intro to Software Engineering",
       issuer: "RevoU",
@@ -70,7 +127,7 @@ const PersonalPortfolio = () => {
     },
   ];
 
-  const contactInfo = [
+  const contactInfo: ContactInfo[] = [
     {
       type: "Discord Account",
       value: "Phy0n",
@@ -85,9 +142,9 @@ const PersonalPortfolio = () => {
     },
   ];
 
-  const skills = ["Developer","Admin","Member"];
+  const skills: string[] = ["Developer", "Admin", "Member"];
 
-  const handleEnter = async () => {
+  const handleEnter = async (): Promise<void> => {
     setIsLoading(true);
     await new Promise(resolve => setTimeout(resolve, 1500));
 
@@ -107,7 +164,23 @@ const PersonalPortfolio = () => {
   };
 
   useEffect(() => {
-    const checkIfMobile = () => {
+    const fetchAvatar = async () => {
+      try {
+        const res = await fetch('/api/discord-avatar');
+        const data = await res.json();
+        setAvatarUrl(data.avatarUrl || null);
+      } catch (err) {
+        console.error('Failed to fetch avatar:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchAvatar();
+  }, []);
+
+  useEffect(() => {
+    const checkIfMobile = (): void => {
       setIsMobile(window.innerWidth < 768);
     };
 
@@ -120,7 +193,7 @@ const PersonalPortfolio = () => {
   }, []);
 
   useEffect(() => {
-    const handleMouseMove = (e) => {
+    const handleMouseMove = (e: MouseEvent): void => {
       setMousePosition({ x: e.clientX, y: e.clientY });
     };
 
@@ -134,7 +207,7 @@ const PersonalPortfolio = () => {
   useEffect(() => {
     if (audioRef.current) {
       if (isPlaying) {
-        audioRef.current.play().catch(e => console.log("Audio play error:", e));
+        audioRef.current.play().catch((e: Error) => console.log("Audio play error:", e));
       } else {
         audioRef.current.pause();
       }
@@ -148,7 +221,7 @@ const PersonalPortfolio = () => {
   }, [volume]);
 
   useEffect(() => {
-    let interval;
+    let interval: NodeJS.Timeout;
     if (isPlaying && audioRef.current) {
       interval = setInterval(() => {
         setCurrentTime(audioRef.current?.currentTime || 0);
@@ -157,15 +230,15 @@ const PersonalPortfolio = () => {
     return () => clearInterval(interval);
   }, [isPlaying]);
 
-  const formatTime = (seconds) => {
+  const formatTime = (seconds: number): string => {
     const mins = Math.floor(seconds / 60);
     const secs = Math.floor(seconds % 60);
     return `${mins}:${secs.toString().padStart(2, '0')}`;
   };
 
-  const togglePlay = () => setIsPlaying(!isPlaying);
+  const togglePlay = (): void => setIsPlaying(!isPlaying);
 
-  const handleSeek = (e) => {
+  const handleSeek = (e: React.MouseEvent<HTMLDivElement>): void => {
     if (audioRef.current) {
       const rect = e.currentTarget.getBoundingClientRect();
       const pos = (e.clientX - rect.left) / rect.width;
@@ -175,7 +248,7 @@ const PersonalPortfolio = () => {
     }
   };
 
-  const socialMedia = [
+  const socialMedia: SocialMedia[] = [
     {
       name: "Instagram",
       icon: <Instagram className="w-4 h-4" />,
@@ -238,14 +311,15 @@ const PersonalPortfolio = () => {
                 <div className="relative w-32 h-32 bg-gradient-to-br from-white/10 to-white/[0.05] rounded-full p-1 shadow-2xl border border-white/20 group-hover:border-white/30 transition-all duration-500">
                   <div className="w-full h-full bg-black/60 rounded-full flex items-center justify-center overflow-hidden border border-white/10">
                     <div className="relative w-28 h-28 rounded-full overflow-hidden">
-                      <Image
-                        src="/image/phion.jpg"
+                      {avatarUrl && (
+                        <Image
+                        src={avatarUrl}
                         alt="Profile Photo"
-                        width={112}
-                        height={112}
-                        className="object-cover hover:scale-110 transition-transform duration-500"
+                        fill
+                        className="object-cover object-center hover:scale-110 transition-transform duration-500"
                         priority
-                      />
+                        />
+                      )}
                     </div>
                   </div>
                 </div>
@@ -354,14 +428,16 @@ const PersonalPortfolio = () => {
                     <div className="relative w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 bg-gradient-to-br from-white/10 to-white/[0.05] rounded-full p-1 shadow-2xl border border-white/20 group-hover:border-white/30 transition-all duration-500">
                       <div className="w-full h-full bg-black/60 rounded-full flex items-center justify-center overflow-hidden border border-white/10">
                         <div className="relative w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 rounded-full overflow-hidden">
-                          <Image
-                            src="/image/phion.jpg"
+                          {avatarUrl && (
+                            <Image
+                            src={avatarUrl}
                             alt="Profile Photo"
                             width={96}
                             height={96}
                             className="object-cover hover:scale-110 transition-transform duration-500"
                             priority
-                          />
+                            />
+                          )}
                         </div>
                       </div>
                     </div>
