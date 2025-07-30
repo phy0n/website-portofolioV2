@@ -74,7 +74,6 @@ const PersonalPortfolio: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const videoRef = useRef<HTMLVideoElement>(null);
 
-  // Data definitions remain the same
   const experiences: Experience[] = [
     {
       role: "Website Developer",
@@ -417,10 +416,8 @@ const PersonalPortfolio: React.FC = () => {
             muted
             playsInline
             preload="auto"
-            className="absolute inset-0 w-full h-full object-cover opacity-50"
-            poster="/video/anime-bg-poster.jpg">
-            <source src="/video/video.webm" type="video/webm" />
-            <source src="/video/video.mp4" type="video/mp4" />
+            className="absolute inset-0 w-full h-full object-cover opacity-50">
+            <source src="/video/video2.mp4" type="video/mp4" />
           </video>
         ) : (
           <div className="absolute inset-0 w-full h-full">
