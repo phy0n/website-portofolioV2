@@ -378,7 +378,7 @@ const PersonalPortfolio: React.FC = () => {
                   </h2>
                 </div>
                 <p className="text-white/60 font-mono text-xs md:text-base max-w-md mx-auto">
-                  Im Just Crazy People.
+                  Im Just Crazy People
                 </p>
               </div>
 
