@@ -366,18 +366,18 @@ const PersonalPortfolio: React.FC = () => {
 
               <div className="space-y-4">
                 <div className="space-y-2">
-                  <h1 className="text-xl md:text-2xl font-bold text-white tracking-wide">
+                  <h1 className="text-sm md:text-2xl font-bold text-white tracking-wide">
                     <span className="bg-gradient-to-r from-white via-white/90 to-white/80 bg-clip-text text-transparent font-mono">
                       Welcome to
                     </span>
                   </h1>
-                  <h2 className="text-xl md:text-3xl font-bold font-mono">
+                  <h2 className="text-md md:text-3xl font-bold font-mono">
                     <span className="bg-gradient-to-r from-white via-white/90 to-white/80 bg-clip-text text-transparent">
                       Phy0n Portofolio
                     </span>
                   </h2>
                 </div>
-                <p className="text-white/60 font-mono text-sm md:text-base max-w-md mx-auto">
+                <p className="text-white/60 font-mono text-xs md:text-base max-w-md mx-auto">
                   Im Just Crazy People.
                 </p>
               </div>
@@ -385,13 +385,13 @@ const PersonalPortfolio: React.FC = () => {
               <div className="space-y-4">
                 <button
                   onClick={handleEnter}
-                  className="group relative px-8 py-4 bg-white/[0.05] hover:bg-white/[0.1] border border-white/20 hover:border-white/40 rounded-xl transition-all duration-300 hover:scale-105 transform font-mono text-white/80 hover:text-white cursor-pointer">
+                  className="group relative px-6 py-3 sm:px-8 sm:py-4 bg-white/[0.05] hover:bg-white/[0.1] border border-white/20 hover:border-white/40 rounded-xl transition-all duration-300 hover:scale-105 transform font-mono text-white/80 hover:text-white cursor-pointer">
                   <div className="flex items-center gap-3">
                     <div className="relative">
-                      <MousePointer className="w-4 h-4 sm:w-5 sm:h-5" />
+                      <MousePointer className="w-3 h-3 sm:w-5 sm:h-5" />
                       <div className="absolute inset-0 bg-white/20 rounded-full blur-lg group-hover:blur-xl transition-all duration-300 opacity-0 group-hover:opacity-100"></div>
                     </div>
-                    <span className="text-sm sm:text-md font-medium">Click to Enter</span>
+                    <span className="text-xs sm:text-md font-medium">Click to Enter</span>
                   </div>
                   <div className="absolute inset-0 bg-gradient-to-r from-white/[0.02] to-white/[0.05] rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                 </button>
