@@ -1,7 +1,6 @@
 'use client';
 
 import Image from 'next/image';
-import Link from 'next/link';
 import React, { useState, useEffect, useRef } from 'react';
 import { Play, Pause, SkipBack, SkipForward, Volume2, Github, Instagram, Twitter, Linkedin, Code, Gamepad2, Music, Monitor, Heart, BookOpen, Briefcase, Award, Smile, Mail, Star, Zap, Coffee, Terminal, Cpu, MessageCircle, MousePointer, Phone, MapPin, Clock, CheckCircle, ExternalLink, User, Lightbulb, Target, Users, Palette, Database, Globe, Smartphone } from 'lucide-react';
 
@@ -69,11 +68,13 @@ const PersonalPortfolio: React.FC = () => {
   const [mousePosition, setMousePosition] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
   const [isMobile, setIsMobile] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [useVideo, setUseVideo] = useState<boolean>(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  const videoRef = useRef<HTMLVideoElement>(null);
 
-
+  // Data definitions remain the same
   const experiences: Experience[] = [
     {
       role: "Website Developer",
@@ -144,10 +145,24 @@ const PersonalPortfolio: React.FC = () => {
 
   const skills: string[] = ["Developer", "Admin", "Member"];
 
+  const socialMedia: SocialMedia[] = [
+    {
+      name: "Instagram",
+      icon: <Instagram className="w-4 h-4" />,
+      url: "https://www.instagram.com/ic.phionkhievrushandle/",
+      color: "from-pink-500/20 to-red-500/20"
+    },
+    {
+      name: "Discord Server",
+      icon: <Globe className="w-4 h-4" />,
+      url: "https://discord.gg/MwNE7Vfb6t/",
+      color: "from-pink-500/20 to-red-500/20"
+    },
+  ];
+
   const handleEnter = async (): Promise<void> => {
     setIsLoading(true);
     await new Promise(resolve => setTimeout(resolve, 1500));
-
     setIsLoading(false);
     setHasEntered(true);
 
@@ -155,15 +170,32 @@ const PersonalPortfolio: React.FC = () => {
       audioRef.current = new Audio('/music/music.mp3');
       audioRef.current.volume = volume / 100;
       audioRef.current.loop = true;
-
       await audioRef.current.play();
       setIsPlaying(true);
     } catch (err) {
       console.log("Auto-play failed:", err);
     }
   };
+  interface NetworkInformation extends EventTarget {
+  effectiveType?: string;
+  saveData?: boolean;
+  }
+
+  interface NavigatorWithConnection extends Navigator {
+    connection?: NetworkInformation;
+  }
 
   useEffect(() => {
+    const connection = (navigator as NavigatorWithConnection).connection;
+
+    if (connection) {
+      if (connection.effectiveType === '4g' && !connection.saveData) {
+        setUseVideo(true);
+      }
+    } else {
+      setUseVideo(true);
+    }
+
     const fetchAvatar = async () => {
       try {
         const res = await fetch('/api/discord-avatar');
@@ -177,9 +209,7 @@ const PersonalPortfolio: React.FC = () => {
     };
 
     fetchAvatar();
-  }, []);
 
-  useEffect(() => {
     const checkIfMobile = (): void => {
       setIsMobile(window.innerWidth < 768);
     };
@@ -230,6 +260,31 @@ const PersonalPortfolio: React.FC = () => {
     return () => clearInterval(interval);
   }, [isPlaying]);
 
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting && videoRef.current) {
+            videoRef.current.play().catch(e => console.log("Video play error:", e));
+          } else if (videoRef.current) {
+            videoRef.current.pause();
+          }
+        });
+      },
+      { threshold: 0.1 }
+    );
+
+    if (videoRef.current) {
+      observer.observe(videoRef.current);
+    }
+
+    return () => {
+      if (videoRef.current) {
+        observer.unobserve(videoRef.current);
+      }
+    };
+  }, []);
+
   const formatTime = (seconds: number): string => {
     const mins = Math.floor(seconds / 60);
     const secs = Math.floor(seconds % 60);
@@ -247,21 +302,6 @@ const PersonalPortfolio: React.FC = () => {
       setCurrentTime(newTime);
     }
   };
-
-  const socialMedia: SocialMedia[] = [
-    {
-      name: "Instagram",
-      icon: <Instagram className="w-4 h-4" />,
-      url: "https://www.instagram.com/ic.phionkhievrushandle/",
-      color: "from-pink-500/20 to-red-500/20"
-    },
-    {
-      name: "Discord Server",
-      icon: <Globe className="w-4 h-4" />,
-      url: "https://discord.gg/MwNE7Vfb6t/",
-      color: "from-pink-500/20 to-red-500/20"
-    },
-  ];
 
   if (!hasEntered) {
     return (
@@ -313,11 +353,11 @@ const PersonalPortfolio: React.FC = () => {
                     <div className="relative w-28 h-28 rounded-full overflow-hidden">
                       {avatarUrl && (
                         <Image
-                        src={avatarUrl}
-                        alt="Profile Photo"
-                        fill
-                        className="object-cover object-center hover:scale-110 transition-transform duration-500"
-                        priority
+                          src={avatarUrl}
+                          alt="Profile Photo"
+                          fill
+                          className="object-cover object-center hover:scale-110 transition-transform duration-500"
+                          priority
                         />
                       )}
                     </div>
@@ -367,25 +407,42 @@ const PersonalPortfolio: React.FC = () => {
   return (
     <div className="min-h-screen bg-black relative overflow-hidden" style={{ fontFamily: '"JetBrains Mono", "Fira Code", "Source Code Pro", monospace' }}>
       <div className="absolute inset-0 z-9 overflow-hidden">
-        <video
-          autoPlay
-          loop
-          muted
-          playsInline
-          className="absolute inset-0 w-full h-full object-cover opacity-50"
-          poster="/video/anime-bg-poster.jpg">
-          <source src="/video/video.mp4 " type="video/mp4" />
-        </video>
+        {useVideo ? (
+          <video 
+            controls 
+            disablePictureInPicture
+            ref={videoRef}
+            autoPlay
+            loop
+            muted
+            playsInline
+            preload="auto"
+            className="absolute inset-0 w-full h-full object-cover opacity-50"
+            poster="/video/anime-bg-poster.jpg">
+            <source src="/video/video.webm" type="video/webm" />
+            <source src="/video/video.mp4" type="video/mp4" />
+          </video>
+        ) : (
+          <div className="absolute inset-0 w-full h-full">
+            <Image
+              src="/video/anime-bg-poster.jpg"
+              alt="Background"
+              fill
+              className="object-cover opacity-50"
+              priority
+            />
+          </div>
+        )}
       </div>
 
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute inset-0 opacity-[0.03]"
-             style={{
-               backgroundImage: `
-                 linear-gradient(white 1px, transparent 1px),
-                 linear-gradient(90deg, white 1px, transparent 1px) `,
-               backgroundSize: '50px 50px'
-             }}>
+          style={{
+            backgroundImage: `
+              linear-gradient(white 1px, transparent 1px),
+              linear-gradient(90deg, white 1px, transparent 1px) `,
+            backgroundSize: '50px 50px'
+          }}>
         </div>
 
         <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-gradient-to-r from-white/[0.02] to-white/[0.05] rounded-full blur-3xl animate-pulse"></div>
@@ -430,12 +487,12 @@ const PersonalPortfolio: React.FC = () => {
                         <div className="relative w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 rounded-full overflow-hidden">
                           {avatarUrl && (
                             <Image
-                            src={avatarUrl}
-                            alt="Profile Photo"
-                            width={96}
-                            height={96}
-                            className="object-cover hover:scale-110 transition-transform duration-500"
-                            priority
+                              src={avatarUrl}
+                              alt="Profile Photo"
+                              width={96}
+                              height={96}
+                              className="object-cover hover:scale-110 transition-transform duration-500"
+                              priority
                             />
                           )}
                         </div>
