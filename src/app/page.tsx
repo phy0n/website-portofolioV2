@@ -417,7 +417,7 @@ const PersonalPortfolio: React.FC = () => {
             playsInline
             preload="auto"
             className="absolute inset-0 w-full h-full object-cover opacity-50">
-            <source src="/video/video2.mp4" type="video/mp4" />
+            <source src="/video/video.mp4" type="video/mp4" />
           </video>
         ) : (
           <div className="absolute inset-0 w-full h-full">
