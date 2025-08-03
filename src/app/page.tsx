@@ -62,8 +62,9 @@ const PersonalPortfolio: React.FC = () => {
   const [hasEntered, setHasEntered] = useState<boolean>(false);
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
   const [currentTime, setCurrentTime] = useState<number>(0);
+  const [duration, setDuration] = useState<number>(0);
   const [volume, setVolume] = useState<number>(75);
-  const [currentTrack, setCurrentTrack] = useState<string>("YNW");
+  const [currentTrack, setCurrentTrack] = useState<string>("Your Song Name");
   const [activeTab, setActiveTab] = useState<string>('about');
   const [mousePosition, setMousePosition] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
   const [isMobile, setIsMobile] = useState<boolean>(false);
@@ -166,18 +167,25 @@ const PersonalPortfolio: React.FC = () => {
     setHasEntered(true);
 
     try {
-      audioRef.current = new Audio('/music/music.mp3');
+      audioRef.current = new Audio('/music/music2.mp3'); 
       audioRef.current.volume = volume / 100;
       audioRef.current.loop = true;
+      
+      // Set up duration listener
+      audioRef.current.addEventListener('loadedmetadata', () => {
+        setDuration(audioRef.current?.duration || 0);
+      });
+      
       await audioRef.current.play();
       setIsPlaying(true);
     } catch (err) {
       console.log("Auto-play failed:", err);
     }
   };
+
   interface NetworkInformation extends EventTarget {
-  effectiveType?: string;
-  saveData?: boolean;
+    effectiveType?: string;
+    saveData?: boolean;
   }
 
   interface NavigatorWithConnection extends Navigator {
@@ -259,29 +267,11 @@ const PersonalPortfolio: React.FC = () => {
     return () => clearInterval(interval);
   }, [isPlaying]);
 
+  // Auto-play video when component mounts
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting && videoRef.current) {
-            videoRef.current.play().catch(e => console.log("Video play error:", e));
-          } else if (videoRef.current) {
-            videoRef.current.pause();
-          }
-        });
-      },
-      { threshold: 0.1 }
-    );
-
     if (videoRef.current) {
-      observer.observe(videoRef.current);
+      videoRef.current.play().catch(e => console.log("Video play error:", e));
     }
-
-    return () => {
-      if (videoRef.current) {
-        observer.unobserve(videoRef.current);
-      }
-    };
   }, []);
 
   const formatTime = (seconds: number): string => {
@@ -296,7 +286,7 @@ const PersonalPortfolio: React.FC = () => {
     if (audioRef.current) {
       const rect = e.currentTarget.getBoundingClientRect();
       const pos = (e.clientX - rect.left) / rect.width;
-      const newTime = pos * (audioRef.current.duration || 180);
+      const newTime = pos * (audioRef.current.duration || 0);
       audioRef.current.currentTime = newTime;
       setCurrentTime(newTime);
     }
@@ -408,14 +398,11 @@ const PersonalPortfolio: React.FC = () => {
       <div className="absolute inset-0 z-9 overflow-hidden">
         {useVideo ? (
           <video 
-            controls 
-            disablePictureInPicture
             ref={videoRef}
             autoPlay
             loop
             muted
             playsInline
-            preload="auto"
             className="absolute inset-0 w-full h-full object-cover opacity-50">
             <source src="/video/video.mp4" type="video/mp4" />
           </video>
@@ -835,7 +822,7 @@ const PersonalPortfolio: React.FC = () => {
                   <button
                     onClick={() => {
                       if (audioRef.current) {
-                        audioRef.current.currentTime = Math.min(audioRef.current.duration || 180, currentTime + 10);
+                        audioRef.current.currentTime = Math.min(duration, currentTime + 10);
                       }
                     }}
                     className="text-white/50 hover:text-white transition-all duration-200 hover:scale-110 transform p-1 sm:p-2 rounded-full hover:bg-white/[0.05]">
@@ -851,11 +838,11 @@ const PersonalPortfolio: React.FC = () => {
                       className="flex-1 bg-white/10 rounded-full h-1.5 sm:h-2 cursor-pointer hover:bg-white/15 transition-colors duration-200 overflow-hidden">
                       <div
                         className="bg-gradient-to-r from-white/80 to-white/60 h-1.5 sm:h-2 rounded-full transition-all duration-200 relative"
-                        style={{ width: `${(currentTime / (audioRef.current?.duration || 180)) * 100}%` }}>
+                        style={{ width: `${(currentTime / duration) * 100}%` }}>
                         <div className="absolute right-0 top-1/2 transform -translate-y-1/2 w-2 h-2 sm:w-3 sm:h-3 bg-white rounded-full shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200"></div>
                       </div>
                     </div>
-                    <span className="min-w-[35px] sm:min-w-[40px]">{formatTime(audioRef.current?.duration || 180)}</span>
+                    <span className="min-w-[35px] sm:min-w-[40px]">{formatTime(duration)}</span>
                   </div>
                 </div>
 
