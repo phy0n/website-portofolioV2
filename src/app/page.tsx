@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 import React, { useState, useEffect, useRef } from 'react';
-import { Play, Pause, SkipBack, SkipForward, Volume2, Github, Instagram, Twitter, Linkedin, Code, Gamepad2, Music, Monitor, Heart, BookOpen, Briefcase, Award, Smile, Mail, Star, Zap, Coffee, Terminal, Cpu, MessageCircle, MousePointer, Phone, MapPin, Clock, CheckCircle, ExternalLink, User, Lightbulb, Target, Users, Palette, Database, Globe, Smartphone } from 'lucide-react';
+import { Play, Pause, SkipBack, SkipForward, Instagram, Code, Gamepad2, Music, Monitor, Heart, BookOpen, Briefcase, Award, Mail, Star, Terminal, MousePointer, MapPin, Clock, Lightbulb, Target, Palette, Globe} from 'lucide-react';
 
 interface Experience {
   role: string;
@@ -575,15 +575,15 @@ const PersonalPortfolio: React.FC = () => {
                             <p className="text-white/70 leading-relaxed font-mono text-xs sm:text-sm">
                               <span className="text-white/40">const</span> <span className="text-white">developer</span> = {'{'}
                               <br />
-                              <span className="ml-3 sm:ml-4 text-white/40">name:</span> <span className="text-green-400">"Panggil Aja Phy0n"</span>,
+                              <span className="ml-3 sm:ml-4 text-white/40">name:</span> <span className="text-green-400">Panggil Aja Phy0n</span>,
                               <br />
-                              <span className="ml-3 sm:ml-4 text-white/40">age:</span> <span className="text-green-400">"17 years old"</span>,
+                              <span className="ml-3 sm:ml-4 text-white/40">age:</span> <span className="text-green-400">17 years old</span>,
                               <br />
-                              <span className="ml-3 sm:ml-4 text-white/40">role:</span> <span className="text-green-400">"Frontend Developer"</span>,
+                              <span className="ml-3 sm:ml-4 text-white/40">role:</span> <span className="text-green-400">Frontend Developer</span>,
                               <br />
-                              <span className="ml-3 sm:ml-4 text-white/40">passion:</span> <span className="text-green-400">"Make good website"</span>,
+                              <span className="ml-3 sm:ml-4 text-white/40">passion:</span> <span className="text-green-400">Make good website</span>,
                               <br />
-                              <span className="ml-3 sm:ml-4 text-white/40">status:</span> <span className="text-green-400">"Learning & Growing"</span>
+                              <span className="ml-3 sm:ml-4 text-white/40">status:</span> <span className="text-green-400">Learning & Growing</span>
                               <br />
                               {'}'}
                             </p>
