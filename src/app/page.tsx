@@ -170,8 +170,7 @@ const PersonalPortfolio: React.FC = () => {
       audioRef.current = new Audio('/music/music2.mp3'); 
       audioRef.current.volume = volume / 100;
       audioRef.current.loop = true;
-      
-      // Set up duration listener
+
       audioRef.current.addEventListener('loadedmetadata', () => {
         setDuration(audioRef.current?.duration || 0);
       });
@@ -267,7 +266,6 @@ const PersonalPortfolio: React.FC = () => {
     return () => clearInterval(interval);
   }, [isPlaying]);
 
-  // Auto-play video when component mounts
   useEffect(() => {
     if (videoRef.current) {
       videoRef.current.play().catch(e => console.log("Video play error:", e));
