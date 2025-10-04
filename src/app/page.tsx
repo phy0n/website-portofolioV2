@@ -64,7 +64,7 @@ const PersonalPortfolio: React.FC = () => {
   const [currentTime, setCurrentTime] = useState<number>(0);
   const [duration, setDuration] = useState<number>(0);
   const [volume, setVolume] = useState<number>(75);
-  const [currentTrack, setCurrentTrack] = useState<string>("Your Song Name");
+  const [currentTrack, setCurrentTrack] = useState<string>("");
   const [activeTab, setActiveTab] = useState<string>('about');
   const [mousePosition, setMousePosition] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
   const [isMobile, setIsMobile] = useState<boolean>(false);
