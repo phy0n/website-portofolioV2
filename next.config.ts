@@ -6,7 +6,7 @@ const nextConfig = {
     ignoreDuringBuilds: true,
   },
     images: {
-    domains: ['cdn.discordapp.com'],
+    domains: ['cdn.discordapp.com', 'tr.rbxcdn.com'],
   },
 }
 

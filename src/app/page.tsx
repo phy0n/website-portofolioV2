@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 import React, { useState, useEffect, useRef } from 'react';
-import { Play, Pause, SkipBack, SkipForward, Instagram, Code, Gamepad2, Music, Monitor, Heart, BookOpen, Briefcase, Award, Mail, Star, Terminal, MousePointer, MapPin, Clock, Lightbulb, Target, Palette, Globe} from 'lucide-react';
+import { Play, Pause, Instagram, Code, Gamepad2, Music, Monitor, Heart, BookOpen, Briefcase, Award, Mail, Star, Terminal, MapPin, Clock, Lightbulb, Target, Palette, Globe, MessageCircle, Eye, Volume2, VolumeX, Maximize2} from 'lucide-react';
 
 interface Experience {
   role: string;
@@ -58,22 +58,51 @@ interface SocialMedia {
   color: string;
 }
 
+interface RobloxProfile {
+  username: string;
+  displayName: string;
+  description: string;
+  created: string;
+  isBanned: boolean;
+  avatarUrl: string;
+  friendsCount?: number;
+  followersCount?: number;
+}
+
+interface DiscordStatus {
+  online: boolean;
+  status: string;
+  activity?: {
+    name: string;
+    details?: string | null;
+    state?: string | null;
+    largeImage?: string | null;
+  } | null;
+  customStatus?: string | null;
+  spotify?: {
+    song: string;
+    artist: string;
+    album: string;
+  } | null;
+}
+
 const PersonalPortfolio: React.FC = () => {
-  const [hasEntered, setHasEntered] = useState<boolean>(false);
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
   const [currentTime, setCurrentTime] = useState<number>(0);
   const [duration, setDuration] = useState<number>(0);
-  const [volume, setVolume] = useState<number>(75);
   const [currentTrack, setCurrentTrack] = useState<string>("");
-  const [activeTab, setActiveTab] = useState<string>('about');
+  const [activeTab, setActiveTab] = useState<string>('connect');
   const [mousePosition, setMousePosition] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
   const [isMobile, setIsMobile] = useState<boolean>(false);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [useVideo, setUseVideo] = useState<boolean>(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const videoRef = useRef<HTMLVideoElement>(null);
+  const [viewCount, setViewCount] = useState<number>(0);
+  const [robloxProfile, setRobloxProfile] = useState<RobloxProfile | null>(null);
+  const [robloxLoading, setRobloxLoading] = useState<boolean>(false);
+  const [discordStatus, setDiscordStatus] = useState<DiscordStatus | null>(null);
 
   const experiences: Experience[] = [
     {
@@ -104,9 +133,7 @@ const PersonalPortfolio: React.FC = () => {
   ];
 
   const hardSkills: Skill[] = [
-    { name: "React", level: 85, icon: <Code className="w-4 h-4" />, category: "Frontend" },
-    { name: "Next.js", level: 80, icon: <Globe className="w-4 h-4" />, category: "Framework" },
-    { name: "TailwindCSS", level: 90, icon: <Palette className="w-4 h-4" />, category: "Styling" },
+    { name: "Web Developer", level: 85, icon: <Code className="w-4 h-4" />, category: "Fullstack" },
   ];
 
   const softSkills: Skill[] = [
@@ -143,56 +170,53 @@ const PersonalPortfolio: React.FC = () => {
     },
   ];
 
-  const skills: string[] = ["Developer", "Admin", "Member"];
+  const skills: string[] = ["Developer"];
 
   const socialMedia: SocialMedia[] = [
     {
       name: "Instagram",
-      icon: <Instagram className="w-4 h-4" />,
+      icon: <Instagram className="w-5 h-5" />,
       url: "https://www.instagram.com/ic.phionkhievrushandle/",
-      color: "from-pink-500/20 to-red-500/20"
+      color: "from-pink-500 to-red-500"
+    },
+    {
+      name: "TikTok",
+      icon: <Music className="w-5 h-5" />,
+      url: "https://www.tiktok.com/@your-tiktok",
+      color: "from-black to-cyan-500"
     },
     {
       name: "Discord Server",
-      icon: <Globe className="w-4 h-4" />,
+      icon: <MessageCircle className="w-5 h-5" />,
       url: "https://discord.gg/MwNE7Vfb6t/",
-      color: "from-pink-500/20 to-red-500/20"
+      color: "from-indigo-500 to-blue-500"
     },
   ];
 
-  const handleEnter = async (): Promise<void> => {
-    setIsLoading(true);
-    await new Promise(resolve => setTimeout(resolve, 1500));
-    setIsLoading(false);
-    setHasEntered(true);
-
+  const fetchRobloxProfile = async (userId?: string) => {
+    setRobloxLoading(true);
     try {
-      audioRef.current = new Audio('/music/music2.mp3'); 
-      audioRef.current.volume = volume / 100;
-      audioRef.current.loop = true;
-
-      audioRef.current.addEventListener('loadedmetadata', () => {
-        setDuration(audioRef.current?.duration || 0);
-      });
+      const targetUserId = userId || '8883015179'; // Default user ID
       
-      await audioRef.current.play();
-      setIsPlaying(true);
+      // Fetch from our API route to avoid CORS issues
+      const response = await fetch(`/api/roblox-profile?userId=${targetUserId}`);
+      
+      if (!response.ok) {
+        throw new Error('Failed to fetch profile');
+      }
+      
+      const profile = await response.json();
+      setRobloxProfile(profile);
     } catch (err) {
-      console.log("Auto-play failed:", err);
+      console.error('Failed to fetch Roblox profile:', err);
+      setRobloxProfile(null);
+    } finally {
+      setRobloxLoading(false);
     }
   };
 
-  interface NetworkInformation extends EventTarget {
-    effectiveType?: string;
-    saveData?: boolean;
-  }
-
-  interface NavigatorWithConnection extends Navigator {
-    connection?: NetworkInformation;
-  }
-
   useEffect(() => {
-    const connection = (navigator as NavigatorWithConnection).connection;
+    const connection = (navigator as Navigator & { connection?: { effectiveType?: string; saveData?: boolean } }).connection;
 
     if (connection) {
       if (connection.effectiveType === '4g' && !connection.saveData) {
@@ -216,6 +240,64 @@ const PersonalPortfolio: React.FC = () => {
 
     fetchAvatar();
 
+    // Fetch Discord status
+    const fetchDiscordStatus = async () => {
+      try {
+        const res = await fetch('/api/discord-status');
+        const data = await res.json();
+        if (!data.error) {
+          setDiscordStatus(data);
+        }
+      } catch (err) {
+        console.error('Failed to fetch Discord status:', err);
+      }
+    };
+
+    fetchDiscordStatus();
+
+    // Update Discord status every 30 seconds
+    const statusInterval = setInterval(fetchDiscordStatus, 30000);
+
+    // Initialize view counter
+    const initViewCounter = () => {
+      const storedCount = localStorage.getItem('portfolio-views');
+      if (storedCount) {
+        setViewCount(parseInt(storedCount));
+      } else {
+        localStorage.setItem('portfolio-views', '0');
+      }
+      
+      // Increment view count
+      const currentCount = parseInt(localStorage.getItem('portfolio-views') || '0');
+      const newCount = currentCount + 1;
+      localStorage.setItem('portfolio-views', newCount.toString());
+      setViewCount(newCount);
+    };
+
+    initViewCounter();
+
+    // Setup audio with auto-play
+    try {
+      audioRef.current = new Audio('/music/music2.mp3'); 
+      audioRef.current.loop = true;
+
+      audioRef.current.addEventListener('loadedmetadata', () => {
+        setDuration(audioRef.current?.duration || 0);
+      });
+
+      // Auto-play music
+      audioRef.current.play()
+        .then(() => {
+          setIsPlaying(true);
+        })
+        .catch((err) => {
+          console.log("Auto-play prevented:", err);
+          // Some browsers block auto-play, will need user interaction
+        });
+    } catch (err) {
+      console.log("Audio setup failed:", err);
+    }
+
     const checkIfMobile = (): void => {
       setIsMobile(window.innerWidth < 768);
     };
@@ -225,6 +307,7 @@ const PersonalPortfolio: React.FC = () => {
 
     return () => {
       window.removeEventListener('resize', checkIfMobile);
+      clearInterval(statusInterval);
     };
   }, []);
 
@@ -251,12 +334,6 @@ const PersonalPortfolio: React.FC = () => {
   }, [isPlaying]);
 
   useEffect(() => {
-    if (audioRef.current) {
-      audioRef.current.volume = volume / 100;
-    }
-  }, [volume]);
-
-  useEffect(() => {
     let interval: NodeJS.Timeout;
     if (isPlaying && audioRef.current) {
       interval = setInterval(() => {
@@ -271,6 +348,13 @@ const PersonalPortfolio: React.FC = () => {
       videoRef.current.play().catch(e => console.log("Video play error:", e));
     }
   }, []);
+
+  // Auto-load Roblox profile when Games tab is opened
+  useEffect(() => {
+    if (activeTab === 'games' && !robloxProfile && !robloxLoading) {
+      fetchRobloxProfile();
+    }
+  }, [activeTab]);
 
   const formatTime = (seconds: number): string => {
     const mins = Math.floor(seconds / 60);
@@ -289,107 +373,6 @@ const PersonalPortfolio: React.FC = () => {
       setCurrentTime(newTime);
     }
   };
-
-  if (!hasEntered) {
-    return (
-      <div className="min-h-screen bg-black relative overflow-hidden flex items-center justify-center" style={{ fontFamily: '"JetBrains Mono", "Fira Code", "Source Code Pro", monospace' }}>
-        <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <div className="absolute inset-0 opacity-[0.03]"
-               style={{
-                 backgroundImage: `
-                   linear-gradient(white 1px, transparent 1px),
-                   linear-gradient(90deg, white 1px, transparent 1px) `,
-                 backgroundSize: '50px 50px'
-               }}>
-          </div>
-
-          {!isMobile && (
-            <div
-              className="absolute w-32 h-32 bg-white/[0.02] rounded-full blur-2xl transition-all duration-300 ease-out pointer-events-none"
-              style={{
-                left: mousePosition.x - 64,
-                top: mousePosition.y - 64,
-              }}>
-            </div>
-          )}
-        </div>
-
-        <div className="relative z-10 text-center">
-          {isLoading ? (
-            <div className="space-y-6">
-              <div className="relative">
-                <div className="w-16 h-16 mx-auto border-2 border-white/20 border-t-white rounded-full animate-spin"></div>
-                <div className="absolute inset-0 w-16 h-16 mx-auto border-2 border-transparent border-t-white/40 rounded-full animate-spin" style={{ animationDuration: '0.8s', animationDirection: 'reverse' }}></div>
-              </div>
-              <div className="space-y-2">
-                <p className="text-white/80 font-mono text-sm">Loading portfolio...</p>
-                <p className="text-white/60 font-mono text-xs mb-5">Music will start automatically</p>
-                <div className="flex items-center justify-center gap-1">
-                  <div className="w-2 h-2 bg-white/60 rounded-full animate-bounce"></div>
-                  <div className="w-2 h-2 bg-white/60 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
-                  <div className="w-2 h-2 bg-white/60 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
-                </div>
-              </div>
-            </div>
-          ) : (
-            <div className="space-y-8">
-              <div className="relative inline-block group">
-                <div className="absolute inset-0 bg-gradient-to-r from-white/20 via-white/10 to-white/20 rounded-full animate-pulse"></div>
-                <div className="relative w-32 h-32 bg-gradient-to-br from-white/10 to-white/[0.05] rounded-full p-1 shadow-2xl border border-white/20 group-hover:border-white/30 transition-all duration-500">
-                  <div className="w-full h-full bg-black/60 rounded-full flex items-center justify-center overflow-hidden border border-white/10">
-                    <div className="relative w-28 h-28 rounded-full overflow-hidden">
-                      {avatarUrl && (
-                        <Image
-                          src={avatarUrl}
-                          alt="Profile Photo"
-                          fill
-                          className="object-cover object-center hover:scale-110 transition-transform duration-500"
-                          priority
-                        />
-                      )}
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div className="space-y-4">
-                <div className="space-y-2">
-                  <h1 className="text-sm md:text-2xl font-bold text-white tracking-wide">
-                    <span className="bg-gradient-to-r from-white via-white/90 to-white/80 bg-clip-text text-transparent font-mono">
-                      Welcome to
-                    </span>
-                  </h1>
-                  <h2 className="text-md md:text-3xl font-bold font-mono">
-                    <span className="bg-gradient-to-r from-white via-white/90 to-white/80 bg-clip-text text-transparent">
-                      Phy0n Portofolio
-                    </span>
-                  </h2>
-                </div>
-                <p className="text-white/60 font-mono text-xs md:text-base max-w-md mx-auto">
-                  Im Just Crazy People
-                </p>
-              </div>
-
-              <div className="space-y-4">
-                <button
-                  onClick={handleEnter}
-                  className="group relative px-6 py-3 sm:px-8 sm:py-4 bg-white/[0.05] hover:bg-white/[0.1] border border-white/20 hover:border-white/40 rounded-xl transition-all duration-300 hover:scale-105 transform font-mono text-white/80 hover:text-white cursor-pointer">
-                  <div className="flex items-center gap-3">
-                    <div className="relative">
-                      <MousePointer className="w-3 h-3 sm:w-5 sm:h-5" />
-                      <div className="absolute inset-0 bg-white/20 rounded-full blur-lg group-hover:blur-xl transition-all duration-300 opacity-0 group-hover:opacity-100"></div>
-                    </div>
-                    <span className="text-xs sm:text-md font-medium">Click to Enter</span>
-                  </div>
-                  <div className="absolute inset-0 bg-gradient-to-r from-white/[0.02] to-white/[0.05] rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                </button>
-              </div>
-            </div>
-          )}
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen bg-black relative overflow-hidden" style={{ fontFamily: '"JetBrains Mono", "Fira Code", "Source Code Pro", monospace' }}>
@@ -442,6 +425,39 @@ const PersonalPortfolio: React.FC = () => {
         )}
       </div>
 
+      {/* Control Buttons - Fixed Top Right */}
+      <div className="fixed top-6 right-6 z-50 flex items-center gap-3">
+        {/* View Counter */}
+        <div className="flex items-center gap-2 px-4 py-2 bg-white/[0.05] backdrop-blur-xl rounded-full border border-white/10 hover:border-white/20 transition-all duration-300">
+          <Eye className="w-4 h-4 text-white/60" />
+          <span className="text-white/80 font-mono text-sm font-medium">{viewCount.toLocaleString()}</span>
+        </div>
+
+        {/* Maximize/Fullscreen Toggle */}
+        <button
+          onClick={() => {
+            if (!document.fullscreenElement) {
+              document.documentElement.requestFullscreen();
+            } else {
+              document.exitFullscreen();
+            }
+          }}
+          className="p-3 bg-white/[0.05] backdrop-blur-xl rounded-full border border-white/10 hover:border-white/30 hover:bg-white/[0.1] transition-all duration-300 hover:scale-110 transform group">
+          <Maximize2 className="w-5 h-5 text-white/60 group-hover:text-white transition-colors duration-300" />
+        </button>
+
+        {/* Music Toggle */}
+        <button
+          onClick={() => setIsPlaying(!isPlaying)}
+          className="p-3 bg-white/[0.05] backdrop-blur-xl rounded-full border border-white/10 hover:border-white/30 hover:bg-white/[0.1] transition-all duration-300 hover:scale-110 transform group">
+          {isPlaying ? (
+            <Volume2 className="w-5 h-5 text-white/80 group-hover:text-white transition-colors duration-300" />
+          ) : (
+            <VolumeX className="w-5 h-5 text-white/60 group-hover:text-white/80 transition-colors duration-300" />
+          )}
+        </button>
+      </div>
+
       <div className="relative z-10 min-h-screen flex items-center justify-center p-4 sm:p-6">
         <div className="max-w-6xl w-full">
           <div className="bg-white/[0.02] backdrop-blur-xl rounded-t-2xl border border-white/10 border-b-0 p-2 sm:p-3">
@@ -465,7 +481,7 @@ const PersonalPortfolio: React.FC = () => {
                   <div className="relative inline-block mb-4 sm:mb-6 group">
                     <div className="absolute inset-0 bg-gradient-to-r from-white/20 via-white/10 to-white/20 rounded-full animate-pulse"></div>
                     <div className="relative w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 bg-gradient-to-br from-white/10 to-white/[0.05] rounded-full p-1 shadow-2xl border border-white/20 group-hover:border-white/30 transition-all duration-500">
-                      <div className="w-full h-full bg-black/60 rounded-full flex items-center justify-center overflow-hidden border border-white/10">
+                      <div className="w-full h-full bg-black/60 rounded-full flex items-center justify-center overflow-hidden border border-white/10 relative">
                         <div className="relative w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 rounded-full overflow-hidden">
                           {avatarUrl && (
                             <Image
@@ -478,6 +494,15 @@ const PersonalPortfolio: React.FC = () => {
                             />
                           )}
                         </div>
+                        {/* Discord Status Indicator */}
+                        {discordStatus && (
+                          <div className={`absolute bottom-1 right-1 w-3 h-3 sm:w-4 sm:h-4 rounded-full border-2 border-black/60 ${
+                            discordStatus.status === 'online' ? 'bg-green-500' :
+                            discordStatus.status === 'idle' ? 'bg-yellow-500' :
+                            discordStatus.status === 'dnd' ? 'bg-red-500' :
+                            'bg-gray-500'
+                          }`}></div>
+                        )}
                       </div>
                     </div>
                   </div>
@@ -508,30 +533,57 @@ const PersonalPortfolio: React.FC = () => {
                     ))}
                   </div>
 
-                  <div>
-                    <h3 className="text-white/60 text-xs sm:text-sm uppercase tracking-wider mb-3 sm:mb-4 font-mono flex items-center gap-1 sm:gap-2">
-                      <Heart className="w-3 h-3 sm:w-4 sm:h-4" />
-                      connect.social
-                    </h3>
-                    <div className="flex gap-3 sm:gap-4 mb-4 sm:mb-6 font-mono">
-                      {socialMedia.map((social, index) => (
-                        <a
-                          key={index}
-                          href={social.url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="group px-5 w-auto h-10 sm:w-auto sm:h-12 bg-white/[0.05] hover:bg-white/[0.1] rounded-xl flex items-center justify-center border border-white/10 hover:border-white/30 transition-all duration-300 hover:scale-110 transform"
-                          title={social.name}>
-                          <div className="text-white/60 group-hover:text-white transition-colors duration-300 pr-3">
-                            {social.icon}
-                          </div>
-                          <div className="text-xs sm:text-sm">
-                            {social.name}
-                          </div>
-                        </a>
-                      ))}
+                  {/* Custom Status */}
+                  {discordStatus && discordStatus.customStatus && !discordStatus.activity && !discordStatus.spotify && (
+                    <div className="mb-4 sm:mb-6 bg-white/[0.02] rounded-lg sm:rounded-xl p-3 sm:p-4 border border-white/10 hover:border-white/15 transition-all duration-300 font-mono">
+                      <div className="flex items-center gap-2 sm:gap-3 mb-1 sm:mb-2">
+                        <MessageCircle className="w-3 h-3 sm:w-4 sm:h-4 text-white/60" />
+                        <span className="text-white/60 text-[10px] xs:text-xs sm:text-sm font-mono">status:</span>
+                      </div>
+                      <p className="text-white/80 text-[10px] xs:text-xs sm:text-sm leading-relaxed">
+                        {discordStatus.customStatus}
+                      </p>
                     </div>
-                  </div>
+                  )}
+
+                  {/* Discord Activity Status */}
+                  {discordStatus && discordStatus.activity && (
+                    <div className="mb-4 sm:mb-6 bg-white/[0.02] rounded-lg sm:rounded-xl p-3 sm:p-4 border border-white/10 hover:border-white/15 transition-all duration-300 font-mono">
+                      <div className="flex items-center gap-2 sm:gap-3 mb-1 sm:mb-2">
+                        <Gamepad2 className="w-3 h-3 sm:w-4 sm:h-4 text-white/60" />
+                        <span className="text-white/60 text-[10px] xs:text-xs sm:text-sm font-mono">playing:</span>
+                      </div>
+                      <p className="text-white/80 text-[10px] xs:text-xs sm:text-sm font-bold mb-1">
+                        {discordStatus.activity.name}
+                      </p>
+                      {discordStatus.activity.details && (
+                        <p className="text-white/60 text-[10px] xs:text-xs leading-relaxed">
+                          {discordStatus.activity.details}
+                        </p>
+                      )}
+                      {discordStatus.activity.state && (
+                        <p className="text-white/50 text-[10px] xs:text-xs leading-relaxed">
+                          {discordStatus.activity.state}
+                        </p>
+                      )}
+                    </div>
+                  )}
+
+                  {/* Spotify Status */}
+                  {discordStatus && discordStatus.spotify && (
+                    <div className="mb-4 sm:mb-6 bg-white/[0.02] rounded-lg sm:rounded-xl p-3 sm:p-4 border border-white/10 hover:border-white/15 transition-all duration-300 font-mono">
+                      <div className="flex items-center gap-2 sm:gap-3 mb-1 sm:mb-2">
+                        <Music className="w-3 h-3 sm:w-4 sm:h-4 text-green-500" />
+                        <span className="text-white/60 text-[10px] xs:text-xs sm:text-sm font-mono">listening to:</span>
+                      </div>
+                      <p className="text-white/80 text-[10px] xs:text-xs sm:text-sm font-bold mb-1">
+                        {discordStatus.spotify.song}
+                      </p>
+                      <p className="text-white/60 text-[10px] xs:text-xs">
+                        by {discordStatus.spotify.artist}
+                      </p>
+                    </div>
+                  )}
 
                   <div className="bg-white/[0.02] rounded-lg sm:rounded-xl p-3 sm:p-4 border border-white/10 hover:border-white/15 transition-all duration-300 font-mono">
                     <div className="flex items-center gap-2 sm:gap-3 mb-1 sm:mb-2">
@@ -545,8 +597,8 @@ const PersonalPortfolio: React.FC = () => {
                 </div>
 
                 <div className="flex-1">
-                  <div className="flex border-b border-white/10 mb-4 sm:mb-6 md:mb-8 overflow-x-auto">
-                    {['about', 'skills', 'experience', 'projects', 'certificates', 'contact'].map((tab) => (
+                  <div className="flex border-b border-white/10 mb-4 sm:mb-6 md:mb-8 overflow-x-auto hide-scrollbar">
+                    {['connect', 'about', 'games', 'skills', 'experience', 'projects', 'certificates', 'contact'].map((tab) => (
                       <button
                         key={tab}
                         onClick={() => setActiveTab(tab)}
@@ -565,19 +617,162 @@ const PersonalPortfolio: React.FC = () => {
                   </div>
 
                   <div className="min-h-[300px] sm:min-h-[350px] md:min-h-[400px]">
+                    {activeTab === 'connect' && (
+                      <div className="space-y-4 sm:space-y-6 md:space-y-8">
+                        <div>
+                          <h2 className="text-lg sm:text-xl font-bold text-white mb-2 sm:mb-4 font-mono">
+                            <span className="text-white/40">~/</span>connect.links
+                          </h2>
+                          <div className="bg-white/[0.02] rounded-lg sm:rounded-xl p-4 sm:p-6 border border-white/10 hover:border-white/15 transition-all duration-300">
+                            <p className="text-white/70 leading-relaxed font-mono text-xs sm:text-sm mb-6">
+                              Connect with me on social media! 🚀
+                            </p>
+                          </div>
+                        </div>
+
+                        <div>
+                          <h3 className="text-white/60 text-xs sm:text-sm uppercase tracking-wider mb-3 sm:mb-4 md:mb-6 font-mono flex items-center gap-1 sm:gap-2">
+                            <Globe className="w-3 h-3 sm:w-4 sm:h-4" />
+                            social.links
+                          </h3>
+                          <div className="grid grid-cols-1 gap-3 sm:gap-4">
+                            {socialMedia.map((social, index) => (
+                              <a
+                                key={index}
+                                href={social.url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="group relative rounded-xl p-5 sm:p-6 border border-white/10 hover:border-white/20 transition-all duration-300 overflow-hidden bg-white/[0.02] cursor-pointer">
+                                <div className="absolute inset-0 bg-black/10 transition-all duration-300 z-0"></div>
+                                <div className="relative flex items-center gap-4 z-10">
+                                  <div className="p-3 sm:p-4 bg-white/[0.05] rounded-xl border border-white/10 group-hover:bg-white/[0.08] group-hover:scale-110 transition-all duration-300">
+                                    <div className="text-white/60 group-hover:text-white transition-colors duration-300">
+                                      {social.icon}
+                                    </div>
+                                  </div>
+                                  <div className="flex-1">
+                                    <h3 className="text-white text-xs sm:text-lg font-bold font-mono group-hover:text-white transition-colors duration-300">
+                                      {social.name}
+                                    </h3>
+                                    <p className="text-white/60 text-xs sm:text-sm font-mono mt-1">
+                                      Click to visit →
+                                    </p>
+                                  </div>
+                                  <div className="text-white/40 group-hover:text-white group-hover:translate-x-1 transition-all duration-300">
+                                    <Globe className="w-5 h-5" />
+                                  </div>
+                                </div>
+                              </a>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
+                    {activeTab === 'games' && (
+                      <div className="space-y-4 sm:space-y-6 md:space-y-8">
+                        <div>
+                          <h2 className="text-lg sm:text-xl font-bold text-white mb-2 sm:mb-4 font-mono">
+                            <span className="text-white/40">~/</span>games.data
+                          </h2>
+                          <div className="bg-white/[0.02] rounded-lg sm:rounded-xl p-4 sm:p-6 border border-white/10 hover:border-white/15 transition-all duration-300">
+                            <div className="flex items-center gap-3 mb-4">
+                              <Gamepad2 className="w-5 h-5 text-white/60" />
+                              <p className="text-white/70 leading-relaxed font-mono text-xs sm:text-sm">
+                                My Gaming Profiles
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div>
+                          <h3 className="text-white/60 text-xs sm:text-sm uppercase tracking-wider mb-3 sm:mb-4 md:mb-6 font-mono flex items-center gap-1 sm:gap-2">
+                            <Gamepad2 className="w-3 h-3 sm:w-4 sm:h-4" />
+                            roblox.profile
+                          </h3>
+                          <div className="bg-white/[0.02] rounded-lg sm:rounded-xl p-4 sm:p-6 border border-white/10 hover:border-white/15 transition-all duration-300">
+                            {robloxLoading ? (
+                              <div className="text-center py-8">
+                                <div className="w-16 h-16 mx-auto border-2 border-white/20 border-t-white rounded-full animate-spin mb-4"></div>
+                                <p className="text-white/60 font-mono text-sm">Loading Roblox profile...</p>
+                              </div>
+                            ) : robloxProfile ? (
+                              <div className="space-y-3 sm:space-y-4">
+                                {/* Profile Picture & Name/Username - Horizontal */}
+                                <div className="flex items-start gap-3 sm:gap-4">
+                                  {/* Profile Picture - Left */}
+                                  <div className="flex-shrink-0">
+                                    <div className="w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 rounded-xl overflow-hidden border-2 border-white/20 bg-white/[0.02] shadow-lg">
+                                      {robloxProfile.avatarUrl && (
+                                        <Image
+                                          src={robloxProfile.avatarUrl}
+                                          alt="Roblox Avatar"
+                                          width={112}
+                                          height={112}
+                                          className="object-cover w-full h-full"
+                                          unoptimized
+                                        />
+                                      )}
+                                    </div>
+                                  </div>
+                                  
+                                  {/* Display Name & Username - Right */}
+                                  <div className="flex-1 min-w-0">
+                                    <h3 className="text-white text-base sm:text-lg md:text-xl font-bold font-mono mb-1 truncate">
+                                      {robloxProfile.displayName}
+                                    </h3>
+                                    <p className="text-white/60 text-xs sm:text-sm font-mono truncate">
+                                      @{robloxProfile.username}
+                                    </p>
+                                  </div>
+                                </div>
+
+                                {/* Bio/Description - Full Width */}
+                                {robloxProfile.description && (
+                                  <div className="bg-white/[0.02] rounded-lg p-3 sm:p-4 border border-white/10">
+                                    <p className="text-white/70 text-[10px] xs:text-xs sm:text-sm font-mono leading-relaxed">
+                                      {robloxProfile.description}
+                                    </p>
+                                  </div>
+                                )}
+
+                                {/* View Profile Button - Full Width on Mobile */}
+                                <a 
+                                  href="https://www.roblox.com/users/8883015179/profile"
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="inline-block w-full sm:w-auto px-3 py-2 sm:px-4 sm:py-2 bg-white/[0.05] hover:bg-white/[0.1] border border-white/10 hover:border-white/20 rounded-lg text-white/60 hover:text-white text-xs sm:text-sm font-mono transition-all duration-300 text-center">
+                                  View Profile →
+                                </a>
+                              </div>
+                            ) : (
+                              <div className="text-center py-8">
+                                <p className="text-white/60 font-mono text-sm">Failed to load profile</p>
+                                <button
+                                  onClick={() => fetchRobloxProfile()}
+                                  className="mt-4 px-4 py-2 bg-white/[0.05] hover:bg-white/[0.1] border border-white/10 hover:border-white/20 rounded-lg text-white/80 font-mono text-sm transition-all duration-300">
+                                  Retry
+                                </button>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
                     {activeTab === 'about' && (
                       <div className="space-y-4 sm:space-y-6 md:space-y-8">
                         <div>
                           <h2 className="text-lg sm:text-xl font-bold text-white mb-2 sm:mb-4 font-mono">
                             <span className="text-white/40">~/</span>about.md
                           </h2>
-                          <div className="bg-white/[0.02] rounded-lg sm:rounded-xl p-4 sm:p-6 border border-white/10 hover:border-white/15 transition-all duration-300 backdrop-blur-sm">
+                          <div className="bg-white/[0.02] rounded-lg sm:rounded-xl p-4 sm:p-6 border border-white/10 hover:border-white/15 transition-all duration-300">
                             <p className="text-white/70 leading-relaxed font-mono text-xs sm:text-sm">
                               <span className="text-white/40">const</span> <span className="text-white">developer</span> = {'{'}
                               <br />
                               <span className="ml-3 sm:ml-4 text-white/40">name:</span> <span className="text-green-400">Panggil Aja Phy0n</span>,
                               <br />
-                              <span className="ml-3 sm:ml-4 text-white/40">age:</span> <span className="text-green-400">17 years old</span>,
+                              <span className="ml-3 sm:ml-4 text-white/40">age:</span> <span className="text-green-400">18 years old</span>,
                               <br />
                               <span className="ml-3 sm:ml-4 text-white/40">role:</span> <span className="text-green-400">Frontend Developer</span>,
                               <br />
@@ -599,8 +794,8 @@ const PersonalPortfolio: React.FC = () => {
                             {hobbies.map((hobby, index) => (
                               <div
                                 key={index}
-                                className="group relative rounded-lg sm:rounded-xl p-3 sm:p-4 border border-white/10 hover:border-white/20 transition-all duration-300 cursor-pointer overflow-hidden bg-white/[0.02] backdrop-blur-sm">
-                                <div className="absolute inset-0 bg-black/10 transition-all duration-300 backdrop-blur-sm z-0"></div>
+                                className="group relative rounded-lg sm:rounded-xl p-3 sm:p-4 border border-white/10 hover:border-white/20 transition-all duration-300 cursor-pointer overflow-hidden bg-white/[0.02]">
+                                <div className="absolute inset-0 bg-black/10 transition-all duration-300 z-0"></div>
                                 <div className="relative flex items-center gap-2 sm:gap-3 z-10">
                                   <div className="p-2 bg-white/[0.05] rounded-lg border border-white/10 group-hover:bg-white/[0.08] transition-colors duration-300">
                                     {hobby.icon}
@@ -651,7 +846,7 @@ const PersonalPortfolio: React.FC = () => {
                                     {skill.icon}
                                   </div>
                                   <div className="flex-1">
-                                    <h3 className="text-sm sm:text-base font-semibold text-white font-mono">{skill.name}</h3>
+                                    <h3 className="text-xs sm:text-base font-semibold text-white font-mono">{skill.name}</h3>
                                   </div>
                                 </div>
                               </div>
@@ -768,8 +963,8 @@ const PersonalPortfolio: React.FC = () => {
                               key={index}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="group relative rounded-lg sm:rounded-xl p-4 sm:p-5 border border-white/10 hover:border-white/20 transition-all duration-300 overflow-hidden bg-white/[0.02] backdrop-blur-sm">
-                              <div className="absolute inset-0 bg-black/10 transition-all duration-300 backdrop-blur-sm z-0"></div>
+                              className="group relative rounded-lg sm:rounded-xl p-4 sm:p-5 border border-white/10 hover:border-white/20 transition-all duration-300 overflow-hidden bg-white/[0.02]">
+                              <div className="absolute inset-0 bg-black/10 transition-all duration-300 z-0"></div>
                               <div className="relative flex items-center gap-3 sm:gap-4 z-10">
                                 <div className="p-2 sm:p-2.5 bg-white/[0.05] rounded-lg border border-white/10 group-hover:bg-white/[0.08] transition-colors duration-300">
                                   {contact.icon}
@@ -788,68 +983,11 @@ const PersonalPortfolio: React.FC = () => {
                 </div>
               </div>
 
-              <div className="bg-white/[0.02] rounded-lg sm:rounded-xl p-4 sm:p-6 border border-white/10 hover:border-white/15 transition-all duration-300 group">
-                <div className="flex items-center gap-1 sm:gap-2 mb-2 sm:mb-4">
-                  <Music className="w-3 h-3 sm:w-4 sm:h-4 text-white/60" />
-                  <span className="text-white/80 font-mono text-xs sm:text-sm">now_playing.mp3</span>
-                  <div className="w-1 h-1 bg-white/40 rounded-full animate-pulse"></div>
-                  <span className="text-white/40 text-xs font-mono">{currentTrack}</span>
-                </div>
-
-                <div className="flex items-center justify-center gap-4 sm:gap-6 mb-4 sm:mb-6">
-                  <button
-                    onClick={() => {
-                      if (audioRef.current) {
-                        audioRef.current.currentTime = Math.max(0, currentTime - 10);
-                      }
-                    }}
-                    className="text-white/50 hover:text-white transition-all duration-200 hover:scale-110 transform p-1 sm:p-2 rounded-full hover:bg-white/[0.05]">
-                    <SkipBack className="w-4 h-4 sm:w-5 sm:h-5" />
-                  </button>
-
-                  <button
-                    onClick={togglePlay}
-                    className="w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 bg-white hover:bg-white/90 rounded-full flex items-center justify-center transition-all duration-300 shadow-lg hover:scale-105 transform group-hover:shadow-xl">
-                    {isPlaying ? (
-                      <Pause className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 text-black" />
-                    ) : (
-                      <Play className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 text-black ml-0.5 sm:ml-1" />
-                    )}
-                  </button>
-
-                  <button
-                    onClick={() => {
-                      if (audioRef.current) {
-                        audioRef.current.currentTime = Math.min(duration, currentTime + 10);
-                      }
-                    }}
-                    className="text-white/50 hover:text-white transition-all duration-200 hover:scale-110 transform p-1 sm:p-2 rounded-full hover:bg-white/[0.05]">
-                    <SkipForward className="w-4 h-4 sm:w-5 sm:h-5" />
-                  </button>
-                </div>
-
-                <div className="space-y-2 sm:space-y-3 md:space-y-4">
-                  <div className="flex items-center gap-2 sm:gap-3 text-xs text-white/60 font-mono">
-                    <span className="min-w-[35px] sm:min-w-[40px]">{formatTime(currentTime)}</span>
-                    <div
-                      onClick={handleSeek}
-                      className="flex-1 bg-white/10 rounded-full h-1.5 sm:h-2 cursor-pointer hover:bg-white/15 transition-colors duration-200 overflow-hidden">
-                      <div
-                        className="bg-gradient-to-r from-white/80 to-white/60 h-1.5 sm:h-2 rounded-full transition-all duration-200 relative"
-                        style={{ width: `${(currentTime / duration) * 100}%` }}>
-                        <div className="absolute right-0 top-1/2 transform -translate-y-1/2 w-2 h-2 sm:w-3 sm:h-3 bg-white rounded-full shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200"></div>
-                      </div>
-                    </div>
-                    <span className="min-w-[35px] sm:min-w-[40px]">{formatTime(duration)}</span>
-                  </div>
-                </div>
-
-                <div className="text-center mt-6 sm:mt-8 pt-4 sm:pt-6 border-t border-white/10">
-                  <div className="flex items-center justify-center gap-1 sm:gap-2 text-white/40 text-xs font-mono">
-                    <span>© {new Date().getFullYear()} Phy0n</span>
-                    <div className="w-1 h-1 bg-white/40 rounded-full"></div>
-                    <span>Always #W1thyou</span>
-                  </div>
+              <div className="text-center mt-6 sm:mt-8 pt-4 sm:pt-6 border-t border-white/10">
+                <div className="flex items-center justify-center gap-1 sm:gap-2 text-white/40 text-xs font-mono">
+                  <span>© {new Date().getFullYear()} Phy0n</span>
+                  <div className="w-1 h-1 bg-white/40 rounded-full"></div>
+                  <span>Always #W1thyou</span>
                 </div>
               </div>
             </div>
