@@ -1,0 +1,5 @@
+User-agent: *
+Disallow:
+
+# Sitemap location (update to your production domain)
+Sitemap: https://phy0n.my.id/sitemap.xml

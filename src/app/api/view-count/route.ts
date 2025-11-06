@@ -24,7 +24,9 @@ export async function GET(req: NextRequest) {
       response.cookies.set('portfolio-visited', 'true', {
         maxAge: 60 * 60 * 24 * 365, // 1 year
         path: '/',
-        sameSite: 'strict'
+        sameSite: 'strict',
+        secure: process.env.NODE_ENV === 'production',
+        httpOnly: true
       });
       
       return response;

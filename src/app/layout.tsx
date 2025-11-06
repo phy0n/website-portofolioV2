@@ -23,6 +23,34 @@ export const metadata: Metadata = {
       { url: '/image/iconsementara.jpg', type: 'image/jpeg', sizes: '180x180' },
     ],
   },
+  openGraph: {
+    title: 'Phy0n',
+    description: 'Idk but this is Phy0n portofolio',
+    type: 'website',
+    url: 'https://phy0n.my.id/',
+    images: [
+      {
+        url: '/image/iconsementara.jpg',
+        width: 1200,
+        height: 630,
+        alt: 'Phy0n',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Phy0n',
+    description: 'Idk but this is Phy0n portofolio',
+    images: ['/image/iconsementara.jpg'],
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+    },
+  },
 };
 
 interface RootLayoutProps {
