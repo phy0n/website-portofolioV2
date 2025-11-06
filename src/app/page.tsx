@@ -3,6 +3,7 @@
 import Image from 'next/image';
 import React, { useState, useEffect, useRef } from 'react';
 import { Play, Pause, Instagram, Code, Gamepad2, Music, Monitor, Heart, BookOpen, Briefcase, Award, Mail, Star, Terminal, MapPin, Clock, Lightbulb, Target, Palette, Globe, MessageCircle, Eye, Volume2, VolumeX} from 'lucide-react';
+import { FaTiktok, FaDiscord } from 'react-icons/fa';
 
 interface Experience {
   role: string;
@@ -176,18 +177,18 @@ const PersonalPortfolio: React.FC = () => {
     {
       name: "Instagram",
       icon: <Instagram className="w-5 h-5" />,
-      url: "https://www.instagram.com/ic.phionkhievrushandle/",
+      url: "https://www.instagram.com/phionrushandle/",
       color: "from-pink-500 to-red-500"
     },
     {
       name: "TikTok",
-      icon: <Music className="w-5 h-5" />,
-      url: "https://www.tiktok.com/@your-tiktok",
+      icon: <FaTiktok className="w-5 h-5" />,
+      url: "https://www.tiktok.com/@phy0n",
       color: "from-black to-cyan-500"
     },
     {
       name: "Discord Server",
-      icon: <MessageCircle className="w-5 h-5" />,
+      icon: <FaDiscord className="w-5 h-5" />,
       url: "https://discord.gg/MwNE7Vfb6t/",
       color: "from-indigo-500 to-blue-500"
     },
