@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 import React, { useState, useEffect, useRef } from 'react';
-import { Play, Pause, Instagram, Code, Gamepad2, Music, Monitor, Heart, BookOpen, Briefcase, Award, Mail, Star, Terminal, MapPin, Clock, Lightbulb, Target, Palette, Globe, MessageCircle, Eye, Volume2, VolumeX, Maximize2} from 'lucide-react';
+import { Play, Pause, Instagram, Code, Gamepad2, Music, Monitor, Heart, BookOpen, Briefcase, Award, Mail, Star, Terminal, MapPin, Clock, Lightbulb, Target, Palette, Globe, MessageCircle, Eye, Volume2, VolumeX} from 'lucide-react';
 
 interface Experience {
   role: string;
@@ -258,20 +258,30 @@ const PersonalPortfolio: React.FC = () => {
     // Update Discord status every 30 seconds
     const statusInterval = setInterval(fetchDiscordStatus, 30000);
 
-    // Initialize view counter
-    const initViewCounter = () => {
-      const storedCount = localStorage.getItem('portfolio-views');
-      if (storedCount) {
-        setViewCount(parseInt(storedCount));
-      } else {
-        localStorage.setItem('portfolio-views', '0');
+    // Initialize view counter with unique IP tracking
+    const initViewCounter = async () => {
+      try {
+        // Get current count from localStorage
+        const storedCount = parseInt(localStorage.getItem('portfolio-views') || '0');
+        
+        // Check with API if this is a new visitor
+        const response = await fetch(`/api/view-count?current=${storedCount}`);
+        const data = await response.json();
+        
+        if (!data.error) {
+          // Update count based on API response
+          setViewCount(data.count);
+          localStorage.setItem('portfolio-views', data.count.toString());
+        } else {
+          // Fallback to stored count if API fails
+          setViewCount(storedCount);
+        }
+      } catch (err) {
+        console.error('Failed to fetch view count:', err);
+        // Fallback to stored count
+        const storedCount = parseInt(localStorage.getItem('portfolio-views') || '0');
+        setViewCount(storedCount);
       }
-      
-      // Increment view count
-      const currentCount = parseInt(localStorage.getItem('portfolio-views') || '0');
-      const newCount = currentCount + 1;
-      localStorage.setItem('portfolio-views', newCount.toString());
-      setViewCount(newCount);
     };
 
     initViewCounter();
@@ -432,19 +442,6 @@ const PersonalPortfolio: React.FC = () => {
           <Eye className="w-4 h-4 text-white/60" />
           <span className="text-white/80 font-mono text-sm font-medium">{viewCount.toLocaleString()}</span>
         </div>
-
-        {/* Maximize/Fullscreen Toggle */}
-        <button
-          onClick={() => {
-            if (!document.fullscreenElement) {
-              document.documentElement.requestFullscreen();
-            } else {
-              document.exitFullscreen();
-            }
-          }}
-          className="p-3 bg-white/[0.05] backdrop-blur-xl rounded-full border border-white/10 hover:border-white/30 hover:bg-white/[0.1] transition-all duration-300 hover:scale-110 transform group">
-          <Maximize2 className="w-5 h-5 text-white/60 group-hover:text-white transition-colors duration-300" />
-        </button>
 
         {/* Music Toggle */}
         <button
