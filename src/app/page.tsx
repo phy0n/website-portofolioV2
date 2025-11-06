@@ -586,7 +586,7 @@ const PersonalPortfolio: React.FC = () => {
                   <div className="bg-white/[0.02] rounded-lg sm:rounded-xl p-3 sm:p-4 border border-white/10 hover:border-white/15 transition-all duration-300 font-mono">
                     <div className="flex items-center gap-2 sm:gap-3 mb-1 sm:mb-2">
                       <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-green-400 rounded-full animate-pulse"></div>
-                      <span className="text-white/60 text-xs sm:text-sm font-mono">status:</span>
+                      <span className="text-white/60 text-xs sm:text-sm font-mono">motivation:</span>
                     </div>
                     <p className="text-white/80 text-xs sm:text-sm leading-relaxed">
                       The best revenge is to make yourself better
