@@ -15,6 +15,14 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Phy0n",
   description: "Idk but this is Phy0n portofolio",
+  icons: {
+    icon: [
+      { url: '/image/iconsementara.jpg', type: 'image/jpeg' },
+    ],
+    apple: [
+      { url: '/image/iconsementara.jpg', type: 'image/jpeg', sizes: '180x180' },
+    ],
+  },
 };
 
 interface RootLayoutProps {
