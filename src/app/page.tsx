@@ -492,16 +492,16 @@ const PersonalPortfolio: React.FC = () => {
                             />
                           )}
                         </div>
-                        {/* Discord Status Indicator */}
-                        {discordStatus && (
-                          <div className={`absolute bottom-1 right-1 w-3 h-3 sm:w-4 sm:h-4 rounded-full border-2 border-black/60 ${
-                            discordStatus.status === 'online' ? 'bg-green-500' :
-                            discordStatus.status === 'idle' ? 'bg-yellow-500' :
-                            discordStatus.status === 'dnd' ? 'bg-red-500' :
-                            'bg-gray-500'
-                          }`}></div>
-                        )}
                       </div>
+                      {/* Discord Status Indicator - Outside overflow-hidden container */}
+                      {discordStatus && (
+                        <div className={`absolute bottom-1 right-1 sm:bottom-2 sm:right-2 w-4 h-4 sm:w-5 sm:h-5 rounded-full border-[3px] border-[#1a1b1e] ${
+                          discordStatus.status === 'online' ? 'bg-green-500' :
+                          discordStatus.status === 'idle' ? 'bg-yellow-500' :
+                          discordStatus.status === 'dnd' ? 'bg-red-500' :
+                          'bg-gray-500'
+                        }`}></div>
+                      )}
                     </div>
                   </div>
 
