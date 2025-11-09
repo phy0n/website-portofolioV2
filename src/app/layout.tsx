@@ -17,10 +17,10 @@ export const metadata: Metadata = {
   description: "Idk but this is Phy0n portofolio",
   icons: {
     icon: [
-      { url: '/image/iconsementara.jpg', type: 'image/jpeg' },
+      { url: '/image/logo.png', type: 'image/png' },
     ],
     apple: [
-      { url: '/image/iconsementara.jpg', type: 'image/jpeg', sizes: '180x180' },
+      { url: '/image/logo.png', type: 'image/png', sizes: '180x180' },
     ],
   },
   openGraph: {
@@ -30,7 +30,7 @@ export const metadata: Metadata = {
     url: 'https://phy0n.my.id/',
     images: [
       {
-        url: '/image/iconsementara.jpg',
+        url: '/image/logo.png',
         width: 1200,
         height: 630,
         alt: 'Phy0n',
@@ -41,7 +41,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'Phy0n',
     description: 'Idk but this is Phy0n portofolio',
-    images: ['/image/iconsementara.jpg'],
+    images: ['/image/logo.png'],
   },
   robots: {
     index: true,
