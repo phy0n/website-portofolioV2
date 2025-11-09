@@ -176,20 +176,20 @@ const PersonalPortfolio: React.FC = () => {
   const socialMedia: SocialMedia[] = [
     {
       name: "Instagram",
-      icon: <Instagram className="w-5 h-5" />,
+      icon: <Instagram className="w-4 h-4 sm:w-5 sm:h-5" />,
       url: "https://www.instagram.com/phionrushandle/",
       color: "from-pink-500 to-red-500"
     },
     {
       name: "TikTok",
-      icon: <FaTiktok className="w-5 h-5" />,
+      icon: <FaTiktok className="w-4 h-4 sm:w-5 sm:h-5" />,
       url: "https://www.tiktok.com/@phy0n",
       color: "from-black to-cyan-500"
     },
     {
       name: "Discord Server",
-      icon: <FaDiscord className="w-5 h-5" />,
-      url: "https://discord.gg/MwNE7Vfb6t/",
+      icon: <FaDiscord className="w-4 h-4 sm:w-5 sm:h-5" />,
+      url: "https://discord.gg/MwNE7Vfb6t",
       color: "from-indigo-500 to-blue-500"
     },
   ];
@@ -437,26 +437,26 @@ const PersonalPortfolio: React.FC = () => {
       </div>
 
       {/* Control Buttons - Fixed Top Right */}
-      <div className="fixed top-6 right-6 z-50 flex items-center gap-3">
+      <div className="fixed top-3 sm:top-4 right-3 sm:right-6 z-50 flex items-center gap-2 sm:gap-3">
         {/* View Counter */}
-        <div className="flex items-center gap-2 px-4 py-2 bg-white/[0.05] backdrop-blur-xl rounded-full border border-white/10 hover:border-white/20 transition-all duration-300">
-          <Eye className="w-4 h-4 text-white/60" />
-          <span className="text-white/80 font-mono text-sm font-medium">{viewCount.toLocaleString()}</span>
+        <div className="flex items-center gap-2 px-3 py-1.5 sm:px-4 sm:py-2 bg-white/[0.05] backdrop-blur-xl rounded-full border border-white/10 hover:border-white/20 transition-all duration-300">
+          <Eye className="w-3 h-3 sm:w-4 sm:h-4 text-white/60" />
+          <span className="text-white/80 font-mono text-xs sm:text-sm font-medium">{viewCount.toLocaleString()}</span>
         </div>
 
         {/* Music Toggle */}
         <button
           onClick={() => setIsPlaying(!isPlaying)}
-          className="p-3 bg-white/[0.05] backdrop-blur-xl rounded-full border border-white/10 hover:border-white/30 hover:bg-white/[0.1] transition-all duration-300 hover:scale-110 transform group">
+          className="p-2 sm:p-3 bg-white/[0.05] backdrop-blur-xl rounded-full border border-white/10 hover:border-white/30 hover:bg-white/[0.1] transition-all duration-300 hover:scale-110 transform group">
           {isPlaying ? (
-            <Volume2 className="w-5 h-5 text-white/80 group-hover:text-white transition-colors duration-300" />
+            <Volume2 className="w-4 h-4 sm:w-5 sm:h-5 text-white/80 group-hover:text-white transition-colors duration-300" />
           ) : (
-            <VolumeX className="w-5 h-5 text-white/60 group-hover:text-white/80 transition-colors duration-300" />
+            <VolumeX className="w-4 h-4 sm:w-5 sm:h-5 text-white/60 group-hover:text-white/80 transition-colors duration-300" />
           )}
         </button>
       </div>
 
-      <div className="relative z-10 min-h-screen flex items-center justify-center p-4 sm:p-6">
+      <div className="relative z-10 min-h-screen flex items-center justify-center p-4 sm:p-6 pt-15 sm:pt-24">
         <div className="max-w-6xl w-full">
           <div className="bg-white/[0.02] backdrop-blur-xl rounded-t-2xl border border-white/10 border-b-0 p-2 sm:p-3">
             <div className="flex items-center gap-2">
@@ -475,10 +475,11 @@ const PersonalPortfolio: React.FC = () => {
           <div className="bg-white/[0.03] backdrop-blur-xl rounded-b-2xl shadow-2xl border border-white/10 border-t-0 overflow-hidden">
             <div className="p-4 sm:p-6 md:p-8">
               <div className="flex flex-col lg:flex-row gap-6 sm:gap-8 mb-6 sm:mb-8">
-                <div className="text-center lg:text-left lg:min-w-[250px] xl:min-w-[300px]">
-                  <div className="relative inline-block mb-4 sm:mb-6 group">
+                <div className="text-left lg:text-left lg:min-w-[250px] xl:min-w-[300px]">
+                  {/* Avatar */}
+                  <div className="relative inline-block mb-4 sm:mb-6 group animate-stagger">
                     <div className="absolute inset-0 bg-gradient-to-r from-white/20 via-white/10 to-white/20 rounded-full animate-pulse"></div>
-                    <div className="relative w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 bg-gradient-to-br from-white/10 to-white/[0.05] rounded-full p-1 shadow-2xl border border-white/20 group-hover:border-white/30 transition-all duration-500">
+                    <div className="relative w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 bg-gradient-to-br from-white/10 to-white/[0.05] rounded-full p-1 shadow-2xl border border-white/20 group-hover:border-white/30 transition-all duration-500 animate-glow-pulse">
                       <div className="w-full h-full bg-black/60 rounded-full flex items-center justify-center overflow-hidden border border-white/10 relative">
                         <div className="relative w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 rounded-full overflow-hidden">
                           {avatarUrl && (
@@ -493,7 +494,6 @@ const PersonalPortfolio: React.FC = () => {
                           )}
                         </div>
                       </div>
-                      {/* Discord Status Indicator - Outside overflow-hidden container */}
                       {discordStatus && (
                         <div className={`absolute bottom-1 right-1 sm:bottom-2 sm:right-2 w-4 h-4 sm:w-5 sm:h-5 rounded-full border-[3px] border-[#1a1b1e] ${
                           discordStatus.status === 'online' ? 'bg-green-500' :
@@ -505,25 +505,28 @@ const PersonalPortfolio: React.FC = () => {
                     </div>
                   </div>
 
+                  {/* Name and username below avatar */}
                   <div className="mb-4 sm:mb-6">
-                    <h1 className="text-2xl sm:text-3xl font-bold text-white mb-1 sm:mb-2 tracking-wide">
-                      <span className="bg-gradient-to-r from-white via-white/90 to-white/80 bg-clip-text text-transparent font-mono">
+                    <h1 className="text-2xl sm:text-3xl font-bold text-white mb-1 sm:mb-2 tracking-wide animate-slide-down">
+                      <span className="bg-gradient-to-r from-white via-white/90 to-white/80 bg-clip-text text-transparent font-mono animate-gradient">
                         Phy0n
                       </span>
                       <span className="text-white/50 text-sm sm:text-base md:text-lg ml-1 sm:ml-2 font-mono">#LoveYou.</span>
                     </h1>
-                    <div className="flex items-center justify-center lg:justify-start gap-1 sm:gap-2 mb-2 sm:mb-4">
+                    <div className="flex items-center justify-start gap-1 sm:gap-2 mb-2 sm:mb-4 animate-slide-down" style={{ animationDelay: '150ms' }}>
                       <span className="text-white/60 text-xs sm:text-sm font-mono">@Phy0n</span>
                       <div className="w-1 h-1 bg-white/40 rounded-full"></div>
                       <span className="text-white/40 text-xs font-mono">Orang Gila</span>
                     </div>
                   </div>
 
-                  <div className="flex flex-wrap justify-center lg:justify-start gap-1 sm:gap-2 mb-4 sm:mb-6">
+                  {/* Developer tag below name/username */}
+                  <div className="flex flex-wrap justify-start gap-1 sm:gap-2 mb-4 sm:mb-6 animate-stagger" style={{ animationDelay: '200ms' }}>
                     {skills.map((skill, index) => (
                       <span
                         key={index}
-                        className="px-2 py-1 sm:px-3 sm:py-1.5 bg-white/[0.05] hover:bg-white/[0.08] text-white/80 rounded-full text-[10px] xs:text-xs sm:text-xs border border-white/10 hover:border-white/20 transition-all duration-300 cursor-pointer font-mono">
+                        className="px-2 py-1 sm:px-3 sm:py-1.5 bg-white/[0.05] hover:bg-white/[0.08] text-white/80 rounded-full text-[10px] xs:text-xs sm:text-xs border border-white/10 hover:border-white/20 transition-all duration-300 cursor-pointer font-mono animate-fade-in"
+                        style={{ animationDelay: `${index * 80}ms` }}>
                         <span className="text-white/40">&lt;</span>
                         {skill}
                         <span className="text-white/40">/&gt;</span>
@@ -533,7 +536,7 @@ const PersonalPortfolio: React.FC = () => {
 
                   {/* Custom Status */}
                   {discordStatus && discordStatus.customStatus && !discordStatus.activity && !discordStatus.spotify && (
-                    <div className="mb-4 sm:mb-6 bg-white/[0.02] rounded-lg sm:rounded-xl p-3 sm:p-4 border border-white/10 hover:border-white/15 transition-all duration-300 font-mono">
+                    <div className="mb-4 sm:mb-6 bg-white/[0.02] rounded-lg sm:rounded-xl p-3 sm:p-4 border border-white/10 hover:border-white/15 transition-all duration-300 font-mono animate-stagger" style={{ animationDelay: '120ms' }}>
                       <div className="flex items-center gap-2 sm:gap-3 mb-1 sm:mb-2">
                         <MessageCircle className="w-3 h-3 sm:w-4 sm:h-4 text-white/60" />
                         <span className="text-white/60 text-[10px] xs:text-xs sm:text-sm font-mono">status:</span>
@@ -546,7 +549,7 @@ const PersonalPortfolio: React.FC = () => {
 
                   {/* Discord Activity Status */}
                   {discordStatus && discordStatus.activity && (
-                    <div className="mb-4 sm:mb-6 bg-white/[0.02] rounded-lg sm:rounded-xl p-3 sm:p-4 border border-white/10 hover:border-white/15 transition-all duration-300 font-mono">
+                    <div className="mb-4 sm:mb-6 bg-white/[0.02] rounded-lg sm:rounded-xl p-3 sm:p-4 border border-white/10 hover:border-white/15 transition-all duration-300 font-mono animate-stagger" style={{ animationDelay: '140ms' }}>
                       <div className="flex items-center gap-2 sm:gap-3 mb-1 sm:mb-2">
                         <Gamepad2 className="w-3 h-3 sm:w-4 sm:h-4 text-white/60" />
                         <span className="text-white/60 text-[10px] xs:text-xs sm:text-sm font-mono">playing:</span>
@@ -569,7 +572,7 @@ const PersonalPortfolio: React.FC = () => {
 
                   {/* Spotify Status */}
                   {discordStatus && discordStatus.spotify && (
-                    <div className="mb-4 sm:mb-6 bg-white/[0.02] rounded-lg sm:rounded-xl p-3 sm:p-4 border border-white/10 hover:border-white/15 transition-all duration-300 font-mono">
+                    <div className="mb-4 sm:mb-6 bg-white/[0.02] rounded-lg sm:rounded-xl p-3 sm:p-4 border border-white/10 hover:border-white/15 transition-all duration-300 font-mono animate-stagger" style={{ animationDelay: '160ms' }}>
                       <div className="flex items-center gap-2 sm:gap-3 mb-1 sm:mb-2">
                         <Music className="w-3 h-3 sm:w-4 sm:h-4 text-green-500" />
                         <span className="text-white/60 text-[10px] xs:text-xs sm:text-sm font-mono">listening to:</span>
@@ -583,7 +586,7 @@ const PersonalPortfolio: React.FC = () => {
                     </div>
                   )}
 
-                  <div className="bg-white/[0.02] rounded-lg sm:rounded-xl p-3 sm:p-4 border border-white/10 hover:border-white/15 transition-all duration-300 font-mono">
+                  <div className="bg-white/[0.02] rounded-lg sm:rounded-xl p-3 sm:p-4 border border-white/10 hover:border-white/15 transition-all duration-300 font-mono animate-stagger" style={{ animationDelay: '180ms' }}>
                     <div className="flex items-center gap-2 sm:gap-3 mb-1 sm:mb-2">
                       <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-green-400 rounded-full animate-pulse"></div>
                       <span className="text-white/60 text-xs sm:text-sm font-mono">motivation:</span>
@@ -595,7 +598,7 @@ const PersonalPortfolio: React.FC = () => {
                 </div>
 
                 <div className="flex-1">
-                  <div className="flex border-b border-white/10 mb-4 sm:mb-6 md:mb-8 overflow-x-auto hide-scrollbar">
+                  <div className="flex border-b border-white/10 mb-4 sm:mb-6 md:mb-8 overflow-x-auto hide-scrollbar animate-stagger" style={{ animationDelay: '100ms' }}>
                     {['connect', 'about', 'games', 'skills', 'experience', 'projects', 'certificates', 'contact'].map((tab) => (
                       <button
                         key={tab}
@@ -616,7 +619,7 @@ const PersonalPortfolio: React.FC = () => {
 
                   <div className="min-h-[300px] sm:min-h-[350px] md:min-h-[400px]">
                     {activeTab === 'connect' && (
-                      <div className="space-y-4 sm:space-y-6 md:space-y-8">
+                      <div className="space-y-4 sm:space-y-6 md:space-y-8 animate-slide-down">
                         <div>
                           <h2 className="text-lg sm:text-xl font-bold text-white mb-2 sm:mb-4 font-mono">
                             <span className="text-white/40">~/</span>connect.links
@@ -633,23 +636,24 @@ const PersonalPortfolio: React.FC = () => {
                             <Globe className="w-3 h-3 sm:w-4 sm:h-4" />
                             social.links
                           </h3>
-                          <div className="grid grid-cols-1 gap-3 sm:gap-4">
+                          <div className="grid grid-cols-1 gap-3 sm:gap-4 animate-stagger" style={{ animationDelay: '220ms' }}>
                             {socialMedia.map((social, index) => (
                               <a
                                 key={index}
                                 href={social.url}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="group relative rounded-xl p-5 sm:p-6 border border-white/10 hover:border-white/20 transition-all duration-300 overflow-hidden bg-white/[0.02] cursor-pointer">
+                                className="group relative rounded-xl p-4 sm:p-6 border border-white/10 hover:border-white/20 transition-all duration-300 overflow-hidden bg-white/[0.02] cursor-pointer animate-fade-in"
+                                style={{ animationDelay: `${index * 80}ms` }}>
                                 <div className="absolute inset-0 bg-black/10 transition-all duration-300 z-0"></div>
-                                <div className="relative flex items-center gap-4 z-10">
-                                  <div className="p-3 sm:p-4 bg-white/[0.05] rounded-xl border border-white/10 group-hover:bg-white/[0.08] group-hover:scale-110 transition-all duration-300">
-                                    <div className="text-white/60 group-hover:text-white transition-colors duration-300">
+                                <div className="relative flex items-center gap-3 sm:gap-4 z-10">
+                                  <div className="p-2 sm:p-4 bg-white/[0.05] rounded-lg border border-white/10 group-hover:bg-white/[0.08] group-hover:scale-110 transition-all duration-300">
+                                    <div className="text-white/60 group-hover:text-white transition-colors duration-300 w-4 h-4 sm:w-5 sm:h-5 flex items-center justify-center">
                                       {social.icon}
                                     </div>
                                   </div>
                                   <div className="flex-1">
-                                    <h3 className="text-white text-xs sm:text-lg font-bold font-mono group-hover:text-white transition-colors duration-300">
+                                    <h3 className="text-white text-xs sm:text-base font-bold font-mono group-hover:text-white transition-colors duration-300">
                                       {social.name}
                                     </h3>
                                     <p className="text-white/60 text-xs sm:text-sm font-mono mt-1">
@@ -657,7 +661,7 @@ const PersonalPortfolio: React.FC = () => {
                                     </p>
                                   </div>
                                   <div className="text-white/40 group-hover:text-white group-hover:translate-x-1 transition-all duration-300">
-                                    <Globe className="w-5 h-5" />
+                                    <Globe className="w-4 h-4 sm:w-5 sm:h-5" />
                                   </div>
                                 </div>
                               </a>
@@ -668,7 +672,7 @@ const PersonalPortfolio: React.FC = () => {
                     )}
 
                     {activeTab === 'games' && (
-                      <div className="space-y-4 sm:space-y-6 md:space-y-8">
+                      <div className="space-y-4 sm:space-y-6 md:space-y-8 animate-slide-down">
                         <div>
                           <h2 className="text-lg sm:text-xl font-bold text-white mb-2 sm:mb-4 font-mono">
                             <span className="text-white/40">~/</span>games.data
@@ -759,7 +763,7 @@ const PersonalPortfolio: React.FC = () => {
                     )}
 
                     {activeTab === 'about' && (
-                      <div className="space-y-4 sm:space-y-6 md:space-y-8">
+                      <div className="space-y-4 sm:space-y-6 md:space-y-8 animate-slide-down">
                         <div>
                           <h2 className="text-lg sm:text-xl font-bold text-white mb-2 sm:mb-4 font-mono">
                             <span className="text-white/40">~/</span>about.md
@@ -788,11 +792,12 @@ const PersonalPortfolio: React.FC = () => {
                             <Star className="w-3 h-3 sm:w-4 sm:h-4" />
                             interests.json
                           </h3>
-                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3 md:gap-4">
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3 md:gap-4 animate-stagger" style={{ animationDelay: '200ms' }}>
                             {hobbies.map((hobby, index) => (
                               <div
                                 key={index}
-                                className="group relative rounded-lg sm:rounded-xl p-3 sm:p-4 border border-white/10 hover:border-white/20 transition-all duration-300 cursor-pointer overflow-hidden bg-white/[0.02]">
+                                className="group relative rounded-lg sm:rounded-xl p-3 sm:p-4 border border-white/10 hover:border-white/20 transition-all duration-300 cursor-pointer overflow-hidden bg-white/[0.02] animate-fade-in"
+                                style={{ animationDelay: `${index * 80}ms` }}>
                                 <div className="absolute inset-0 bg-black/10 transition-all duration-300 z-0"></div>
                                 <div className="relative flex items-center gap-2 sm:gap-3 z-10">
                                   <div className="p-2 bg-white/[0.05] rounded-lg border border-white/10 group-hover:bg-white/[0.08] transition-colors duration-300">
@@ -810,7 +815,7 @@ const PersonalPortfolio: React.FC = () => {
                     )}
 
                     {activeTab === 'skills' && (
-                      <div className="space-y-6 sm:space-y-8 font-mono">
+                      <div className="space-y-6 sm:space-y-8 font-mono animate-slide-down">
                         <div>
                           <h2 className="text-lg sm:text-xl font-bold text-white mb-4 sm:mb-6 font-mono">
                             <span className="text-white/40">~/</span>hard_skills.json
@@ -855,7 +860,7 @@ const PersonalPortfolio: React.FC = () => {
                     )}
 
                     {activeTab === 'experience' && (
-                      <div>
+                      <div className="animate-slide-down">
                         <h2 className="text-lg sm:text-xl font-bold text-white mb-4 sm:mb-6 font-mono">
                           <span className="text-white/40">~/</span>experience.log
                         </h2>
@@ -886,7 +891,7 @@ const PersonalPortfolio: React.FC = () => {
                     )}
 
                     {activeTab === 'projects' && (
-                      <div>
+                      <div className="animate-slide-down">
                         <h2 className="text-lg sm:text-xl font-bold text-white mb-4 sm:mb-6 font-mono">
                           <span className="text-white/40">~/</span>projects/
                         </h2>
@@ -923,7 +928,7 @@ const PersonalPortfolio: React.FC = () => {
                     )}
 
                     {activeTab === 'certificates' && (
-                      <div>
+                      <div className="animate-slide-down">
                         <h2 className="text-lg sm:text-xl font-bold text-white mb-4 sm:mb-6 font-mono">
                           <span className="text-white/40">~/</span>certificates/
                         </h2>
@@ -951,7 +956,7 @@ const PersonalPortfolio: React.FC = () => {
                     )}
 
                     {activeTab === 'contact' && (
-                      <div>
+                      <div className="animate-slide-down">
                         <h2 className="text-lg sm:text-xl font-bold text-white mb-4 sm:mb-6 font-mono">
                           <span className="text-white/40">~/</span>contact.json
                         </h2>
