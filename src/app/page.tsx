@@ -289,7 +289,7 @@ const PersonalPortfolio: React.FC = () => {
 
     // Setup audio with auto-play
     try {
-      audioRef.current = new Audio('/music/music2.mp3'); 
+      audioRef.current = new Audio('/music/music3.mp3'); 
       audioRef.current.loop = true;
 
       audioRef.current.addEventListener('loadedmetadata', () => {
