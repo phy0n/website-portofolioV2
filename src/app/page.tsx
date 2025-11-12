@@ -772,13 +772,15 @@ const PersonalPortfolio: React.FC = () => {
                             <p className="text-white/70 leading-relaxed font-mono text-xs sm:text-sm">
                               <span className="text-white/40">const</span> <span className="text-white">developer</span> = {'{'}
                               <br />
-                              <span className="ml-3 sm:ml-4 text-white/40">name:</span> <span className="text-green-400">Panggil Aja Phy0n</span>,
+                              <span className="ml-3 sm:ml-4 text-white/40">name:</span> <span className="text-green-400">Panggil Aja Phion</span>,
+                              <br />
+                              <span className="ml-3 sm:ml-4 text-white/40">gender:</span> <span className="text-green-400">Man</span>,
                               <br />
                               <span className="ml-3 sm:ml-4 text-white/40">age:</span> <span className="text-green-400">18 years old</span>,
                               <br />
-                              <span className="ml-3 sm:ml-4 text-white/40">role:</span> <span className="text-green-400">Frontend Developer</span>,
+                              <span className="ml-3 sm:ml-4 text-white/40">role:</span> <span className="text-green-400">Fullstack Developer</span>,
                               <br />
-                              <span className="ml-3 sm:ml-4 text-white/40">passion:</span> <span className="text-green-400">Make good website</span>,
+                              <span className="ml-3 sm:ml-4 text-white/40">passion:</span> <span className="text-green-400">Make good things</span>,
                               <br />
                               <span className="ml-3 sm:ml-4 text-white/40">status:</span> <span className="text-green-400">Learning & Growing</span>
                               <br />
