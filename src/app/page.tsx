@@ -776,7 +776,7 @@ const PersonalPortfolio: React.FC = () => {
                               <br />
                               <span className="ml-3 sm:ml-4 text-white/40">gender:</span> <span className="text-green-400">Man</span>,
                               <br />
-                              <span className="ml-3 sm:ml-4 text-white/40">age:</span> <span className="text-green-400">18 years old</span>,
+                              <span className="ml-3 sm:ml-4 text-white/40">age:</span> <span className="text-green-400">17 years old</span>,
                               <br />
                               <span className="ml-3 sm:ml-4 text-white/40">role:</span> <span className="text-green-400">Fullstack Developer</span>,
                               <br />
