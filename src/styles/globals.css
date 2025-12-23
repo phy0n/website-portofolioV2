@@ -12,6 +12,10 @@
   --font-mono: var(--font-geist-mono);
 }
 
+.font-nunito {
+  font-family: var(--font-nunito), sans-serif;
+}
+
 @media (prefers-color-scheme: dark) {
   :root {
     --background: #0a0a0a;

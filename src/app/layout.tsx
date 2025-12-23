@@ -1,5 +1,5 @@
 import "../styles/globals.css";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist, Geist_Mono, Nunito } from "next/font/google";
 import type { Metadata } from "next";
 
 const geistSans = Geist({
@@ -9,6 +9,12 @@ const geistSans = Geist({
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
+  subsets: ["latin"],
+});
+
+const nunito = Nunito({
+  weight: ['300', '400', '600', '700', '800'],
+  variable: "--font-nunito",
   subsets: ["latin"],
 });
 
@@ -60,7 +66,7 @@ interface RootLayoutProps {
 export default function RootLayout({ children }: RootLayoutProps) {
   return (
     <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+      <body className={`${geistSans.variable} ${geistMono.variable} ${nunito.variable} antialiased`}>
         {children}
       </body>
     </html>

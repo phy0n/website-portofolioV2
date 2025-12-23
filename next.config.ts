@@ -5,8 +5,8 @@ const nextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
-    images: {
-    domains: ['cdn.discordapp.com', 'tr.rbxcdn.com'],
+  images: {
+    domains: ['cdn.discordapp.com', 'tr.rbxcdn.com', 'images.unsplash.com'],
   },
 }
 

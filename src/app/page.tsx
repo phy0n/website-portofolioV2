@@ -192,6 +192,12 @@ const PersonalPortfolio: React.FC = () => {
       url: "https://discord.gg/MwNE7Vfb6t",
       color: "from-indigo-500 to-blue-500"
     },
+    {
+      name: "Blog",
+      icon: <BookOpen className="w-4 h-4 sm:w-5 sm:h-5" />,
+      url: "/blog",
+      color: "from-red-500 to-pink-500"
+    },
   ];
 
   const fetchRobloxProfile = async (userId?: string) => {
