@@ -134,7 +134,7 @@ const PersonalPortfolio: React.FC = () => {
   ];
 
   const hardSkills: Skill[] = [
-    { name: "Web Developer", level: 85, icon: <Code className="w-4 h-4" />, category: "Fullstack" },
+    { name: "Web Developer", level: 85, icon: <Code className="w-4 h-4" />, category: "Frontend" },
   ];
 
   const softSkills: Skill[] = [
@@ -784,7 +784,7 @@ const PersonalPortfolio: React.FC = () => {
                               <br />
                               <span className="ml-3 sm:ml-4 text-white/40">age:</span> <span className="text-green-400">18 years old</span>,
                               <br />
-                              <span className="ml-3 sm:ml-4 text-white/40">role:</span> <span className="text-green-400">Fullstack Developer</span>,
+                              <span className="ml-3 sm:ml-4 text-white/40">role:</span> <span className="text-green-400">Developer</span>,
                               <br />
                               <span className="ml-3 sm:ml-4 text-white/40">passion:</span> <span className="text-green-400">Make good things</span>,
                               <br />
