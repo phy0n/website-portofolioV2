@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { BookOpen, ArrowLeft, Quote, X } from 'lucide-react';
@@ -28,39 +28,15 @@ interface DailyQuote {
   author?: string;
 }
 
-const getLocalDateKey = (date: Date) => {
-  const yyyy = date.getFullYear();
-  const mm = String(date.getMonth() + 1).padStart(2, '0');
-  const dd = String(date.getDate()).padStart(2, '0');
-  return `${yyyy}-${mm}-${dd}`;
-};
-
 const formatQuoteDate = (dateKey: string) => {
   const [yyyy, mm, dd] = dateKey.split('-').map(Number);
   if (!yyyy || !mm || !dd) return dateKey;
-  return new Date(yyyy, mm - 1, dd).toLocaleDateString('id-ID', {
+  return new Date(Date.UTC(yyyy, mm - 1, dd)).toLocaleDateString('id-ID', {
     day: '2-digit',
     month: 'long',
     year: 'numeric',
+    timeZone: 'UTC',
   });
-};
-
-const getLatestQuote = (quotes: DailyQuote[]) => {
-  let latest: DailyQuote | undefined;
-  for (const quote of quotes) {
-    if (!latest || quote.date.localeCompare(latest.date) >= 0) {
-      latest = quote;
-    }
-  }
-  return latest;
-};
-
-const getQuoteForDate = (quotes: DailyQuote[], dateKey: string) => {
-  for (let index = quotes.length - 1; index >= 0; index -= 1) {
-    const quote = quotes[index];
-    if (quote?.date === dateKey) return quote;
-  }
-  return undefined;
 };
 
 const BlogPage: React.FC = () => {
@@ -72,13 +48,13 @@ const BlogPage: React.FC = () => {
 
   const categories = ['Life', 'Motivation', 'Love', 'Hobby'];
 
-  const latestQuote = getLatestQuote(dailyQuotes);
-  const [dailyQuote, setDailyQuote] = useState<DailyQuote | undefined>(latestQuote);
-
-  useEffect(() => {
-    const todayKey = getLocalDateKey(new Date());
-    setDailyQuote(getQuoteForDate(dailyQuotes, todayKey) ?? latestQuote);
-  }, [dailyQuotes, latestQuote]);
+  const sortedQuotes = useMemo(() => {
+    return [...dailyQuotes].sort((a, b) => {
+      const dateCompare = b.date.localeCompare(a.date);
+      if (dateCompare !== 0) return dateCompare;
+      return b.id.localeCompare(a.id);
+    });
+  }, [dailyQuotes]);
 
   useEffect(() => {
     if (!isQuotesOpen) return;
@@ -288,24 +264,23 @@ const BlogPage: React.FC = () => {
                   <div className="flex items-start justify-between gap-3">
                     <div className="flex items-center gap-2">
                       <Quote className="w-4 h-4 text-red-500" />
-                      <h2 className="text-sm font-semibold text-white">Daily Quote</h2>
+                      <h2 className="text-sm font-semibold text-white">Daily Quotes</h2>
                     </div>
-                    {dailyQuote?.date && (
-                      <span className="text-[10px] text-gray-500 whitespace-nowrap">
-                        {formatQuoteDate(dailyQuote.date)}
-                      </span>
-                    )}
+                    <span className="text-[10px] text-gray-500 whitespace-nowrap">
+                      {sortedQuotes.length} quotes
+                    </span>
                   </div>
 
-                  {dailyQuote ? (
-                    <>
-                      <p className="mt-4 text-sm text-gray-300 leading-relaxed italic">
-                        “{dailyQuote.text}”
-                      </p>
-                      {dailyQuote.author && (
-                        <p className="mt-3 text-xs text-gray-500">— {dailyQuote.author}</p>
-                      )}
-                    </>
+                  {sortedQuotes.length > 0 ? (
+                    <div className="mt-4 space-y-4 max-h-[calc(100vh-12rem)] overflow-y-auto hide-scrollbar pr-1">
+                      {sortedQuotes.map((quote, index) => (
+                        <div key={`${quote.id}-${quote.date}-${index}`} className="border-l border-gray-900 pl-3">
+                          <p className="text-[10px] text-gray-500 mb-1">{formatQuoteDate(quote.date)}</p>
+                          <p className="text-sm text-gray-300 leading-relaxed italic">“{quote.text}”</p>
+                          {quote.author && <p className="mt-2 text-xs text-gray-500">— {quote.author}</p>}
+                        </div>
+                      ))}
+                    </div>
                   ) : (
                     <p className="mt-4 text-sm text-gray-500">No quotes yet.</p>
                   )}
@@ -354,18 +329,21 @@ const BlogPage: React.FC = () => {
             </div>
 
             <div className="flex-1 overflow-y-auto hide-scrollbar px-4 py-5">
-              {dailyQuote ? (
-                <div className="relative bg-white/[0.02] backdrop-blur-sm border border-gray-900 p-4 overflow-hidden">
-                  <div className="absolute inset-0 bg-black/10 transition-all duration-300 backdrop-blur-sm"></div>
-                  <div className="relative z-10">
-                    {dailyQuote.date && (
-                      <p className="text-xs text-gray-500 mb-3">{formatQuoteDate(dailyQuote.date)}</p>
-                    )}
-                    <p className="text-base text-gray-200 leading-relaxed italic">“{dailyQuote.text}”</p>
-                    {dailyQuote.author && (
-                      <p className="mt-3 text-sm text-gray-500">— {dailyQuote.author}</p>
-                    )}
-                  </div>
+              {sortedQuotes.length > 0 ? (
+                <div className="space-y-4">
+                  {sortedQuotes.map((quote, index) => (
+                    <div
+                      key={`${quote.id}-${quote.date}-${index}`}
+                      className="relative bg-white/[0.02] backdrop-blur-sm border border-gray-900 p-4 overflow-hidden"
+                    >
+                      <div className="absolute inset-0 bg-black/10 transition-all duration-300 backdrop-blur-sm"></div>
+                      <div className="relative z-10">
+                        <p className="text-xs text-gray-500 mb-3">{formatQuoteDate(quote.date)}</p>
+                        <p className="text-base text-gray-200 leading-relaxed italic">“{quote.text}”</p>
+                        {quote.author && <p className="mt-3 text-sm text-gray-500">— {quote.author}</p>}
+                      </div>
+                    </div>
+                  ))}
                 </div>
               ) : (
                 <p className="text-sm text-gray-500">No quotes yet.</p>
