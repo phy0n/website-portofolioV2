@@ -177,7 +177,7 @@ const PersonalPortfolio: React.FC = () => {
     {
       name: "Instagram",
       icon: <Instagram className="w-4 h-4 sm:w-5 sm:h-5" />,
-      url: "https://www.instagram.com/phionrushandle/",
+      url: "https://www.instagram.com/rushandle/",
       color: "from-pink-500 to-red-500"
     },
     {
