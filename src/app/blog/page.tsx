@@ -1,10 +1,11 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { BookOpen, ArrowLeft } from 'lucide-react';
+import { BookOpen, ArrowLeft, Quote, X } from 'lucide-react';
 import blogsData from '@/data/blogs.json';
+import dailyQuotesData from '@/data/quotes/daily.json';
 
 interface Blog {
   id: string;
@@ -20,12 +21,82 @@ interface Blog {
   featured: boolean;
 }
 
+interface DailyQuote {
+  id: string;
+  date: string;
+  text: string;
+  author?: string;
+}
+
+const getLocalDateKey = (date: Date) => {
+  const yyyy = date.getFullYear();
+  const mm = String(date.getMonth() + 1).padStart(2, '0');
+  const dd = String(date.getDate()).padStart(2, '0');
+  return `${yyyy}-${mm}-${dd}`;
+};
+
+const formatQuoteDate = (dateKey: string) => {
+  const [yyyy, mm, dd] = dateKey.split('-').map(Number);
+  if (!yyyy || !mm || !dd) return dateKey;
+  return new Date(yyyy, mm - 1, dd).toLocaleDateString('id-ID', {
+    day: '2-digit',
+    month: 'long',
+    year: 'numeric',
+  });
+};
+
+const getLatestQuote = (quotes: DailyQuote[]) => {
+  let latest: DailyQuote | undefined;
+  for (const quote of quotes) {
+    if (!latest || quote.date.localeCompare(latest.date) >= 0) {
+      latest = quote;
+    }
+  }
+  return latest;
+};
+
+const getQuoteForDate = (quotes: DailyQuote[], dateKey: string) => {
+  for (let index = quotes.length - 1; index >= 0; index -= 1) {
+    const quote = quotes[index];
+    if (quote?.date === dateKey) return quote;
+  }
+  return undefined;
+};
+
 const BlogPage: React.FC = () => {
   const blogs = blogsData as Blog[];
+  const dailyQuotes = dailyQuotesData as DailyQuote[];
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [isQuotesOpen, setIsQuotesOpen] = useState(false);
 
   const categories = ['Life', 'Motivation', 'Love', 'Hobby'];
+
+  const latestQuote = getLatestQuote(dailyQuotes);
+  const [dailyQuote, setDailyQuote] = useState<DailyQuote | undefined>(latestQuote);
+
+  useEffect(() => {
+    const todayKey = getLocalDateKey(new Date());
+    setDailyQuote(getQuoteForDate(dailyQuotes, todayKey) ?? latestQuote);
+  }, [dailyQuotes, latestQuote]);
+
+  useEffect(() => {
+    if (!isQuotesOpen) return;
+
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') setIsQuotesOpen(false);
+    };
+
+    window.addEventListener('keydown', onKeyDown);
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      window.removeEventListener('keydown', onKeyDown);
+    };
+  }, [isQuotesOpen]);
 
   const filteredBlogs = blogs.filter(blog => {
     const matchesSearch = blog.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
@@ -48,7 +119,7 @@ const BlogPage: React.FC = () => {
           priority
         />
       </div>
-      <div className="relative max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 xs:pt-8">
+      <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 xs:pt-8">
         <Link
           href="/"
           className="inline-flex items-center gap-1.5 xs:gap-2 text-gray-400 hover:text-white transition-colors group">
@@ -58,7 +129,7 @@ const BlogPage: React.FC = () => {
       </div>
 
       <section className="relative border-b border-gray-900">
-        <div className="relative max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 xs:py-10 sm:py-12 md:py-16">
+        <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 xs:py-10 sm:py-12 md:py-16">
           <div className="grid lg:grid-cols-4 gap-6 xs:gap-8">
             <div className="lg:col-span-3 space-y-3 xs:space-y-4">
               <div className="flex items-center gap-2 xs:gap-3">
@@ -127,7 +198,7 @@ const BlogPage: React.FC = () => {
           </div>
         </div>
       </section>
-      <div className="relative max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 xs:pt-10 sm:pt-12">
+      <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 xs:pt-10 sm:pt-12">
         <div className="flex items-center justify-between">
           <p className="text-xs xs:text-sm text-gray-500">
             {filteredBlogs.length === totalStories 
@@ -149,63 +220,160 @@ const BlogPage: React.FC = () => {
         </div>
       </div>
 
-      <section className="relative max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-6 xs:py-8 pb-16 xs:pb-20 sm:pb-24">
-        {filteredBlogs.length === 0 ? (
-          <div className="text-center py-16 xs:py-20">
-            <BookOpen className="w-12 h-12 xs:w-16 xs:h-16 text-gray-800 mx-auto mb-4" />
-            <h3 className="text-lg xs:text-xl text-gray-400 mb-2">No stories found</h3>
-            <p className="text-xs xs:text-sm text-gray-600">Try changing the filter or search keywords</p>
-          </div>
-        ) : (
-          <div className="space-y-6 xs:space-y-8">
-            {filteredBlogs.map((blog, index) => {
-            return (
-              <Link
-                key={blog.id}
-                href={`/blog/${blog.slug}`}
-                className="group block" >
-                <article className="relative bg-black border border-gray-900 hover:border-gray-800 transition-all duration-300 overflow-hidden">
-                  <div className="grid md:grid-cols-5 gap-0">
-                    <div className="md:col-span-2 relative h-48 xs:h-56 sm:h-64 md:h-72 overflow-hidden">
-                      {blog.image && (
-                        <Image
-                          src={blog.image}
-                          alt={blog.title}
-                          fill
-                          className="object-cover group-hover:scale-105 transition-transform duration-700"
-                        />
-                      )}
-                      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-black/30 to-black/60 md:to-black"></div>
-                      <div className="absolute top-3 xs:top-4 right-3 xs:right-4 bg-black/80 backdrop-blur-sm border border-gray-800 px-2 xs:px-3 py-1 xs:py-1.5">
-                        <div className="flex items-center gap-1.5 xs:gap-2">
-                          <BookOpen className="w-3 h-3 xs:w-3.5 xs:h-3.5 text-red-500" />
-                          <span className="text-[10px] xs:text-xs text-gray-400">Story #{index + 1}</span>
+      <section className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6 xs:py-8 pb-16 xs:pb-20 sm:pb-24">
+        <div className="grid lg:grid-cols-12 gap-6 xs:gap-8 items-start">
+          <div className="lg:col-span-8">
+            {filteredBlogs.length === 0 ? (
+              <div className="text-center py-16 xs:py-20">
+                <BookOpen className="w-12 h-12 xs:w-16 xs:h-16 text-gray-800 mx-auto mb-4" />
+                <h3 className="text-lg xs:text-xl text-gray-400 mb-2">No stories found</h3>
+                <p className="text-xs xs:text-sm text-gray-600">Try changing the filter or search keywords</p>
+              </div>
+            ) : (
+              <div className="space-y-6 xs:space-y-8">
+                {filteredBlogs.map((blog, index) => {
+                return (
+                  <Link
+                    key={blog.id}
+                    href={`/blog/${blog.slug}`}
+                    className="group block" >
+                    <article className="relative bg-black border border-gray-900 hover:border-gray-800 transition-all duration-300 overflow-hidden">
+                      <div className="grid md:grid-cols-5 gap-0">
+                        <div className="md:col-span-2 relative h-48 xs:h-56 sm:h-64 md:h-72 overflow-hidden">
+                          {blog.image && (
+                            <Image
+                              src={blog.image}
+                              alt={blog.title}
+                              fill
+                              className="object-cover group-hover:scale-105 transition-transform duration-700"
+                            />
+                          )}
+                          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-black/30 to-black/60 md:to-black"></div>
+                          <div className="absolute top-3 xs:top-4 right-3 xs:right-4 bg-black/80 backdrop-blur-sm border border-gray-800 px-2 xs:px-3 py-1 xs:py-1.5">
+                            <div className="flex items-center gap-1.5 xs:gap-2">
+                              <BookOpen className="w-3 h-3 xs:w-3.5 xs:h-3.5 text-red-500" />
+                              <span className="text-[10px] xs:text-xs text-gray-400">Story #{index + 1}</span>
+                            </div>
+                          </div>
+                        </div>
+                        <div className="md:col-span-3 p-5 xs:p-6 sm:p-8 md:p-10 flex flex-col justify-center">
+                          <h2 className="text-xl xs:text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-3 xs:mb-4 group-hover:text-gray-300 transition-colors leading-tight">
+                            {blog.title}
+                          </h2>
+                          <p className="text-xs xs:text-sm sm:text-base text-gray-400 leading-relaxed mb-4 xs:mb-5 sm:mb-6 line-clamp-2 xs:line-clamp-3">
+                            {blog.excerpt}
+                          </p>
+                          <div className="flex items-center gap-2 text-xs xs:text-sm text-red-500 group-hover:gap-3 transition-all">
+                            <span className="font-medium">Read the Story</span>
+                            <svg className="w-3 h-3 xs:w-4 xs:h-4 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                            </svg>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                    <div className="md:col-span-3 p-5 xs:p-6 sm:p-8 md:p-10 flex flex-col justify-center">
-                      <h2 className="text-xl xs:text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-3 xs:mb-4 group-hover:text-gray-300 transition-colors leading-tight">
-                        {blog.title}
-                      </h2>
-                      <p className="text-xs xs:text-sm sm:text-base text-gray-400 leading-relaxed mb-4 xs:mb-5 sm:mb-6 line-clamp-2 xs:line-clamp-3">
-                        {blog.excerpt}
-                      </p>
-                      <div className="flex items-center gap-2 text-xs xs:text-sm text-red-500 group-hover:gap-3 transition-all">
-                        <span className="font-medium">Read the Story</span>
-                        <svg className="w-3 h-3 xs:w-4 xs:h-4 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                        </svg>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-red-500/50 to-transparent transform scale-x-0 group-hover:scale-x-100 transition-transform duration-700"></div>
-                </article>
-              </Link>
-            );
-          })}
+                      <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-red-500/50 to-transparent transform scale-x-0 group-hover:scale-x-100 transition-transform duration-700"></div>
+                    </article>
+                  </Link>
+                );
+              })}
+              </div>
+            )}
           </div>
-        )}
+
+          <aside className="hidden lg:block lg:col-span-4">
+            <div className="sticky top-6 space-y-4">
+              <div className="relative bg-white/[0.02] backdrop-blur-sm border border-gray-900 p-4 xs:p-5 overflow-hidden">
+                <div className="absolute inset-0 bg-black/10 transition-all duration-300 backdrop-blur-sm"></div>
+                <div className="relative z-10">
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="flex items-center gap-2">
+                      <Quote className="w-4 h-4 text-red-500" />
+                      <h2 className="text-sm font-semibold text-white">Daily Quote</h2>
+                    </div>
+                    {dailyQuote?.date && (
+                      <span className="text-[10px] text-gray-500 whitespace-nowrap">
+                        {formatQuoteDate(dailyQuote.date)}
+                      </span>
+                    )}
+                  </div>
+
+                  {dailyQuote ? (
+                    <>
+                      <p className="mt-4 text-sm text-gray-300 leading-relaxed italic">
+                        “{dailyQuote.text}”
+                      </p>
+                      {dailyQuote.author && (
+                        <p className="mt-3 text-xs text-gray-500">— {dailyQuote.author}</p>
+                      )}
+                    </>
+                  ) : (
+                    <p className="mt-4 text-sm text-gray-500">No quotes yet.</p>
+                  )}
+                </div>
+              </div>
+            </div>
+          </aside>
+        </div>
       </section>
+
+      <button
+        type="button"
+        onClick={() => setIsQuotesOpen(true)}
+        className="lg:hidden fixed top-4 right-4 z-40 bg-black/80 backdrop-blur-sm border border-gray-800 rounded-full px-3 py-3 flex items-center gap-2 text-gray-300 hover:text-white hover:border-gray-700 transition-colors"
+        aria-label="Open daily quotes"
+      >
+        <Quote className="w-4 h-4 text-red-500" />
+        <span className="text-xs font-medium">Quotes</span>
+      </button>
+
+      <div className={`lg:hidden fixed inset-0 z-50 ${isQuotesOpen ? '' : 'pointer-events-none'}`}>
+        <div
+          className={`absolute inset-0 bg-black/70 transition-opacity duration-300 ${isQuotesOpen ? 'opacity-100' : 'opacity-0'}`}
+          onClick={() => setIsQuotesOpen(false)}
+        />
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-label="Daily quotes"
+          className={`absolute top-0 right-0 h-full w-[min(360px,100vw)] bg-black border-l border-gray-900 shadow-2xl transition-transform duration-300 ${isQuotesOpen ? 'translate-x-0' : 'translate-x-full'}`}
+        >
+          <div className="h-full flex flex-col">
+            <div className="flex items-center justify-between px-4 py-4 border-b border-gray-900">
+              <div className="flex items-center gap-2">
+                <Quote className="w-4 h-4 text-red-500" />
+                <span className="text-sm font-semibold text-white">Daily Quotes</span>
+              </div>
+              <button
+                type="button"
+                onClick={() => setIsQuotesOpen(false)}
+                className="p-2 text-gray-400 hover:text-white transition-colors"
+                aria-label="Close daily quotes"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <div className="flex-1 overflow-y-auto hide-scrollbar px-4 py-5">
+              {dailyQuote ? (
+                <div className="relative bg-white/[0.02] backdrop-blur-sm border border-gray-900 p-4 overflow-hidden">
+                  <div className="absolute inset-0 bg-black/10 transition-all duration-300 backdrop-blur-sm"></div>
+                  <div className="relative z-10">
+                    {dailyQuote.date && (
+                      <p className="text-xs text-gray-500 mb-3">{formatQuoteDate(dailyQuote.date)}</p>
+                    )}
+                    <p className="text-base text-gray-200 leading-relaxed italic">“{dailyQuote.text}”</p>
+                    {dailyQuote.author && (
+                      <p className="mt-3 text-sm text-gray-500">— {dailyQuote.author}</p>
+                    )}
+                  </div>
+                </div>
+              ) : (
+                <p className="text-sm text-gray-500">No quotes yet.</p>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };

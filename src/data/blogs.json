@@ -38,8 +38,21 @@
     "image": "/image/blogImage/dia-dan-mahkotanya.jpg",
     "featured": true
   },
-  {
+    {
     "id": "4",
+    "slug": "teman-atau-harapan",
+    "title": "Teman atau harapan?", 
+    "excerpt": "Teman sebagai tempat cerita, atau harapan yang palsu?",
+    "content": "01 November 2025.",
+    "author": "Phion",
+    "date": "2025-11-01",
+    "category": "Life",
+    "tags": ["life"],
+    "image": "/image/blogImage/teman-atau-harapan.jpg",
+    "featured": true
+  },
+  {
+    "id": "5",
     "slug": "natal-api-kecil-2026",
     "title": "Natal, Api Kecil 2026", 
     "excerpt": "Malam yang dingin, api kecil yang selalu digenggam erat.",
