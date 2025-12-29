@@ -1,4 +1,5 @@
 import "../styles/globals.css";
+import { Analytics } from "@vercel/analytics/next";
 import { Geist, Geist_Mono, Nunito } from "next/font/google";
 import type { Metadata } from "next";
 
@@ -21,6 +22,7 @@ const nunito = Nunito({
 export const metadata: Metadata = {
   title: "Phy0n",
   description: "Idk but this is Phy0n portofolio",
+  metadataBase: new URL("https://phy0n.my.id"),
   icons: {
     icon: [
       { url: '/image/logo.png', type: 'image/png' },
@@ -71,6 +73,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
         className={`${geistSans.variable} ${geistMono.variable} ${nunito.variable} antialiased`}
       >
         {children}
+        <Analytics />
       </body>
     </html>
   );

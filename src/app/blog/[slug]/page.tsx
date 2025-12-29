@@ -47,7 +47,7 @@ const BlogDetailPage: React.FC = () => {
       <div className="min-h-screen bg-black flex items-center justify-center">
         <div className="text-center space-y-6">
           <h2 className="text-4xl font-bold text-white">Story Not Found</h2>
-          <p className="text-gray-400">The story you're looking for doesn't exist.</p>
+          <p className="text-gray-400">The story you&apos;re looking for doesn&apos;t exist.</p>
           <Link
             href="/blog"
             className="inline-flex items-center gap-2 px-6 py-3 border border-gray-800 hover:border-red-500 transition-colors text-white">

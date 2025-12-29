@@ -1,14 +1,28 @@
 import type { NextConfig } from "next";
 
-/** @type {import('next').NextConfig} */
-const nextConfig = {
-  eslint: {
-    ignoreDuringBuilds: true,
+const nextConfig: NextConfig = {
+  turbopack: {
+    root: process.cwd(),
   },
   images: {
-    domains: ['cdn.discordapp.com', 'tr.rbxcdn.com', 'images.unsplash.com'],
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "cdn.discordapp.com",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "tr.rbxcdn.com",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "images.unsplash.com",
+        pathname: "/**",
+      },
+    ],
   },
-}
+};
 
-module.exports = nextConfig
 export default nextConfig;
