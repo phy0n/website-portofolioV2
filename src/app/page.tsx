@@ -578,7 +578,7 @@ const PersonalPortfolio: React.FC = () => {
                           </h2>
                           <div className="bg-white/[0.02] rounded-lg sm:rounded-xl p-4 sm:p-6 border border-white/10 hover:border-white/15 transition-all duration-300">
                             <p className="text-white/70 leading-relaxed font-mono text-xs sm:text-sm mb-6">
-                              Connect with me on social media! 🚀
+                              Connect with me on social media! 
                             </p>
                           </div>
                         </div>
