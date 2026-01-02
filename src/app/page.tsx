@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 import React, { useState, useEffect, useRef } from 'react';
-import { Play, Pause, Instagram, Code, Gamepad2, Music, Monitor, Heart, BookOpen, Briefcase, Award, Mail, Star, Terminal, MapPin, Clock, Lightbulb, Target, Palette, Globe, MessageCircle, Eye, Volume2, VolumeX} from 'lucide-react';
+import { Instagram, Code, Gamepad2, Music, Monitor, Heart, BookOpen, Briefcase, Award, Mail, Star, Terminal, MapPin, Clock, Lightbulb, Target, Palette, Globe, MessageCircle, Volume2, VolumeX} from 'lucide-react';
 import { FaTiktok, FaDiscord } from 'react-icons/fa';
 
 interface Experience {
@@ -89,18 +89,13 @@ interface DiscordStatus {
 
 const PersonalPortfolio: React.FC = () => {
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
-  const [currentTime, setCurrentTime] = useState<number>(0);
-  const [duration, setDuration] = useState<number>(0);
-  const [currentTrack, setCurrentTrack] = useState<string>("");
   const [activeTab, setActiveTab] = useState<string>('connect');
-  const [mousePosition, setMousePosition] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
   const [isMobile, setIsMobile] = useState<boolean>(false);
   const [useVideo, setUseVideo] = useState<boolean>(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const cursorGlowRef = useRef<HTMLDivElement | null>(null);
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
-  const [loading, setLoading] = useState(true);
   const videoRef = useRef<HTMLVideoElement>(null);
-  const [viewCount, setViewCount] = useState<number>(0);
   const [robloxProfile, setRobloxProfile] = useState<RobloxProfile | null>(null);
   const [robloxLoading, setRobloxLoading] = useState<boolean>(false);
   const [discordStatus, setDiscordStatus] = useState<DiscordStatus | null>(null);
@@ -240,8 +235,6 @@ const PersonalPortfolio: React.FC = () => {
         setAvatarUrl(data.avatarUrl || null);
       } catch (err) {
         console.error('Failed to fetch avatar:', err);
-      } finally {
-        setLoading(false);
       }
     };
 
@@ -265,42 +258,10 @@ const PersonalPortfolio: React.FC = () => {
     // Update Discord status every 30 seconds
     const statusInterval = setInterval(fetchDiscordStatus, 30000);
 
-    // Initialize view counter with unique IP tracking
-    const initViewCounter = async () => {
-      try {
-        // Get current count from localStorage
-        const storedCount = parseInt(localStorage.getItem('portfolio-views') || '0');
-        
-        // Check with API if this is a new visitor
-        const response = await fetch(`/api/view-count?current=${storedCount}`);
-        const data = await response.json();
-        
-        if (!data.error) {
-          // Update count based on API response
-          setViewCount(data.count);
-          localStorage.setItem('portfolio-views', data.count.toString());
-        } else {
-          // Fallback to stored count if API fails
-          setViewCount(storedCount);
-        }
-      } catch (err) {
-        console.error('Failed to fetch view count:', err);
-        // Fallback to stored count
-        const storedCount = parseInt(localStorage.getItem('portfolio-views') || '0');
-        setViewCount(storedCount);
-      }
-    };
-
-    initViewCounter();
-
     // Setup audio with auto-play
     try {
       audioRef.current = new Audio('/music/music3.mp3'); 
       audioRef.current.loop = true;
-
-      audioRef.current.addEventListener('loadedmetadata', () => {
-        setDuration(audioRef.current?.duration || 0);
-      });
 
       // Auto-play music
       audioRef.current.play()
@@ -329,16 +290,34 @@ const PersonalPortfolio: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    const handleMouseMove = (e: MouseEvent): void => {
-      setMousePosition({ x: e.clientX, y: e.clientY });
+    if (isMobile) return;
+
+    let rafId: number | null = null;
+    let latestX = 0;
+    let latestY = 0;
+
+    const apply = () => {
+      rafId = null;
+      const el = cursorGlowRef.current;
+      if (!el) return;
+      el.style.transform = `translate3d(${latestX - 64}px, ${latestY - 64}px, 0)`;
     };
 
-    window.addEventListener('mousemove', handleMouseMove);
+    const handleMouseMove = (e: MouseEvent): void => {
+      latestX = e.clientX;
+      latestY = e.clientY;
+      if (rafId === null) {
+        rafId = window.requestAnimationFrame(apply);
+      }
+    };
+
+    window.addEventListener('mousemove', handleMouseMove, { passive: true });
 
     return () => {
       window.removeEventListener('mousemove', handleMouseMove);
+      if (rafId !== null) window.cancelAnimationFrame(rafId);
     };
-  }, []);
+  }, [isMobile]);
 
   useEffect(() => {
     if (audioRef.current) {
@@ -348,16 +327,6 @@ const PersonalPortfolio: React.FC = () => {
         audioRef.current.pause();
       }
     }
-  }, [isPlaying]);
-
-  useEffect(() => {
-    let interval: NodeJS.Timeout;
-    if (isPlaying && audioRef.current) {
-      interval = setInterval(() => {
-        setCurrentTime(audioRef.current?.currentTime || 0);
-      }, 1000);
-    }
-    return () => clearInterval(interval);
   }, [isPlaying]);
 
   useEffect(() => {
@@ -371,25 +340,7 @@ const PersonalPortfolio: React.FC = () => {
     if (activeTab === 'games' && !robloxProfile && !robloxLoading) {
       fetchRobloxProfile();
     }
-  }, [activeTab]);
-
-  const formatTime = (seconds: number): string => {
-    const mins = Math.floor(seconds / 60);
-    const secs = Math.floor(seconds % 60);
-    return `${mins}:${secs.toString().padStart(2, '0')}`;
-  };
-
-  const togglePlay = (): void => setIsPlaying(!isPlaying);
-
-  const handleSeek = (e: React.MouseEvent<HTMLDivElement>): void => {
-    if (audioRef.current) {
-      const rect = e.currentTarget.getBoundingClientRect();
-      const pos = (e.clientX - rect.left) / rect.width;
-      const newTime = pos * (audioRef.current.duration || 0);
-      audioRef.current.currentTime = newTime;
-      setCurrentTime(newTime);
-    }
-  };
+  }, [activeTab, robloxLoading, robloxProfile]);
 
   return (
     <div className="min-h-screen bg-black relative overflow-hidden" style={{ fontFamily: '"JetBrains Mono", "Fira Code", "Source Code Pro", monospace' }}>
@@ -433,10 +384,11 @@ const PersonalPortfolio: React.FC = () => {
 
         {!isMobile && (
           <div
-            className="absolute w-32 h-32 bg-white/[0.02] rounded-full blur-2xl transition-all duration-300 ease-out pointer-events-none"
+            ref={cursorGlowRef}
+            className="absolute w-32 h-32 bg-white/[0.02] rounded-full blur-2xl transition-transform duration-200 ease-out pointer-events-none"
             style={{
-              left: mousePosition.x - 64,
-              top: mousePosition.y - 64,
+              transform: 'translate3d(-9999px, -9999px, 0)',
+              willChange: 'transform',
             }}>
           </div>
         )}
@@ -444,12 +396,6 @@ const PersonalPortfolio: React.FC = () => {
 
       {/* Control Buttons - Fixed Top Right */}
       <div className="fixed top-3 sm:top-4 right-3 sm:right-6 z-50 flex items-center gap-2 sm:gap-3">
-        {/* View Counter */}
-        <div className="flex items-center gap-2 px-3 py-1.5 sm:px-4 sm:py-2 bg-white/[0.05] backdrop-blur-xl rounded-full border border-white/10 hover:border-white/20 transition-all duration-300">
-          <Eye className="w-3 h-3 sm:w-4 sm:h-4 text-white/60" />
-          <span className="text-white/80 font-mono text-xs sm:text-sm font-medium">{viewCount.toLocaleString()}</span>
-        </div>
-
         {/* Music Toggle */}
         <button
           onClick={() => setIsPlaying(!isPlaying)}
