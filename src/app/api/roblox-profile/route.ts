@@ -1,16 +1,23 @@
 import { NextResponse } from 'next/server';
 
+export const revalidate = 600;
+
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const userId = searchParams.get('userId') || '8883015179';
 
   try {
     // Fetch user details
-    const userResponse = await fetch(`https://users.roblox.com/v1/users/${userId}`);
+    const userResponse = await fetch(`https://users.roblox.com/v1/users/${userId}`, {
+      next: { revalidate: 600 },
+    });
     const userData = await userResponse.json();
 
     // Fetch avatar thumbnail
-    const avatarResponse = await fetch(`https://thumbnails.roblox.com/v1/users/avatar?userIds=${userId}&size=420x420&format=Png`);
+    const avatarResponse = await fetch(
+      `https://thumbnails.roblox.com/v1/users/avatar?userIds=${userId}&size=420x420&format=Png`,
+      { next: { revalidate: 600 } }
+    );
     const avatarData = await avatarResponse.json();
 
     const profile = {
@@ -22,7 +29,11 @@ export async function GET(request: Request) {
       avatarUrl: avatarData.data[0]?.imageUrl || '',
     };
 
-    return NextResponse.json(profile);
+    return NextResponse.json(profile, {
+      headers: {
+        'Cache-Control': 'public, max-age=600, stale-while-revalidate=3600',
+      },
+    });
   } catch (error) {
     console.error('Error fetching Roblox profile:', error);
     return NextResponse.json(

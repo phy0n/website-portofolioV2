@@ -1,5 +1,7 @@
 import { NextResponse } from 'next/server';
 
+export const revalidate = 15;
+
 export async function GET() {
   // Use the same Discord User ID from environment variable
   const userId = process.env.DISCORD_USER_ID;
@@ -18,10 +20,10 @@ export async function GET() {
     // Using Lanyard API to get Discord presence
     // Note: User must join https://discord.gg/lanyard for this to work
     const response = await fetch(`https://api.lanyard.rest/v1/users/${userId}`, {
-      cache: 'no-store',
+      next: { revalidate: 15 },
       headers: {
-        'Accept': 'application/json',
-      }
+        Accept: 'application/json',
+      },
     });
     
     if (!response.ok) {
@@ -72,15 +74,26 @@ export async function GET() {
       } : null,
     };
 
-    return NextResponse.json(status);
+      return NextResponse.json(status, {
+        headers: {
+          'Cache-Control': 'public, max-age=15, stale-while-revalidate=60',
+        },
+      });
   } catch (error) {
     console.error('Error fetching Discord status:', error);
     // Return offline status instead of error
-    return NextResponse.json({
+    return NextResponse.json(
+      {
       online: false, 
       status: 'offline',
       activity: null,
       spotify: null,
-    });
+      },
+      {
+        headers: {
+          'Cache-Control': 'public, max-age=15, stale-while-revalidate=60',
+        },
+      }
+    );
   }
 }

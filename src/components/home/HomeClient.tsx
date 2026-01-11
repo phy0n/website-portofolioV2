@@ -7,16 +7,44 @@ import { Terminal, Volume2, VolumeX } from 'lucide-react';
 
 import ProfileSidebar from './ProfileSidebar';
 import TabBar from './TabBar';
+import AboutTab from './tabs/AboutTab';
 import ConnectTab from './tabs/ConnectTab';
 import type { DiscordStatus, HomeTab, RobloxProfile } from './types';
 
-const AboutTab = dynamic(() => import('./tabs/AboutTab'), { loading: () => null });
-const GamesTab = dynamic(() => import('./tabs/GamesTab'), { loading: () => null });
-const SkillsTab = dynamic(() => import('./tabs/SkillsTab'), { loading: () => null });
-const ExperienceTab = dynamic(() => import('./tabs/ExperienceTab'), { loading: () => null });
-const ProjectsTab = dynamic(() => import('./tabs/ProjectsTab'), { loading: () => null });
-const CertificatesTab = dynamic(() => import('./tabs/CertificatesTab'), { loading: () => null });
-const ContactTab = dynamic(() => import('./tabs/ContactTab'), { loading: () => null });
+function TabFallback({ title }: { title: string }) {
+  return (
+    <div className="animate-slide-down">
+      <div className="bg-white/[0.02] rounded-lg sm:rounded-xl p-4 sm:p-6 border border-white/10">
+        <p className="text-white/60 font-mono text-xs sm:text-sm">Loading {title}…</p>
+      </div>
+    </div>
+  );
+}
+
+const GamesTab = dynamic(() => import('./tabs/GamesTab'), {
+  ssr: false,
+  loading: () => <TabFallback title="games" />,
+});
+const SkillsTab = dynamic(() => import('./tabs/SkillsTab'), {
+  ssr: false,
+  loading: () => <TabFallback title="skills" />,
+});
+const ExperienceTab = dynamic(() => import('./tabs/ExperienceTab'), {
+  ssr: false,
+  loading: () => <TabFallback title="experience" />,
+});
+const ProjectsTab = dynamic(() => import('./tabs/ProjectsTab'), {
+  ssr: false,
+  loading: () => <TabFallback title="projects" />,
+});
+const CertificatesTab = dynamic(() => import('./tabs/CertificatesTab'), {
+  ssr: false,
+  loading: () => <TabFallback title="certificates" />,
+});
+const ContactTab = dynamic(() => import('./tabs/ContactTab'), {
+  ssr: false,
+  loading: () => <TabFallback title="contact" />,
+});
 
 const PROFILE_SKILLS = ['Developer'];
 
@@ -25,6 +53,7 @@ export default function HomeClient() {
   const [activeTab, setActiveTab] = useState<HomeTab>('connect');
   const [isMobile, setIsMobile] = useState<boolean>(false);
   const [useVideo, setUseVideo] = useState<boolean>(false);
+  const [videoReady, setVideoReady] = useState<boolean>(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const cursorGlowRef = useRef<HTMLDivElement | null>(null);
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
@@ -55,14 +84,22 @@ export default function HomeClient() {
 
   useEffect(() => {
     const connection = (navigator as Navigator & { connection?: { effectiveType?: string; saveData?: boolean } }).connection;
+    const prefersReducedMotion = typeof window !== 'undefined' && window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+    const allowVideo =
+      !prefersReducedMotion &&
+      (!connection || (!connection.saveData && (connection.effectiveType === '4g' || connection.effectiveType === '5g')));
 
-    if (connection) {
-      if (connection.effectiveType === '4g' && !connection.saveData) {
-        setUseVideo(true);
+    // Defer mounting the video until the browser is idle so UI shows immediately.
+    const schedule = (fn: () => void) => {
+      const w = window as unknown as { requestIdleCallback?: (cb: () => void, opts?: { timeout: number }) => number };
+      if (w.requestIdleCallback) {
+        w.requestIdleCallback(fn, { timeout: 1500 });
+      } else {
+        window.setTimeout(fn, 300);
       }
-    } else {
-      setUseVideo(true);
-    }
+    };
+
+    schedule(() => setUseVideo(allowVideo));
 
     const fetchAvatar = async () => {
       try {
@@ -73,8 +110,6 @@ export default function HomeClient() {
         console.error('Failed to fetch avatar:', err);
       }
     };
-
-    fetchAvatar();
 
     const fetchDiscordStatus = async () => {
       try {
@@ -88,23 +123,13 @@ export default function HomeClient() {
       }
     };
 
-    fetchDiscordStatus();
-    const statusInterval = setInterval(fetchDiscordStatus, 30000);
+    // Defer network calls so the main UI can paint first.
+    schedule(() => {
+      fetchAvatar();
+      fetchDiscordStatus();
+    });
 
-    try {
-      audioRef.current = new Audio('/music/music3.mp3');
-      audioRef.current.loop = true;
-      audioRef.current
-        .play()
-        .then(() => {
-          setIsPlaying(true);
-        })
-        .catch((err) => {
-          console.log('Auto-play prevented:', err);
-        });
-    } catch (err) {
-      console.log('Audio setup failed:', err);
-    }
+    const statusInterval = window.setInterval(fetchDiscordStatus, 30000);
 
     const checkIfMobile = (): void => {
       setIsMobile(window.innerWidth < 768);
@@ -112,6 +137,16 @@ export default function HomeClient() {
 
     checkIfMobile();
     window.addEventListener('resize', checkIfMobile);
+
+    // Prefetch other tab chunks when idle to avoid blank/slow tab switches.
+    schedule(() => {
+      import('./tabs/GamesTab');
+      import('./tabs/SkillsTab');
+      import('./tabs/ExperienceTab');
+      import('./tabs/ProjectsTab');
+      import('./tabs/CertificatesTab');
+      import('./tabs/ContactTab');
+    });
 
     return () => {
       window.removeEventListener('resize', checkIfMobile);
@@ -154,20 +189,17 @@ export default function HomeClient() {
   }, [isMobile]);
 
   useEffect(() => {
-    if (audioRef.current) {
-      if (isPlaying) {
-        audioRef.current.play().catch((e: Error) => console.log('Audio play error:', e));
-      } else {
-        audioRef.current.pause();
-      }
+    if (!audioRef.current) return;
+    if (isPlaying) {
+      audioRef.current.play().catch((e: Error) => console.log('Audio play error:', e));
+    } else {
+      audioRef.current.pause();
     }
   }, [isPlaying]);
 
   useEffect(() => {
-    if (videoRef.current) {
-      videoRef.current.play().catch((e) => console.log('Video play error:', e));
-    }
-  }, []);
+    setVideoReady(false);
+  }, [useVideo]);
 
   useEffect(() => {
     if (activeTab === 'games' && !robloxProfile && !robloxLoading) {
@@ -180,22 +212,32 @@ export default function HomeClient() {
       className="min-h-screen bg-black relative overflow-hidden"
       style={{ fontFamily: '"JetBrains Mono", "Fira Code", "Source Code Pro", monospace' }}
     >
-      <div className="absolute inset-0 z-9 overflow-hidden">
-        {useVideo ? (
+      <div className="absolute inset-0 z-0 overflow-hidden">
+        {/* Always paint a lightweight poster first */}
+        <div className="absolute inset-0 w-full h-full">
+          <Image src="/video/anime-bg-poster.jpg" alt="Background" fill className="object-cover opacity-50" priority />
+        </div>
+
+        {/* Mount heavy video only when allowed and fade in when ready */}
+        {useVideo && (
           <video
             ref={videoRef}
             autoPlay
             loop
             muted
             playsInline
-            className="absolute inset-0 w-full h-full object-cover opacity-50"
+            preload="none"
+            poster="/video/anime-bg-poster.jpg"
+            onCanPlay={() => {
+              setVideoReady(true);
+              videoRef.current?.play().catch((e) => console.log('Video play error:', e));
+            }}
+            className={`absolute inset-0 w-full h-full object-cover opacity-50 transition-opacity duration-500 ${
+              videoReady ? 'opacity-50' : 'opacity-0'
+            }`}
           >
             <source src="/video/video.mp4" type="video/mp4" />
           </video>
-        ) : (
-          <div className="absolute inset-0 w-full h-full">
-            <Image src="/video/anime-bg-poster.jpg" alt="Background" fill className="object-cover opacity-50" priority />
-          </div>
         )}
       </div>
 
@@ -230,7 +272,18 @@ export default function HomeClient() {
       <div className="fixed top-3 sm:top-4 right-3 sm:right-6 z-50 flex items-center gap-2 sm:gap-3">
         {/* Music Toggle */}
         <button
-          onClick={() => setIsPlaying(!isPlaying)}
+          onClick={() => {
+            const nextPlaying = !isPlaying;
+            if (nextPlaying && !audioRef.current) {
+              try {
+                audioRef.current = new Audio('/music/music3.mp3');
+                audioRef.current.loop = true;
+              } catch (err) {
+                console.log('Audio setup failed:', err);
+              }
+            }
+            setIsPlaying(nextPlaying);
+          }}
           className="p-2 sm:p-3 bg-white/[0.05] backdrop-blur-xl rounded-full border border-white/10 hover:border-white/30 hover:bg-white/[0.1] transition-all duration-300 hover:scale-110 transform group"
         >
           {isPlaying ? (
