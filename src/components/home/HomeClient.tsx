@@ -52,8 +52,9 @@ export default function HomeClient() {
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
   const [activeTab, setActiveTab] = useState<HomeTab>('connect');
   const [isMobile, setIsMobile] = useState<boolean>(false);
-  const [useVideo, setUseVideo] = useState<boolean>(false);
+  const [useVideo, setUseVideo] = useState<boolean>(true);
   const [videoReady, setVideoReady] = useState<boolean>(false);
+  const [videoSourceIndex, setVideoSourceIndex] = useState<number>(0);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const cursorGlowRef = useRef<HTMLDivElement | null>(null);
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
@@ -61,6 +62,8 @@ export default function HomeClient() {
   const [robloxProfile, setRobloxProfile] = useState<RobloxProfile | null>(null);
   const [robloxLoading, setRobloxLoading] = useState<boolean>(false);
   const [discordStatus, setDiscordStatus] = useState<DiscordStatus | null>(null);
+
+  const VIDEO_SOURCES = ['/video/video.mp4', '/video/video2.mp4'] as const;
 
   const fetchRobloxProfile = async (userId?: string) => {
     setRobloxLoading(true);
@@ -83,11 +86,8 @@ export default function HomeClient() {
   };
 
   useEffect(() => {
-    const connection = (navigator as Navigator & { connection?: { effectiveType?: string; saveData?: boolean } }).connection;
-    const prefersReducedMotion = typeof window !== 'undefined' && window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
-    const allowVideo =
-      !prefersReducedMotion &&
-      (!connection || (!connection.saveData && (connection.effectiveType === '4g' || connection.effectiveType === '5g')));
+    // User requested background video always.
+    const allowVideo = true;
 
     // Defer mounting the video until the browser is idle so UI shows immediately.
     const schedule = (fn: () => void) => {
@@ -99,7 +99,8 @@ export default function HomeClient() {
       }
     };
 
-    schedule(() => setUseVideo(allowVideo));
+    // Enable video immediately; only defer secondary work.
+    setUseVideo(allowVideo);
 
     const fetchAvatar = async () => {
       try {
@@ -202,6 +203,24 @@ export default function HomeClient() {
   }, [useVideo]);
 
   useEffect(() => {
+    if (!useVideo) return;
+    const video = videoRef.current;
+    if (!video) return;
+    // Ensure the browser starts fetching and attempts autoplay.
+    try {
+      video.load();
+    } catch {
+      // ignore
+    }
+
+    video.play().catch((e) => console.log('Video play error:', e));
+
+    // Fallback: some browsers/dev setups don't fire loaded events reliably.
+    const t = window.setTimeout(() => setVideoReady(true), 1500);
+    return () => window.clearTimeout(t);
+  }, [useVideo, videoSourceIndex]);
+
+  useEffect(() => {
     if (activeTab === 'games' && !robloxProfile && !robloxLoading) {
       fetchRobloxProfile();
     }
@@ -213,30 +232,40 @@ export default function HomeClient() {
       style={{ fontFamily: '"JetBrains Mono", "Fira Code", "Source Code Pro", monospace' }}
     >
       <div className="absolute inset-0 z-0 overflow-hidden">
-        {/* Always paint a lightweight poster first */}
-        <div className="absolute inset-0 w-full h-full">
-          <Image src="/video/anime-bg-poster.jpg" alt="Background" fill className="object-cover opacity-50" priority />
-        </div>
+        {/* Lightweight fallback while video buffers (no image overlay) */}
+        <div
+          className={`absolute inset-0 w-full h-full bg-black transition-opacity duration-500 ${
+            useVideo && videoReady ? 'opacity-0' : 'opacity-100'
+          }`}
+        />
 
         {/* Mount heavy video only when allowed and fade in when ready */}
         {useVideo && (
           <video
+            key={videoSourceIndex}
             ref={videoRef}
             autoPlay
             loop
             muted
             playsInline
-            preload="none"
-            poster="/video/anime-bg-poster.jpg"
-            onCanPlay={() => {
-              setVideoReady(true);
-              videoRef.current?.play().catch((e) => console.log('Video play error:', e));
+            preload="metadata"
+            onLoadedData={() => setVideoReady(true)}
+            onPlaying={() => setVideoReady(true)}
+            onError={() => {
+              console.warn('Background video failed to load/play:', VIDEO_SOURCES[videoSourceIndex]);
+              const nextIndex = videoSourceIndex + 1;
+              if (nextIndex < VIDEO_SOURCES.length) {
+                setVideoReady(false);
+                setVideoSourceIndex(nextIndex);
+              } else {
+                setUseVideo(false);
+              }
             }}
-            className={`absolute inset-0 w-full h-full object-cover opacity-50 transition-opacity duration-500 ${
+            className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-500 ${
               videoReady ? 'opacity-50' : 'opacity-0'
             }`}
           >
-            <source src="/video/video.mp4" type="video/mp4" />
+            <source src={VIDEO_SOURCES[videoSourceIndex]} type="video/mp4" />
           </video>
         )}
       </div>
