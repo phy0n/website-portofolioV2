@@ -113,7 +113,7 @@ export default function BlogClient({
   const totalStories = visibleBlogs.length;
 
   return (
-    <div className="min-h-screen bg-black text-white font-nunito relative">
+    <div className="min-h-screen bg-black text-white font-nunito relative" data-page-content>
       <div className="fixed inset-0 opacity-[0.03] pointer-events-none">
         <Image
           src="https://images.unsplash.com/photo-1528164344705-47542687000d?w=1920&h=1080&fit=crop"
@@ -124,7 +124,7 @@ export default function BlogClient({
           className="object-cover"
         />
       </div>
-      <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 xs:pt-8">
+      <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 xs:pt-8" data-gsap="reveal">
         <Link
           href="/"
           className="inline-flex items-center gap-1.5 xs:gap-2 text-gray-400 hover:text-white transition-colors group"
@@ -134,7 +134,7 @@ export default function BlogClient({
         </Link>
       </div>
 
-      <section className="relative border-b border-gray-900">
+      <section className="relative border-b border-gray-900" data-gsap="reveal">
         <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 xs:py-10 sm:py-12 md:py-16">
           <div className="grid lg:grid-cols-4 gap-6 xs:gap-8">
             <div className="lg:col-span-3 space-y-3 xs:space-y-4">
@@ -206,7 +206,7 @@ export default function BlogClient({
           </div>
         </div>
       </section>
-      <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 xs:pt-10 sm:pt-12">
+      <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 xs:pt-10 sm:pt-12" data-gsap="reveal">
         <div className="flex items-center justify-between">
           <p className="text-xs xs:text-sm text-gray-500">
             {filteredBlogs.length === totalStories
@@ -227,7 +227,7 @@ export default function BlogClient({
         </div>
       </div>
 
-      <section className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6 xs:py-8 pb-16 xs:pb-20 sm:pb-24">
+      <section className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6 xs:py-8 pb-16 xs:pb-20 sm:pb-24" data-gsap="reveal">
         <div className="grid lg:grid-cols-12 gap-6 xs:gap-8 items-start">
           <div className="lg:col-span-8">
             {filteredBlogs.length === 0 ? (
@@ -295,7 +295,7 @@ export default function BlogClient({
             )}
           </div>
 
-          <aside className="hidden lg:block lg:col-span-4">
+          <aside className="hidden lg:block lg:col-span-4" data-gsap="reveal">
             <div className="sticky top-6 space-y-4">
               <div className="relative bg-white/[0.02] backdrop-blur-sm border border-gray-900 p-4 xs:p-5 overflow-hidden">
                 <div className="absolute inset-0 bg-black/10 transition-all duration-300 backdrop-blur-sm"></div>

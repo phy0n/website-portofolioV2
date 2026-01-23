@@ -12,36 +12,39 @@ const CERTIFICATES: Certificate[] = [
     date: '2024',
     status: 'Completed',
     description: 'Just Intro to Software Engineering',
-    image: '/image/certificates/certificate1.png',
-    icon: <Award className="w-4 h-4" />,
+    icon: <Award className="h-4 w-4" />,
   },
 ];
 
 export default function CertificatesTab() {
   return (
-    <div className="animate-slide-down">
-      <h2 className="text-lg sm:text-xl font-bold text-white mb-4 sm:mb-6 font-mono">
-        <span className="text-white/40">~/</span>certificates/
-      </h2>
-      <div className="grid gap-4 sm:gap-6">
+    <div className="space-y-6">
+      <div className="space-y-3">
+        <p className="js-reveal text-[11px] uppercase tracking-[0.35em] text-[var(--home-muted)]">Certificates</p>
+        <h2 className="js-reveal text-2xl font-sans font-semibold text-[var(--home-ink)] sm:text-3xl">
+          Personal Ceritificate
+        </h2>
+        <p className="js-reveal max-w-2xl text-sm text-[var(--home-muted)]">
+          Formal learning that supports my daily build process.
+        </p>
+      </div>
+
+      <div className="space-y-6">
         {CERTIFICATES.map((cert, index) => (
-          <div
-            key={index}
-            className="bg-white/[0.02] rounded-lg sm:rounded-xl p-4 sm:p-6 border border-white/10 hover:border-white/20 transition-all duration-300 group"
-          >
-            <div className="flex items-start gap-3 sm:gap-4 mb-3 sm:mb-4">
-              <div className="flex-1">
-                <h3 className="text-base sm:text-lg font-semibold text-white font-mono">{cert.title}</h3>
-                <div className="flex items-center gap-2 text-xs sm:text-sm text-white/60 font-mono mt-1 mb-2">
-                  <span>{cert.issuer}</span>
-                  <span className="text-white/40">•</span>
-                  <span>{cert.date}</span>
-                  <span className="ml-2 px-2 py-0.5 bg-green-500/20 text-green-400 rounded-full text-xs border border-green-500/30">
-                    {cert.status}
-                  </span>
-                </div>
-                <p className="text-white/70 text-xs sm:text-sm leading-relaxed font-mono">{cert.description}</p>
+          <div key={index} className="js-reveal grid gap-6 border-b border-white/10 pb-6">
+            <div className="space-y-3">
+              <div className="flex items-center gap-2 text-[var(--home-accent)]">
+                {cert.icon}
+                <p className="text-xs uppercase tracking-[0.35em] text-[var(--home-muted)]">Certificate</p>
               </div>
+              <h3 className="text-lg font-sans font-semibold text-[var(--home-ink)]">{cert.title}</h3>
+              <p className="text-xs uppercase tracking-[0.35em] text-[var(--home-muted)]">
+                {cert.issuer} | {cert.date}
+              </p>
+              <p className="text-sm text-[var(--home-muted)]">{cert.description}</p>
+              <span className="inline-flex rounded-full border border-white/10 bg-black/30 px-3 py-1 text-xs text-[var(--home-muted)]">
+                {cert.status}
+              </span>
             </div>
           </div>
         ))}
@@ -49,4 +52,3 @@ export default function CertificatesTab() {
     </div>
   );
 }
-

@@ -74,7 +74,7 @@ export default async function AdminLayout({
           </div>
         </div>
       </aside>
-      <main className="min-h-screen pl-80 pr-6 py-10 lg:pr-12">
+      <main data-page-content className="min-h-screen pl-80 pr-6 py-10 lg:pr-12">
         {children}
       </main>
     </div>

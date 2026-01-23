@@ -99,7 +99,7 @@ export default function QuoteManager({
 
   return (
     <div className="space-y-8">
-      <div className="flex flex-wrap items-center justify-between gap-4">
+      <div className="flex flex-wrap items-center justify-between gap-4" data-gsap="reveal">
         <div>
           <p className="text-sm uppercase tracking-[0.3em] text-white/50">Content</p>
           <h2 className="text-3xl font-semibold text-white">Quotes Manager</h2>
@@ -120,12 +120,15 @@ export default function QuoteManager({
       </div>
 
       {(successMessage || errorMessage) && (
-        <div className="rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white/70 shadow-[0_0_0_1px_rgba(255,255,255,0.02)]">
+        <div
+          className="rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white/70 shadow-[0_0_0_1px_rgba(255,255,255,0.02)]"
+          data-gsap="reveal"
+        >
           {errorMessage || successMessage}
         </div>
       )}
 
-      <section className="space-y-3">
+      <section className="space-y-3" data-gsap="reveal">
         <h3 className="text-lg font-semibold text-white">Quote list</h3>
         <div className="overflow-x-auto rounded-2xl border border-white/10 bg-white/5 shadow-[0_20px_60px_rgba(0,0,0,0.35)]">
           <table className="min-w-full text-sm">

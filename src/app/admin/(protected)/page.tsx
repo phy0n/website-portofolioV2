@@ -35,7 +35,7 @@ export default async function AdminPage({
 
   return (
     <div className="space-y-10">
-      <div className="flex flex-wrap items-center justify-between gap-4">
+      <div className="flex flex-wrap items-center justify-between gap-4" data-gsap="reveal">
         <div>
           <p className="text-sm uppercase tracking-[0.3em] text-white/50">Analytics</p>
           <h2 className="text-3xl font-semibold text-white">Performance Snapshot</h2>
@@ -44,12 +44,15 @@ export default async function AdminPage({
       </div>
 
       {(successMessage || errorMessage) && (
-        <div className="rounded-md border border-white/10 bg-white/5 px-4 py-3 text-sm text-white/70 shadow-[0_0_0_1px_rgba(255,255,255,0.02)]">
+        <div
+          className="rounded-md border border-white/10 bg-white/5 px-4 py-3 text-sm text-white/70 shadow-[0_0_0_1px_rgba(255,255,255,0.02)]"
+          data-gsap="reveal"
+        >
           {errorMessage || successMessage}
         </div>
       )}
 
-      <section id="dashboard" className="space-y-5">
+      <section id="dashboard" className="space-y-5" data-gsap="reveal">
         <div className="flex items-center justify-between">
           <h3 className="text-xl font-semibold text-white">Dashboard</h3>
         </div>

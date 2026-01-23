@@ -22,6 +22,18 @@
   font-family: var(--font-nunito), sans-serif;
 }
 
+.home-portfolio {
+  --home-bg: #000000;
+  --home-ink: #f5f5f5;
+  --home-muted: #9c9c9c;
+  --home-accent: #d14a4a;
+  --home-accent-2: #8b1d1d;
+  --home-card: #0d0d0d;
+  --home-soft: #141414;
+  --home-border: rgba(255, 255, 255, 0.1);
+  color-scheme: dark;
+}
+
 @media (prefers-color-scheme: dark) {
   :root {
     --background: #0a0a0a;

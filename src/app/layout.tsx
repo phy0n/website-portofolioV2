@@ -3,6 +3,7 @@ import { Analytics } from "@vercel/analytics/next";
 import { Geist, Geist_Mono, Nunito } from "next/font/google";
 import type { Metadata } from "next";
 import AnalyticsTracker from "@/components/analytics/AnalyticsTracker";
+import GlobalGsap from "@/components/shared/GlobalGsap";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -73,7 +74,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
         suppressHydrationWarning
         className={`${geistSans.variable} ${geistMono.variable} ${nunito.variable} antialiased`}
       >
-        {children}
+        <GlobalGsap>{children}</GlobalGsap>
         <AnalyticsTracker />
         <Analytics />
       </body>

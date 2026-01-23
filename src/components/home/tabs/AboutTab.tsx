@@ -6,64 +6,74 @@ import { BookOpen, Code, Gamepad2, Music, Star } from 'lucide-react';
 import type { Hobby } from '../types';
 
 const HOBBIES: Hobby[] = [
-  { icon: <Code className="w-4 h-4" />, text: 'Programming', color: 'from-blue-500/20 to-cyan-500/20' },
-  { icon: <Gamepad2 className="w-4 h-4" />, text: 'Playing Game', color: 'from-purple-500/20 to-pink-500/20' },
-  { icon: <Music className="w-4 h-4" />, text: 'Listening Music', color: 'from-green-500/20 to-emerald-500/20' },
-  { icon: <BookOpen className="w-4 h-4" />, text: 'Reading Comic', color: 'from-orange-500/20 to-red-500/20' },
+  { icon: <Code className="h-4 w-4" />, text: 'Programming', color: '' },
+  { icon: <Gamepad2 className="h-4 w-4" />, text: 'Playing Game', color: '' },
+  { icon: <Music className="h-4 w-4" />, text: 'Listening Music', color: '' },
+  { icon: <BookOpen className="h-4 w-4" />, text: 'Reading Comic', color: '' },
+];
+
+const FACTS = [
+  { label: 'Name', value: 'Phion Rushandle' },
+  { label: 'Pronouns', value: 'She/He' },
+  { label: 'Age', value: '18 years old' },
+  { label: 'Role', value: 'Developer' },
+  { label: 'Passion', value: 'Make good things' },
+  { label: 'Status', value: 'Learning' },
 ];
 
 export default function AboutTab() {
   return (
-    <div className="space-y-4 sm:space-y-6 md:space-y-8 animate-slide-down">
-      <div>
-        <h2 className="text-lg sm:text-xl font-bold text-white mb-2 sm:mb-4 font-mono">
-          <span className="text-white/40">~/</span>about.md
+    <div className="space-y-10">
+      <div className="space-y-3">
+        <p className="js-reveal text-[11px] uppercase tracking-[0.35em] text-[var(--home-muted)]">About</p>
+        <h2 className="js-reveal text-2xl font-sans font-semibold text-[var(--home-ink)] sm:text-3xl">
+          Focused on clean structure and clear communication.
         </h2>
-        <div className="bg-white/[0.02] rounded-lg sm:rounded-xl p-4 sm:p-6 border border-white/10 hover:border-white/15 transition-all duration-300">
-          <p className="text-white/70 leading-relaxed font-mono text-xs sm:text-sm">
-            <span className="text-white/40">const</span> <span className="text-white">developer</span> = {'{'}
-            <br />
-            <span className="ml-3 sm:ml-4 text-white/40">name:</span>{' '}
-            <span className="text-green-400">Panggil Aja Phion</span>,
-            <br />
-            <span className="ml-3 sm:ml-4 text-white/40">gender:</span> <span className="text-green-400">She/He</span>,
-            <br />
-            <span className="ml-3 sm:ml-4 text-white/40">age:</span> <span className="text-green-400">18 years old</span>,
-            <br />
-            <span className="ml-3 sm:ml-4 text-white/40">role:</span> <span className="text-green-400">Developer</span>,
-            <br />
-            <span className="ml-3 sm:ml-4 text-white/40">passion:</span>{' '}
-            <span className="text-green-400">Make good things</span>,
-            <br />
-            <span className="ml-3 sm:ml-4 text-white/40">status:</span>{' '}
-            <span className="text-green-400">Learning &amp; Growing</span>
-            <br />
-            {'}'}
-          </p>
+        <p className="js-reveal max-w-2xl text-sm text-[var(--home-muted)] sm:text-base">
+          I am Phion, a developer who enjoys making good things and learning every day. I keep interfaces simple, modern,
+          and easy to navigate.
+        </p>
+      </div>
+
+      <div className="grid gap-10 lg:grid-cols-[1.1fr_0.9fr]">
+        <div className="space-y-6">
+          <div className="js-reveal border-l-2 border-[var(--home-accent)] pl-4 text-lg text-[var(--home-ink)]">
+            Building calm, modern web experiences that feel intentional.
+          </div>
+          <div className="js-reveal border border-white/10 bg-black/30 px-5 py-4 text-sm text-[var(--home-muted)]">
+            I build web experiences with a steady process, paying attention to the details that make a product feel
+            confident and professional.
+          </div>
+        </div>
+
+        <div className="space-y-3 border-y border-white/10">
+          {FACTS.map((fact, index) => (
+            <div
+              key={fact.label}
+              className={`js-reveal flex flex-col gap-1 py-3 text-sm text-[var(--home-muted)] sm:flex-row sm:items-center sm:justify-between ${
+                index === FACTS.length - 1 ? '' : 'border-b border-white/10'
+              }`}
+            >
+              <span className="text-[11px] uppercase tracking-[0.35em]">{fact.label}</span>
+              <span className="text-[var(--home-ink)]">{fact.value}</span>
+            </div>
+          ))}
         </div>
       </div>
 
-      <div>
-        <h3 className="text-white/60 text-xs sm:text-sm uppercase tracking-wider mb-3 sm:mb-4 md:mb-6 font-mono flex items-center gap-1 sm:gap-2">
-          <Star className="w-3 h-3 sm:w-4 sm:h-4" />
-          interests.json
-        </h3>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3 md:gap-4 animate-stagger" style={{ animationDelay: '200ms' }}>
+      <div className="space-y-4 border-t border-white/10 pt-6">
+        <div className="js-reveal flex items-center gap-2">
+          <Star className="h-4 w-4 text-[var(--home-accent)]" />
+          <h3 className="text-[11px] uppercase tracking-[0.35em] text-[var(--home-muted)]">Interests</h3>
+        </div>
+        <div className="flex flex-wrap gap-3">
           {HOBBIES.map((hobby, index) => (
             <div
               key={index}
-              className="group relative rounded-lg sm:rounded-xl p-3 sm:p-4 border border-white/10 hover:border-white/20 transition-all duration-300 cursor-pointer overflow-hidden bg-white/[0.02] animate-fade-in"
-              style={{ animationDelay: `${index * 80}ms` }}
+              className="js-reveal flex items-center gap-2 rounded-full border border-white/10 bg-black/30 px-4 py-2 text-sm text-[var(--home-muted)]"
             >
-              <div className="absolute inset-0 bg-black/10 transition-all duration-300 z-0"></div>
-              <div className="relative flex items-center gap-2 sm:gap-3 z-10">
-                <div className="p-2 bg-white/[0.05] rounded-lg border border-white/10 group-hover:bg-white/[0.08] transition-colors duration-300">
-                  {hobby.icon}
-                </div>
-                <span className="text-xs sm:text-sm font-mono text-white/80 group-hover:text-white transition-colors duration-300">
-                  {hobby.text}
-                </span>
-              </div>
+              <span className="text-[var(--home-accent)]">{hobby.icon}</span>
+              {hobby.text}
             </div>
           ))}
         </div>
@@ -71,4 +81,3 @@ export default function AboutTab() {
     </div>
   );
 }
-

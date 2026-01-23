@@ -25,6 +25,9 @@ create index if not exists analytics_events_path_idx
 
 alter table public.analytics_events enable row level security;
 
+drop policy if exists "analytics_insert" on public.analytics_events;
+drop policy if exists "analytics_select_admins" on public.analytics_events;
+
 create policy "analytics_insert" on public.analytics_events
   for insert
   with check (true);

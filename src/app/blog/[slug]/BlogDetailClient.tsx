@@ -128,7 +128,7 @@ export default function BlogDetailClient({ blog }: { blog: Blog | null }) {
   }
 
   return (
-    <div className="min-h-screen bg-black text-white font-nunito relative">
+    <div className="min-h-screen bg-black text-white font-nunito relative" data-page-content>
       <div className="fixed inset-0 opacity-[0.03] pointer-events-none">
         <Image
           src="https://images.unsplash.com/photo-1528164344705-47542687000d?w=1920&h=1080&fit=crop"
@@ -148,7 +148,7 @@ export default function BlogDetailClient({ blog }: { blog: Blog | null }) {
       </div>
 
       <article className="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 xs:py-10 sm:py-12">
-        <header className="mb-10 xs:mb-12 sm:mb-16">
+        <header className="mb-10 xs:mb-12 sm:mb-16" data-gsap="reveal">
           <h1 className="text-2xl xs:text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 xs:mb-8 leading-tight">
             {blog.title}
           </h1>
@@ -159,7 +159,10 @@ export default function BlogDetailClient({ blog }: { blog: Blog | null }) {
           </div>
         </header>
         {blog.image && (
-          <div className="relative w-full h-48 xs:h-56 sm:h-64 md:h-96 lg:h-[600px] overflow-hidden mb-10 xs:mb-12 sm:mb-16 border border-gray-900">
+          <div
+            className="relative w-full h-48 xs:h-56 sm:h-64 md:h-96 lg:h-[600px] overflow-hidden mb-10 xs:mb-12 sm:mb-16 border border-gray-900"
+            data-gsap="reveal"
+          >
             <Image
               src={blog.image}
               alt={blog.title}
@@ -171,10 +174,10 @@ export default function BlogDetailClient({ blog }: { blog: Blog | null }) {
             <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent"></div>
           </div>
         )}
-        <div className="prose prose-invert max-w-none mb-10 xs:mb-12 sm:mb-16">
+        <div className="prose prose-invert max-w-none mb-10 xs:mb-12 sm:mb-16" data-gsap="reveal">
           {contentBlocks}
         </div>
-        <div className="mt-10 xs:mt-12 sm:mt-16 pt-6 xs:pt-8 border-t border-gray-900">
+        <div className="mt-10 xs:mt-12 sm:mt-16 pt-6 xs:pt-8 border-t border-gray-900" data-gsap="reveal">
           <div className="flex items-center justify-between">
             <Link
               href="/blog"

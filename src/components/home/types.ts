@@ -46,7 +46,7 @@ export interface Certificate {
   date: string;
   status: string;
   description: string;
-  image: string;
+  image?: string;
   icon: ReactNode;
 }
 
@@ -91,4 +91,3 @@ export interface DiscordStatus {
     album: string;
   } | null;
 }
-

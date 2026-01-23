@@ -12,50 +12,57 @@ const PROJECTS: Project[] = [
     tags: ['React', 'TailwindCSS', 'TypeScript'],
     link: 'https://kh1ev.my.id/',
     status: 'Live',
-    icon: <Monitor className="w-4 h-4" />,
+    icon: <Monitor className="h-4 w-4" />,
   },
 ];
 
 export default function ProjectsTab() {
   return (
-    <div className="animate-slide-down">
-      <h2 className="text-lg sm:text-xl font-bold text-white mb-4 sm:mb-6 font-mono">
-        <span className="text-white/40">~/</span>projects/
-      </h2>
-      <div className="grid gap-4 sm:gap-6">
-        {PROJECTS.map((project, index) => (
-          <a
-            key={index}
-            href={project.link}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="block group bg-white/[0.02] hover:bg-white/[0.04] rounded-lg sm:rounded-xl p-4 sm:p-6 border border-white/10 hover:border-white/20 transition-all duration-300 relative overflow-hidden"
-          >
-            <div className="flex items-start justify-between mb-3 sm:mb-4">
-              <div className="flex items-center gap-2 sm:gap-3">
-                <h3 className="text-base sm:text-lg font-semibold text-white font-mono group-hover:text-white transition-colors duration-300">
-                  {project.title}
-                </h3>
+    <div className="space-y-6">
+      <div className="space-y-3">
+        <p className="js-reveal text-[11px] uppercase tracking-[0.35em] text-[var(--home-muted)]">Projects</p>
+        <h2 className="js-reveal text-2xl font-sans font-semibold text-[var(--home-ink)] sm:text-3xl">Personal Project</h2>
+        <p className="js-reveal max-w-2xl text-sm text-[var(--home-muted)]">
+          A focused set of projects with clean UI and stable delivery.
+        </p>
+      </div>
+
+      <div className="divide-y divide-white/10 border-y border-white/10">
+        {PROJECTS.map((project, index) => {
+          const number = String(index + 1).padStart(2, '0');
+          return (
+            <a
+              key={index}
+              href={project.link}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="js-reveal group grid gap-4 py-6 md:grid-cols-[auto_1fr_auto]"
+            >
+              <div className="text-xs uppercase tracking-[0.35em] text-[var(--home-muted)]">{number}</div>
+              <div className="space-y-3">
+                <div className="flex items-center gap-2">
+                  <span className="text-[var(--home-accent)]">{project.icon}</span>
+                  <h3 className="text-lg font-sans font-semibold text-[var(--home-ink)]">{project.title}</h3>
+                </div>
+                <p className="text-sm text-[var(--home-muted)]">{project.description}</p>
+                <div className="flex flex-wrap gap-2">
+                  {project.tags.map((tag, i) => (
+                    <span
+                      key={i}
+                      className="rounded-full border border-white/10 bg-black/30 px-3 py-1 text-xs text-[var(--home-muted)]"
+                    >
+                      {tag}
+                    </span>
+                  ))}
+                </div>
               </div>
-              <span className="px-2 py-0.5 sm:px-3 sm:py-1 bg-blue-500/20 text-blue-400 rounded-full text-xs font-mono border border-blue-500/30">
+              <div className="text-xs uppercase tracking-[0.35em] text-[var(--home-muted)] transition group-hover:text-[var(--home-accent)]">
                 {project.status}
-              </span>
-            </div>
-            <p className="text-white/70 text-xs sm:text-sm mb-3 sm:mb-4 leading-relaxed font-mono">{project.description}</p>
-            <div className="flex flex-wrap gap-1 sm:gap-2">
-              {project.tags.map((tag, i) => (
-                <span
-                  key={i}
-                  className="px-2 py-0.5 sm:px-3 sm:py-1 bg-white/[0.05] text-white/70 rounded-full text-xs border border-white/10 font-mono"
-                >
-                  {tag}
-                </span>
-              ))}
-            </div>
-          </a>
-        ))}
+              </div>
+            </a>
+          );
+        })}
       </div>
     </div>
   );
 }
-
