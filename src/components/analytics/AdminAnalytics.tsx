@@ -3,7 +3,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 
 type RangeValue = '24h' | '7d' | '30d';
-type MetricValue = 'users' | 'views';
 
 type AnalyticsPayload = {
   ok: boolean;
@@ -25,30 +24,18 @@ type AnalyticsPayload = {
 };
 
 const rangeOptions: RangeValue[] = ['24h', '7d', '30d'];
-const metricOptions: { id: MetricValue; label: string }[] = [
-  { id: 'users', label: 'Users' },
-  { id: 'views', label: 'Views' },
-];
 
 const normalizeRange = (value?: string): RangeValue => {
   if (value === '24h' || value === '30d') return value;
   return '7d';
 };
 
-const normalizeMetric = (value?: string): MetricValue => {
-  if (value === 'views') return 'views';
-  return 'users';
-};
-
 export default function AdminAnalytics({
   initialRange,
-  initialMetric,
 }: {
   initialRange?: string;
-  initialMetric?: string;
 }) {
   const [range, setRange] = useState<RangeValue>(normalizeRange(initialRange));
-  const [metric, setMetric] = useState<MetricValue>(normalizeMetric(initialMetric));
   const [data, setData] = useState<AnalyticsPayload | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -92,7 +79,7 @@ export default function AdminAnalytics({
   useEffect(() => {
     if (!data) return;
     setAnimationKey((prev) => prev + 1);
-  }, [data, metric]);
+  }, [data]);
 
   useEffect(() => {
     if (!data) return;
@@ -101,16 +88,65 @@ export default function AdminAnalytics({
     return () => window.cancelAnimationFrame(id);
   }, [animationKey, data]);
 
-  const chartSeries = useMemo(() => {
-    if (!data) return [];
-    return metric === 'views' ? data.buckets.views : data.buckets.unique;
-  }, [data, metric]);
+  const viewSeries = data?.buckets.views ?? [];
+  const uniqueSeries = data?.buckets.unique ?? [];
+  const chartMax = Math.max(1, ...viewSeries, ...uniqueSeries);
 
-  const chartMax = Math.max(1, ...chartSeries);
   const labels = data?.buckets.labels ?? [];
   const labelStep = data?.buckets.labelStep ?? 1;
   const topPages = data?.topPages ?? [];
   const topPagesMax = topPages[0]?.count ?? 0;
+  const totalVisits = data?.summary.pageViews ?? 0;
+
+  const rangeLabel = useMemo(() => {
+    if (!data?.generatedAt) return '--';
+    const end = new Date(data.generatedAt);
+    const rangeHours = range === '24h' ? 24 : range === '30d' ? 24 * 30 : 24 * 7;
+    const start = new Date(end.getTime() - rangeHours * 60 * 60 * 1000);
+    const formatOptions: Intl.DateTimeFormatOptions =
+      range === '24h'
+        ? { month: 'short', day: '2-digit', hour: '2-digit', minute: '2-digit' }
+        : { month: 'short', day: '2-digit' };
+    const formatter = new Intl.DateTimeFormat('en-US', formatOptions);
+    return `${formatter.format(start)} - ${formatter.format(end)}`;
+  }, [data?.generatedAt, range]);
+
+  const chartPaths = useMemo(() => {
+    const values = viewSeries.length ? viewSeries : [];
+    const uniques = uniqueSeries.length ? uniqueSeries : [];
+    const count = Math.max(values.length, uniques.length, 1);
+    const padding = 8;
+    const size = 100;
+    const inner = size - padding * 2;
+
+    const buildPath = (series: number[]) => {
+      if (!series.length) return '';
+      return series
+        .map((value, index) => {
+          const x = padding + (count === 1 ? 0 : (index / (count - 1)) * inner);
+          const y = padding + (1 - value / chartMax) * inner;
+          return `${index === 0 ? 'M' : 'L'} ${x} ${y}`;
+        })
+        .join(' ');
+    };
+
+    const buildArea = (series: number[]) => {
+      if (!series.length) return '';
+      const path = buildPath(series);
+      const lastX = padding + inner;
+      const baseY = padding + inner;
+      return `${path} L ${lastX} ${baseY} L ${padding} ${baseY} Z`;
+    };
+
+    return {
+      viewPath: buildPath(values),
+      viewArea: buildArea(values),
+      uniquePath: buildPath(uniques),
+      padding,
+      size,
+      inner,
+    };
+  }, [viewSeries, uniqueSeries, chartMax]);
 
   return (
     <section id="audience" className="space-y-5">
@@ -172,47 +208,148 @@ export default function AdminAnalytics({
           <div className="rounded-2xl border border-white/10 bg-white/5 p-5 shadow-[0_20px_60px_rgba(0,0,0,0.35)]">
             <div className="flex flex-wrap items-center justify-between gap-3">
               <div>
-                <p className="text-sm font-semibold text-white">Traffic trend</p>
-                <p className="text-xs text-white/40">
-                  {metric === 'views' ? 'Page views' : 'Unique users'} per
-                  {range === '24h' ? ' hour' : ' day'}
-                </p>
+                <p className="text-xs uppercase tracking-[0.3em] text-white/40">Date range</p>
+                <p className="mt-2 text-lg font-semibold text-white">{rangeLabel}</p>
+                <div className="mt-2 flex items-center gap-4 text-xs text-white/50">
+                  <span className="inline-flex items-center gap-2">
+                    <span className="h-2 w-2 rounded-full bg-red-400" />
+                    Visits
+                  </span>
+                  <span className="inline-flex items-center gap-2">
+                    <span className="h-2 w-2 rounded-full bg-emerald-400" />
+                    Unique users
+                  </span>
+                </div>
               </div>
-              <div className="inline-flex items-center gap-1 rounded-full border border-white/10 bg-white/5 p-1 text-[10px] uppercase tracking-[0.3em] text-white/60">
-                {metricOptions.map((metricOption) => (
-                  <button
-                    key={metricOption.id}
-                    type="button"
-                    onClick={() => setMetric(metricOption.id)}
-                    className={`rounded-full px-3 py-1 transition ${
-                      metric === metricOption.id
-                        ? 'bg-white text-black'
-                        : 'text-white/60 hover:text-white'
-                    }`}
-                    aria-pressed={metric === metricOption.id}
-                  >
-                    {metricOption.label}
-                  </button>
-                ))}
+              <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2 text-xs uppercase tracking-[0.3em] text-white/60">
+                <span>Total visits</span>
+                <span className="rounded-full bg-white/10 px-2 py-1 text-white">
+                  {totalVisits}
+                </span>
               </div>
             </div>
 
-            <div className="mt-6 h-32">
-              <div className="flex h-full items-end gap-1">
-                {chartSeries.map((value, index) => (
-                  <div key={`${animationKey}-${index}`} className="group flex h-full flex-1 items-end">
-                    <div
-                      className="w-full rounded-full bg-gradient-to-t from-red-500/80 via-red-400/80 to-red-300/80 transition-[height,transform] duration-700 ease-out group-hover:scale-y-105"
+            <div className="mt-6 h-48">
+              <svg
+                key={animationKey}
+                viewBox="0 0 100 100"
+                className="h-full w-full"
+                preserveAspectRatio="none"
+              >
+                <defs>
+                  <linearGradient id="visits-line" x1="0" x2="0" y1="0" y2="1">
+                    <stop offset="0%" stopColor="#f59e0b" stopOpacity="0.95" />
+                    <stop offset="100%" stopColor="#f97316" stopOpacity="0.8" />
+                  </linearGradient>
+                  <linearGradient id="visits-area" x1="0" x2="0" y1="0" y2="1">
+                    <stop offset="0%" stopColor="#f59e0b" stopOpacity="0.18" />
+                    <stop offset="100%" stopColor="#f97316" stopOpacity="0" />
+                  </linearGradient>
+                  <linearGradient id="users-line" x1="0" x2="0" y1="0" y2="1">
+                    <stop offset="0%" stopColor="#34d399" stopOpacity="0.9" />
+                    <stop offset="100%" stopColor="#22c55e" stopOpacity="0.7" />
+                  </linearGradient>
+                </defs>
+
+                <g stroke="rgba(255,255,255,0.08)" strokeWidth="0.6">
+                  {Array.from({ length: 5 }).map((_, index) => {
+                    const y =
+                      chartPaths.padding + (index / 4) * (chartPaths.size - chartPaths.padding * 2);
+                    return <line key={index} x1="0" y1={y} x2="100" y2={y} />;
+                  })}
+                </g>
+
+                {chartPaths.viewArea && (
+                  <path
+                    d={chartPaths.viewArea}
+                    fill="url(#visits-area)"
+                    style={{
+                      opacity: isAnimating ? 1 : 0,
+                      transition: 'opacity 800ms ease',
+                    }}
+                  />
+                )}
+
+                {chartPaths.uniquePath && (
+                  <path
+                    d={chartPaths.uniquePath}
+                    fill="none"
+                    stroke="url(#users-line)"
+                    strokeWidth="1.2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    vectorEffect="non-scaling-stroke"
+                    pathLength={1}
+                    style={{
+                      strokeDasharray: '1 1',
+                      strokeDashoffset: isAnimating ? 0 : 1,
+                      transition: 'stroke-dashoffset 900ms ease',
+                    }}
+                  />
+                )}
+
+                {chartPaths.viewPath && (
+                  <path
+                    d={chartPaths.viewPath}
+                    fill="none"
+                    stroke="url(#visits-line)"
+                    strokeWidth="1.4"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    vectorEffect="non-scaling-stroke"
+                    pathLength={1}
+                    style={{
+                      strokeDasharray: '1 1',
+                      strokeDashoffset: isAnimating ? 0 : 1,
+                      transition: 'stroke-dashoffset 950ms ease',
+                    }}
+                  />
+                )}
+
+                {viewSeries.map((value, index) => {
+                  const count = viewSeries.length;
+                  const padding = chartPaths.padding;
+                  const inner = chartPaths.inner;
+                  const x = padding + (count === 1 ? 0 : (index / (count - 1)) * inner);
+                  const y = padding + (1 - value / chartMax) * inner;
+                  return (
+                    <circle
+                      key={`view-${index}`}
+                      cx={x}
+                      cy={y}
+                      r="1.6"
+                      fill="#f59e0b"
                       style={{
-                        height: isAnimating ? `${(value / chartMax) * 100}%` : '2px',
-                        minHeight: isAnimating && value ? '6%' : '2px',
-                        transitionDelay: `${index * 30}ms`,
+                        opacity: isAnimating ? 1 : 0,
+                        transition: 'opacity 500ms ease',
+                        transitionDelay: `${index * 35}ms`,
                       }}
-                      title={`${labels[index] ?? ''}: ${value}`}
                     />
-                  </div>
-                ))}
-              </div>
+                  );
+                })}
+
+                {uniqueSeries.map((value, index) => {
+                  const count = uniqueSeries.length;
+                  const padding = chartPaths.padding;
+                  const inner = chartPaths.inner;
+                  const x = padding + (count === 1 ? 0 : (index / (count - 1)) * inner);
+                  const y = padding + (1 - value / chartMax) * inner;
+                  return (
+                    <circle
+                      key={`unique-${index}`}
+                      cx={x}
+                      cy={y}
+                      r="1.2"
+                      fill="#34d399"
+                      style={{
+                        opacity: isAnimating ? 1 : 0,
+                        transition: 'opacity 500ms ease',
+                        transitionDelay: `${index * 35}ms`,
+                      }}
+                    />
+                  );
+                })}
+              </svg>
             </div>
             <div
               className="mt-3 grid text-[10px] text-white/40"

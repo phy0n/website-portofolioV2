@@ -72,10 +72,7 @@ export default async function AdminPage({
         </div>
       </section>
 
-      <AdminAnalytics
-        initialRange={searchParams?.range}
-        initialMetric={searchParams?.metric}
-      />
+      <AdminAnalytics initialRange={searchParams?.range} />
     </div>
   );
 }
