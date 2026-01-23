@@ -1,5 +1,5 @@
 import { NextResponse, type NextRequest } from 'next/server';
-import { createServerClient } from '@supabase/ssr';
+import { createServerClient, type CookieOptions } from '@supabase/ssr';
 
 export async function middleware(request: NextRequest) {
   if (request.nextUrl.pathname.startsWith('/admin/login')) {
@@ -16,13 +16,13 @@ export async function middleware(request: NextRequest) {
   const response = NextResponse.next();
   const supabase = createServerClient(supabaseUrl, supabaseAnonKey, {
     cookies: {
-      get(name) {
+      get(name: string) {
         return request.cookies.get(name)?.value;
       },
-      set(name, value, options) {
+      set(name: string, value: string, options: CookieOptions) {
         response.cookies.set({ name, value, ...options });
       },
-      remove(name, options) {
+      remove(name: string, options: CookieOptions) {
         response.cookies.set({ name, value: '', ...options, maxAge: 0 });
       },
     },
