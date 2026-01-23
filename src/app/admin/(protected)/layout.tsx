@@ -3,6 +3,9 @@ import { ArrowUpRight, BarChart3, FileText, LogOut, Quote } from 'lucide-react';
 import { requireAdmin } from '@/lib/supabase/admin';
 import { signOut } from './actions';
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export default async function AdminLayout({
   children,
 }: {

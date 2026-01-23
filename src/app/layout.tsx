@@ -1,9 +1,12 @@
 import "../styles/globals.css";
-import { Analytics } from "@vercel/analytics/next";
 import { Geist, Geist_Mono, Nunito } from "next/font/google";
 import type { Metadata } from "next";
 import AnalyticsTracker from "@/components/analytics/AnalyticsTracker";
 import GlobalGsap from "@/components/shared/GlobalGsap";
+import VercelAnalytics from "@/components/analytics/VercelAnalytics";
+
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -76,7 +79,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
       >
         <GlobalGsap>{children}</GlobalGsap>
         <AnalyticsTracker />
-        <Analytics />
+        <VercelAnalytics />
       </body>
     </html>
   );

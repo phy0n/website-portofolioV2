@@ -5,7 +5,7 @@ import { Menu, X } from 'lucide-react';
 import { gsap } from 'gsap';
 
 const NAV_LINKS = [
-  { label: 'Home', href: '/#top' },
+  { label: 'Home', href: '/' },
   { label: 'Games', href: '/games' },
   { label: 'Connect', href: '/connect' },
   { label: 'Blog', href: '/blog' },

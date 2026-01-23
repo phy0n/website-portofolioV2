@@ -54,7 +54,7 @@ export default function BlogDetailClient({ blog }: { blog: Blog | null }) {
         return (
           <pre
             key={index}
-            className="bg-gray-950 border border-gray-900 p-3 xs:p-4 sm:p-6 overflow-x-auto my-6 xs:my-8"
+            className="bg-gray-950 border border-white/10 p-3 xs:p-4 sm:p-6 overflow-x-auto my-6 xs:my-8"
           >
             <code className="text-[10px] xs:text-xs sm:text-sm text-gray-300">
               {codeMatch[2].trim()}
@@ -111,13 +111,13 @@ export default function BlogDetailClient({ blog }: { blog: Blog | null }) {
 
   if (!blog) {
     return (
-      <div className="min-h-screen bg-black flex items-center justify-center">
+      <div className="home-portfolio min-h-screen bg-[var(--home-bg)] text-[var(--home-ink)] flex items-center justify-center">
         <div className="text-center space-y-6">
           <h2 className="text-4xl font-bold text-white">Story Not Found</h2>
-          <p className="text-gray-400">The story you&apos;re looking for doesn&apos;t exist.</p>
+          <p className="text-[var(--home-muted)]">The story you&apos;re looking for doesn&apos;t exist.</p>
           <Link
             href="/blog"
-            className="inline-flex items-center gap-2 px-6 py-3 border border-gray-800 hover:border-red-500 transition-colors text-white"
+            className="inline-flex items-center gap-2 px-6 py-3 border border-white/10 hover:border-[var(--home-accent)] transition-colors text-white"
           >
             <ArrowLeft className="w-4 h-4" />
             Back to Journal
@@ -128,21 +128,10 @@ export default function BlogDetailClient({ blog }: { blog: Blog | null }) {
   }
 
   return (
-    <div className="min-h-screen bg-black text-white font-nunito relative" data-page-content>
-      <div className="fixed inset-0 opacity-[0.03] pointer-events-none">
-        <Image
-          src="https://images.unsplash.com/photo-1528164344705-47542687000d?w=1920&h=1080&fit=crop"
-          alt="Japanese scenery"
-          fill
-          sizes="100vw"
-          quality={60}
-          className="object-cover"
-        />
-      </div>
-      <div className="fixed inset-0 bg-gradient-to-b from-black via-black/95 to-black pointer-events-none"></div>
-      <div className="fixed top-0 left-0 right-0 z-50 h-1 bg-gray-900">
+    <div className="home-portfolio min-h-screen bg-[var(--home-bg)] text-[var(--home-ink)] font-nunito relative" data-page-content>
+      <div className="fixed top-0 left-0 right-0 z-50 h-1 bg-white/10">
         <div
-          className="h-full bg-gradient-to-r from-red-500 to-pink-500 transition-all duration-150"
+          className="h-full bg-gradient-to-r from-[var(--home-accent)] to-[var(--home-accent-2)] transition-all duration-150"
           style={{ width: `${readingProgress}%` }}
         />
       </div>
@@ -152,15 +141,15 @@ export default function BlogDetailClient({ blog }: { blog: Blog | null }) {
           <h1 className="text-2xl xs:text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 xs:mb-8 leading-tight">
             {blog.title}
           </h1>
-          <div className="relative pl-3 xs:pl-4 sm:pl-6 border-l-2 border-red-500">
-            <p className="text-sm xs:text-base sm:text-lg md:text-xl text-gray-400 leading-relaxed">
+          <div className="relative pl-3 xs:pl-4 sm:pl-6 border-l-2 border-[var(--home-accent)]">
+            <p className="text-sm xs:text-base sm:text-lg md:text-xl text-[var(--home-muted)] leading-relaxed">
               {blog.excerpt}
             </p>
           </div>
         </header>
         {blog.image && (
           <div
-            className="relative w-full h-48 xs:h-56 sm:h-64 md:h-96 lg:h-[600px] overflow-hidden mb-10 xs:mb-12 sm:mb-16 border border-gray-900"
+            className="relative w-full h-48 xs:h-56 sm:h-64 md:h-96 lg:h-[600px] overflow-hidden mb-10 xs:mb-12 sm:mb-16 border border-white/10"
             data-gsap="reveal"
           >
             <Image
@@ -177,18 +166,18 @@ export default function BlogDetailClient({ blog }: { blog: Blog | null }) {
         <div className="prose prose-invert max-w-none mb-10 xs:mb-12 sm:mb-16" data-gsap="reveal">
           {contentBlocks}
         </div>
-        <div className="mt-10 xs:mt-12 sm:mt-16 pt-6 xs:pt-8 border-t border-gray-900" data-gsap="reveal">
+        <div className="mt-10 xs:mt-12 sm:mt-16 pt-6 xs:pt-8 border-t border-white/10" data-gsap="reveal">
           <div className="flex items-center justify-between">
             <Link
               href="/blog"
-              className="inline-flex items-center gap-1.5 xs:gap-2 text-gray-400 hover:text-white transition-colors group"
+              className="inline-flex items-center gap-1.5 xs:gap-2 text-[var(--home-muted)] hover:text-white transition-colors group"
             >
               <ArrowLeft className="w-3 h-3 xs:w-4 xs:h-4 group-hover:-translate-x-1 transition-transform" />
               <span className="text-xs xs:text-sm">Kembali ke Journal</span>
             </Link>
           </div>
           <div className="mt-6 xs:mt-8 text-center">
-            <p className="text-xs xs:text-sm text-gray-600 italic">
+            <p className="text-xs xs:text-sm text-[var(--home-muted)] italic">
               &ldquo;Setiap cerita adalah bagian dari perjalanan hidup&rdquo;
             </p>
           </div>
@@ -197,3 +186,4 @@ export default function BlogDetailClient({ blog }: { blog: Blog | null }) {
     </div>
   );
 }
+
