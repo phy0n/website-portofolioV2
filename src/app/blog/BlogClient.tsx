@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useDeferredValue, useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { BookOpen, ArrowLeft, Quote, X } from 'lucide-react';
@@ -48,6 +48,8 @@ export default function BlogClient({
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [isQuotesOpen, setIsQuotesOpen] = useState(false);
+  const deferredQuery = useDeferredValue(searchQuery);
+  const normalizedQuery = deferredQuery.trim().toLowerCase();
 
   const visibleBlogs = useMemo(() => {
     return blogs.filter((blog) => blog.is_published !== false);
@@ -88,18 +90,26 @@ export default function BlogClient({
     };
   }, [isQuotesOpen]);
 
-  const filteredBlogs = visibleBlogs.filter((blog) => {
-    const matchesSearch =
-      blog.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      blog.excerpt.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesCategory = !selectedCategory || blog.category === selectedCategory;
-    return matchesSearch && matchesCategory;
-  });
+  const filteredBlogs = useMemo(() => {
+    if (!normalizedQuery && !selectedCategory) {
+      return visibleBlogs;
+    }
 
-  const totalWords = visibleBlogs.reduce(
-    (sum, blog) => sum + blog.content.split(/\s+/).length,
-    0
-  );
+    return visibleBlogs.filter((blog) => {
+      const matchesSearch =
+        !normalizedQuery ||
+        blog.title.toLowerCase().includes(normalizedQuery) ||
+        blog.excerpt.toLowerCase().includes(normalizedQuery);
+      const matchesCategory = !selectedCategory || blog.category === selectedCategory;
+      return matchesSearch && matchesCategory;
+    });
+  }, [visibleBlogs, normalizedQuery, selectedCategory]);
+
+  const totalWords = useMemo(() => {
+    return visibleBlogs.reduce((sum, blog) => {
+      return sum + blog.content.split(/\s+/).length;
+    }, 0);
+  }, [visibleBlogs]);
   const totalStories = visibleBlogs.length;
 
   return (
@@ -109,8 +119,9 @@ export default function BlogClient({
           src="https://images.unsplash.com/photo-1528164344705-47542687000d?w=1920&h=1080&fit=crop"
           alt="Japanese scenery"
           fill
+          sizes="100vw"
+          quality={60}
           className="object-cover"
-          priority
         />
       </div>
       <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 xs:pt-8">
@@ -242,6 +253,8 @@ export default function BlogClient({
                                 src={blog.image}
                                 alt={blog.title}
                                 fill
+                                sizes="(min-width: 1024px) 40vw, 100vw"
+                                quality={75}
                                 className="object-cover group-hover:scale-105 transition-transform duration-700"
                               />
                             )}

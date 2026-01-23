@@ -73,7 +73,7 @@ function Modal({
             <X className="h-4 w-4" />
           </button>
         </div>
-        <div className="max-h-[70vh] overflow-y-auto pr-2">{children}</div>
+        <div className="max-h-[70vh] overflow-y-auto pr-2 hide-scrollbar">{children}</div>
       </div>
     </div>
   );

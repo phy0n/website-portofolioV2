@@ -1,7 +1,8 @@
+import { cache } from 'react';
 import { redirect } from 'next/navigation';
 import { createSupabaseServerClient } from './server';
 
-export async function requireAdmin() {
+export const requireAdmin = cache(async () => {
   const supabase = await createSupabaseServerClient();
   const { data: { user }, error: userError } = await supabase.auth.getUser();
 
@@ -20,4 +21,4 @@ export async function requireAdmin() {
   }
 
   return { supabase, user };
-}
+});

@@ -30,7 +30,9 @@ const inputClassName =
 const textareaClassName =
   'mt-2 w-full rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm text-white placeholder-white/40 shadow-[0_0_0_1px_rgba(255,255,255,0.02)] focus:border-white/40 focus:outline-none';
 const selectClassName =
-  'mt-2 w-full rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm text-white shadow-[0_0_0_1px_rgba(255,255,255,0.02)] focus:border-white/40 focus:outline-none';
+  'mt-2 w-full rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm text-white shadow-[0_0_0_1px_rgba(255,255,255,0.02)] focus:border-white/40 focus:outline-none admin-select';
+const tableSelectClassName =
+  'w-full rounded-lg border border-white/10 bg-white/5 px-3 py-1.5 text-xs text-white shadow-[0_0_0_1px_rgba(255,255,255,0.02)] focus:border-white/40 focus:outline-none admin-select';
 
 const slugify = (value: string) => {
   return value
@@ -91,7 +93,7 @@ function Modal({
             <X className="h-4 w-4" />
           </button>
         </div>
-        <div className="max-h-[70vh] overflow-y-auto pr-2">{children}</div>
+        <div className="max-h-[70vh] overflow-y-auto pr-2 hide-scrollbar">{children}</div>
       </div>
     </div>
   );
@@ -101,6 +103,7 @@ export default function BlogManager({
   blogs,
   createBlog,
   updateBlog,
+  updateBlogStatus,
   deleteBlog,
   successMessage,
   errorMessage,
@@ -108,6 +111,7 @@ export default function BlogManager({
   blogs: Blog[];
   createBlog: BlogAction;
   updateBlog: BlogAction;
+  updateBlogStatus: BlogAction;
   deleteBlog: BlogAction;
   successMessage?: string;
   errorMessage?: string;
@@ -235,14 +239,13 @@ export default function BlogManager({
                 <th className="px-4 py-3 text-left">Category</th>
                 <th className="px-4 py-3 text-left">Date</th>
                 <th className="px-4 py-3 text-left">Status</th>
-                <th className="px-4 py-3 text-left">Featured</th>
                 <th className="px-4 py-3 text-left">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-white/10">
               {blogs.length === 0 && (
                 <tr>
-                  <td colSpan={6} className="px-4 py-6 text-center text-white/50">
+                  <td colSpan={5} className="px-4 py-6 text-center text-white/50">
                     No blogs yet.
                   </td>
                 </tr>
@@ -256,9 +259,21 @@ export default function BlogManager({
                   <td className="px-4 py-4 text-white/70">{blog.category}</td>
                   <td className="px-4 py-4 text-white/70">{formatDateInput(blog.date)}</td>
                   <td className="px-4 py-4 text-white/70">
-                    {blog.is_published ? 'Published' : 'Draft'}
+                    <form action={updateBlogStatus} className="min-w-[140px]">
+                      <input type="hidden" name="redirect_to" value="/admin/blogs" />
+                      <input type="hidden" name="id" value={blog.id} />
+                      <input type="hidden" name="slug" value={blog.slug} />
+                      <select
+                        name="is_published"
+                        defaultValue={blog.is_published ? 'published' : 'draft'}
+                        onChange={(event) => event.currentTarget.form?.requestSubmit()}
+                        className={tableSelectClassName}
+                      >
+                        <option value="published">Published</option>
+                        <option value="draft">Draft</option>
+                      </select>
+                    </form>
                   </td>
-                  <td className="px-4 py-4 text-white/70">{blog.featured ? 'Yes' : 'No'}</td>
                   <td className="px-4 py-4">
                     <div className="flex items-center gap-2">
                       <button
@@ -351,48 +366,26 @@ export default function BlogManager({
               </select>
             </div>
           </div>
-          <div className="grid gap-4 md:grid-cols-2">
-            <div>
-              <label className="text-sm text-white/60">Tags (comma separated)</label>
-              <input name="tags" className={inputClassName} placeholder="life, love" />
-            </div>
-            <div>
-              <label className="text-sm text-white/60">Local Image</label>
-              <input
-                key={createFileKey}
-                name="image_file"
-                type="file"
-                accept="image/png,image/jpeg,image/webp"
-                onChange={handleCreateImageChange}
-                className="mt-2 block w-full text-sm text-white/70 file:mr-4 file:rounded-full file:border-0 file:bg-white/10 file:px-4 file:py-2 file:text-xs file:font-semibold file:text-white hover:file:bg-white/20"
-              />
-              <p className="mt-2 text-xs text-white/40">PNG/JPG/WebP, max 5MB.</p>
-              {createImagePreview && (
-                <div className="mt-3 overflow-hidden rounded-xl border border-white/10 bg-white/5">
-                  <img
-                    src={createImagePreview}
-                    alt="Preview"
-                    className="h-32 w-full object-cover"
-                  />
-                </div>
-              )}
-            </div>
-          </div>
-          <div className="grid gap-4 md:grid-cols-2">
-            <div>
-              <label className="text-sm text-white/60">Featured</label>
-              <select name="featured" defaultValue="standard" className={selectClassName}>
-                <option value="standard">Standard</option>
-                <option value="featured">Featured</option>
-              </select>
-            </div>
-            <div>
-              <label className="text-sm text-white/60">Status</label>
-              <select name="is_published" defaultValue="published" className={selectClassName}>
-                <option value="published">Published</option>
-                <option value="draft">Draft</option>
-              </select>
-            </div>
+          <div>
+            <label className="text-sm text-white/60">Local Image</label>
+            <input
+              key={createFileKey}
+              name="image_file"
+              type="file"
+              accept="image/png,image/jpeg,image/webp"
+              onChange={handleCreateImageChange}
+              className="mt-2 block w-full text-sm text-white/70 file:mr-4 file:rounded-full file:border-0 file:bg-white/10 file:px-4 file:py-2 file:text-xs file:font-semibold file:text-white hover:file:bg-white/20"
+            />
+            <p className="mt-2 text-xs text-white/40">PNG/JPG/WebP, max 5MB.</p>
+            {createImagePreview && (
+              <div className="mt-3 overflow-hidden rounded-xl border border-white/10 bg-white/5">
+                <img
+                  src={createImagePreview}
+                  alt="Preview"
+                  className="h-32 w-full object-cover"
+                />
+              </div>
+            )}
           </div>
           <button
             type="submit"
@@ -494,60 +487,26 @@ export default function BlogManager({
                 </select>
               </div>
             </div>
-            <div className="grid gap-4 md:grid-cols-2">
-              <div>
-                <label className="text-sm text-white/60">Tags</label>
-                <input
-                  name="tags"
-                  defaultValue={Array.isArray(editingBlog.tags) ? editingBlog.tags.join(', ') : ''}
-                  className={inputClassName}
-                />
-              </div>
-              <div>
-                <label className="text-sm text-white/60">Local Image</label>
-                <input
-                  key={`${editingBlog.id}-${editFileKey}`}
-                  name="image_file"
-                  type="file"
-                  accept="image/png,image/jpeg,image/webp"
-                  onChange={handleEditImageChange}
-                  className="mt-2 block w-full text-sm text-white/70 file:mr-4 file:rounded-full file:border-0 file:bg-white/10 file:px-4 file:py-2 file:text-xs file:font-semibold file:text-white hover:file:bg-white/20"
-                />
-                <p className="mt-2 text-xs text-white/40">PNG/JPG/WebP, max 5MB.</p>
-                {editImagePreview && (
-                  <div className="mt-3 overflow-hidden rounded-xl border border-white/10 bg-white/5">
-                    <img
-                      src={editImagePreview}
-                      alt="Preview"
-                      className="h-32 w-full object-cover"
-                    />
-                  </div>
-                )}
-              </div>
-            </div>
-            <div className="grid gap-4 md:grid-cols-2">
-              <div>
-                <label className="text-sm text-white/60">Featured</label>
-                <select
-                  name="featured"
-                  defaultValue={editingBlog.featured ? 'featured' : 'standard'}
-                  className={selectClassName}
-                >
-                  <option value="standard">Standard</option>
-                  <option value="featured">Featured</option>
-                </select>
-              </div>
-              <div>
-                <label className="text-sm text-white/60">Status</label>
-                <select
-                  name="is_published"
-                  defaultValue={editingBlog.is_published ? 'published' : 'draft'}
-                  className={selectClassName}
-                >
-                  <option value="published">Published</option>
-                  <option value="draft">Draft</option>
-                </select>
-              </div>
+            <div>
+              <label className="text-sm text-white/60">Local Image</label>
+              <input
+                key={`${editingBlog.id}-${editFileKey}`}
+                name="image_file"
+                type="file"
+                accept="image/png,image/jpeg,image/webp"
+                onChange={handleEditImageChange}
+                className="mt-2 block w-full text-sm text-white/70 file:mr-4 file:rounded-full file:border-0 file:bg-white/10 file:px-4 file:py-2 file:text-xs file:font-semibold file:text-white hover:file:bg-white/20"
+              />
+              <p className="mt-2 text-xs text-white/40">PNG/JPG/WebP, max 5MB.</p>
+              {editImagePreview && (
+                <div className="mt-3 overflow-hidden rounded-xl border border-white/10 bg-white/5">
+                  <img
+                    src={editImagePreview}
+                    alt="Preview"
+                    className="h-32 w-full object-cover"
+                  />
+                </div>
+              )}
             </div>
             <button
               type="submit"

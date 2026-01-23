@@ -1,5 +1,5 @@
 import BlogManager from './BlogManager';
-import { createBlog, updateBlog, deleteBlog } from '../actions';
+import { createBlog, updateBlog, updateBlogStatus, deleteBlog } from '../actions';
 import { requireAdmin } from '@/lib/supabase/admin';
 
 interface Blog {
@@ -42,6 +42,7 @@ export default async function AdminBlogsPage({
       blogs={blogRows}
       createBlog={createBlog}
       updateBlog={updateBlog}
+      updateBlogStatus={updateBlogStatus}
       deleteBlog={deleteBlog}
       successMessage={successMessage}
       errorMessage={errorMessage}

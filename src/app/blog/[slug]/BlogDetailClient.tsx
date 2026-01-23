@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { ArrowLeft } from 'lucide-react';
@@ -22,18 +22,91 @@ interface Blog {
 
 export default function BlogDetailClient({ blog }: { blog: Blog | null }) {
   const [readingProgress, setReadingProgress] = useState(0);
+  const rafRef = useRef<number | null>(null);
+
+  const contentBlocks = useMemo(() => {
+    if (!blog?.content) return [];
+    const codeMatch = blog.content.match(/```(\w+)?\n([\s\S]*?)```/);
+
+    return blog.content.split('\n').map((paragraph, index) => {
+      if (paragraph.startsWith('## ')) {
+        return (
+          <h2
+            key={index}
+            className="text-xl xs:text-2xl sm:text-3xl md:text-4xl font-bold mt-10 xs:mt-12 sm:mt-16 mb-4 xs:mb-5 sm:mb-6 text-white"
+          >
+            {paragraph.replace('## ', '')}
+          </h2>
+        );
+      }
+      if (paragraph.startsWith('### ')) {
+        return (
+          <h3
+            key={index}
+            className="text-lg xs:text-xl sm:text-2xl font-bold mt-8 xs:mt-10 sm:mt-12 mb-3 xs:mb-4 text-white"
+          >
+            {paragraph.replace('### ', '')}
+          </h3>
+        );
+      }
+      if (paragraph.startsWith('```')) {
+        if (!codeMatch) return null;
+        return (
+          <pre
+            key={index}
+            className="bg-gray-950 border border-gray-900 p-3 xs:p-4 sm:p-6 overflow-x-auto my-6 xs:my-8"
+          >
+            <code className="text-[10px] xs:text-xs sm:text-sm text-gray-300">
+              {codeMatch[2].trim()}
+            </code>
+          </pre>
+        );
+      }
+      if (paragraph.startsWith('- ')) {
+        return (
+          <li
+            key={index}
+            className="text-xs xs:text-sm sm:text-base text-gray-300 ml-4 xs:ml-6 mb-2 xs:mb-3"
+          >
+            {paragraph.replace('- ', '')}
+          </li>
+        );
+      }
+      if (paragraph.trim()) {
+        return (
+          <p
+            key={index}
+            className="text-xs xs:text-sm sm:text-base md:text-lg text-gray-300 leading-relaxed mb-4 xs:mb-5 sm:mb-6"
+          >
+            {paragraph}
+          </p>
+        );
+      }
+      return null;
+    });
+  }, [blog?.content]);
 
   useEffect(() => {
     const handleScroll = () => {
-      const windowHeight = window.innerHeight;
-      const documentHeight = document.documentElement.scrollHeight - windowHeight;
-      const scrolled = window.scrollY;
-      const progress = (scrolled / documentHeight) * 100;
-      setReadingProgress(Math.min(progress, 100));
+      if (rafRef.current !== null) return;
+      rafRef.current = window.requestAnimationFrame(() => {
+        rafRef.current = null;
+        const windowHeight = window.innerHeight;
+        const documentHeight = document.documentElement.scrollHeight - windowHeight;
+        const scrolled = window.scrollY;
+        const progress = documentHeight > 0 ? (scrolled / documentHeight) * 100 : 0;
+        setReadingProgress(Math.min(progress, 100));
+      });
     };
 
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    handleScroll();
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => {
+      if (rafRef.current !== null) {
+        window.cancelAnimationFrame(rafRef.current);
+      }
+      window.removeEventListener('scroll', handleScroll);
+    };
   }, []);
 
   if (!blog) {
@@ -61,8 +134,9 @@ export default function BlogDetailClient({ blog }: { blog: Blog | null }) {
           src="https://images.unsplash.com/photo-1528164344705-47542687000d?w=1920&h=1080&fit=crop"
           alt="Japanese scenery"
           fill
+          sizes="100vw"
+          quality={60}
           className="object-cover"
-          priority
         />
       </div>
       <div className="fixed inset-0 bg-gradient-to-b from-black via-black/95 to-black pointer-events-none"></div>
@@ -86,58 +160,19 @@ export default function BlogDetailClient({ blog }: { blog: Blog | null }) {
         </header>
         {blog.image && (
           <div className="relative w-full h-48 xs:h-56 sm:h-64 md:h-96 lg:h-[600px] overflow-hidden mb-10 xs:mb-12 sm:mb-16 border border-gray-900">
-            <Image src={blog.image} alt={blog.title} fill className="object-cover" />
+            <Image
+              src={blog.image}
+              alt={blog.title}
+              fill
+              sizes="(min-width: 1024px) 896px, 100vw"
+              quality={80}
+              className="object-cover"
+            />
             <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent"></div>
           </div>
         )}
         <div className="prose prose-invert max-w-none mb-10 xs:mb-12 sm:mb-16">
-          {blog.content.split('\n').map((paragraph, index) => {
-            if (paragraph.startsWith('## ')) {
-              return (
-                <h2
-                  key={index}
-                  className="text-xl xs:text-2xl sm:text-3xl md:text-4xl font-bold mt-10 xs:mt-12 sm:mt-16 mb-4 xs:mb-5 sm:mb-6 text-white"
-                >
-                  {paragraph.replace('## ', '')}
-                </h2>
-              );
-            }
-            if (paragraph.startsWith('### ')) {
-              return (
-                <h3
-                  key={index}
-                  className="text-lg xs:text-xl sm:text-2xl font-bold mt-8 xs:mt-10 sm:mt-12 mb-3 xs:mb-4 text-white"
-                >
-                  {paragraph.replace('### ', '')}
-                </h3>
-              );
-            }
-            if (paragraph.startsWith('```')) {
-              const codeMatch = blog.content.match(/```(\w+)?\n([\s\S]*?)```/);
-              if (codeMatch) {
-                return (
-                  <pre key={index} className="bg-gray-950 border border-gray-900 p-3 xs:p-4 sm:p-6 overflow-x-auto my-6 xs:my-8">
-                    <code className="text-[10px] xs:text-xs sm:text-sm text-gray-300">{codeMatch[2].trim()}</code>
-                  </pre>
-                );
-              }
-            }
-            if (paragraph.startsWith('- ')) {
-              return (
-                <li key={index} className="text-xs xs:text-sm sm:text-base text-gray-300 ml-4 xs:ml-6 mb-2 xs:mb-3">
-                  {paragraph.replace('- ', '')}
-                </li>
-              );
-            }
-            if (paragraph.trim()) {
-              return (
-                <p key={index} className="text-xs xs:text-sm sm:text-base md:text-lg text-gray-300 leading-relaxed mb-4 xs:mb-5 sm:mb-6">
-                  {paragraph}
-                </p>
-              );
-            }
-            return null;
-          })}
+          {contentBlocks}
         </div>
         <div className="mt-10 xs:mt-12 sm:mt-16 pt-6 xs:pt-8 border-t border-gray-900">
           <div className="flex items-center justify-between">

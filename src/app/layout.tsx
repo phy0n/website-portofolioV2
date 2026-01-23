@@ -2,6 +2,7 @@ import "../styles/globals.css";
 import { Analytics } from "@vercel/analytics/next";
 import { Geist, Geist_Mono, Nunito } from "next/font/google";
 import type { Metadata } from "next";
+import AnalyticsTracker from "@/components/analytics/AnalyticsTracker";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -73,6 +74,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
         className={`${geistSans.variable} ${geistMono.variable} ${nunito.variable} antialiased`}
       >
         {children}
+        <AnalyticsTracker />
         <Analytics />
       </body>
     </html>

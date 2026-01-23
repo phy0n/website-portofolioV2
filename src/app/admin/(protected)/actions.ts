@@ -142,11 +142,11 @@ export async function updateBlog(formData: FormData) {
   const author = String(formData.get('author') || '').trim();
   const date = String(formData.get('date') || '').trim();
   const category = String(formData.get('category') || '').trim();
-  const tagsValue = String(formData.get('tags') || '');
+  const tagsValue = formData.get('tags');
   const imageFile = extractImageFile(formData);
   const currentImage = String(formData.get('current_image') || '').trim();
-  const featuredValue = String(formData.get('featured') || 'standard');
-  const statusValue = String(formData.get('is_published') || 'published');
+  const featuredValue = formData.get('featured');
+  const statusValue = formData.get('is_published');
   const featured = featuredValue === 'featured';
   const isPublished = statusValue === 'published';
 
@@ -163,23 +163,31 @@ export async function updateBlog(formData: FormData) {
   const { supabase } = await requireAdmin();
   const uploadedImage = await uploadBlogImage(supabase, imageFile, slug, redirectTo);
   const imageUrl = uploadedImage ?? (currentImage || null);
-  const { error } = await supabase
-    .from('blogs')
-    .update({
-      title,
-      slug,
-      excerpt,
-      content,
-      author,
-      date,
-      category,
-      tags: normalizeTags(tagsValue),
-      image: imageUrl,
-      featured,
-      is_published: isPublished,
-      updated_at: new Date().toISOString(),
-    })
-    .eq('id', id);
+  const updateData: Record<string, unknown> = {
+    title,
+    slug,
+    excerpt,
+    content,
+    author,
+    date,
+    category,
+    image: imageUrl,
+    updated_at: new Date().toISOString(),
+  };
+
+  if (tagsValue !== null) {
+    updateData.tags = normalizeTags(String(tagsValue));
+  }
+
+  if (featuredValue !== null) {
+    updateData.featured = featured;
+  }
+
+  if (statusValue !== null) {
+    updateData.is_published = isPublished;
+  }
+
+  const { error } = await supabase.from('blogs').update(updateData).eq('id', id);
 
   if (error) {
     redirectWithError(redirectTo, `Update blog failed: ${error.message}`);
@@ -188,6 +196,34 @@ export async function updateBlog(formData: FormData) {
   revalidatePath('/blog');
   revalidatePath(`/blog/${slug}`);
   redirectWithSuccess(redirectTo, 'Blog updated.');
+}
+
+export async function updateBlogStatus(formData: FormData) {
+  const redirectTo = resolveRedirectPath(formData);
+  const id = String(formData.get('id') || '').trim();
+  const slug = String(formData.get('slug') || '').trim();
+  const statusValue = String(formData.get('is_published') || '').trim();
+
+  if (!id || !statusValue) {
+    redirectWithError(redirectTo, 'Missing blog status update data.');
+  }
+
+  const isPublished = statusValue === 'published';
+  const { supabase } = await requireAdmin();
+  const { error } = await supabase
+    .from('blogs')
+    .update({ is_published: isPublished, updated_at: new Date().toISOString() })
+    .eq('id', id);
+
+  if (error) {
+    redirectWithError(redirectTo, `Update status failed: ${error.message}`);
+  }
+
+  revalidatePath('/blog');
+  if (slug) {
+    revalidatePath(`/blog/${slug}`);
+  }
+  redirectWithSuccess(redirectTo, 'Status updated.');
 }
 
 export async function deleteBlog(formData: FormData) {

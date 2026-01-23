@@ -1,4 +1,5 @@
 import { requireAdmin } from '@/lib/supabase/admin';
+import AdminAnalytics from '@/components/analytics/AdminAnalytics';
 
 interface BlogSummary {
   id: string;
@@ -9,7 +10,7 @@ interface BlogSummary {
 export default async function AdminPage({
   searchParams,
 }: {
-  searchParams?: { success?: string; error?: string };
+  searchParams?: { success?: string; error?: string; range?: string; metric?: string };
 }) {
   const { supabase } = await requireAdmin();
 
@@ -70,6 +71,11 @@ export default async function AdminPage({
           ))}
         </div>
       </section>
+
+      <AdminAnalytics
+        initialRange={searchParams?.range}
+        initialMetric={searchParams?.metric}
+      />
     </div>
   );
 }
