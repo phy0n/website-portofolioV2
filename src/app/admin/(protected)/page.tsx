@@ -10,7 +10,7 @@ interface BlogSummary {
 export default async function AdminPage({
   searchParams,
 }: {
-  searchParams?: { success?: string; error?: string; range?: string; metric?: string };
+  searchParams?: { success?: string; error?: string; range?: string };
 }) {
   const { supabase } = await requireAdmin();
 

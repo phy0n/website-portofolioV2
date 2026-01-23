@@ -1,6 +1,16 @@
 'use client';
 
 import { useEffect, useMemo, useRef, useState } from 'react';
+import {
+  Area,
+  CartesianGrid,
+  ComposedChart,
+  Line,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
+} from 'recharts';
 
 type RangeValue = '24h' | '7d' | '30d';
 
@@ -40,7 +50,6 @@ export default function AdminAnalytics({
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [animationKey, setAnimationKey] = useState(0);
-  const [isAnimating, setIsAnimating] = useState(false);
   const refreshTimer = useRef<number | null>(null);
 
   const loadAnalytics = async (targetRange: RangeValue) => {
@@ -81,17 +90,6 @@ export default function AdminAnalytics({
     setAnimationKey((prev) => prev + 1);
   }, [data]);
 
-  useEffect(() => {
-    if (!data) return;
-    setIsAnimating(false);
-    const id = window.requestAnimationFrame(() => setIsAnimating(true));
-    return () => window.cancelAnimationFrame(id);
-  }, [animationKey, data]);
-
-  const viewSeries = data?.buckets.views ?? [];
-  const uniqueSeries = data?.buckets.unique ?? [];
-  const chartMax = Math.max(1, ...viewSeries, ...uniqueSeries);
-
   const labels = data?.buckets.labels ?? [];
   const labelStep = data?.buckets.labelStep ?? 1;
   const topPages = data?.topPages ?? [];
@@ -111,42 +109,14 @@ export default function AdminAnalytics({
     return `${formatter.format(start)} - ${formatter.format(end)}`;
   }, [data?.generatedAt, range]);
 
-  const chartPaths = useMemo(() => {
-    const values = viewSeries.length ? viewSeries : [];
-    const uniques = uniqueSeries.length ? uniqueSeries : [];
-    const count = Math.max(values.length, uniques.length, 1);
-    const padding = 8;
-    const size = 100;
-    const inner = size - padding * 2;
-
-    const buildPath = (series: number[]) => {
-      if (!series.length) return '';
-      return series
-        .map((value, index) => {
-          const x = padding + (count === 1 ? 0 : (index / (count - 1)) * inner);
-          const y = padding + (1 - value / chartMax) * inner;
-          return `${index === 0 ? 'M' : 'L'} ${x} ${y}`;
-        })
-        .join(' ');
-    };
-
-    const buildArea = (series: number[]) => {
-      if (!series.length) return '';
-      const path = buildPath(series);
-      const lastX = padding + inner;
-      const baseY = padding + inner;
-      return `${path} L ${lastX} ${baseY} L ${padding} ${baseY} Z`;
-    };
-
-    return {
-      viewPath: buildPath(values),
-      viewArea: buildArea(values),
-      uniquePath: buildPath(uniques),
-      padding,
-      size,
-      inner,
-    };
-  }, [viewSeries, uniqueSeries, chartMax]);
+  const chartData = useMemo(() => {
+    if (!data) return [];
+    return data.buckets.labels.map((label, index) => ({
+      label,
+      visits: data.buckets.views[index] ?? 0,
+      unique: data.buckets.unique[index] ?? 0,
+    }));
+  }, [data]);
 
   return (
     <section id="audience" className="space-y-5">
@@ -229,127 +199,89 @@ export default function AdminAnalytics({
               </div>
             </div>
 
-            <div className="mt-6 h-48">
-              <svg
-                key={animationKey}
-                viewBox="0 0 100 100"
-                className="h-full w-full"
-                preserveAspectRatio="none"
-              >
-                <defs>
-                  <linearGradient id="visits-line" x1="0" x2="0" y1="0" y2="1">
-                    <stop offset="0%" stopColor="#f59e0b" stopOpacity="0.95" />
-                    <stop offset="100%" stopColor="#f97316" stopOpacity="0.8" />
-                  </linearGradient>
-                  <linearGradient id="visits-area" x1="0" x2="0" y1="0" y2="1">
-                    <stop offset="0%" stopColor="#f59e0b" stopOpacity="0.18" />
-                    <stop offset="100%" stopColor="#f97316" stopOpacity="0" />
-                  </linearGradient>
-                  <linearGradient id="users-line" x1="0" x2="0" y1="0" y2="1">
-                    <stop offset="0%" stopColor="#34d399" stopOpacity="0.9" />
-                    <stop offset="100%" stopColor="#22c55e" stopOpacity="0.7" />
-                  </linearGradient>
-                </defs>
-
-                <g stroke="rgba(255,255,255,0.08)" strokeWidth="0.6">
-                  {Array.from({ length: 5 }).map((_, index) => {
-                    const y =
-                      chartPaths.padding + (index / 4) * (chartPaths.size - chartPaths.padding * 2);
-                    return <line key={index} x1="0" y1={y} x2="100" y2={y} />;
-                  })}
-                </g>
-
-                {chartPaths.viewArea && (
-                  <path
-                    d={chartPaths.viewArea}
-                    fill="url(#visits-area)"
-                    style={{
-                      opacity: isAnimating ? 1 : 0,
-                      transition: 'opacity 800ms ease',
-                    }}
-                  />
-                )}
-
-                {chartPaths.uniquePath && (
-                  <path
-                    d={chartPaths.uniquePath}
-                    fill="none"
-                    stroke="url(#users-line)"
-                    strokeWidth="1.2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    vectorEffect="non-scaling-stroke"
-                    pathLength={1}
-                    style={{
-                      strokeDasharray: '1 1',
-                      strokeDashoffset: isAnimating ? 0 : 1,
-                      transition: 'stroke-dashoffset 900ms ease',
-                    }}
-                  />
-                )}
-
-                {chartPaths.viewPath && (
-                  <path
-                    d={chartPaths.viewPath}
-                    fill="none"
-                    stroke="url(#visits-line)"
-                    strokeWidth="1.4"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    vectorEffect="non-scaling-stroke"
-                    pathLength={1}
-                    style={{
-                      strokeDasharray: '1 1',
-                      strokeDashoffset: isAnimating ? 0 : 1,
-                      transition: 'stroke-dashoffset 950ms ease',
-                    }}
-                  />
-                )}
-
-                {viewSeries.map((value, index) => {
-                  const count = viewSeries.length;
-                  const padding = chartPaths.padding;
-                  const inner = chartPaths.inner;
-                  const x = padding + (count === 1 ? 0 : (index / (count - 1)) * inner);
-                  const y = padding + (1 - value / chartMax) * inner;
-                  return (
-                    <circle
-                      key={`view-${index}`}
-                      cx={x}
-                      cy={y}
-                      r="1.6"
-                      fill="#f59e0b"
-                      style={{
-                        opacity: isAnimating ? 1 : 0,
-                        transition: 'opacity 500ms ease',
-                        transitionDelay: `${index * 35}ms`,
-                      }}
+            <div className="mt-6 h-52">
+              {chartData.length === 0 ? (
+                <div className="flex h-full items-center justify-center text-sm text-white/40">
+                  No chart data yet.
+                </div>
+              ) : (
+                <ResponsiveContainer width="100%" height="100%" key={animationKey}>
+                  <ComposedChart
+                    data={chartData}
+                    margin={{ top: 10, right: 10, left: -10, bottom: 0 }}
+                  >
+                    <defs>
+                      <linearGradient id="visitsLine" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stopColor="#f59e0b" stopOpacity={0.95} />
+                        <stop offset="100%" stopColor="#f97316" stopOpacity={0.8} />
+                      </linearGradient>
+                      <linearGradient id="visitsArea" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stopColor="#f59e0b" stopOpacity={0.2} />
+                        <stop offset="100%" stopColor="#f97316" stopOpacity={0} />
+                      </linearGradient>
+                      <linearGradient id="usersLine" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stopColor="#34d399" stopOpacity={0.9} />
+                        <stop offset="100%" stopColor="#22c55e" stopOpacity={0.7} />
+                      </linearGradient>
+                    </defs>
+                    <CartesianGrid
+                      stroke="rgba(255,255,255,0.08)"
+                      strokeDasharray="4 6"
+                      vertical={false}
                     />
-                  );
-                })}
-
-                {uniqueSeries.map((value, index) => {
-                  const count = uniqueSeries.length;
-                  const padding = chartPaths.padding;
-                  const inner = chartPaths.inner;
-                  const x = padding + (count === 1 ? 0 : (index / (count - 1)) * inner);
-                  const y = padding + (1 - value / chartMax) * inner;
-                  return (
-                    <circle
-                      key={`unique-${index}`}
-                      cx={x}
-                      cy={y}
-                      r="1.2"
-                      fill="#34d399"
-                      style={{
-                        opacity: isAnimating ? 1 : 0,
-                        transition: 'opacity 500ms ease',
-                        transitionDelay: `${index * 35}ms`,
-                      }}
+                    <XAxis
+                      dataKey="label"
+                      tick={{ fill: 'rgba(255,255,255,0.5)', fontSize: 10 }}
+                      tickLine={false}
+                      axisLine={false}
+                      interval={0}
+                      tickFormatter={(value, index) =>
+                        index % labelStep === 0 ? String(value) : ''
+                      }
                     />
-                  );
-                })}
-              </svg>
+                    <YAxis
+                      tick={{ fill: 'rgba(255,255,255,0.5)', fontSize: 10 }}
+                      tickLine={false}
+                      axisLine={false}
+                      width={32}
+                    />
+                    <Tooltip
+                      contentStyle={{
+                        background: 'rgba(15, 15, 20, 0.92)',
+                        border: '1px solid rgba(255,255,255,0.15)',
+                        borderRadius: '12px',
+                        fontSize: '12px',
+                      }}
+                      labelStyle={{ color: 'rgba(255,255,255,0.7)' }}
+                      itemStyle={{ color: '#f8fafc' }}
+                      cursor={{ stroke: 'rgba(255,255,255,0.2)', strokeWidth: 1 }}
+                    />
+                    <Area
+                      type="monotone"
+                      dataKey="visits"
+                      name="Visits"
+                      stroke="url(#visitsLine)"
+                      strokeWidth={2}
+                      fill="url(#visitsArea)"
+                      isAnimationActive
+                      animationDuration={900}
+                      animationEasing="ease-out"
+                    />
+                    <Line
+                      type="monotone"
+                      dataKey="unique"
+                      name="Unique users"
+                      stroke="url(#usersLine)"
+                      strokeWidth={2}
+                      dot={false}
+                      activeDot={{ r: 3 }}
+                      isAnimationActive
+                      animationDuration={900}
+                      animationEasing="ease-out"
+                    />
+                  </ComposedChart>
+                </ResponsiveContainer>
+              )}
             </div>
             <div
               className="mt-3 grid text-[10px] text-white/40"
