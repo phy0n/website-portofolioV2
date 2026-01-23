@@ -43,17 +43,19 @@ export async function GET(request: Request) {
 
   const { data: analyticsData, error } = await supabase
     .from('analytics_events')
-    .select('visitor_id, path, created_at')
+    .select('visitor_id, ip_hash, path, created_at')
     .gte('created_at', rangeStart);
 
   if (error) {
     return NextResponse.json({ ok: false, error: error.message }, { status: 500 });
   }
 
-  type AnalyticsRow = { visitor_id: string; path: string; created_at: string };
+  type AnalyticsRow = { visitor_id: string; ip_hash: string | null; path: string; created_at: string };
   const analyticsRows = (analyticsData as AnalyticsRow[] | null) ?? [];
 
-  const uniqueVisitors = new Set(analyticsRows.map((row) => row.visitor_id)).size;
+  const uniqueVisitors = new Set(
+    analyticsRows.map((row) => row.ip_hash || row.visitor_id)
+  ).size;
   const pageViews = analyticsRows.length;
   const viewsPerVisitor = uniqueVisitors ? pageViews / uniqueVisitors : 0;
 
@@ -82,7 +84,7 @@ export async function GET(request: Request) {
       Math.floor((timestamp - bucketStart) / bucketSizeMs)
     );
     viewBuckets[index] += 1;
-    visitorBuckets[index].add(row.visitor_id);
+    visitorBuckets[index].add(row.ip_hash || row.visitor_id);
   });
 
   const uniqueBuckets = visitorBuckets.map((bucket) => bucket.size);

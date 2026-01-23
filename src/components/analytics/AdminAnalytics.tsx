@@ -153,7 +153,7 @@ export default function AdminAnalytics({
         <>
           <div className="grid gap-4 md:grid-cols-3">
             {[
-              { label: 'Unique users', value: data?.summary.uniqueVisitors ?? 0 },
+              { label: 'Unique users (IP)', value: data?.summary.uniqueVisitors ?? 0 },
               { label: 'Page views', value: data?.summary.pageViews ?? 0 },
               {
                 label: 'Views per user',
