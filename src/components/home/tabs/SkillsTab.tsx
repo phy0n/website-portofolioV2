@@ -131,7 +131,6 @@ export default function SkillsTab() {
                 <p className="text-[11px] uppercase tracking-[0.35em] text-[var(--home-muted)]">{group.title}</p>
                 <p className="mt-2 text-xs text-[var(--home-muted)]">{group.caption}</p>
               </div>
-              <span className="text-xs uppercase tracking-[0.35em] text-[var(--home-muted)]">Icons</span>
             </div>
             <div className="flex flex-wrap gap-3">
               {group.items.map((skill, index) => (
