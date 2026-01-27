@@ -1,7 +1,9 @@
 'use client';
 
-import { useEffect, useState, type ReactNode } from 'react';
+import { useEffect, useMemo, useState, type ReactNode } from 'react';
 import { Pencil, Plus, Trash2, X } from 'lucide-react';
+import AdminSubmitButton from '@/components/admin/AdminSubmitButton';
+import AdminToast from '@/components/admin/AdminToast';
 
 type QuoteAction = (formData: FormData) => void | Promise<void>;
 
@@ -96,6 +98,11 @@ export default function QuoteManager({
 }) {
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [editingQuote, setEditingQuote] = useState<Quote | null>(null);
+  const toast = useMemo(() => {
+    if (errorMessage) return { message: errorMessage, tone: 'error' as const };
+    if (successMessage) return { message: successMessage, tone: 'success' as const };
+    return null;
+  }, [errorMessage, successMessage]);
 
   return (
     <div className="space-y-8">
@@ -119,14 +126,7 @@ export default function QuoteManager({
         </div>
       </div>
 
-      {(successMessage || errorMessage) && (
-        <div
-          className="rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white/70 shadow-[0_0_0_1px_rgba(255,255,255,0.02)]"
-          data-gsap="reveal"
-        >
-          {errorMessage || successMessage}
-        </div>
-      )}
+      {toast && <AdminToast message={toast.message} tone={toast.tone} />}
 
       <section className="space-y-3" data-gsap="reveal">
         <h3 className="text-lg font-semibold text-white">Quote list</h3>
@@ -168,15 +168,13 @@ export default function QuoteManager({
                       <form action={deleteQuote} className="inline-flex">
                         <input type="hidden" name="redirect_to" value="/admin/quotes" />
                         <input type="hidden" name="id" value={quote.id} />
-                        <button
-                          type="submit"
-                          title="Delete quote"
-                          aria-label="Delete quote"
+                        <AdminSubmitButton
+                          pendingText="Deleting..."
                           className="inline-flex items-center gap-2 rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white/70 transition hover:border-white/40 hover:text-white hover:bg-white/10"
                         >
                           <Trash2 className="h-4 w-4" />
                           Delete
-                        </button>
+                        </AdminSubmitButton>
                       </form>
                     </div>
                   </td>
@@ -202,12 +200,12 @@ export default function QuoteManager({
             <label className="text-sm text-white/60">Author</label>
             <input name="author" className={inputClassName} placeholder="Phion" />
           </div>
-          <button
-            type="submit"
+          <AdminSubmitButton
+            pendingText="Saving..."
             className="inline-flex w-full items-center justify-center rounded-xl border border-white bg-white px-4 py-2 text-sm font-semibold text-black shadow-sm transition hover:bg-white/90"
           >
             Submit
-          </button>
+          </AdminSubmitButton>
         </form>
       </Modal>
 
@@ -248,12 +246,12 @@ export default function QuoteManager({
                 className={inputClassName}
               />
             </div>
-            <button
-              type="submit"
+            <AdminSubmitButton
+              pendingText="Saving..."
               className="inline-flex w-full items-center justify-center rounded-xl border border-white bg-white px-4 py-2 text-sm font-semibold text-black shadow-sm transition hover:bg-white/90"
             >
               Submit
-            </button>
+            </AdminSubmitButton>
           </form>
         )}
       </Modal>

@@ -51,6 +51,7 @@ export default function AdminAnalytics({
   const [isLoading, setIsLoading] = useState(true);
   const [animationKey, setAnimationKey] = useState(0);
   const refreshTimer = useRef<number | null>(null);
+  const showSkeleton = isLoading && !data;
 
   const loadAnalytics = async (targetRange: RangeValue) => {
     setIsLoading(true);
@@ -149,6 +150,51 @@ export default function AdminAnalytics({
           <p className="text-base font-semibold text-white">Analytics not configured</p>
           <p className="mt-2 text-white/50">{error}</p>
         </div>
+      ) : showSkeleton ? (
+        <>
+          <div className="grid gap-4 md:grid-cols-3">
+            {Array.from({ length: 3 }).map((_, index) => (
+              <div
+                key={`metric-skeleton-${index}`}
+                className="rounded-2xl border border-white/10 bg-white/5 p-5 shadow-[0_20px_60px_rgba(0,0,0,0.35)]"
+              >
+                <div className="h-3 w-32 rounded-full bg-white/10 animate-pulse" />
+                <div className="mt-4 h-7 w-16 rounded-full bg-white/10 animate-pulse" />
+                <div className="mt-3 h-3 w-24 rounded-full bg-white/10 animate-pulse" />
+              </div>
+            ))}
+          </div>
+
+          <div className="rounded-2xl border border-white/10 bg-white/5 p-5 shadow-[0_20px_60px_rgba(0,0,0,0.35)]">
+            <div className="h-4 w-40 rounded-full bg-white/10 animate-pulse" />
+            <div className="mt-5 h-52 w-full rounded-2xl bg-white/5 animate-shimmer" />
+          </div>
+
+          <div className="grid gap-4 lg:grid-cols-5">
+            <div className="rounded-2xl border border-white/10 bg-white/5 p-5 shadow-[0_20px_60px_rgba(0,0,0,0.35)] lg:col-span-3">
+              <div className="h-4 w-28 rounded-full bg-white/10 animate-pulse" />
+              <div className="mt-4 space-y-3">
+                {Array.from({ length: 3 }).map((_, index) => (
+                  <div key={`page-skeleton-${index}`} className="space-y-2">
+                    <div className="h-3 w-48 rounded-full bg-white/10 animate-pulse" />
+                    <div className="h-2 w-full rounded-full bg-white/5 animate-pulse" />
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div className="rounded-2xl border border-white/10 bg-white/5 p-5 shadow-[0_20px_60px_rgba(0,0,0,0.35)] lg:col-span-2">
+              <div className="h-4 w-32 rounded-full bg-white/10 animate-pulse" />
+              <div className="mt-4 space-y-3">
+                {Array.from({ length: 3 }).map((_, index) => (
+                  <div key={`meta-skeleton-${index}`} className="flex items-center justify-between">
+                    <div className="h-3 w-28 rounded-full bg-white/10 animate-pulse" />
+                    <div className="h-3 w-12 rounded-full bg-white/10 animate-pulse" />
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </>
       ) : (
         <>
           <div className="grid gap-4 md:grid-cols-3">

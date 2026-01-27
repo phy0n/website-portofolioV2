@@ -16,7 +16,7 @@ import ProjectsTab from './tabs/ProjectsTab';
 import SkillsTab from './tabs/SkillsTab';
 import type { DiscordStatus } from './types';
 
-const PROFILE_SKILLS = ['Software Engineer', 'Data Analyst'];
+const PROFILE_SKILLS = ['Software Engineer', 'Data Analyst Enthusiast'];
 
 const HIGHLIGHTS = [
   { label: 'Role', value: 'Software Engineer' },

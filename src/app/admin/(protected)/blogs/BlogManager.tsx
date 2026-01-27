@@ -1,7 +1,10 @@
 'use client';
 
 import { useEffect, useMemo, useState, type ChangeEvent, type ReactNode } from 'react';
+import { useFormStatus } from 'react-dom';
 import { Pencil, Plus, Trash2, X } from 'lucide-react';
+import AdminSubmitButton from '@/components/admin/AdminSubmitButton';
+import AdminToast from '@/components/admin/AdminToast';
 
 type BlogAction = (formData: FormData) => void | Promise<void>;
 
@@ -99,6 +102,34 @@ function Modal({
   );
 }
 
+function StatusSelect({
+  defaultValue,
+  onChange,
+}: {
+  defaultValue: string;
+  onChange: (event: ChangeEvent<HTMLSelectElement>) => void;
+}) {
+  const { pending } = useFormStatus();
+
+  return (
+    <div className="relative">
+      <select
+        name="is_published"
+        defaultValue={defaultValue}
+        onChange={onChange}
+        disabled={pending}
+        className={`${tableSelectClassName} ${pending ? 'cursor-not-allowed opacity-60' : ''}`}
+      >
+        <option value="published">Published</option>
+        <option value="draft">Draft</option>
+      </select>
+      {pending && (
+        <span className="pointer-events-none absolute right-3 top-1/2 h-3 w-3 -translate-y-1/2 animate-spin rounded-full border-2 border-white/60 border-t-transparent" />
+      )}
+    </div>
+  );
+}
+
 export default function BlogManager({
   blogs,
   createBlog,
@@ -160,6 +191,11 @@ export default function BlogManager({
     : [editCategoryValue, ...categoryOptions];
   const createSlug = slugify(createTitleValue);
   const editSlug = slugify(editTitleValue || editingBlog?.title || '');
+  const toast = useMemo(() => {
+    if (errorMessage) return { message: errorMessage, tone: 'error' as const };
+    if (successMessage) return { message: successMessage, tone: 'success' as const };
+    return null;
+  }, [errorMessage, successMessage]);
 
   useEffect(() => {
     return () => {
@@ -223,14 +259,7 @@ export default function BlogManager({
         </div>
       </div>
 
-      {(successMessage || errorMessage) && (
-        <div
-          className="rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white/70 shadow-[0_0_0_1px_rgba(255,255,255,0.02)]"
-          data-gsap="reveal"
-        >
-          {errorMessage || successMessage}
-        </div>
-      )}
+      {toast && <AdminToast message={toast.message} tone={toast.tone} />}
 
       <section className="space-y-3" data-gsap="reveal">
         <h3 className="text-lg font-semibold text-white">Blog list</h3>
@@ -266,15 +295,10 @@ export default function BlogManager({
                       <input type="hidden" name="redirect_to" value="/admin/blogs" />
                       <input type="hidden" name="id" value={blog.id} />
                       <input type="hidden" name="slug" value={blog.slug} />
-                      <select
-                        name="is_published"
+                      <StatusSelect
                         defaultValue={blog.is_published ? 'published' : 'draft'}
                         onChange={(event) => event.currentTarget.form?.requestSubmit()}
-                        className={tableSelectClassName}
-                      >
-                        <option value="published">Published</option>
-                        <option value="draft">Draft</option>
-                      </select>
+                      />
                     </form>
                   </td>
                   <td className="px-4 py-4">
@@ -293,15 +317,13 @@ export default function BlogManager({
                         <input type="hidden" name="redirect_to" value="/admin/blogs" />
                         <input type="hidden" name="id" value={blog.id} />
                         <input type="hidden" name="slug" value={blog.slug} />
-                        <button
-                          type="submit"
-                          title="Delete blog"
-                          aria-label="Delete blog"
+                        <AdminSubmitButton
+                          pendingText="Deleting..."
                           className="inline-flex items-center gap-2 rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white/70 transition hover:border-white/40 hover:text-white hover:bg-white/10"
                         >
                           <Trash2 className="h-4 w-4" />
                           Delete
-                        </button>
+                        </AdminSubmitButton>
                       </form>
                     </div>
                   </td>
@@ -390,12 +412,12 @@ export default function BlogManager({
               </div>
             )}
           </div>
-          <button
-            type="submit"
+          <AdminSubmitButton
+            pendingText="Saving..."
             className="inline-flex w-full items-center justify-center rounded-xl border border-white bg-white px-4 py-2 text-sm font-semibold text-black shadow-sm transition hover:bg-white/90"
           >
             Submit
-          </button>
+          </AdminSubmitButton>
         </form>
       </Modal>
 
@@ -511,12 +533,12 @@ export default function BlogManager({
                 </div>
               )}
             </div>
-            <button
-              type="submit"
+            <AdminSubmitButton
+              pendingText="Saving..."
               className="inline-flex w-full items-center justify-center rounded-xl border border-white bg-white px-4 py-2 text-sm font-semibold text-black shadow-sm transition hover:bg-white/90"
             >
               Submit
-            </button>
+            </AdminSubmitButton>
           </form>
         )}
       </Modal>

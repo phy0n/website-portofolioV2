@@ -1,5 +1,8 @@
+import Link from 'next/link';
+import { FileText, Quote } from 'lucide-react';
 import { requireAdmin } from '@/lib/supabase/admin';
 import AdminAnalytics from '@/components/analytics/AdminAnalytics';
+import AdminToast from '@/components/admin/AdminToast';
 
 interface BlogSummary {
   id: string;
@@ -32,6 +35,11 @@ export default async function AdminPage({
   const errorMessage = searchParams?.error
     ? decodeURIComponent(searchParams.error)
     : '';
+  const toast = errorMessage
+    ? { message: errorMessage, tone: 'error' as const }
+    : successMessage
+      ? { message: successMessage, tone: 'success' as const }
+      : null;
 
   return (
     <div className="space-y-10">
@@ -43,14 +51,7 @@ export default async function AdminPage({
         <p className="text-sm text-white/50">Blog and quote metrics</p>
       </div>
 
-      {(successMessage || errorMessage) && (
-        <div
-          className="rounded-md border border-white/10 bg-white/5 px-4 py-3 text-sm text-white/70 shadow-[0_0_0_1px_rgba(255,255,255,0.02)]"
-          data-gsap="reveal"
-        >
-          {errorMessage || successMessage}
-        </div>
-      )}
+      {toast && <AdminToast message={toast.message} tone={toast.tone} />}
 
       <section id="dashboard" className="space-y-5" data-gsap="reveal">
         <div className="flex items-center justify-between">
@@ -72,6 +73,53 @@ export default async function AdminPage({
               <p className="text-3xl font-semibold text-white">{metric.value}</p>
             </div>
           ))}
+        </div>
+      </section>
+
+      <section className="space-y-4" data-gsap="reveal">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <h3 className="text-xl font-semibold text-white">Quick actions</h3>
+          <p className="text-sm text-white/50">Jump to content updates</p>
+        </div>
+        <div className="grid gap-4 md:grid-cols-2">
+          <Link
+            href="/admin/blogs"
+            className="group rounded-2xl border border-white/10 bg-white/5 p-5 shadow-[0_20px_60px_rgba(0,0,0,0.35)] transition hover:border-white/30 hover:bg-white/10"
+          >
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-xs uppercase tracking-[0.3em] text-white/40">
+                  Manage
+                </p>
+                <p className="mt-2 text-lg font-semibold text-white">Blogs</p>
+                <p className="mt-2 text-sm text-white/50">
+                  Create, edit, and publish stories.
+                </p>
+              </div>
+              <div className="flex h-12 w-12 items-center justify-center rounded-full border border-white/10 bg-white/5 text-white/70 transition group-hover:border-white/40 group-hover:text-white">
+                <FileText className="h-5 w-5" />
+              </div>
+            </div>
+          </Link>
+          <Link
+            href="/admin/quotes"
+            className="group rounded-2xl border border-white/10 bg-white/5 p-5 shadow-[0_20px_60px_rgba(0,0,0,0.35)] transition hover:border-white/30 hover:bg-white/10"
+          >
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-xs uppercase tracking-[0.3em] text-white/40">
+                  Manage
+                </p>
+                <p className="mt-2 text-lg font-semibold text-white">Quotes</p>
+                <p className="mt-2 text-sm text-white/50">
+                  Curate daily inspiration snippets.
+                </p>
+              </div>
+              <div className="flex h-12 w-12 items-center justify-center rounded-full border border-white/10 bg-white/5 text-white/70 transition group-hover:border-white/40 group-hover:text-white">
+                <Quote className="h-5 w-5" />
+              </div>
+            </div>
+          </Link>
         </div>
       </section>
 

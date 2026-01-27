@@ -10,6 +10,7 @@ export default function GlobalGsap({ children }: { children: React.ReactNode }) 
 
   useLayoutEffect(() => {
     if (!scopeRef.current) return;
+    if (pathname.startsWith('/admin')) return;
 
     const ctx = gsap.context(() => {
       const pageContent = scopeRef.current?.querySelectorAll<HTMLElement>('[data-page-content]');
