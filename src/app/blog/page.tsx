@@ -1,3 +1,4 @@
+import SiteShell from '@/components/home/SiteShell';
 import BlogClient from './BlogClient';
 import blogsData from '@/data/blogs.json';
 import dailyQuotesData from '@/data/quotes/daily.json';
@@ -7,7 +8,11 @@ export const dynamic = 'force-dynamic';
 
 export default async function BlogPage() {
   if (!supabaseConfig.url || !supabaseConfig.anonKey) {
-    return <BlogClient blogs={blogsData} quotes={dailyQuotesData} viewCounts={{}} />;
+    return (
+      <SiteShell contentMode="full">
+        <BlogClient blogs={blogsData} quotes={dailyQuotesData} viewCounts={{}} />
+      </SiteShell>
+    );
   }
 
   const supabase = await createSupabaseServerClient();
@@ -44,5 +49,9 @@ export default async function BlogPage() {
     // Ignore view count failures.
   }
 
-  return <BlogClient blogs={safeBlogs} quotes={safeQuotes} viewCounts={viewCounts} />;
+  return (
+    <SiteShell contentMode="full">
+      <BlogClient blogs={safeBlogs} quotes={safeQuotes} viewCounts={viewCounts} />
+    </SiteShell>
+  );
 }

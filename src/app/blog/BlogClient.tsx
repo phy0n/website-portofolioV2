@@ -4,7 +4,6 @@ import React, { useDeferredValue, useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import {
-  ArrowLeft,
   BookOpen,
   Bookmark,
   BookmarkCheck,
@@ -197,17 +196,7 @@ export default function BlogClient({
     !savedOnly;
 
   return (
-    <div className="home-portfolio min-h-screen bg-[var(--home-bg)] text-[var(--home-ink)] font-nunito relative" data-page-content>
-      <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 xs:pt-8" data-gsap="reveal">
-        <Link
-          href="/"
-          className="inline-flex items-center gap-1.5 xs:gap-2 text-[var(--home-muted)] hover:text-white transition-colors group"
-        >
-          <ArrowLeft className="w-3 h-3 xs:w-4 xs:h-4 group-hover:-translate-x-1 transition-transform" />
-          <span className="text-xs xs:text-sm">Back to Portfolio</span>
-        </Link>
-      </div>
-
+    <div className="relative">
       <section className="relative border-b border-white/10" data-gsap="reveal">
         <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 xs:py-10 sm:py-12 md:py-16">
           <div className="grid lg:grid-cols-4 gap-6 xs:gap-8">
@@ -611,7 +600,7 @@ export default function BlogClient({
       <button
         type="button"
         onClick={() => setIsQuotesOpen(true)}
-        className="lg:hidden fixed top-4 right-4 z-40 bg-black/80 backdrop-blur-sm border border-white/10 rounded-full px-3 py-3 flex items-center gap-2 text-[var(--home-muted)] hover:text-white hover:border-white/20 transition-colors"
+        className="lg:hidden fixed top-20 right-4 z-40 bg-black/80 backdrop-blur-sm border border-white/10 rounded-full px-3 py-3 flex items-center gap-2 text-[var(--home-muted)] hover:text-white hover:border-white/20 transition-colors"
         aria-label="Open daily quotes"
       >
         <Quote className="w-4 h-4 text-[var(--home-accent)]" />

@@ -26,14 +26,19 @@ const SECTION_LINKS = [
 interface SiteShellProps {
   children: React.ReactNode;
   scopeRef?: React.Ref<HTMLDivElement>;
+  contentMode?: 'contained' | 'full';
 }
 
-export default function SiteShell({ children, scopeRef }: SiteShellProps) {
+export default function SiteShell({ children, scopeRef, contentMode = 'contained' }: SiteShellProps) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [sidebarAvatarUrl, setSidebarAvatarUrl] = useState<string | null>(null);
   const menuRef = useRef<HTMLDivElement | null>(null);
   const menuTimeline = useRef<gsap.core.Timeline | null>(null);
   const pathname = usePathname();
+  const mainClassName =
+    contentMode === 'full'
+      ? 'relative z-10 pb-20 pt-24'
+      : 'relative z-10 mx-auto max-w-6xl px-4 pb-20 pt-24';
 
   useEffect(() => {
     const schedule = (fn: () => void) => {
@@ -182,7 +187,7 @@ export default function SiteShell({ children, scopeRef }: SiteShellProps) {
                   <a
                     key={item.href}
                     href={item.href}
-                    className="flex items-center gap-3 rounded-2xl border border-white/10 bg-black/30 px-4 py-3 text-sm text-[var(--home-muted)] transition hover:border-white/20 hover:text-white"
+                    className="js-nav-item flex items-center gap-3 rounded-2xl border border-white/10 bg-black/30 px-4 py-3 text-sm text-[var(--home-muted)] transition hover:border-white/20 hover:text-white"
                   >
                     <Icon className="h-4 w-4 text-[var(--home-accent)]" />
                     {item.label}
@@ -265,7 +270,7 @@ export default function SiteShell({ children, scopeRef }: SiteShellProps) {
           </div>
         </div>
 
-        <main data-page-content className="relative z-10 mx-auto max-w-6xl px-4 pb-20 pt-24">
+        <main data-page-content className={mainClassName}>
           {children}
         </main>
 

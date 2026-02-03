@@ -120,18 +120,21 @@ export default function HomeClient() {
 
     gsap.registerPlugin(ScrollTrigger);
 
-    const ctx = gsap.context(() => {
-      const heroTimeline = gsap.timeline({ defaults: { ease: 'power3.out' } });
+      const ctx = gsap.context(() => {
+        const heroTimeline = gsap.timeline({ defaults: { ease: 'power3.out' } });
+        const navItems = gsap
+          .utils.toArray<HTMLElement>('.js-nav-item')
+          .filter((item) => item.getClientRects().length > 0);
 
-      heroTimeline
-        .from('.js-nav', { y: -24, opacity: 0, duration: 0.6, clearProps: 'opacity,transform' })
-        .from('.js-nav-logo', { y: -10, opacity: 0, duration: 0.4, clearProps: 'opacity,transform' }, '-=0.3')
-        .from('.js-nav-item', { y: -10, opacity: 0, duration: 0.4, stagger: 0.08, clearProps: 'opacity,transform' }, '-=0.35')
-        .from('.js-nav-toggle', { y: -10, opacity: 0, duration: 0.4, clearProps: 'opacity,transform' }, '-=0.4')
-        .from('.js-hero-line', { scaleX: 0, transformOrigin: 'left center', duration: 0.6 }, '-=0.3')
-        .from('.js-hero-tag', { y: 10, opacity: 0, duration: 0.4 }, '-=0.45')
-        .from('.js-hero-title span', { y: 36, opacity: 0, duration: 0.75, stagger: 0.12 }, '-=0.2')
-        .from('.js-hero-sub', { y: 24, opacity: 0, duration: 0.6 }, '-=0.35')
+        heroTimeline
+          .from('.js-nav', { y: -24, opacity: 0, duration: 0.6, clearProps: 'opacity,transform' })
+          .from('.js-nav-logo', { y: -10, opacity: 0, duration: 0.4, clearProps: 'opacity,transform' }, '-=0.3')
+          .from(navItems, { y: -10, opacity: 0, duration: 0.4, stagger: 0.08, clearProps: 'opacity,transform' }, '-=0.35')
+          .from('.js-nav-toggle', { y: -10, opacity: 0, duration: 0.4, clearProps: 'opacity,transform' }, '-=0.4')
+          .from('.js-hero-line', { scaleX: 0, transformOrigin: 'left center', duration: 0.6 }, '-=0.3')
+          .from('.js-hero-tag', { y: 10, opacity: 0, duration: 0.4 }, '-=0.45')
+          .from('.js-hero-title span', { y: 36, opacity: 0, duration: 0.75, stagger: 0.12 }, '-=0.2')
+          .from('.js-hero-sub', { y: 24, opacity: 0, duration: 0.6 }, '-=0.35')
         .from('.js-hero-cta', { y: 16, opacity: 0, duration: 0.5, stagger: 0.12 }, '-=0.35')
         .from('.js-hero-meta', { y: 14, opacity: 0, duration: 0.45, stagger: 0.12 }, '-=0.25')
         .from('.js-profile', { y: 26, opacity: 0, duration: 0.7 }, '-=0.4')
