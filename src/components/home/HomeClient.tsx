@@ -45,13 +45,14 @@ const formatBlogDate = (dateKey: string) => {
   });
 };
 
-const latestBlogs = [...(blogsData as BlogPreview[])]
+const fallbackBlogs = [...(blogsData as BlogPreview[])]
   .sort((a, b) => b.date.localeCompare(a.date))
   .slice(0, 3);
 
 export default function HomeClient() {
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
   const [discordStatus, setDiscordStatus] = useState<DiscordStatus | null>(null);
+  const [latestBlogs, setLatestBlogs] = useState<BlogPreview[]>(fallbackBlogs);
   const scopeRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
@@ -86,15 +87,31 @@ export default function HomeClient() {
       }
     };
 
+    const fetchLatestBlogs = async () => {
+      try {
+        const res = await fetch('/api/latest-blogs');
+        const data = await res.json();
+        const blogs = Array.isArray(data?.blogs) ? (data.blogs as BlogPreview[]) : null;
+        if (blogs && blogs.length) {
+          setLatestBlogs(blogs.slice(0, 3));
+        }
+      } catch (err) {
+        console.error('Failed to fetch latest blogs:', err);
+      }
+    };
+
     schedule(() => {
       fetchAvatar();
       fetchDiscordStatus();
+      fetchLatestBlogs();
     });
 
     const statusInterval = window.setInterval(fetchDiscordStatus, 30000);
+    const blogsInterval = window.setInterval(fetchLatestBlogs, 60000);
 
     return () => {
       clearInterval(statusInterval);
+      clearInterval(blogsInterval);
     };
   }, []);
 
@@ -230,9 +247,9 @@ export default function HomeClient() {
               </div>
               <Link
                 href="/blog"
-                className="js-reveal text-[11px] uppercase tracking-[0.35em] text-[var(--home-muted)] transition hover:text-[var(--home-ink)]"
+                className="js-reveal inline-flex items-center rounded-full border border-white/10 bg-black/30 px-4 py-2 text-[11px] uppercase tracking-[0.35em] text-[var(--home-muted)] transition hover:border-white/20 hover:text-[var(--home-ink)]"
               >
-                View all
+                Lihat semua
               </Link>
             </div>
             <div className="divide-y divide-white/10 border-b border-white/10">

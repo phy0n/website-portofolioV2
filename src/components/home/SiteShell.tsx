@@ -2,14 +2,25 @@
 
 import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import Link from 'next/link';
-import { Menu, X } from 'lucide-react';
+import { usePathname } from 'next/navigation';
+import { BookOpen, Gamepad2, Home, Info, Menu, ShieldCheck, Sparkles, X } from 'lucide-react';
 import { gsap } from 'gsap';
+import Image from 'next/image';
 
 const NAV_LINKS = [
   { label: 'Home', href: '/' },
   { label: 'Games', href: '/games' },
   { label: 'Connect', href: '/connect' },
   { label: 'Blog', href: '/blog' },
+];
+
+const SECTION_LINKS = [
+  { label: 'About', href: '/#about', icon: Info },
+  { label: 'Skills', href: '/#skills', icon: Sparkles },
+  { label: 'Experience', href: '/#experience', icon: ShieldCheck },
+  { label: 'Projects', href: '/#projects', icon: Home },
+  { label: 'Certificates', href: '/#certificates', icon: ShieldCheck },
+  { label: 'Latest', href: '/#latest', icon: BookOpen },
 ];
 
 interface SiteShellProps {
@@ -19,8 +30,33 @@ interface SiteShellProps {
 
 export default function SiteShell({ children, scopeRef }: SiteShellProps) {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [sidebarAvatarUrl, setSidebarAvatarUrl] = useState<string | null>(null);
   const menuRef = useRef<HTMLDivElement | null>(null);
   const menuTimeline = useRef<gsap.core.Timeline | null>(null);
+  const pathname = usePathname();
+
+  useEffect(() => {
+    const schedule = (fn: () => void) => {
+      const w = window as unknown as { requestIdleCallback?: (cb: () => void, opts?: { timeout: number }) => number };
+      if (w.requestIdleCallback) {
+        w.requestIdleCallback(fn, { timeout: 1200 });
+      } else {
+        window.setTimeout(fn, 250);
+      }
+    };
+
+    const fetchAvatar = async () => {
+      try {
+        const res = await fetch('/api/discord-avatar');
+        const data = await res.json();
+        setSidebarAvatarUrl(data.avatarUrl || null);
+      } catch (err) {
+        console.error('Failed to fetch sidebar avatar:', err);
+      }
+    };
+
+    schedule(fetchAvatar);
+  }, []);
 
   useEffect(() => {
     if (!menuOpen) return;
@@ -68,7 +104,97 @@ export default function SiteShell({ children, scopeRef }: SiteShellProps) {
   return (
     <div ref={scopeRef} className="home-portfolio min-h-screen bg-[var(--home-bg)] text-[var(--home-ink)] font-nunito">
       <div className="relative isolate">
-        <header className="js-nav fixed left-0 right-0 top-0 z-50 border-b border-white/10 bg-black/90 backdrop-blur">
+        {/* Desktop left sidebar */}
+        <aside className="js-nav fixed left-0 top-0 z-50 hidden h-screen w-72 flex-col border-r border-white/10 bg-black/85 backdrop-blur lg:flex">
+          <div className="px-6 pt-6">
+            <div className="mt-6 flex items-center justify-between">
+              <Link
+                href="/"
+                className="js-nav-logo text-[11px] font-semibold uppercase tracking-[0.35em] text-[var(--home-muted)] transition hover:text-[var(--home-ink)]">
+                Portfolio
+              </Link>
+              <span className="rounded-full border border-white/10 bg-white/[0.03] px-3 py-1 text-[10px] uppercase tracking-[0.3em] text-[var(--home-muted)]">
+                Main
+              </span>
+            </div>
+
+            <Link href="/" className="group flex items-center gap-3 rounded-2xl border border-white/10 bg-black/30 p-4 mt-5 transition hover:border-white/20">
+              <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded-full border border-white/10 bg-[var(--home-soft)]">
+                {sidebarAvatarUrl ? (
+                  <Image src={sidebarAvatarUrl} alt="Profile avatar" fill sizes="48px" className="object-cover" />
+                ) : (
+                  <div className="flex h-full w-full items-center justify-center text-sm font-semibold text-[var(--home-ink)]">
+                    P
+                  </div>
+                )}
+              </div>
+              <div className="min-w-0">
+                <p className="truncate text-sm font-semibold text-white transition group-hover:text-white">Phy0n</p>
+                <p className="truncate text-xs text-[var(--home-muted)]">@Phy0n</p>
+              </div>
+            </Link>
+
+            <div className="border-t border-white/10">
+              <div className="mt-6">
+                <p className="text-[11px] uppercase tracking-[0.35em] text-[var(--home-muted)]">Navigation</p>
+                <nav className="mt-4 space-y-1" aria-label="Primary">
+                  {NAV_LINKS.map((item) => {
+                    const isActive = item.href === '/' ? pathname === '/' : pathname?.startsWith(item.href);
+                    const Icon = item.href === '/'
+                      ? Home
+                      : item.href === '/games'
+                        ? Gamepad2
+                        : item.href === '/connect'
+                          ? Info
+                          : BookOpen;
+
+                    return (
+                      <Link
+                        key={item.href}
+                        href={item.href}
+                        className={[
+                          'js-nav-item group flex items-center justify-between rounded-2xl border px-4 py-3 transition',
+                          isActive
+                            ? 'border-white/15 bg-white/[0.05] text-white'
+                            : 'border-transparent bg-transparent text-[var(--home-muted)] hover:border-white/10 hover:bg-white/[0.03] hover:text-white',
+                        ].join(' ')}>
+                        <span className="flex items-center gap-3 text-sm font-semibold">
+                          <Icon className="h-4 w-4 text-[var(--home-accent)]" />
+                          {item.label}
+                        </span>
+                        <span className="text-[10px] uppercase tracking-[0.35em] text-white/40 transition group-hover:text-white/60">
+                          Go
+                        </span>
+                      </Link>
+                    );
+                  })}
+                </nav>
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-8 px-6">
+            <p className="text-[11px] uppercase tracking-[0.35em] text-[var(--home-muted)]">Sections</p>
+            <div className="mt-4 grid gap-2">
+              {SECTION_LINKS.map((item) => {
+                const Icon = item.icon;
+                return (
+                  <a
+                    key={item.href}
+                    href={item.href}
+                    className="flex items-center gap-3 rounded-2xl border border-white/10 bg-black/30 px-4 py-3 text-sm text-[var(--home-muted)] transition hover:border-white/20 hover:text-white"
+                  >
+                    <Icon className="h-4 w-4 text-[var(--home-accent)]" />
+                    {item.label}
+                  </a>
+                );
+              })}
+            </div>
+          </div>
+        </aside>
+
+        {/* Mobile top navbar */}
+        <header className="js-nav fixed left-0 right-0 top-0 z-50 border-b border-white/10 bg-black/90 backdrop-blur lg:hidden">
           <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-4 lg:py-5">
             <Link
               href="/"
@@ -103,6 +229,7 @@ export default function SiteShell({ children, scopeRef }: SiteShellProps) {
           </div>
         </header>
 
+        <div className="lg:pl-72">
         <div
           ref={menuRef}
           className="fixed inset-0 z-[60] bg-black/95 backdrop-blur opacity-0 invisible"
@@ -152,6 +279,7 @@ export default function SiteShell({ children, scopeRef }: SiteShellProps) {
             </p>
           </div>
         </footer>
+        </div>
       </div>
     </div>
   );
