@@ -75,19 +75,41 @@ export interface RobloxProfile {
   followersCount?: number;
 }
 
+export interface DiscordActivity {
+  type: number;
+  name: string;
+  details?: string | null;
+  state?: string | null;
+  applicationId?: string | null;
+  timestamps?: {
+    start?: number | null;
+    end?: number | null;
+  } | null;
+  assets?: {
+    largeImage?: string | null;
+    largeText?: string | null;
+    smallImage?: string | null;
+    smallText?: string | null;
+  } | null;
+  largeImage?: string | null;
+  smallImage?: string | null;
+}
+
 export interface DiscordStatus {
   online: boolean;
   status: string;
-  activity?: {
-    name: string;
-    details?: string | null;
-    state?: string | null;
-    largeImage?: string | null;
-  } | null;
+  activity?: DiscordActivity | null;
   customStatus?: string | null;
   spotify?: {
     song: string;
     artist: string;
     album: string;
+    trackId?: string | null;
+    albumArtUrl?: string | null;
+    timestamps?: {
+      start: number;
+      end: number;
+    } | null;
+    songUrl?: string | null;
   } | null;
 }

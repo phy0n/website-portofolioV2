@@ -3,6 +3,7 @@
 import Image from 'next/image';
 import React from 'react';
 
+import DiscordActivitySection from './DiscordActivitySection';
 import type { DiscordStatus } from './types';
 
 interface ProfileSidebarProps {
@@ -37,7 +38,26 @@ export default function ProfileSidebar({ avatarUrl, discordStatus, skills }: Pro
     presenceLabel = 'Listening';
     presenceLine = `${discordStatus.spotify.song} - ${discordStatus.spotify.artist}`;
   } else if (discordStatus?.activity) {
-    presenceLabel = 'Playing';
+    switch (discordStatus.activity.type) {
+      case 0:
+        presenceLabel = 'Playing';
+        break;
+      case 1:
+        presenceLabel = 'Streaming';
+        break;
+      case 2:
+        presenceLabel = 'Listening';
+        break;
+      case 3:
+        presenceLabel = 'Watching';
+        break;
+      case 5:
+        presenceLabel = 'Competing';
+        break;
+      default:
+        presenceLabel = 'Activity';
+        break;
+    }
     presenceLine = discordStatus.activity.name;
   } else if (discordStatus?.customStatus) {
     presenceLabel = 'Message';
@@ -88,6 +108,7 @@ export default function ProfileSidebar({ avatarUrl, discordStatus, skills }: Pro
           <div className="js-profile-item border-l-2 border-[var(--home-accent)] pl-4 text-sm text-[var(--home-muted)]">
             The best revenge is to make yourself better.
           </div>
+          {discordStatus ? <DiscordActivitySection discordStatus={discordStatus} /> : null}
         </div>
       </div>
     </div>

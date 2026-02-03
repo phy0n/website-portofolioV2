@@ -313,8 +313,7 @@ export default function BlogDetailClient({
             {blog.image && (
               <div
                 className="relative w-full h-56 xs:h-64 sm:h-72 md:h-[420px] overflow-hidden mb-10 xs:mb-12 rounded-2xl border border-white/10 bg-gradient-to-br from-white/5 via-black/30 to-black shadow-[0_30px_120px_rgba(0,0,0,0.55)]"
-                data-gsap="reveal"
-              >
+                data-gsap="reveal">
                 <Image
                   src={blog.image}
                   alt={blog.title}

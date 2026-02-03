@@ -11,6 +11,16 @@ const remotePatterns: NonNullable<NextConfig["images"]>["remotePatterns"] = [
   },
   {
     protocol: "https",
+    hostname: "media.discordapp.net",
+    pathname: "/**",
+  },
+  {
+    protocol: "https",
+    hostname: "i.scdn.co",
+    pathname: "/**",
+  },
+  {
+    protocol: "https",
     hostname: "tr.rbxcdn.com",
     pathname: "/**",
   },

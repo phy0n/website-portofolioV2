@@ -95,7 +95,6 @@ const SKILL_GROUPS: SkillGroup[] = [
       { name: 'Postman', level: 0, icon: <SiPostman className="h-5 w-5 text-orange-400" /> },
       { name: 'VS Code', level: 0, icon: <VscVscode className="h-5 w-5 text-sky-400" /> },
       { name: 'Android Studio', level: 0, icon: <SiAndroidstudio className="h-5 w-5" /> },
-      { name: 'DiscordJS', level: 0, icon: <SiDiscord className="h-5 w-5 text-blue-400" /> },
     ],
     tones: ['text-purple-300', 'text-orange-300', 'text-amber-300', 'text-sky-300', 'text-green-300'],
   },
