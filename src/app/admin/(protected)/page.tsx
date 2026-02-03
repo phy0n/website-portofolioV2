@@ -6,6 +6,10 @@ import AdminToast from '@/components/admin/AdminToast';
 
 interface BlogSummary {
   id: string;
+  title: string;
+  slug: string;
+  date: string;
+  updated_at?: string | null;
   is_published: boolean | null;
   featured: boolean;
 }
@@ -16,10 +20,20 @@ export default async function AdminPage({
   searchParams?: { success?: string; error?: string; range?: string };
 }) {
   const { supabase } = await requireAdmin();
+  const safeDecode = (value?: string) => {
+    if (!value) return '';
+    try {
+      return decodeURIComponent(value);
+    } catch {
+      return value;
+    }
+  };
 
   const { data: blogs } = await supabase
     .from('blogs')
-    .select('id, is_published, featured');
+    .select('id, title, slug, date, updated_at, is_published, featured')
+    .order('date', { ascending: false })
+    .limit(25);
 
   const { data: quotes } = await supabase.from('quotes').select('id');
 
@@ -28,13 +42,11 @@ export default async function AdminPage({
   const publishedCount = blogRows.filter((blog) => blog.is_published !== false).length;
   const draftCount = blogRows.length - publishedCount;
   const featuredCount = blogRows.filter((blog) => blog.featured).length;
+  const recentDrafts = blogRows.filter((blog) => blog.is_published === false).slice(0, 5);
+  const recentBlogs = blogRows.slice(0, 5);
 
-  const successMessage = searchParams?.success
-    ? decodeURIComponent(searchParams.success)
-    : '';
-  const errorMessage = searchParams?.error
-    ? decodeURIComponent(searchParams.error)
-    : '';
+  const successMessage = safeDecode(searchParams?.success);
+  const errorMessage = safeDecode(searchParams?.error);
   const toast = errorMessage
     ? { message: errorMessage, tone: 'error' as const }
     : successMessage
@@ -120,6 +132,77 @@ export default async function AdminPage({
               </div>
             </div>
           </Link>
+        </div>
+      </section>
+
+      <section className="grid gap-4 lg:grid-cols-2" data-gsap="reveal">
+        <div className="rounded-2xl border border-white/10 bg-white/5 p-5 shadow-[0_20px_60px_rgba(0,0,0,0.35)]">
+          <div className="flex items-center justify-between gap-3">
+            <div>
+              <p className="text-xs uppercase tracking-[0.3em] text-white/40">Queue</p>
+              <h3 className="mt-2 text-lg font-semibold text-white">Drafts to review</h3>
+            </div>
+            <Link
+              href="/admin/blogs"
+              className="text-xs text-white/50 hover:text-white transition"
+            >
+              Open
+            </Link>
+          </div>
+          {recentDrafts.length === 0 ? (
+            <p className="mt-4 text-sm text-white/50">No drafts right now.</p>
+          ) : (
+            <div className="mt-4 space-y-3">
+              {recentDrafts.map((blog) => (
+                <Link
+                  key={blog.id}
+                  href={`/admin/blogs?edit=${encodeURIComponent(blog.id)}`}
+                  className="group block rounded-xl border border-white/10 bg-white/5 px-4 py-3 transition hover:border-white/30 hover:bg-white/10"
+                >
+                  <p className="text-xs text-white/40">/{blog.slug}</p>
+                  <p className="mt-2 text-sm font-semibold text-white line-clamp-1">
+                    {blog.title}
+                  </p>
+                </Link>
+              ))}
+            </div>
+          )}
+        </div>
+
+        <div className="rounded-2xl border border-white/10 bg-white/5 p-5 shadow-[0_20px_60px_rgba(0,0,0,0.35)]">
+          <div className="flex items-center justify-between gap-3">
+            <div>
+              <p className="text-xs uppercase tracking-[0.3em] text-white/40">Recent</p>
+              <h3 className="mt-2 text-lg font-semibold text-white">Latest stories</h3>
+            </div>
+            <Link
+              href="/admin/blogs"
+              className="text-xs text-white/50 hover:text-white transition"
+            >
+              Manage
+            </Link>
+          </div>
+          {recentBlogs.length === 0 ? (
+            <p className="mt-4 text-sm text-white/50">No stories yet.</p>
+          ) : (
+            <div className="mt-4 space-y-3">
+              {recentBlogs.map((blog) => (
+                <Link
+                  key={blog.id}
+                  href={`/blog/${encodeURIComponent(blog.slug)}`}
+                  className="group flex items-start justify-between gap-3 rounded-xl border border-white/10 bg-white/5 px-4 py-3 transition hover:border-white/30 hover:bg-white/10"
+                >
+                  <div className="min-w-0">
+                    <p className="text-xs text-white/40">{blog.is_published === false ? 'Draft' : 'Published'}</p>
+                    <p className="mt-1 text-sm font-semibold text-white line-clamp-1">
+                      {blog.title}
+                    </p>
+                  </div>
+                  <span className="text-xs text-white/40 whitespace-nowrap">/{blog.slug}</span>
+                </Link>
+              ))}
+            </div>
+          )}
         </div>
       </section>
 

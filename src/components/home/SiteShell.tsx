@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import Link from 'next/link';
 import { Menu, X } from 'lucide-react';
 import { gsap } from 'gsap';
 
@@ -69,21 +70,24 @@ export default function SiteShell({ children, scopeRef }: SiteShellProps) {
       <div className="relative isolate">
         <header className="js-nav fixed left-0 right-0 top-0 z-50 border-b border-white/10 bg-black/90 backdrop-blur">
           <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-4 lg:py-5">
-            <a href="/" className="js-nav-logo text-sm font-semibold uppercase tracking-[0.35em] text-[var(--home-ink)]">
+            <Link
+              href="/"
+              className="js-nav-logo text-sm font-semibold uppercase tracking-[0.35em] text-[var(--home-ink)]"
+            >
               Phy0n
-            </a>
+            </Link>
             <nav
               className="hidden flex-wrap items-center justify-end gap-x-4 gap-y-2 text-[10px] uppercase tracking-[0.28em] text-white md:flex"
               aria-label="Primary"
             >
               {NAV_LINKS.map((item) => (
-                <a
+                <Link
                   key={item.href}
                   href={item.href}
                   className="js-nav-item rounded-full px-2 py-1 text-white transition hover:text-white/70"
                 >
                   {item.label}
-                </a>
+                </Link>
               ))}
             </nav>
             <button

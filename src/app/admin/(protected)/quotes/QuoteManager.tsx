@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useMemo, useState, type ReactNode } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { Pencil, Plus, Trash2, X } from 'lucide-react';
 import AdminSubmitButton from '@/components/admin/AdminSubmitButton';
 import AdminToast from '@/components/admin/AdminToast';
@@ -96,13 +97,43 @@ export default function QuoteManager({
   successMessage?: string;
   errorMessage?: string;
 }) {
-  const [isCreateOpen, setIsCreateOpen] = useState(false);
-  const [editingQuote, setEditingQuote] = useState<Quote | null>(null);
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const createOpen = searchParams.get('create') === '1';
+  const editId = searchParams.get('edit');
+  const editingQuote = useMemo(() => {
+    if (!editId) return null;
+    return quotes.find((quote) => quote.id === editId) ?? null;
+  }, [editId, quotes]);
+  const [listQuery, setListQuery] = useState('');
   const toast = useMemo(() => {
     if (errorMessage) return { message: errorMessage, tone: 'error' as const };
     if (successMessage) return { message: successMessage, tone: 'success' as const };
     return null;
   }, [errorMessage, successMessage]);
+
+  const clearQueryParam = (key: string) => {
+    const params = new URLSearchParams(searchParams.toString());
+    params.delete(key);
+    const query = params.toString();
+    router.replace(query ? `/admin/quotes?${query}` : '/admin/quotes');
+  };
+
+  const setQueryParam = (key: string, value: string) => {
+    const params = new URLSearchParams(searchParams.toString());
+    params.set(key, value);
+    const query = params.toString();
+    router.replace(query ? `/admin/quotes?${query}` : '/admin/quotes');
+  };
+
+  const filteredQuotes = useMemo(() => {
+    const query = listQuery.trim().toLowerCase();
+    if (!query) return quotes;
+    return quotes.filter((quote) => {
+      const haystack = `${quote.text} ${quote.author ?? ''} ${quote.date}`.toLowerCase();
+      return haystack.includes(query);
+    });
+  }, [listQuery, quotes]);
 
   return (
     <div className="space-y-8">
@@ -117,7 +148,9 @@ export default function QuoteManager({
             type="button"
             title="Add quote"
             aria-label="Add quote"
-            onClick={() => setIsCreateOpen(true)}
+            onClick={() => {
+              setQueryParam('create', '1');
+            }}
             className="inline-flex items-center gap-2 rounded-xl border border-white bg-white px-4 py-2 text-sm font-semibold text-black shadow-sm transition hover:bg-white/90"
           >
             <Plus className="h-4 w-4" />
@@ -130,6 +163,17 @@ export default function QuoteManager({
 
       <section className="space-y-3" data-gsap="reveal">
         <h3 className="text-lg font-semibold text-white">Quote list</h3>
+        <div className="flex flex-wrap items-center gap-3 rounded-2xl border border-white/10 bg-white/5 p-4 shadow-[0_20px_60px_rgba(0,0,0,0.35)]">
+          <input
+            value={listQuery}
+            onChange={(event) => setListQuery(event.target.value)}
+            placeholder="Search quote text, author, or date..."
+            className="flex-1 min-w-[220px] rounded-xl border border-white/10 bg-[#13131b] px-3 py-2 text-sm text-white placeholder-white/40 shadow-[0_0_0_1px_rgba(255,255,255,0.02)] focus:border-white/40 focus:outline-none"
+          />
+          <span className="ml-auto text-sm text-white/50">
+            Showing {filteredQuotes.length} / {quotes.length}
+          </span>
+        </div>
         <div className="overflow-x-auto rounded-2xl border border-white/10 bg-white/5 shadow-[0_20px_60px_rgba(0,0,0,0.35)]">
           <table className="min-w-full text-sm">
             <thead className="bg-white/5 text-white/50 uppercase tracking-[0.2em]">
@@ -148,7 +192,14 @@ export default function QuoteManager({
                   </td>
                 </tr>
               )}
-              {quotes.map((quote) => (
+              {quotes.length > 0 && filteredQuotes.length === 0 && (
+                <tr>
+                  <td colSpan={4} className="px-4 py-6 text-center text-white/50">
+                    No matches. Try a different search.
+                  </td>
+                </tr>
+              )}
+              {filteredQuotes.map((quote) => (
                 <tr key={quote.id} className="align-top">
                   <td className="px-4 py-4 text-white/70">{formatDateInput(quote.date)}</td>
                   <td className="px-4 py-4 text-white">{quote.text}</td>
@@ -159,13 +210,23 @@ export default function QuoteManager({
                         type="button"
                         title="Edit quote"
                         aria-label="Edit quote"
-                        onClick={() => setEditingQuote(quote)}
+                        onClick={() => {
+                          setQueryParam('edit', quote.id);
+                        }}
                         className="inline-flex items-center gap-2 rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white/70 transition hover:border-white/40 hover:text-white hover:bg-white/10"
                       >
                         <Pencil className="h-4 w-4" />
                         Edit
                       </button>
-                      <form action={deleteQuote} className="inline-flex">
+                      <form
+                        action={deleteQuote}
+                        className="inline-flex"
+                        onSubmit={(event) => {
+                          if (!confirm('Delete this quote? This cannot be undone.')) {
+                            event.preventDefault();
+                          }
+                        }}
+                      >
                         <input type="hidden" name="redirect_to" value="/admin/quotes" />
                         <input type="hidden" name="id" value={quote.id} />
                         <AdminSubmitButton
@@ -185,7 +246,13 @@ export default function QuoteManager({
         </div>
       </section>
 
-      <Modal open={isCreateOpen} title="Add new quote" onClose={() => setIsCreateOpen(false)}>
+      <Modal
+        open={createOpen}
+        title="Add new quote"
+        onClose={() => {
+          clearQueryParam('create');
+        }}
+      >
         <form action={createQuote} className="grid gap-4">
           <input type="hidden" name="redirect_to" value="/admin/quotes" />
           <div>
@@ -212,7 +279,9 @@ export default function QuoteManager({
       <Modal
         open={Boolean(editingQuote)}
         title="Edit quote"
-        onClose={() => setEditingQuote(null)}
+        onClose={() => {
+          clearQueryParam('edit');
+        }}
       >
         {editingQuote && (
           <form action={updateQuote} className="grid gap-4" key={editingQuote.id}>

@@ -10,7 +10,13 @@ export default async function BlogDetailPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug: rawSlug } = await params;
-  const slug = decodeURIComponent(rawSlug || '').trim();
+  let slug = '';
+  try {
+    slug = decodeURIComponent(rawSlug || '');
+  } catch {
+    slug = rawSlug || '';
+  }
+  slug = slug.trim();
 
   if (!supabaseConfig.url || !supabaseConfig.anonKey) {
     const slugLower = slug.toLowerCase();
@@ -18,7 +24,18 @@ export default async function BlogDetailPage({
       (blogsData as any[]).find(
         (blog) => String(blog.slug || '').toLowerCase() === slugLower
       ) ?? null;
-    return <BlogDetailClient blog={fallbackBlog} />;
+    const relatedBlogs = fallbackBlog
+      ? (blogsData as any[])
+          .filter((blog) => {
+            if (!blog) return false;
+            if (String(blog.slug || '') === String(fallbackBlog.slug || '')) return false;
+            if (blog.is_published === false) return false;
+            return String(blog.category || '') === String(fallbackBlog.category || '');
+          })
+          .sort((a, b) => String(b.date || '').localeCompare(String(a.date || '')))
+          .slice(0, 4)
+      : [];
+    return <BlogDetailClient blog={fallbackBlog} relatedBlogs={relatedBlogs} />;
   }
 
   const supabase = await createSupabaseServerClient();
@@ -37,12 +54,12 @@ export default async function BlogDetailPage({
   let blogQuery = supabase
     .from('blogs')
     .select('*')
-    .ilike('slug', slug)
+    .in('slug', slug.toLowerCase() === slug ? [slug] : [slug, slug.toLowerCase()])
     .order('date', { ascending: false })
     .limit(1);
 
   if (!isAdmin) {
-    blogQuery = blogQuery.eq('is_published', true);
+    blogQuery = blogQuery.or('is_published.eq.true,is_published.is.null');
   }
 
   const { data, error } = await blogQuery.maybeSingle();
@@ -53,8 +70,48 @@ export default async function BlogDetailPage({
       (blogsData as any[]).find(
         (blog) => String(blog.slug || '').toLowerCase() === slugLower
       ) ?? null;
-    return <BlogDetailClient blog={fallbackBlog} />;
+    const relatedBlogs = fallbackBlog
+      ? (blogsData as any[])
+          .filter((blog) => {
+            if (!blog) return false;
+            if (String(blog.slug || '') === String(fallbackBlog.slug || '')) return false;
+            if (blog.is_published === false) return false;
+            return String(blog.category || '') === String(fallbackBlog.category || '');
+          })
+          .sort((a, b) => String(b.date || '').localeCompare(String(a.date || '')))
+          .slice(0, 4)
+      : [];
+    return <BlogDetailClient blog={fallbackBlog} relatedBlogs={relatedBlogs} />;
   }
 
-  return <BlogDetailClient blog={data} />;
+  let viewCount = 0;
+  try {
+    const path = `/blog/${encodeURIComponent(data.slug)}`;
+    const { count } = await supabase
+      .from('analytics_events')
+      .select('*', { count: 'exact', head: true })
+      .eq('path', path);
+    if (typeof count === 'number') {
+      viewCount = count;
+    }
+  } catch {
+    // Ignore view count failures.
+  }
+
+  const { data: relatedBlogs } = await supabase
+    .from('blogs')
+    .select('id, slug, title, excerpt, author, date, category, tags, image, featured, is_published')
+    .eq('category', data.category)
+    .neq('id', data.id)
+    .or('is_published.eq.true,is_published.is.null')
+    .order('date', { ascending: false })
+    .limit(4);
+
+  return (
+    <BlogDetailClient
+      blog={data}
+      relatedBlogs={(relatedBlogs as any[]) ?? []}
+      viewCount={viewCount}
+    />
+  );
 }

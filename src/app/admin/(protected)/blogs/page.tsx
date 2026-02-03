@@ -23,6 +23,14 @@ export default async function AdminBlogsPage({
   searchParams?: { success?: string; error?: string };
 }) {
   const { supabase } = await requireAdmin();
+  const safeDecode = (value?: string) => {
+    if (!value) return undefined;
+    try {
+      return decodeURIComponent(value);
+    } catch {
+      return value;
+    }
+  };
 
   const { data: blogs } = await supabase
     .from('blogs')
@@ -30,12 +38,8 @@ export default async function AdminBlogsPage({
     .order('date', { ascending: false });
 
   const blogRows = (blogs as Blog[] | null) ?? [];
-  const successMessage = searchParams?.success
-    ? decodeURIComponent(searchParams.success)
-    : undefined;
-  const errorMessage = searchParams?.error
-    ? decodeURIComponent(searchParams.error)
-    : undefined;
+  const successMessage = safeDecode(searchParams?.success);
+  const errorMessage = safeDecode(searchParams?.error);
 
   return (
     <BlogManager

@@ -30,9 +30,26 @@ const hashValue = (value: string) => {
   return createHash('sha256').update(`${salt}${value}`).digest('hex');
 };
 
+const isCrossSiteRequest = (headers: Headers) => {
+  const fetchSite = headers.get('sec-fetch-site');
+  if (fetchSite === 'cross-site') return true;
+  const origin = headers.get('origin');
+  const host = headers.get('host');
+  if (!origin || !host) return false;
+  try {
+    return new URL(origin).host !== host;
+  } catch {
+    return false;
+  }
+};
+
 export async function POST(request: Request) {
   if (!supabase) {
-    return NextResponse.json({ ok: false }, { status: 204 });
+    return new NextResponse(null, { status: 204 });
+  }
+
+  if (isCrossSiteRequest(request.headers)) {
+    return NextResponse.json({ ok: false }, { status: 403 });
   }
 
   let payload: unknown;
@@ -57,18 +74,27 @@ export async function POST(request: Request) {
   const ipAddress = getClientIp(request.headers);
   const ipHash = ipAddress ? hashValue(ipAddress) : null;
 
-  if (!pathValue || (!visitorValue && !ipHash)) {
+  if (!pathValue || pathValue.length > 200 || !pathValue.startsWith('/') || /\s/.test(pathValue)) {
+    return NextResponse.json({ ok: false }, { status: 400 });
+  }
+
+  if (visitorValue.length > 80) {
+    return NextResponse.json({ ok: false }, { status: 400 });
+  }
+
+  if (!visitorValue && !ipHash) {
     return NextResponse.json({ ok: false }, { status: 400 });
   }
 
   const referrerValue =
     typeof referrer === 'string' && referrer.trim().length > 0 ? referrer.trim() : null;
+  const safeReferrer = referrerValue && referrerValue.length <= 500 ? referrerValue : null;
 
   const { error } = await supabase.from('analytics_events').insert({
     visitor_id: visitorValue || ipHash,
     ip_hash: ipHash,
     path: pathValue,
-    referrer: referrerValue,
+    referrer: safeReferrer,
     user_agent: request.headers.get('user-agent'),
   });
 

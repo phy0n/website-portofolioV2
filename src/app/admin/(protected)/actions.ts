@@ -36,17 +36,38 @@ const normalizeTags = (value: string) => {
 
 const allowedImageTypes = new Set(['image/jpeg', 'image/png', 'image/webp']);
 const maxImageBytes = 5 * 1024 * 1024;
+const blogImagesBucket =
+  process.env.SUPABASE_BLOG_IMAGE_BUCKET ||
+  process.env.NEXT_PUBLIC_SUPABASE_BLOG_IMAGE_BUCKET ||
+  'blog-images';
 
-const extractImageFile = (formData: FormData) => {
+type UploadableImage = Blob & { name?: string };
+
+const extensionFromMimeType = (mimeType: string) => {
+  switch (mimeType) {
+    case 'image/png':
+      return 'png';
+    case 'image/webp':
+      return 'webp';
+    case 'image/jpeg':
+    default:
+      return 'jpg';
+  }
+};
+
+const extractImageFile = (formData: FormData): UploadableImage | null => {
   const file = formData.get('image_file');
   if (!file || typeof file === 'string') return null;
-  if (file instanceof File && file.size > 0) return file;
+  const candidate = file as unknown as { size?: unknown; arrayBuffer?: unknown };
+  const size = typeof candidate.size === 'number' ? candidate.size : 0;
+  const hasArrayBuffer = typeof candidate.arrayBuffer === 'function';
+  if (size > 0 && hasArrayBuffer) return file as UploadableImage;
   return null;
 };
 
 const uploadBlogImage = async (
   supabase: Awaited<ReturnType<typeof requireAdmin>>['supabase'],
-  file: File | null,
+  file: UploadableImage | null,
   slug: string,
   redirectTo: string
 ) => {
@@ -60,22 +81,39 @@ const uploadBlogImage = async (
     redirectWithError(redirectTo, 'Image must be under 5MB.');
   }
 
-  const extension = file.name.split('.').pop()?.toLowerCase() || 'jpg';
+  const fileName = typeof file.name === 'string' ? file.name : '';
+  const extensionFromName = fileName.split('.').pop()?.toLowerCase();
+  const extension = extensionFromName || extensionFromMimeType(file.type);
   const filePath = `blogs/${slug}-${Date.now()}.${extension}`;
 
-  const { error: uploadError } = await supabase.storage
-    .from('blog-images')
-    .upload(filePath, file, {
+  let fileBody: Uint8Array;
+  try {
+    fileBody = new Uint8Array(await file.arrayBuffer());
+  } catch (error) {
+    const message = error instanceof Error ? error.message : 'Could not read file.';
+    redirectWithError(redirectTo, `Image upload failed: ${message}`);
+    return null;
+  }
+
+  let uploadError: { message: string } | null = null;
+  try {
+    const { error } = await supabase.storage.from(blogImagesBucket).upload(filePath, fileBody, {
       cacheControl: '3600',
       upsert: false,
-      contentType: file.type,
+      contentType: file.type || 'image/jpeg',
     });
+    uploadError = error;
+  } catch (error) {
+    const message = error instanceof Error ? error.message : 'Network error.';
+    redirectWithError(redirectTo, `Image upload failed: ${message}`);
+    return null;
+  }
 
   if (uploadError) {
     redirectWithError(redirectTo, `Image upload failed: ${uploadError.message}`);
   }
 
-  const { data } = supabase.storage.from('blog-images').getPublicUrl(filePath);
+  const { data } = supabase.storage.from(blogImagesBucket).getPublicUrl(filePath);
   return data.publicUrl;
 };
 
@@ -99,7 +137,7 @@ export async function createBlog(formData: FormData) {
     redirectWithError(redirectTo, 'Missing required blog fields.');
   }
 
-  const slug = slugInput || slugify(title);
+  const slug = slugify(slugInput || title);
 
   if (!slug) {
     redirectWithError(redirectTo, 'Slug is required.');
@@ -129,6 +167,8 @@ export async function createBlog(formData: FormData) {
 
   revalidatePath('/blog');
   revalidatePath(`/blog/${slug}`);
+  revalidatePath('/admin/blogs');
+  revalidatePath(redirectTo);
   redirectWithSuccess(redirectTo, 'Blog created.');
 }
 
@@ -154,7 +194,7 @@ export async function updateBlog(formData: FormData) {
     redirectWithError(redirectTo, 'Missing required blog fields.');
   }
 
-  const slug = slugInput || slugify(title);
+  const slug = slugify(slugInput || title);
 
   if (!slug) {
     redirectWithError(redirectTo, 'Slug is required.');
@@ -195,6 +235,8 @@ export async function updateBlog(formData: FormData) {
 
   revalidatePath('/blog');
   revalidatePath(`/blog/${slug}`);
+  revalidatePath('/admin/blogs');
+  revalidatePath(redirectTo);
   redirectWithSuccess(redirectTo, 'Blog updated.');
 }
 
@@ -206,6 +248,10 @@ export async function updateBlogStatus(formData: FormData) {
 
   if (!id || !statusValue) {
     redirectWithError(redirectTo, 'Missing blog status update data.');
+  }
+
+  if (statusValue !== 'published' && statusValue !== 'draft') {
+    redirectWithError(redirectTo, 'Invalid blog status value.');
   }
 
   const isPublished = statusValue === 'published';
@@ -223,6 +269,8 @@ export async function updateBlogStatus(formData: FormData) {
   if (slug) {
     revalidatePath(`/blog/${slug}`);
   }
+  revalidatePath('/admin/blogs');
+  revalidatePath(redirectTo);
   redirectWithSuccess(redirectTo, 'Status updated.');
 }
 
@@ -246,6 +294,8 @@ export async function deleteBlog(formData: FormData) {
   if (slug) {
     revalidatePath(`/blog/${slug}`);
   }
+  revalidatePath('/admin/blogs');
+  revalidatePath(redirectTo);
   redirectWithSuccess(redirectTo, 'Blog deleted.');
 }
 

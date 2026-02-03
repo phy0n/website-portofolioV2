@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useMemo, useState, type ChangeEvent, type ReactNode } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useFormStatus } from 'react-dom';
 import { Pencil, Plus, Trash2, X } from 'lucide-react';
 import AdminSubmitButton from '@/components/admin/AdminSubmitButton';
@@ -44,6 +45,9 @@ const slugify = (value: string) => {
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/^-+|-+$/g, '');
 };
+
+const allowedImageTypes = new Set(['image/jpeg', 'image/png', 'image/webp']);
+const maxImageBytes = 5 * 1024 * 1024;
 
 function useLockBody(open: boolean) {
   useEffect(() => {
@@ -147,55 +151,69 @@ export default function BlogManager({
   successMessage?: string;
   errorMessage?: string;
 }) {
-  const [isCreateOpen, setIsCreateOpen] = useState(false);
-  const [editingBlog, setEditingBlog] = useState<Blog | null>(null);
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const createOpen = searchParams.get('create') === '1';
+  const editId = searchParams.get('edit');
+  const editingBlog = useMemo(() => {
+    if (!editId) return null;
+    return blogs.find((blog) => blog.id === editId) ?? null;
+  }, [blogs, editId]);
   const [createImagePreview, setCreateImagePreview] = useState<string | null>(null);
   const [editImagePreview, setEditImagePreview] = useState<string | null>(null);
+  const [createImageError, setCreateImageError] = useState<string | null>(null);
+  const [editImageError, setEditImageError] = useState<string | null>(null);
   const [createFileKey, setCreateFileKey] = useState(0);
   const [editFileKey, setEditFileKey] = useState(0);
   const [createTitleValue, setCreateTitleValue] = useState('');
-  const [editTitleValue, setEditTitleValue] = useState('');
+  const [editTitleValue, setEditTitleValue] = useState<string | null>(null);
   const [createCategoryValue, setCreateCategoryValue] = useState('Life');
-  const [editCategoryValue, setEditCategoryValue] = useState('');
+  const [listQuery, setListQuery] = useState('');
+  const [statusFilter, setStatusFilter] = useState<'all' | 'published' | 'draft'>('all');
+  const [featuredOnly, setFeaturedOnly] = useState(false);
 
   const categoryOptions = useMemo(
     () => ['Life', 'Love', 'Daily', 'Motivation'],
     []
   );
 
-  useEffect(() => {
-    if (!isCreateOpen) {
-      setCreateImagePreview(null);
-      setCreateFileKey((prev) => prev + 1);
-      setCreateTitleValue('');
-      setCreateCategoryValue('Life');
-    }
-  }, [isCreateOpen]);
-
-  useEffect(() => {
-    if (!editingBlog) {
-      setEditCategoryValue('');
-      setEditTitleValue('');
-      setEditImagePreview(null);
-      setEditFileKey((prev) => prev + 1);
-      return;
-    }
-    setEditCategoryValue(editingBlog.category);
-    setEditTitleValue(editingBlog.title);
-    setEditImagePreview(editingBlog.image ?? null);
-    setEditFileKey((prev) => prev + 1);
-  }, [editingBlog]);
-
-  const editCategoryOptions = categoryOptions.includes(editCategoryValue)
-    ? categoryOptions
-    : [editCategoryValue, ...categoryOptions];
+  const editCategory = String(editingBlog?.category || '').trim();
+  const editCategoryOptions =
+    editCategory && !categoryOptions.includes(editCategory)
+      ? [editCategory, ...categoryOptions]
+      : categoryOptions;
   const createSlug = slugify(createTitleValue);
-  const editSlug = slugify(editTitleValue || editingBlog?.title || '');
+  const editSlug = slugify((editTitleValue ?? editingBlog?.title) || '');
+  const filteredRows = useMemo(() => {
+    const query = listQuery.trim().toLowerCase();
+    return blogs.filter((blog) => {
+      if (featuredOnly && !blog.featured) return false;
+      if (statusFilter === 'draft' && blog.is_published !== false) return false;
+      if (statusFilter === 'published' && blog.is_published === false) return false;
+      if (!query) return true;
+      const haystack = `${blog.title} ${blog.slug}`.toLowerCase();
+      return haystack.includes(query);
+    });
+  }, [blogs, featuredOnly, listQuery, statusFilter]);
   const toast = useMemo(() => {
     if (errorMessage) return { message: errorMessage, tone: 'error' as const };
     if (successMessage) return { message: successMessage, tone: 'success' as const };
     return null;
   }, [errorMessage, successMessage]);
+
+  const clearQueryParam = (key: string) => {
+    const params = new URLSearchParams(searchParams.toString());
+    params.delete(key);
+    const query = params.toString();
+    router.replace(query ? `/admin/blogs?${query}` : '/admin/blogs');
+  };
+
+  const setQueryParam = (key: string, value: string) => {
+    const params = new URLSearchParams(searchParams.toString());
+    params.set(key, value);
+    const query = params.toString();
+    router.replace(query ? `/admin/blogs?${query}` : '/admin/blogs');
+  };
 
   useEffect(() => {
     return () => {
@@ -219,9 +237,23 @@ export default function BlogManager({
       URL.revokeObjectURL(createImagePreview);
     }
     if (!file) {
+      setCreateImageError(null);
       setCreateImagePreview(null);
       return;
     }
+    if (!allowedImageTypes.has(file.type)) {
+      setCreateImageError('Image must be PNG, JPG, or WebP.');
+      setCreateImagePreview(null);
+      setCreateFileKey((prev) => prev + 1);
+      return;
+    }
+    if (file.size > maxImageBytes) {
+      setCreateImageError('Image must be under 5MB.');
+      setCreateImagePreview(null);
+      setCreateFileKey((prev) => prev + 1);
+      return;
+    }
+    setCreateImageError(null);
     setCreateImagePreview(URL.createObjectURL(file));
   };
 
@@ -231,9 +263,23 @@ export default function BlogManager({
       URL.revokeObjectURL(editImagePreview);
     }
     if (!file) {
-      setEditImagePreview(editingBlog?.image ?? null);
+      setEditImageError(null);
+      setEditImagePreview(null);
       return;
     }
+    if (!allowedImageTypes.has(file.type)) {
+      setEditImageError('Image must be PNG, JPG, or WebP.');
+      setEditImagePreview(null);
+      setEditFileKey((prev) => prev + 1);
+      return;
+    }
+    if (file.size > maxImageBytes) {
+      setEditImageError('Image must be under 5MB.');
+      setEditImagePreview(null);
+      setEditFileKey((prev) => prev + 1);
+      return;
+    }
+    setEditImageError(null);
     setEditImagePreview(URL.createObjectURL(file));
   };
 
@@ -250,7 +296,9 @@ export default function BlogManager({
             type="button"
             title="Add blog"
             aria-label="Add blog"
-            onClick={() => setIsCreateOpen(true)}
+            onClick={() => {
+              setQueryParam('create', '1');
+            }}
             className="inline-flex items-center gap-2 rounded-xl border border-white bg-white px-4 py-2 text-sm font-semibold text-black shadow-sm transition hover:bg-white/90"
           >
             <Plus className="h-4 w-4" />
@@ -263,6 +311,36 @@ export default function BlogManager({
 
       <section className="space-y-3" data-gsap="reveal">
         <h3 className="text-lg font-semibold text-white">Blog list</h3>
+        <div className="flex flex-wrap items-center gap-3 rounded-2xl border border-white/10 bg-white/5 p-4 shadow-[0_20px_60px_rgba(0,0,0,0.35)]">
+          <input
+            value={listQuery}
+            onChange={(event) => setListQuery(event.target.value)}
+            placeholder="Search title or /slug..."
+            className="flex-1 min-w-[220px] rounded-xl border border-white/10 bg-[#13131b] px-3 py-2 text-sm text-white placeholder-white/40 shadow-[0_0_0_1px_rgba(255,255,255,0.02)] focus:border-white/40 focus:outline-none"
+          />
+          <select
+            value={statusFilter}
+            onChange={(event) => setStatusFilter(event.target.value as typeof statusFilter)}
+            className={`${tableSelectClassName} min-w-[150px]`}
+            aria-label="Filter by status"
+          >
+            <option value="all">All status</option>
+            <option value="published">Published</option>
+            <option value="draft">Draft</option>
+          </select>
+          <label className="inline-flex items-center gap-2 text-sm text-white/70">
+            <input
+              type="checkbox"
+              checked={featuredOnly}
+              onChange={(event) => setFeaturedOnly(event.target.checked)}
+              className="h-4 w-4 accent-white"
+            />
+            Featured only
+          </label>
+          <span className="ml-auto text-sm text-white/50">
+            Showing {filteredRows.length} / {blogs.length}
+          </span>
+        </div>
         <div className="overflow-x-auto rounded-2xl border border-white/10 bg-white/5 shadow-[0_20px_60px_rgba(0,0,0,0.35)]">
           <table className="min-w-full text-sm">
             <thead className="bg-white/5 text-white/50 uppercase tracking-[0.2em]">
@@ -282,10 +360,29 @@ export default function BlogManager({
                   </td>
                 </tr>
               )}
-              {blogs.map((blog) => (
+              {blogs.length > 0 && filteredRows.length === 0 && (
+                <tr>
+                  <td colSpan={5} className="px-4 py-6 text-center text-white/50">
+                    No matches. Try a different filter.
+                  </td>
+                </tr>
+              )}
+              {filteredRows.map((blog) => (
                 <tr key={blog.id} className="align-top">
                   <td className="px-4 py-4">
-                    <p className="font-semibold text-white">{blog.title}</p>
+                    <div className="flex flex-wrap items-center gap-2">
+                      <p className="font-semibold text-white">{blog.title}</p>
+                      {blog.featured && (
+                        <span className="rounded-full border border-red-500/25 bg-red-500/10 px-2.5 py-1 text-[10px] uppercase tracking-[0.3em] text-red-200">
+                          Featured
+                        </span>
+                      )}
+                      {blog.is_published === false && (
+                        <span className="rounded-full border border-white/10 bg-white/5 px-2.5 py-1 text-[10px] uppercase tracking-[0.3em] text-white/60">
+                          Draft
+                        </span>
+                      )}
+                    </div>
                     <p className="text-white/40">/{blog.slug}</p>
                   </td>
                   <td className="px-4 py-4 text-white/70">{blog.category}</td>
@@ -307,13 +404,33 @@ export default function BlogManager({
                         type="button"
                         title="Edit blog"
                         aria-label="Edit blog"
-                        onClick={() => setEditingBlog(blog)}
+                        onClick={() => {
+                          setEditTitleValue(null);
+                          setEditImagePreview(null);
+                          setQueryParam('edit', blog.id);
+                        }}
                         className="inline-flex items-center gap-2 rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white/70 transition hover:border-white/40 hover:text-white hover:bg-white/10"
                       >
                         <Pencil className="h-4 w-4" />
                         Edit
                       </button>
-                      <form action={deleteBlog} className="inline-flex">
+                      <a
+                        href={`/blog/${encodeURIComponent(blog.slug)}`}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="inline-flex items-center gap-2 rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white/70 transition hover:border-white/40 hover:text-white hover:bg-white/10"
+                      >
+                        View
+                      </a>
+                      <form
+                        action={deleteBlog}
+                        className="inline-flex"
+                        onSubmit={(event) => {
+                          if (!confirm(`Delete "${blog.title}"? This cannot be undone.`)) {
+                            event.preventDefault();
+                          }
+                        }}
+                      >
                         <input type="hidden" name="redirect_to" value="/admin/blogs" />
                         <input type="hidden" name="id" value={blog.id} />
                         <input type="hidden" name="slug" value={blog.slug} />
@@ -334,8 +451,19 @@ export default function BlogManager({
         </div>
       </section>
 
-      <Modal open={isCreateOpen} title="Create new blog" onClose={() => setIsCreateOpen(false)}>
-        <form action={createBlog} encType="multipart/form-data" className="grid gap-4">
+      <Modal
+        open={createOpen}
+        title="Create new blog"
+        onClose={() => {
+          setCreateImagePreview(null);
+          setCreateImageError(null);
+          setCreateFileKey((prev) => prev + 1);
+          setCreateTitleValue('');
+          setCreateCategoryValue('Life');
+          clearQueryParam('create');
+        }}
+      >
+        <form action={createBlog} className="grid gap-4">
           <input type="hidden" name="redirect_to" value="/admin/blogs" />
           <div className="grid gap-4 md:grid-cols-2">
             <div>
@@ -391,6 +519,31 @@ export default function BlogManager({
               </select>
             </div>
           </div>
+          <div className="grid gap-4 md:grid-cols-2">
+            <div>
+              <label className="text-sm text-white/60">Status</label>
+              <select name="is_published" defaultValue="published" className={selectClassName}>
+                <option value="published">Published</option>
+                <option value="draft">Draft</option>
+              </select>
+            </div>
+            <div>
+              <label className="text-sm text-white/60">Featured</label>
+              <select name="featured" defaultValue="standard" className={selectClassName}>
+                <option value="standard">Standard</option>
+                <option value="featured">Featured</option>
+              </select>
+            </div>
+          </div>
+          <div>
+            <label className="text-sm text-white/60">Tags</label>
+            <input
+              name="tags"
+              className={inputClassName}
+              placeholder="life, love, daily"
+            />
+            <p className="mt-2 text-xs text-white/40">Comma separated (optional).</p>
+          </div>
           <div>
             <label className="text-sm text-white/60">Local Image</label>
             <input
@@ -402,6 +555,7 @@ export default function BlogManager({
               className="mt-2 block w-full text-sm text-white/70 file:mr-4 file:rounded-full file:border-0 file:bg-white/10 file:px-4 file:py-2 file:text-xs file:font-semibold file:text-white hover:file:bg-white/20"
             />
             <p className="mt-2 text-xs text-white/40">PNG/JPG/WebP, max 5MB.</p>
+            {createImageError && <p className="mt-2 text-xs text-red-300">{createImageError}</p>}
             {createImagePreview && (
               <div className="mt-3 overflow-hidden rounded-xl border border-white/10 bg-white/5">
                 <img
@@ -424,12 +578,17 @@ export default function BlogManager({
       <Modal
         open={Boolean(editingBlog)}
         title="Edit blog"
-        onClose={() => setEditingBlog(null)}
+        onClose={() => {
+          setEditTitleValue(null);
+          setEditImagePreview(null);
+          setEditImageError(null);
+          setEditFileKey((prev) => prev + 1);
+          clearQueryParam('edit');
+        }}
       >
         {editingBlog && (
           <form
             action={updateBlog}
-            encType="multipart/form-data"
             className="grid gap-4"
             key={editingBlog.id}
           >
@@ -442,7 +601,7 @@ export default function BlogManager({
                 <input
                   name="title"
                   required
-                  value={editTitleValue}
+                  defaultValue={editingBlog.title}
                   onChange={(event) => setEditTitleValue(event.target.value)}
                   className={inputClassName}
                 />
@@ -499,8 +658,7 @@ export default function BlogManager({
                 <label className="text-sm text-white/60">Category</label>
                 <select
                   name="category"
-                  value={editCategoryValue}
-                  onChange={(event) => setEditCategoryValue(event.target.value)}
+                  defaultValue={editingBlog.category}
                   required
                   className={selectClassName}
                 >
@@ -511,6 +669,40 @@ export default function BlogManager({
                   ))}
                 </select>
               </div>
+            </div>
+            <div className="grid gap-4 md:grid-cols-2">
+              <div>
+                <label className="text-sm text-white/60">Status</label>
+                <select
+                  name="is_published"
+                  defaultValue={editingBlog.is_published === false ? 'draft' : 'published'}
+                  className={selectClassName}
+                >
+                  <option value="published">Published</option>
+                  <option value="draft">Draft</option>
+                </select>
+              </div>
+              <div>
+                <label className="text-sm text-white/60">Featured</label>
+                <select
+                  name="featured"
+                  defaultValue={editingBlog.featured ? 'featured' : 'standard'}
+                  className={selectClassName}
+                >
+                  <option value="standard">Standard</option>
+                  <option value="featured">Featured</option>
+                </select>
+              </div>
+            </div>
+            <div>
+              <label className="text-sm text-white/60">Tags</label>
+              <input
+                name="tags"
+                defaultValue={(editingBlog.tags ?? []).join(', ')}
+                className={inputClassName}
+                placeholder="life, love, daily"
+              />
+              <p className="mt-2 text-xs text-white/40">Comma separated (optional).</p>
             </div>
             <div>
               <label className="text-sm text-white/60">Local Image</label>
@@ -523,13 +715,27 @@ export default function BlogManager({
                 className="mt-2 block w-full text-sm text-white/70 file:mr-4 file:rounded-full file:border-0 file:bg-white/10 file:px-4 file:py-2 file:text-xs file:font-semibold file:text-white hover:file:bg-white/20"
               />
               <p className="mt-2 text-xs text-white/40">PNG/JPG/WebP, max 5MB.</p>
-              {editImagePreview && (
+              {editImageError && <p className="mt-2 text-xs text-red-300">{editImageError}</p>}
+              {(editImagePreview || editingBlog.image) && (
                 <div className="mt-3 overflow-hidden rounded-xl border border-white/10 bg-white/5">
                   <img
-                    src={editImagePreview}
+                    src={editImagePreview ?? editingBlog.image ?? ''}
                     alt="Preview"
                     className="h-32 w-full object-cover"
                   />
+                </div>
+              )}
+              {editingBlog.image && (
+                <div className="mt-2 flex items-center justify-between gap-3 rounded-xl border border-white/10 bg-white/5 px-3 py-2">
+                  <p className="min-w-0 truncate text-xs text-white/50">{editingBlog.image}</p>
+                  <a
+                    href={editingBlog.image}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="shrink-0 text-xs text-[var(--home-accent)] hover:text-[var(--home-accent)]"
+                  >
+                    Open
+                  </a>
                 </div>
               )}
             </div>

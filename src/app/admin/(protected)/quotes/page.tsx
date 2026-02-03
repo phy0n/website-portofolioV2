@@ -15,6 +15,14 @@ export default async function AdminQuotesPage({
   searchParams?: { success?: string; error?: string };
 }) {
   const { supabase } = await requireAdmin();
+  const safeDecode = (value?: string) => {
+    if (!value) return undefined;
+    try {
+      return decodeURIComponent(value);
+    } catch {
+      return value;
+    }
+  };
 
   const { data: quotes } = await supabase
     .from('quotes')
@@ -22,12 +30,8 @@ export default async function AdminQuotesPage({
     .order('date', { ascending: false });
 
   const quoteRows = (quotes as Quote[] | null) ?? [];
-  const successMessage = searchParams?.success
-    ? decodeURIComponent(searchParams.success)
-    : undefined;
-  const errorMessage = searchParams?.error
-    ? decodeURIComponent(searchParams.error)
-    : undefined;
+  const successMessage = safeDecode(searchParams?.success);
+  const errorMessage = safeDecode(searchParams?.error);
 
   return (
     <QuoteManager

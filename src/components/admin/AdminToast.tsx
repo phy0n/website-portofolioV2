@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect } from 'react';
 import { AlertTriangle, CheckCircle2, X } from 'lucide-react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
@@ -12,41 +12,28 @@ type AdminToastProps = {
 };
 
 export default function AdminToast({ message, tone = 'success' }: AdminToastProps) {
-  const [visible, setVisible] = useState(Boolean(message));
-  const [currentMessage, setCurrentMessage] = useState(message ?? '');
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const searchString = searchParams.toString();
 
-  const clearQuery = () => {
-    const params = new URLSearchParams(searchString);
+  const clearQuery = useCallback(() => {
+    const params = new URLSearchParams(searchParams.toString());
     params.delete('success');
     params.delete('error');
     const nextUrl = params.toString() ? `${pathname}?${params.toString()}` : pathname;
     router.replace(nextUrl, { scroll: false });
-  };
+  }, [pathname, router, searchParams]);
 
   useEffect(() => {
     if (!message) return;
-    setCurrentMessage(message);
-    setVisible(true);
-
-    const hideTimer = window.setTimeout(() => setVisible(false), 2600);
     const clearTimer = window.setTimeout(() => clearQuery(), 3200);
 
     return () => {
-      window.clearTimeout(hideTimer);
       window.clearTimeout(clearTimer);
     };
-  }, [message, pathname, router, searchString]);
+  }, [clearQuery, message]);
 
-  useEffect(() => {
-    if (message || visible) return;
-    setCurrentMessage('');
-  }, [message, visible]);
-
-  if (!currentMessage) return null;
+  if (!message) return null;
 
   const isError = tone === 'error';
 
@@ -55,8 +42,6 @@ export default function AdminToast({ message, tone = 'success' }: AdminToastProp
       role={isError ? 'alert' : 'status'}
       aria-live={isError ? 'assertive' : 'polite'}
       className={`flex items-center justify-between gap-3 rounded-xl border px-4 py-3 text-sm shadow-[0_15px_40px_rgba(0,0,0,0.25)] transition-all duration-300 ${
-        visible ? 'translate-y-0 opacity-100' : '-translate-y-2 opacity-0 pointer-events-none'
-      } ${
         isError
           ? 'border-red-500/30 bg-red-500/10 text-red-100'
           : 'border-emerald-500/30 bg-emerald-500/10 text-emerald-50'
@@ -68,12 +53,11 @@ export default function AdminToast({ message, tone = 'success' }: AdminToastProp
         ) : (
           <CheckCircle2 className="h-4 w-4" />
         )}
-        {currentMessage}
+        {message}
       </span>
       <button
         type="button"
         onClick={() => {
-          setVisible(false);
           clearQuery();
         }}
         aria-label="Dismiss"
