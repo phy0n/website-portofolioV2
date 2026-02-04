@@ -12,6 +12,7 @@ import {
   Eye,
   Quote,
   Tags,
+  Users,
   X,
 } from 'lucide-react';
 import { formatBlogDate, readingTimeMinutes } from '@/lib/blog';
@@ -56,10 +57,12 @@ export default function BlogClient({
   blogs,
   quotes,
   viewCounts,
+  uniqueCounts,
 }: {
   blogs: Blog[];
   quotes: DailyQuote[];
   viewCounts?: Record<string, number>;
+  uniqueCounts?: Record<string, number>;
 }) {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedTag, setSelectedTag] = useState<string | null>(null);
@@ -67,7 +70,11 @@ export default function BlogClient({
   const [savedOnly, setSavedOnly] = useState(false);
   const [isQuotesOpen, setIsQuotesOpen] = useState(false);
   const [readingList, setReadingList] = useState<Set<string>>(() => readReadingList());
-  const [fetchedViewCounts, setFetchedViewCounts] = useState<Record<string, number> | null>(null);
+  const [fetchedCounts, setFetchedCounts] = useState<{
+    source: 'counters' | 'events';
+    totals: Record<string, number>;
+    uniques: Record<string, number>;
+  } | null>(null);
   const deferredQuery = useDeferredValue(searchQuery);
   const normalizedQuery = deferredQuery.trim().toLowerCase();
 
@@ -78,15 +85,28 @@ export default function BlogClient({
   const resolvedViewCounts = useMemo(() => {
     const result: Record<string, number> = { ...(viewCounts ?? {}) };
 
-    if (fetchedViewCounts) {
-      Object.entries(fetchedViewCounts).forEach(([slug, count]) => {
+    if (fetchedCounts?.totals) {
+      Object.entries(fetchedCounts.totals).forEach(([slug, count]) => {
         const previous = result[slug] ?? 0;
         result[slug] = Math.max(previous, count);
       });
     }
 
     return result;
-  }, [fetchedViewCounts, viewCounts]);
+  }, [fetchedCounts, viewCounts]);
+
+  const resolvedUniqueViews = useMemo(() => {
+    const result: Record<string, number> = { ...(uniqueCounts ?? {}) };
+
+    if (fetchedCounts?.uniques) {
+      Object.entries(fetchedCounts.uniques).forEach(([slug, count]) => {
+        const previous = result[slug] ?? 0;
+        result[slug] = Math.max(previous, count);
+      });
+    }
+
+    return result;
+  }, [fetchedCounts, uniqueCounts]);
 
   const viewCountSlugs = useMemo(() => {
     const slugs = visibleBlogs
@@ -102,7 +122,9 @@ export default function BlogClient({
 
     const fetchViewCounts = async () => {
       try {
-        const mergedCounts: Record<string, number> = {};
+        const mergedTotals: Record<string, number> = {};
+        const mergedUniques: Record<string, number> = {};
+        let source: 'counters' | 'events' = 'events';
         const chunkSize = 80;
 
         for (let index = 0; index < viewCountSlugs.length; index += chunkSize) {
@@ -114,12 +136,19 @@ export default function BlogClient({
             signal: controller.signal,
           });
           if (!res.ok) continue;
-          const data = (await res.json()) as { counts?: Record<string, number> };
-          if (!data?.counts) continue;
-          Object.assign(mergedCounts, data.counts);
+          const data = (await res.json()) as {
+            source?: 'counters' | 'events';
+            counts?: Record<string, number>;
+            totals?: Record<string, number>;
+            uniques?: Record<string, number>;
+          };
+          if (data?.source === 'counters') source = 'counters';
+          const nextTotals = data?.totals ?? data?.counts;
+          if (nextTotals) Object.assign(mergedTotals, nextTotals);
+          if (data?.uniques) Object.assign(mergedUniques, data.uniques);
         }
 
-        setFetchedViewCounts(mergedCounts);
+        setFetchedCounts({ source, totals: mergedTotals, uniques: mergedUniques });
       } catch (err) {
         const error = err as { name?: string };
         if (error?.name === 'AbortError') return;
@@ -250,6 +279,8 @@ export default function BlogClient({
     !normalizedQuery &&
     !selectedTag &&
     !savedOnly;
+
+  const showUniqueCounts = Boolean(uniqueCounts) || fetchedCounts?.source === 'counters';
 
   return (
     <div className="relative">
@@ -431,7 +462,7 @@ export default function BlogClient({
                         </div>
                         <div className="p-5">
                             <p className="text-xs text-white/50">
-                            {formatBlogDate(featured.date)} • {readingTimeById.get(featured.id) ?? 1} min read • {(resolvedViewCounts?.[featured.slug] ?? 0).toLocaleString()} views
+                            {formatBlogDate(featured.date)} • {readingTimeById.get(featured.id) ?? 1} min read • {(resolvedViewCounts?.[featured.slug] ?? 0).toLocaleString()} views{showUniqueCounts ? ` • ${(resolvedUniqueViews?.[featured.slug] ?? 0).toLocaleString()} users` : ''}
                             </p>
                           <h3 className="mt-3 text-lg sm:text-xl font-semibold text-white line-clamp-2">
                             {featured.title}
@@ -456,6 +487,7 @@ export default function BlogClient({
                 <div className="space-y-6 xs:space-y-8">
                   {filteredBlogs.map((blog, index) => {
                     const views = resolvedViewCounts?.[blog.slug] ?? 0;
+                    const uniqueVisitors = resolvedUniqueViews?.[blog.slug] ?? 0;
                     return (
                       <Link
                         key={blog.id}
@@ -523,6 +555,12 @@ export default function BlogClient({
                                 <Eye className="w-3.5 h-3.5" />
                                 {views.toLocaleString()}
                               </span>
+                              {showUniqueCounts ? (
+                                <span className="inline-flex items-center gap-1.5 border border-white/10 bg-white/[0.02] px-2.5 py-1">
+                                  <Users className="w-3.5 h-3.5" />
+                                  {uniqueVisitors.toLocaleString()}
+                                </span>
+                              ) : null}
                             </div>
                             <h2 className="text-xl xs:text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-3 xs:mb-4 group-hover:text-gray-300 transition-colors leading-tight">
                               {blog.title}

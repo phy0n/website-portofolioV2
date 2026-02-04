@@ -15,6 +15,7 @@ import {
   Share2,
   Tags,
   User,
+  Users,
 } from 'lucide-react';
 import BlogMarkdown from '@/components/blog/BlogMarkdown';
 import { extractTocFromContent, formatBlogDate, readingTimeMinutes } from '@/lib/blog';
@@ -44,16 +45,22 @@ export default function BlogDetailClient({
   blog,
   relatedBlogs = [],
   viewCount = 0,
+  uniqueCount,
 }: {
   blog: Blog | null;
   relatedBlogs?: RelatedBlog[];
   viewCount?: number;
+  uniqueCount?: number;
 }) {
   const [readingProgress, setReadingProgress] = useState(0);
   const [activeHeadingId, setActiveHeadingId] = useState<string | null>(null);
   const [toast, setToast] = useState<string | null>(null);
   const [saved, setSaved] = useState(() => (blog?.slug ? readReadingList().has(blog.slug) : false));
-  const [fetchedViewCount, setFetchedViewCount] = useState<number | null>(null);
+  const [fetchedCounts, setFetchedCounts] = useState<{
+    source: 'counters' | 'events';
+    total: number;
+    unique: number;
+  } | null>(null);
   const rafRef = useRef<number | null>(null);
   const articleRef = useRef<HTMLElement | null>(null);
   const toastTimerRef = useRef<number | null>(null);
@@ -61,7 +68,9 @@ export default function BlogDetailClient({
   const content = blog?.content ?? '';
   const toc = useMemo(() => (content ? extractTocFromContent(content) : []), [content]);
   const readingTime = useMemo(() => (content ? readingTimeMinutes(content) : 1), [content]);
-  const resolvedViewCount = fetchedViewCount ?? viewCount;
+  const resolvedTotalViews = Math.max(viewCount ?? 0, fetchedCounts?.total ?? 0);
+  const resolvedUniqueVisitors = Math.max(uniqueCount ?? 0, fetchedCounts?.unique ?? 0);
+  const showUniqueCounts = uniqueCount !== undefined || fetchedCounts?.source === 'counters';
 
   useEffect(() => {
     return () => {
@@ -84,9 +93,30 @@ export default function BlogDetailClient({
           signal: controller.signal,
         });
         if (!res.ok) return;
-        const data = (await res.json()) as { counts?: Record<string, number> };
-        const nextCount = data?.counts?.[slug];
-        setFetchedViewCount(typeof nextCount === 'number' ? nextCount : 0);
+        const data = (await res.json()) as {
+          source?: 'counters' | 'events';
+          counts?: Record<string, number>;
+          totals?: Record<string, number>;
+          uniques?: Record<string, number>;
+        };
+
+        const toCount = (value: unknown) => {
+          if (typeof value === 'number') return Number.isFinite(value) ? value : 0;
+          if (typeof value === 'string') {
+            const parsed = Number.parseInt(value, 10);
+            return Number.isFinite(parsed) ? parsed : 0;
+          }
+          return 0;
+        };
+
+        const nextTotal = data?.totals?.[slug] ?? data?.counts?.[slug];
+        const nextUnique = data?.uniques?.[slug];
+
+        setFetchedCounts({
+          source: data?.source === 'counters' ? 'counters' : 'events',
+          total: toCount(nextTotal),
+          unique: toCount(nextUnique),
+        });
       } catch (err) {
         const error = err as { name?: string };
         if (error?.name === 'AbortError') return;
@@ -311,8 +341,14 @@ export default function BlogDetailClient({
                   </span>
                   <span className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-black/40 px-3 py-1.5">
                     <Eye className="h-4 w-4" />
-                    {resolvedViewCount.toLocaleString()}
+                    {resolvedTotalViews.toLocaleString()}
                   </span>
+                  {showUniqueCounts ? (
+                    <span className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-black/40 px-3 py-1.5">
+                      <Users className="h-4 w-4" />
+                      {resolvedUniqueVisitors.toLocaleString()}
+                    </span>
+                  ) : null}
                   <span className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-black/40 px-3 py-1.5">
                     <User className="h-4 w-4" />
                     {blog.author || 'Phion'}
@@ -480,8 +516,17 @@ export default function BlogDetailClient({
                       <Eye className="h-4 w-4" />
                       Views
                     </span>
-                    <span className="text-white/80">{resolvedViewCount.toLocaleString()}</span>
+                    <span className="text-white/80">{resolvedTotalViews.toLocaleString()}</span>
                   </div>
+                  {showUniqueCounts ? (
+                    <div className="flex items-center justify-between gap-3">
+                      <span className="inline-flex items-center gap-2">
+                        <Users className="h-4 w-4" />
+                        Users
+                      </span>
+                      <span className="text-white/80">{resolvedUniqueVisitors.toLocaleString()}</span>
+                    </div>
+                  ) : null}
                   <div className="flex items-center justify-between gap-3">
                     <span className="inline-flex items-center gap-2">
                       <User className="h-4 w-4" />
