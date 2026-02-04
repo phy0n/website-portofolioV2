@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
+import { createClient } from '@supabase/supabase-js';
 
 import blogsData from '@/data/blogs.json';
-import { createSupabaseServerClient, supabaseConfig } from '@/lib/supabase/server';
 
 export const revalidate = 30;
 
@@ -35,7 +35,12 @@ const compareByDateDesc = (a: BlogPreview, b: BlogPreview) => {
 
 export async function GET() {
   try {
-    if (!supabaseConfig.url || !supabaseConfig.anonKey) {
+    const supabaseUrl = process.env.SUPABASE_URL ?? process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const supabaseAnonKey = process.env.SUPABASE_ANON_KEY ?? process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+    const supabaseServiceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+    const supabaseKey = supabaseServiceRoleKey ?? supabaseAnonKey;
+
+    if (!supabaseUrl || !supabaseKey) {
       const fallback = (blogsData as any[])
         .filter((blog) => blog?.is_published !== false)
         .map(normalizePreview)
@@ -49,7 +54,9 @@ export async function GET() {
       );
     }
 
-    const supabase = await createSupabaseServerClient();
+    const supabase = createClient(supabaseUrl, supabaseKey, {
+      auth: { persistSession: false },
+    });
     const { data, error } = await supabase
       .from('blogs')
       .select('*')
