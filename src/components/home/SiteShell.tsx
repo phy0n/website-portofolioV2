@@ -6,6 +6,7 @@ import { usePathname } from 'next/navigation';
 import { BookOpen, Gamepad2, Home, Info, Menu, ShieldCheck, Sparkles, X } from 'lucide-react';
 import { gsap } from 'gsap';
 import Image from 'next/image';
+import ChatSidebar from '@/components/chat/ChatSidebar';
 
 const NAV_LINKS = [
   { label: 'Home', href: '/' },
@@ -221,6 +222,8 @@ export default function SiteShell({ children, scopeRef, contentMode = 'contained
           </div>
         </aside>
 
+        <ChatSidebar />
+
         {/* Mobile top navbar */}
         <header className="js-nav fixed left-0 right-0 top-0 z-50 border-b border-white/10 bg-black/90 backdrop-blur lg:hidden">
           <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-4 lg:py-5">
@@ -266,11 +269,11 @@ export default function SiteShell({ children, scopeRef, contentMode = 'contained
           </div>
         </header>
 
-        <div className="lg:pl-72">
+        <div className="lg:pl-72 lg:pr-80">
         {showAdminDashboard ? (
           <Link
             href="/admin"
-            className="fixed right-5 top-5 z-[55] hidden items-center gap-2 rounded-full border border-white/10 bg-black/70 px-4 py-2 text-[10px] font-semibold uppercase tracking-[0.28em] text-white backdrop-blur transition hover:border-white/20 hover:bg-black/60 lg:inline-flex">
+            className="fixed right-5 top-5 z-[55] hidden items-center gap-2 rounded-full border border-white/10 bg-black/70 px-4 py-2 text-[10px] font-semibold uppercase tracking-[0.28em] text-white backdrop-blur transition hover:border-white/20 hover:bg-black/60 lg:right-[calc(20rem+1.25rem)] lg:inline-flex">
             <ShieldCheck className="h-4 w-4 text-[var(--home-accent)]" />
           </Link>
         ) : null}
