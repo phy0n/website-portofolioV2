@@ -22,6 +22,8 @@ type Blog = {
   image: string | null;
   featured: boolean;
   is_published: boolean | null;
+  show_on_main: boolean | null;
+  show_on_phion: boolean | null;
 };
 
 const formatDateInput = (value?: string | null) => {
@@ -37,6 +39,8 @@ const selectClassName =
   'mt-2 w-full rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm text-white shadow-[0_0_0_1px_rgba(255,255,255,0.02)] focus:border-white/40 focus:outline-none admin-select';
 const tableSelectClassName =
   'w-full rounded-lg border border-white/10 bg-white/5 px-3 py-1.5 text-xs text-white shadow-[0_0_0_1px_rgba(255,255,255,0.02)] focus:border-white/40 focus:outline-none admin-select';
+
+const resolveTargetValue = (value: boolean | null | undefined) => value !== false;
 
 const slugify = (value: string) => {
   return value
@@ -382,6 +386,29 @@ export default function BlogManager({
                           Draft
                         </span>
                       )}
+                      {(() => {
+                        const showMain = resolveTargetValue(blog.show_on_main);
+                        const showPhion = resolveTargetValue(blog.show_on_phion);
+                        return (
+                          <>
+                            {showMain && (
+                              <span className="rounded-full border border-white/10 bg-white/5 px-2.5 py-1 text-[10px] uppercase tracking-[0.3em] text-white/60">
+                                Main
+                              </span>
+                            )}
+                            {showPhion && (
+                              <span className="rounded-full border border-white/10 bg-white/5 px-2.5 py-1 text-[10px] uppercase tracking-[0.3em] text-white/60">
+                                Phion
+                              </span>
+                            )}
+                            {!showMain && !showPhion && (
+                              <span className="rounded-full border border-white/10 bg-white/5 px-2.5 py-1 text-[10px] uppercase tracking-[0.3em] text-white/50">
+                                Hidden
+                              </span>
+                            )}
+                          </>
+                        );
+                      })()}
                     </div>
                     <p className="text-white/40">/{blog.slug}</p>
                   </td>
@@ -533,6 +560,34 @@ export default function BlogManager({
                 <option value="standard">Standard</option>
                 <option value="featured">Featured</option>
               </select>
+            </div>
+          </div>
+          <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
+            <p className="text-sm font-semibold text-white">Post to</p>
+            <p className="mt-1 text-xs text-white/40">
+              Select destinations (leave empty to hide on both sites).
+            </p>
+            <div className="mt-3 grid gap-2 sm:grid-cols-2">
+              <label className="inline-flex items-center gap-2 text-sm text-white/70">
+                <input
+                  type="checkbox"
+                  name="show_on_main"
+                  value="true"
+                  defaultChecked
+                  className="h-4 w-4 accent-white"
+                />
+                MainPortofolio
+              </label>
+              <label className="inline-flex items-center gap-2 text-sm text-white/70">
+                <input
+                  type="checkbox"
+                  name="show_on_phion"
+                  value="true"
+                  defaultChecked
+                  className="h-4 w-4 accent-white"
+                />
+                PhionPortofolio
+              </label>
             </div>
           </div>
           <div>
@@ -692,6 +747,34 @@ export default function BlogManager({
                   <option value="standard">Standard</option>
                   <option value="featured">Featured</option>
                 </select>
+              </div>
+            </div>
+            <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
+              <p className="text-sm font-semibold text-white">Post to</p>
+              <p className="mt-1 text-xs text-white/40">
+                Select destinations (leave empty to hide on both sites).
+              </p>
+              <div className="mt-3 grid gap-2 sm:grid-cols-2">
+                <label className="inline-flex items-center gap-2 text-sm text-white/70">
+                  <input
+                    type="checkbox"
+                    name="show_on_main"
+                    value="true"
+                    defaultChecked={resolveTargetValue(editingBlog.show_on_main)}
+                    className="h-4 w-4 accent-white"
+                  />
+                  MainPortofolio
+                </label>
+                <label className="inline-flex items-center gap-2 text-sm text-white/70">
+                  <input
+                    type="checkbox"
+                    name="show_on_phion"
+                    value="true"
+                    defaultChecked={resolveTargetValue(editingBlog.show_on_phion)}
+                    className="h-4 w-4 accent-white"
+                  />
+                  PhionPortofolio
+                </label>
               </div>
             </div>
             <div>

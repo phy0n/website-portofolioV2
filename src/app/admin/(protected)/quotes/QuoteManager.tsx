@@ -13,6 +13,8 @@ type Quote = {
   date: string;
   text: string;
   author: string | null;
+  show_on_main: boolean | null;
+  show_on_phion: boolean | null;
 };
 
 const formatDateInput = (value?: string | null) => {
@@ -24,6 +26,8 @@ const inputClassName =
   'mt-2 w-full rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm text-white placeholder-white/40 shadow-[0_0_0_1px_rgba(255,255,255,0.02)] focus:border-white/40 focus:outline-none';
 const textareaClassName =
   'mt-2 w-full rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm text-white placeholder-white/40 shadow-[0_0_0_1px_rgba(255,255,255,0.02)] focus:border-white/40 focus:outline-none';
+
+const resolveTargetValue = (value: boolean | null | undefined) => value !== false;
 
 function useLockBody(open: boolean) {
   useEffect(() => {
@@ -181,20 +185,21 @@ export default function QuoteManager({
                 <th className="px-4 py-3 text-left">Date</th>
                 <th className="px-4 py-3 text-left">Quote</th>
                 <th className="px-4 py-3 text-left">Author</th>
+                <th className="px-4 py-3 text-left">Post</th>
                 <th className="px-4 py-3 text-left">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-white/10">
               {quotes.length === 0 && (
                 <tr>
-                  <td colSpan={4} className="px-4 py-6 text-center text-white/50">
+                  <td colSpan={5} className="px-4 py-6 text-center text-white/50">
                     No quotes yet.
                   </td>
                 </tr>
               )}
               {quotes.length > 0 && filteredQuotes.length === 0 && (
                 <tr>
-                  <td colSpan={4} className="px-4 py-6 text-center text-white/50">
+                  <td colSpan={5} className="px-4 py-6 text-center text-white/50">
                     No matches. Try a different search.
                   </td>
                 </tr>
@@ -204,6 +209,33 @@ export default function QuoteManager({
                   <td className="px-4 py-4 text-white/70">{formatDateInput(quote.date)}</td>
                   <td className="px-4 py-4 text-white">{quote.text}</td>
                   <td className="px-4 py-4 text-white/70">{quote.author ?? '-'}</td>
+                  <td className="px-4 py-4">
+                    <div className="flex flex-wrap gap-2">
+                      {(() => {
+                        const showMain = resolveTargetValue(quote.show_on_main);
+                        const showPhion = resolveTargetValue(quote.show_on_phion);
+                        return (
+                          <>
+                            {showMain && (
+                              <span className="inline-flex items-center rounded-full border border-white/10 bg-white/5 px-2 py-0.5 text-xs text-white/70">
+                                Main
+                              </span>
+                            )}
+                            {showPhion && (
+                              <span className="inline-flex items-center rounded-full border border-white/10 bg-white/5 px-2 py-0.5 text-xs text-white/70">
+                                Phion
+                              </span>
+                            )}
+                            {!showMain && !showPhion && (
+                              <span className="inline-flex items-center rounded-full border border-white/10 bg-white/5 px-2 py-0.5 text-xs text-white/50">
+                                Hidden
+                              </span>
+                            )}
+                          </>
+                        );
+                      })()}
+                    </div>
+                  </td>
                   <td className="px-4 py-4">
                     <div className="flex items-center gap-2">
                       <button
@@ -267,6 +299,34 @@ export default function QuoteManager({
             <label className="text-sm text-white/60">Author</label>
             <input name="author" className={inputClassName} placeholder="Phion" />
           </div>
+          <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
+            <p className="text-sm font-semibold text-white">Post to</p>
+            <p className="mt-1 text-xs text-white/40">
+              Select destinations (leave empty to hide on both sites).
+            </p>
+            <div className="mt-3 grid gap-2 sm:grid-cols-2">
+              <label className="inline-flex items-center gap-2 text-sm text-white/70">
+                <input
+                  type="checkbox"
+                  name="show_on_main"
+                  value="true"
+                  defaultChecked
+                  className="h-4 w-4 accent-white"
+                />
+                MainPortofolio
+              </label>
+              <label className="inline-flex items-center gap-2 text-sm text-white/70">
+                <input
+                  type="checkbox"
+                  name="show_on_phion"
+                  value="true"
+                  defaultChecked
+                  className="h-4 w-4 accent-white"
+                />
+                PhionPortofolio
+              </label>
+            </div>
+          </div>
           <AdminSubmitButton
             pendingText="Saving..."
             className="inline-flex w-full items-center justify-center rounded-xl border border-white bg-white px-4 py-2 text-sm font-semibold text-black shadow-sm transition hover:bg-white/90"
@@ -314,6 +374,34 @@ export default function QuoteManager({
                 defaultValue={editingQuote.author ?? ''}
                 className={inputClassName}
               />
+            </div>
+            <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
+              <p className="text-sm font-semibold text-white">Post to</p>
+              <p className="mt-1 text-xs text-white/40">
+                Select destinations (leave empty to hide on both sites).
+              </p>
+              <div className="mt-3 grid gap-2 sm:grid-cols-2">
+                <label className="inline-flex items-center gap-2 text-sm text-white/70">
+                  <input
+                    type="checkbox"
+                    name="show_on_main"
+                    value="true"
+                    defaultChecked={resolveTargetValue(editingQuote.show_on_main)}
+                    className="h-4 w-4 accent-white"
+                  />
+                  MainPortofolio
+                </label>
+                <label className="inline-flex items-center gap-2 text-sm text-white/70">
+                  <input
+                    type="checkbox"
+                    name="show_on_phion"
+                    value="true"
+                    defaultChecked={resolveTargetValue(editingQuote.show_on_phion)}
+                    className="h-4 w-4 accent-white"
+                  />
+                  PhionPortofolio
+                </label>
+              </div>
             </div>
             <AdminSubmitButton
               pendingText="Saving..."

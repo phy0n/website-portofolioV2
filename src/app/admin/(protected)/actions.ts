@@ -130,6 +130,8 @@ export async function createBlog(formData: FormData) {
   const imageFile = extractImageFile(formData);
   const featuredValue = String(formData.get('featured') || 'standard');
   const statusValue = String(formData.get('is_published') || 'published');
+  const showOnMain = String(formData.get('show_on_main') || '').trim() === 'true';
+  const showOnPhion = String(formData.get('show_on_phion') || '').trim() === 'true';
   const featured = featuredValue === 'featured';
   const isPublished = statusValue === 'published';
 
@@ -159,6 +161,8 @@ export async function createBlog(formData: FormData) {
       image: imageUrl,
       featured,
       is_published: isPublished,
+      show_on_main: showOnMain,
+      show_on_phion: showOnPhion,
     });
 
   if (error) {
@@ -187,6 +191,8 @@ export async function updateBlog(formData: FormData) {
   const currentImage = String(formData.get('current_image') || '').trim();
   const featuredValue = formData.get('featured');
   const statusValue = formData.get('is_published');
+  const showOnMain = String(formData.get('show_on_main') || '').trim() === 'true';
+  const showOnPhion = String(formData.get('show_on_phion') || '').trim() === 'true';
   const featured = featuredValue === 'featured';
   const isPublished = statusValue === 'published';
 
@@ -212,6 +218,8 @@ export async function updateBlog(formData: FormData) {
     date,
     category,
     image: imageUrl,
+    show_on_main: showOnMain,
+    show_on_phion: showOnPhion,
     updated_at: new Date().toISOString(),
   };
 
@@ -304,6 +312,8 @@ export async function createQuote(formData: FormData) {
   const date = String(formData.get('date') || '').trim();
   const text = String(formData.get('text') || '').trim();
   const author = String(formData.get('author') || '').trim();
+  const showOnMain = String(formData.get('show_on_main') || '').trim() === 'true';
+  const showOnPhion = String(formData.get('show_on_phion') || '').trim() === 'true';
 
   if (!date || !text) {
     redirectWithError(redirectTo, 'Quote date and text are required.');
@@ -316,6 +326,8 @@ export async function createQuote(formData: FormData) {
       date,
       text,
       author: author || null,
+      show_on_main: showOnMain,
+      show_on_phion: showOnPhion,
     });
 
   if (error) {
@@ -332,6 +344,8 @@ export async function updateQuote(formData: FormData) {
   const date = String(formData.get('date') || '').trim();
   const text = String(formData.get('text') || '').trim();
   const author = String(formData.get('author') || '').trim();
+  const showOnMain = String(formData.get('show_on_main') || '').trim() === 'true';
+  const showOnPhion = String(formData.get('show_on_phion') || '').trim() === 'true';
 
   if (!id || !date || !text) {
     redirectWithError(redirectTo, 'Missing required quote fields.');
@@ -344,6 +358,8 @@ export async function updateQuote(formData: FormData) {
       date,
       text,
       author: author || null,
+      show_on_main: showOnMain,
+      show_on_phion: showOnPhion,
     })
     .eq('id', id);
 

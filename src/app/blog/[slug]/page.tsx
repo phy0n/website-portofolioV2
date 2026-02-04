@@ -64,7 +64,7 @@ export default async function BlogDetailPage({
 
   const { data, error } = await blogQuery.maybeSingle();
 
-  if (error || !data) {
+  if (error || !data || (data as any)?.show_on_phion === false) {
     const slugLower = slug.toLowerCase();
     const fallbackBlog =
       (blogsData as any[]).find(
@@ -86,17 +86,23 @@ export default async function BlogDetailPage({
 
   const { data: relatedBlogs } = await supabase
     .from('blogs')
-    .select('id, slug, title, excerpt, author, date, category, tags, image, featured, is_published')
+    .select(
+      'id, slug, title, excerpt, author, date, category, tags, image, featured, is_published, show_on_phion'
+    )
     .eq('category', data.category)
     .neq('id', data.id)
     .or('is_published.eq.true,is_published.is.null')
     .order('date', { ascending: false })
-    .limit(4);
+    .limit(12);
+
+  const relatedBlogRows = ((relatedBlogs as any[]) ?? [])
+    .filter((blog) => (blog as any)?.show_on_phion !== false)
+    .slice(0, 4);
 
   return (
     <BlogDetailClient
       blog={data}
-      relatedBlogs={(relatedBlogs as any[]) ?? []}
+      relatedBlogs={relatedBlogRows}
     />
   );
 }

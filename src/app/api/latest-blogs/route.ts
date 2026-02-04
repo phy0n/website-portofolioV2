@@ -52,10 +52,10 @@ export async function GET() {
     const supabase = await createSupabaseServerClient();
     const { data, error } = await supabase
       .from('blogs')
-      .select('id, slug, title, excerpt, date, tags, is_published')
+      .select('*')
       .or('is_published.eq.true,is_published.is.null')
       .order('date', { ascending: false })
-      .limit(3);
+      .limit(12);
 
     if (error || !data) {
       const fallback = (blogsData as any[])
@@ -72,7 +72,10 @@ export async function GET() {
     }
 
     const blogs = data
-      .filter((blog) => (blog as any)?.is_published !== false)
+      .filter(
+        (blog) =>
+          (blog as any)?.is_published !== false && (blog as any)?.show_on_phion !== false
+      )
       .map(normalizePreview)
       .filter((blog): blog is BlogPreview => Boolean(blog))
       .sort(compareByDateDesc)
@@ -97,4 +100,3 @@ export async function GET() {
     );
   }
 }
-

@@ -32,8 +32,14 @@ export default async function BlogPage() {
       .order('date', { ascending: false }),
   ]);
 
-  const safeBlogs = blogsError || !blogs ? blogsData : blogs;
-  const safeQuotes = quotesError || !quotes ? dailyQuotesData : quotes;
+  const safeBlogs =
+    blogsError || !blogs
+      ? blogsData
+      : blogs.filter((blog) => (blog as any)?.show_on_phion !== false);
+  const safeQuotes =
+    quotesError || !quotes
+      ? dailyQuotesData
+      : quotes.filter((quote) => (quote as any)?.show_on_phion !== false);
 
   return (
     <SiteShell contentMode="full">

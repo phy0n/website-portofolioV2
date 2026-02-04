@@ -7,6 +7,8 @@ interface Quote {
   date: string;
   text: string;
   author: string | null;
+  show_on_main: boolean | null;
+  show_on_phion: boolean | null;
 }
 
 export default async function AdminQuotesPage({

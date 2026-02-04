@@ -15,6 +15,8 @@ interface Blog {
   image: string | null;
   featured: boolean;
   is_published: boolean | null;
+  show_on_main: boolean | null;
+  show_on_phion: boolean | null;
 }
 
 export default async function AdminBlogsPage({
