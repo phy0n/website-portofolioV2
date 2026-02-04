@@ -32,6 +32,7 @@ interface SiteShellProps {
 export default function SiteShell({ children, scopeRef, contentMode = 'contained' }: SiteShellProps) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [sidebarAvatarUrl, setSidebarAvatarUrl] = useState<string | null>(null);
+  const [isAdmin, setIsAdmin] = useState(false);
   const menuRef = useRef<HTMLDivElement | null>(null);
   const menuTimeline = useRef<gsap.core.Timeline | null>(null);
   const pathname = usePathname();
@@ -39,6 +40,7 @@ export default function SiteShell({ children, scopeRef, contentMode = 'contained
     contentMode === 'full'
       ? 'relative z-10 pb-20 pt-24'
       : 'relative z-10 mx-auto max-w-6xl px-4 pb-20 pt-24';
+  const showAdminDashboard = pathname === '/' && isAdmin;
 
   useEffect(() => {
     const schedule = (fn: () => void) => {
@@ -62,6 +64,27 @@ export default function SiteShell({ children, scopeRef, contentMode = 'contained
 
     schedule(fetchAvatar);
   }, []);
+
+  useEffect(() => {
+    if (pathname !== '/') return;
+
+    const controller = new AbortController();
+
+    const checkAdminSession = async () => {
+      try {
+        const res = await fetch('/api/admin-session', { cache: 'no-store', signal: controller.signal });
+        if (!res.ok) return;
+        const data = (await res.json()) as { isAdmin?: boolean };
+        setIsAdmin(Boolean(data.isAdmin));
+      } catch (err) {
+        const error = err as { name?: string };
+        if (error?.name === 'AbortError') return;
+      }
+    };
+
+    void checkAdminSession();
+    return () => controller.abort();
+  }, [pathname]);
 
   useEffect(() => {
     if (!menuOpen) return;
@@ -220,6 +243,15 @@ export default function SiteShell({ children, scopeRef, contentMode = 'contained
                   {item.label}
                 </Link>
               ))}
+              {showAdminDashboard ? (
+                <Link
+                  href="/admin"
+                  className="js-nav-item inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-3 py-1.5 text-[10px] font-semibold text-white transition hover:border-white/20 hover:bg-white/[0.06]"
+                >
+                  <ShieldCheck className="h-4 w-4 text-[var(--home-accent)]" />
+                  Dashboard Admin
+                </Link>
+              ) : null}
             </nav>
             <button
               type="button"
@@ -235,13 +267,19 @@ export default function SiteShell({ children, scopeRef, contentMode = 'contained
         </header>
 
         <div className="lg:pl-72">
+        {showAdminDashboard ? (
+          <Link
+            href="/admin"
+            className="fixed right-5 top-5 z-[55] hidden items-center gap-2 rounded-full border border-white/10 bg-black/70 px-4 py-2 text-[10px] font-semibold uppercase tracking-[0.28em] text-white backdrop-blur transition hover:border-white/20 hover:bg-black/60 lg:inline-flex">
+            <ShieldCheck className="h-4 w-4 text-[var(--home-accent)]" />
+          </Link>
+        ) : null}
         <div
           ref={menuRef}
           className="fixed inset-0 z-[60] bg-black/95 backdrop-blur opacity-0 invisible"
           role="dialog"
           aria-modal="true"
-          aria-hidden={!menuOpen}
-        >
+          aria-hidden={!menuOpen}>
           <div className="relative flex h-full flex-col px-6 py-6">
             <div className="js-menu-header flex items-center justify-between">
               <span className="text-[11px] uppercase tracking-[0.35em] text-[var(--home-muted)]">Menu</span>
@@ -267,6 +305,20 @@ export default function SiteShell({ children, scopeRef, contentMode = 'contained
                 </a>
               ))}
             </div>
+            {showAdminDashboard ? (
+              <div className="mt-auto pt-10 md:hidden">
+                <a
+                  href="/admin"
+                  onClick={() => setMenuOpen(false)}
+                  className="js-menu-item inline-flex w-full items-center justify-between rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-4 text-sm font-semibold text-white transition hover:border-white/20 hover:bg-white/[0.06]">
+                  <span className="inline-flex items-center gap-3">
+                    <ShieldCheck className="h-4 w-4 text-[var(--home-accent)]" />
+                    Dashboard Admin
+                  </span>
+                  <span className="text-xs uppercase tracking-[0.35em] text-white/60">Go</span>
+                </a>
+              </div>
+            ) : null}
           </div>
         </div>
 
