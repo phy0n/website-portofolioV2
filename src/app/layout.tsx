@@ -5,9 +5,6 @@ import AnalyticsTracker from "@/components/analytics/AnalyticsTracker";
 import GlobalGsap from "@/components/shared/GlobalGsap";
 import VercelAnalytics from "@/components/analytics/VercelAnalytics";
 
-export const dynamic = "force-dynamic";
-export const revalidate = 0;
-
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],

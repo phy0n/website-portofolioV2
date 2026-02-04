@@ -84,20 +84,6 @@ export default async function BlogDetailPage({
     return <BlogDetailClient blog={fallbackBlog} relatedBlogs={relatedBlogs} />;
   }
 
-  let viewCount = 0;
-  try {
-    const path = `/blog/${encodeURIComponent(data.slug)}`;
-    const { count } = await supabase
-      .from('analytics_events')
-      .select('*', { count: 'exact', head: true })
-      .eq('path', path);
-    if (typeof count === 'number') {
-      viewCount = count;
-    }
-  } catch {
-    // Ignore view count failures.
-  }
-
   const { data: relatedBlogs } = await supabase
     .from('blogs')
     .select('id, slug, title, excerpt, author, date, category, tags, image, featured, is_published')
@@ -111,7 +97,6 @@ export default async function BlogDetailPage({
     <BlogDetailClient
       blog={data}
       relatedBlogs={(relatedBlogs as any[]) ?? []}
-      viewCount={viewCount}
     />
   );
 }

@@ -67,12 +67,59 @@ export default function BlogClient({
   const [savedOnly, setSavedOnly] = useState(false);
   const [isQuotesOpen, setIsQuotesOpen] = useState(false);
   const [readingList, setReadingList] = useState<Set<string>>(() => readReadingList());
+  const [fetchedViewCounts, setFetchedViewCounts] = useState<Record<string, number> | null>(null);
   const deferredQuery = useDeferredValue(searchQuery);
   const normalizedQuery = deferredQuery.trim().toLowerCase();
 
   const visibleBlogs = useMemo(() => {
     return blogs.filter((blog) => blog.is_published !== false);
   }, [blogs]);
+
+  const resolvedViewCounts = useMemo(() => {
+    return { ...(viewCounts ?? {}), ...(fetchedViewCounts ?? {}) };
+  }, [fetchedViewCounts, viewCounts]);
+
+  const viewCountSlugs = useMemo(() => {
+    const slugs = visibleBlogs
+      .map((blog) => String(blog.slug || '').trim())
+      .filter(Boolean);
+
+    return Array.from(new Set(slugs));
+  }, [visibleBlogs]);
+
+  useEffect(() => {
+    if (viewCountSlugs.length === 0) return;
+    const controller = new AbortController();
+
+    const fetchViewCounts = async () => {
+      try {
+        const mergedCounts: Record<string, number> = {};
+        const chunkSize = 80;
+
+        for (let index = 0; index < viewCountSlugs.length; index += chunkSize) {
+          const chunk = viewCountSlugs.slice(index, index + chunkSize);
+          if (chunk.length === 0) continue;
+
+          const res = await fetch(`/api/view-count?slugs=${encodeURIComponent(chunk.join(','))}`, {
+            cache: 'force-cache',
+            signal: controller.signal,
+          });
+          if (!res.ok) continue;
+          const data = (await res.json()) as { counts?: Record<string, number> };
+          if (!data?.counts) continue;
+          Object.assign(mergedCounts, data.counts);
+        }
+
+        setFetchedViewCounts(mergedCounts);
+      } catch (err) {
+        const error = err as { name?: string };
+        if (error?.name === 'AbortError') return;
+      }
+    };
+
+    void fetchViewCounts();
+    return () => controller.abort();
+  }, [viewCountSlugs]);
 
   const tags = useMemo(() => {
     const uniqueTags = new Set<string>();
@@ -374,9 +421,9 @@ export default function BlogClient({
                           </div>
                         </div>
                         <div className="p-5">
-                          <p className="text-xs text-white/50">
-                            {formatBlogDate(featured.date)} • {readingTimeById.get(featured.id) ?? 1} min read • {(viewCounts?.[featured.slug] ?? 0).toLocaleString()} views
-                          </p>
+                            <p className="text-xs text-white/50">
+                            {formatBlogDate(featured.date)} • {readingTimeById.get(featured.id) ?? 1} min read • {(resolvedViewCounts?.[featured.slug] ?? 0).toLocaleString()} views
+                            </p>
                           <h3 className="mt-3 text-lg sm:text-xl font-semibold text-white line-clamp-2">
                             {featured.title}
                           </h3>
@@ -399,7 +446,7 @@ export default function BlogClient({
               ) : (
                 <div className="space-y-6 xs:space-y-8">
                   {filteredBlogs.map((blog, index) => {
-                    const views = viewCounts?.[blog.slug] ?? 0;
+                    const views = resolvedViewCounts?.[blog.slug] ?? 0;
                     return (
                       <Link
                         key={blog.id}

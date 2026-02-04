@@ -107,6 +107,16 @@ body {
   }
 }
 
+@keyframes phion-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.phion-loading-spinner {
+  animation: phion-spin 0.9s linear infinite;
+}
+
 @keyframes fade-in {
   from {
     opacity: 0;

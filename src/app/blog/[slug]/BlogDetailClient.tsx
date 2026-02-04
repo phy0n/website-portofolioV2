@@ -53,6 +53,7 @@ export default function BlogDetailClient({
   const [activeHeadingId, setActiveHeadingId] = useState<string | null>(null);
   const [toast, setToast] = useState<string | null>(null);
   const [saved, setSaved] = useState(() => (blog?.slug ? readReadingList().has(blog.slug) : false));
+  const [fetchedViewCount, setFetchedViewCount] = useState<number | null>(null);
   const rafRef = useRef<number | null>(null);
   const articleRef = useRef<HTMLElement | null>(null);
   const toastTimerRef = useRef<number | null>(null);
@@ -60,6 +61,7 @@ export default function BlogDetailClient({
   const content = blog?.content ?? '';
   const toc = useMemo(() => (content ? extractTocFromContent(content) : []), [content]);
   const readingTime = useMemo(() => (content ? readingTimeMinutes(content) : 1), [content]);
+  const resolvedViewCount = fetchedViewCount ?? viewCount;
 
   useEffect(() => {
     return () => {
@@ -68,6 +70,32 @@ export default function BlogDetailClient({
       }
     };
   }, []);
+
+  useEffect(() => {
+    const slug = String(blog?.slug || '').trim();
+    if (!slug) return;
+
+    const controller = new AbortController();
+
+    const fetchViewCount = async () => {
+      try {
+        const res = await fetch(`/api/view-count?slugs=${encodeURIComponent(slug)}`, {
+          cache: 'force-cache',
+          signal: controller.signal,
+        });
+        if (!res.ok) return;
+        const data = (await res.json()) as { counts?: Record<string, number> };
+        const nextCount = data?.counts?.[slug];
+        setFetchedViewCount(typeof nextCount === 'number' ? nextCount : 0);
+      } catch (err) {
+        const error = err as { name?: string };
+        if (error?.name === 'AbortError') return;
+      }
+    };
+
+    void fetchViewCount();
+    return () => controller.abort();
+  }, [blog?.slug]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -283,7 +311,7 @@ export default function BlogDetailClient({
                   </span>
                   <span className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-black/40 px-3 py-1.5">
                     <Eye className="h-4 w-4" />
-                    {viewCount.toLocaleString()}
+                    {resolvedViewCount.toLocaleString()}
                   </span>
                   <span className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-black/40 px-3 py-1.5">
                     <User className="h-4 w-4" />
@@ -452,7 +480,7 @@ export default function BlogDetailClient({
                       <Eye className="h-4 w-4" />
                       Views
                     </span>
-                    <span className="text-white/80">{viewCount.toLocaleString()}</span>
+                    <span className="text-white/80">{resolvedViewCount.toLocaleString()}</span>
                   </div>
                   <div className="flex items-center justify-between gap-3">
                     <span className="inline-flex items-center gap-2">
