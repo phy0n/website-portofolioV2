@@ -89,7 +89,7 @@ export default function BlogDetailClient({
     const fetchViewCount = async () => {
       try {
         const res = await fetch(`/api/view-count?slugs=${encodeURIComponent(slug)}`, {
-          cache: 'force-cache',
+          cache: 'no-store',
           signal: controller.signal,
         });
         if (!res.ok) return;
@@ -124,7 +124,13 @@ export default function BlogDetailClient({
     };
 
     void fetchViewCount();
-    return () => controller.abort();
+    const refreshTimer = window.setTimeout(() => {
+      void fetchViewCount();
+    }, 1500);
+    return () => {
+      window.clearTimeout(refreshTimer);
+      controller.abort();
+    };
   }, [blog?.slug]);
 
   useEffect(() => {

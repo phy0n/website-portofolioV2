@@ -132,7 +132,7 @@ export default function BlogClient({
           if (chunk.length === 0) continue;
 
           const res = await fetch(`/api/view-count?slugs=${encodeURIComponent(chunk.join(','))}`, {
-            cache: 'force-cache',
+            cache: 'no-store',
             signal: controller.signal,
           });
           if (!res.ok) continue;

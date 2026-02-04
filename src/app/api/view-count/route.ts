@@ -1,12 +1,16 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+export const dynamic = 'force-dynamic';
+
+const supabaseUrl = process.env.SUPABASE_URL ?? process.env.NEXT_PUBLIC_SUPABASE_URL;
+const supabaseAnonKey = process.env.SUPABASE_ANON_KEY ?? process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+const supabaseServiceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+const supabaseKey = supabaseServiceRoleKey ?? supabaseAnonKey;
 
 const supabase =
-  supabaseUrl && supabaseAnonKey
-    ? createClient(supabaseUrl, supabaseAnonKey, {
+  supabaseUrl && supabaseKey
+    ? createClient(supabaseUrl, supabaseKey, {
         auth: { persistSession: false },
       })
     : null;
@@ -46,7 +50,7 @@ export async function GET(request: Request) {
       totals: {} as Record<string, number>,
       uniques: {} as Record<string, number>,
     });
-    response.headers.set('Cache-Control', 'public, max-age=30, stale-while-revalidate=120');
+    response.headers.set('Cache-Control', 'no-store');
     return response;
   }
 
@@ -102,7 +106,7 @@ export async function GET(request: Request) {
       totals,
       uniques,
     });
-    response.headers.set('Cache-Control', 'public, max-age=30, stale-while-revalidate=120');
+    response.headers.set('Cache-Control', 'no-store');
     return response;
   }
 
@@ -125,6 +129,6 @@ export async function GET(request: Request) {
     totals,
     uniques,
   });
-  response.headers.set('Cache-Control', 'public, max-age=30, stale-while-revalidate=120');
+  response.headers.set('Cache-Control', 'no-store');
   return response;
 }
