@@ -76,7 +76,16 @@ export default function BlogClient({
   }, [blogs]);
 
   const resolvedViewCounts = useMemo(() => {
-    return { ...(viewCounts ?? {}), ...(fetchedViewCounts ?? {}) };
+    const result: Record<string, number> = { ...(viewCounts ?? {}) };
+
+    if (fetchedViewCounts) {
+      Object.entries(fetchedViewCounts).forEach(([slug, count]) => {
+        const previous = result[slug] ?? 0;
+        result[slug] = Math.max(previous, count);
+      });
+    }
+
+    return result;
   }, [fetchedViewCounts, viewCounts]);
 
   const viewCountSlugs = useMemo(() => {
