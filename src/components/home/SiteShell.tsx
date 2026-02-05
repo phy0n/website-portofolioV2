@@ -3,7 +3,7 @@
 import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { BookOpen, Gamepad2, Home, Info, Menu, ShieldCheck, Sparkles, X } from 'lucide-react';
+import { BookOpen, Gamepad2, Home, Info, Mail, Menu, ShieldCheck, Sparkles, X } from 'lucide-react';
 import { gsap } from 'gsap';
 import Image from 'next/image';
 import ChatSidebar from '@/components/chat/ChatSidebar';
@@ -22,6 +22,7 @@ const SECTION_LINKS = [
   { label: 'Projects', href: '/#projects', icon: Home },
   { label: 'Certificates', href: '/#certificates', icon: ShieldCheck },
   { label: 'Latest', href: '/#latest', icon: BookOpen },
+  { label: 'Contact', href: '/#contact', icon: Mail },
 ];
 
 interface SiteShellProps {

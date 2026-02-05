@@ -1,8 +1,9 @@
 'use client';
 
 import React from 'react';
-import { BookOpen, Instagram, Mail, MapPin } from 'lucide-react';
+import { Instagram, Mail, MapPin } from 'lucide-react';
 import { FaDiscord, FaTiktok } from 'react-icons/fa';
+import ContactForm from '@/components/contact/ContactForm';
 
 import type { ContactInfo, SocialMedia } from '../types';
 
@@ -25,18 +26,12 @@ const SOCIAL_MEDIA: SocialMedia[] = [
     url: 'https://discord.gg/MwNE7Vfb6t',
     color: '',
   },
-  {
-    name: 'Blog',
-    icon: <BookOpen className="h-5 w-5" />,
-    url: '/blog',
-    color: '',
-  },
 ];
 
 const CONTACT_INFO: ContactInfo[] = [
   {
-    type: 'Discord Account',
-    value: 'Phy0n',
+    type: 'Email',
+    value: 'phymee@proton.me',
     icon: <Mail className="h-4 w-4" />,
     color: '',
   },
@@ -54,7 +49,7 @@ export default function ConnectTab() {
       <div className="space-y-3" data-gsap="reveal">
         <p className="text-[11px] uppercase tracking-[0.35em] text-[var(--home-muted)]">Connect</p>
         <h2 className="text-2xl font-sans font-semibold text-[var(--home-ink)] sm:text-3xl">Find me around the web</h2>
-        <p className="max-w-2xl text-sm text-[var(--home-muted)]">Social spaces and the blog where I share updates.</p>
+        <p className="max-w-2xl text-sm text-[var(--home-muted)]">Social spaces and places to reach me.</p>
       </div>
 
       <div className="divide-y divide-white/10 border-y border-white/10" data-gsap="reveal">
@@ -99,6 +94,16 @@ export default function ConnectTab() {
               </div>
             </div>
           ))}
+        </div>
+      </div>
+
+      <div className="space-y-3 border-t border-white/10 pt-6" data-gsap="reveal">
+        <div className="flex items-center justify-between">
+          <p className="text-[11px] uppercase tracking-[0.35em] text-[var(--home-muted)]">Message</p>
+          <span className="text-xs text-[var(--home-muted)]">Email</span>
+        </div>
+        <div className="rounded-3xl border border-white/10 bg-black/30 p-6">
+          <ContactForm source="connect" />
         </div>
       </div>
     </div>

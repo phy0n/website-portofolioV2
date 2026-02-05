@@ -12,6 +12,7 @@ import ProfileSidebar from './ProfileSidebar';
 import SiteShell from './SiteShell';
 import AboutTab from './tabs/AboutTab';
 import CertificatesTab from './tabs/CertificatesTab';
+import ContactTab from './tabs/ContactTab';
 import ExperienceTab from './tabs/ExperienceTab';
 import ProjectsTab from './tabs/ProjectsTab';
 import SkillsTab from './tabs/SkillsTab';
@@ -302,6 +303,9 @@ export default function HomeClient({ discordUserId }: HomeClientProps) {
               ))}
             </div>
           </div>
+        </section>
+        <section id="contact" className="js-section scroll-mt-24">
+          <ContactTab />
         </section>
       </div>
     </SiteShell>

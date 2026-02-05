@@ -2,13 +2,14 @@
 
 import React from 'react';
 import { Mail, MapPin } from 'lucide-react';
+import ContactForm from '@/components/contact/ContactForm';
 
 import type { ContactInfo } from '../types';
 
 const CONTACT_INFO: ContactInfo[] = [
   {
-    type: 'Discord Account',
-    value: 'Phy0n',
+    type: 'Email',
+    value: 'phymee@proton.me',
     icon: <Mail className="h-4 w-4" />,
     color: '',
   },
@@ -24,14 +25,16 @@ export default function ContactTab() {
   return (
     <div className="space-y-6">
       <div className="space-y-3">
-        <p className="text-[11px] uppercase tracking-[0.35em] text-[var(--home-muted)]">Contact</p>
-        <h2 className="text-2xl font-sans font-semibold text-[var(--home-ink)] sm:text-3xl">Start a conversation</h2>
-        <p className="max-w-2xl text-sm text-[var(--home-muted)]">
-          For collaborations or project ideas, reach out via Discord or the links in Connect.
+        <p className="js-reveal text-[11px] uppercase tracking-[0.35em] text-[var(--home-muted)]">Contact</p>
+        <h2 className="js-reveal text-2xl font-sans font-semibold text-[var(--home-ink)] sm:text-3xl">
+          Start a conversation
+        </h2>
+        <p className="js-reveal max-w-2xl text-sm text-[var(--home-muted)]">
+          For collaborations or project ideas, reach out via email or the links in Connect.
         </p>
       </div>
 
-      <div className="rounded-3xl border border-white/10 bg-gradient-to-r from-white/5 via-transparent to-transparent p-6">
+      <div className="js-reveal rounded-3xl border border-white/10 bg-gradient-to-r from-white/5 via-transparent to-transparent p-6">
         <div className="grid gap-6 md:grid-cols-[1.1fr_0.9fr] md:items-center">
           <div className="space-y-3">
             <p className="text-[11px] uppercase tracking-[0.35em] text-[var(--home-muted)]">Say hello</p>
@@ -53,6 +56,18 @@ export default function ContactTab() {
               </div>
             ))}
           </div>
+        </div>
+      </div>
+
+      <div className="js-reveal rounded-3xl border border-white/10 bg-black/30 p-6">
+        <div className="space-y-2">
+          <p className="text-[11px] uppercase tracking-[0.35em] text-[var(--home-muted)]">Message</p>
+          <p className="text-sm text-[var(--home-muted)]">
+            Isi email valid dulu, lalu tulis pesan yang mau kamu kirim.
+          </p>
+        </div>
+        <div className="mt-6">
+          <ContactForm source="home" />
         </div>
       </div>
     </div>
