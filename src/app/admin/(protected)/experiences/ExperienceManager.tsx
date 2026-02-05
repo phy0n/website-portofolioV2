@@ -156,7 +156,7 @@ export default function ExperienceManager({
         <button
           type="button"
           onClick={() => setQueryParam('create', '1')}
-          className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-5 py-2.5 text-sm text-white/80 transition hover:border-white/30 hover:bg-white/10 hover:text-white"
+          className="cursor-pointer inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-5 py-2.5 text-sm text-white/80 transition hover:border-white/30 hover:bg-white/10 hover:text-white"
         >
           <Plus className="h-4 w-4" />
           New experience
@@ -260,7 +260,7 @@ export default function ExperienceManager({
                           onClick={() => {
                             setQueryParam('edit', exp.id);
                           }}
-                          className="inline-flex items-center gap-2 rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white/70 transition hover:border-white/40 hover:text-white hover:bg-white/10"
+                          className="cursor-pointer inline-flex items-center gap-2 rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white/70 transition hover:border-white/40 hover:text-white hover:bg-white/10"
                         >
                           <Pencil className="h-4 w-4" />
                           Edit
@@ -366,7 +366,7 @@ export default function ExperienceManager({
             <button
               type="button"
               onClick={() => clearQueryParam('create')}
-              className="rounded-full border border-white/10 bg-white/5 px-5 py-2 text-sm text-white/70 transition hover:border-white/30 hover:bg-white/10 hover:text-white"
+              className="cursor-pointer rounded-full border border-white/10 bg-white/5 px-5 py-2 text-sm text-white/70 transition hover:border-white/30 hover:bg-white/10 hover:text-white"
             >
               Cancel
             </button>
@@ -485,7 +485,7 @@ export default function ExperienceManager({
               <button
                 type="button"
                 onClick={() => clearQueryParam('edit')}
-                className="rounded-full border border-white/10 bg-white/5 px-5 py-2 text-sm text-white/70 transition hover:border-white/30 hover:bg-white/10 hover:text-white"
+                className="cursor-pointer rounded-full border border-white/10 bg-white/5 px-5 py-2 text-sm text-white/70 transition hover:border-white/30 hover:bg-white/10 hover:text-white"
               >
                 Cancel
               </button>
