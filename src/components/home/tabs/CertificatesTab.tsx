@@ -100,9 +100,12 @@ export default function CertificatesTab() {
         ) : certificates.length === 0 ? (
           <div className="js-reveal text-sm text-[var(--home-muted)]">Tidak Ada Data</div>
         ) : (
-          certificates.map((cert) => (
+          certificates.map((cert, index) => {
+            const number = String(index + 1).padStart(2, '0');
+            return (
             <div key={cert.id} className="js-reveal grid gap-6 border-b border-white/10 pb-6">
               <div className="space-y-3">
+                <p className="text-xs uppercase tracking-[0.35em] text-[var(--home-muted)]">{number}</p>
                 <div className="flex items-center gap-2 text-[var(--home-accent)]">
                   {renderCertificateIcon(cert.icon)}
                   <p className="text-xs uppercase tracking-[0.35em] text-[var(--home-muted)]">Certificate</p>
@@ -117,7 +120,8 @@ export default function CertificatesTab() {
                 </span>
               </div>
             </div>
-          ))
+            );
+          })
         )}
       </div>
     </div>
