@@ -13,18 +13,6 @@ type ProjectRow = {
   icon?: string | null;
 };
 
-const FALLBACK_PROJECTS: ProjectRow[] = [
-  {
-    id: 'fallback-1',
-    title: 'Kh1ev Project',
-    description: 'This is my kh1ev community website',
-    tags: ['React', 'TailwindCSS', 'TypeScript'],
-    link: 'https://kh1ev.my.id/',
-    status: 'Live',
-    icon: 'Monitor',
-  },
-];
-
 const normalizeProject = (value: any): ProjectRow | null => {
   const id = String(value?.id ?? '').trim();
   const title = String(value?.title ?? '').trim();
@@ -60,7 +48,7 @@ const renderProjectIcon = (icon?: string | null) => {
 };
 
 export default function ProjectsTab() {
-  const [projects, setProjects] = useState<ProjectRow[]>(FALLBACK_PROJECTS);
+  const [projects, setProjects] = useState<ProjectRow[] | null>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -70,17 +58,18 @@ export default function ProjectsTab() {
         const res = await fetch('/api/projects');
         const data = await res.json();
         const rows = Array.isArray(data?.projects) ? (data.projects as any[]) : null;
-        if (!rows || rows.length === 0) return;
-
-        const normalized = rows
+        const normalized = (rows ?? [])
           .map(normalizeProject)
           .filter((row): row is ProjectRow => Boolean(row));
 
-        if (!cancelled && normalized.length > 0) {
+        if (!cancelled) {
           setProjects(normalized);
         }
       } catch (err) {
         console.error('Failed to fetch projects:', err);
+        if (!cancelled) {
+          setProjects([]);
+        }
       }
     };
 
@@ -102,40 +91,46 @@ export default function ProjectsTab() {
       </div>
 
       <div className="divide-y divide-white/10 border-y border-white/10">
-        {projects.map((project, index) => {
-          const number = String(index + 1).padStart(2, '0');
-          return (
-            <a
-              key={project.id}
-              href={project.link}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="js-reveal group grid gap-4 py-6 md:grid-cols-[auto_1fr_auto]"
-            >
-              <div className="text-xs uppercase tracking-[0.35em] text-[var(--home-muted)]">{number}</div>
-              <div className="space-y-3">
-                <div className="flex items-center gap-2">
-                  <span className="text-[var(--home-accent)]">{renderProjectIcon(project.icon)}</span>
-                  <h3 className="text-lg font-sans font-semibold text-[var(--home-ink)]">{project.title}</h3>
+        {projects === null ? (
+          <div className="js-reveal py-6 text-sm text-[var(--home-muted)]">Memuat...</div>
+        ) : projects.length === 0 ? (
+          <div className="js-reveal py-6 text-sm text-[var(--home-muted)]">Tidak Ada Data</div>
+        ) : (
+          projects.map((project, index) => {
+            const number = String(index + 1).padStart(2, '0');
+            return (
+              <a
+                key={project.id}
+                href={project.link}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="js-reveal group grid gap-4 py-6 md:grid-cols-[auto_1fr_auto]"
+              >
+                <div className="text-xs uppercase tracking-[0.35em] text-[var(--home-muted)]">{number}</div>
+                <div className="space-y-3">
+                  <div className="flex items-center gap-2">
+                    <span className="text-[var(--home-accent)]">{renderProjectIcon(project.icon)}</span>
+                    <h3 className="text-lg font-sans font-semibold text-[var(--home-ink)]">{project.title}</h3>
+                  </div>
+                  <p className="text-sm text-[var(--home-muted)]">{project.description}</p>
+                  <div className="flex flex-wrap gap-2">
+                    {project.tags.map((tag, i) => (
+                      <span
+                        key={i}
+                        className="rounded-full border border-white/10 bg-black/30 px-3 py-1 text-xs text-[var(--home-muted)]"
+                      >
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
                 </div>
-                <p className="text-sm text-[var(--home-muted)]">{project.description}</p>
-                <div className="flex flex-wrap gap-2">
-                  {project.tags.map((tag, i) => (
-                    <span
-                      key={i}
-                      className="rounded-full border border-white/10 bg-black/30 px-3 py-1 text-xs text-[var(--home-muted)]"
-                    >
-                      {tag}
-                    </span>
-                  ))}
+                <div className="text-xs uppercase tracking-[0.35em] text-[var(--home-muted)] transition group-hover:text-[var(--home-accent)]">
+                  {project.status}
                 </div>
-              </div>
-              <div className="text-xs uppercase tracking-[0.35em] text-[var(--home-muted)] transition group-hover:text-[var(--home-accent)]">
-                {project.status}
-              </div>
-            </a>
-          );
-        })}
+              </a>
+            );
+          })
+        )}
       </div>
     </div>
   );

@@ -132,7 +132,7 @@ export default function AdminAnalytics({
               key={option}
               type="button"
               onClick={() => setRange(option)}
-              className={`rounded-full px-3 py-1 transition ${
+              className={`cursor-pointer rounded-full px-3 py-1 transition ${
                 range === option
                   ? 'bg-white text-black'
                   : 'text-white/60 hover:text-white'

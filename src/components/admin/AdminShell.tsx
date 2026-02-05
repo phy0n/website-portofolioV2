@@ -42,7 +42,7 @@ export default function AdminShell({
       </div>
 
       <div
-        className={`fixed inset-0 z-40 bg-black/70 backdrop-blur-sm transition-opacity lg:hidden ${
+        className={`fixed inset-0 z-40 cursor-pointer bg-black/70 backdrop-blur-sm transition-opacity lg:hidden ${
           sidebarOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'
         }`}
         onClick={() => setSidebarOpen(false)}
@@ -57,7 +57,7 @@ export default function AdminShell({
           <button
             type="button"
             onClick={() => setSidebarOpen(true)}
-            className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2 text-xs text-white/70 transition hover:border-white/30 hover:text-white"
+            className="cursor-pointer inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2 text-xs text-white/70 transition hover:border-white/30 hover:text-white"
             aria-label="Open admin navigation"
           >
             <Menu className="h-4 w-4" />
@@ -75,4 +75,3 @@ export default function AdminShell({
     </div>
   );
 }
-

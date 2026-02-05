@@ -61,7 +61,7 @@ export default function AdminToast({ message, tone = 'success' }: AdminToastProp
           clearQuery();
         }}
         aria-label="Dismiss"
-        className="inline-flex h-7 w-7 items-center justify-center rounded-full border border-white/20 text-white/70 transition hover:border-white/40 hover:text-white"
+        className="cursor-pointer inline-flex h-7 w-7 items-center justify-center rounded-full border border-white/20 text-white/70 transition hover:border-white/40 hover:text-white"
       >
         <X className="h-3.5 w-3.5" />
       </button>

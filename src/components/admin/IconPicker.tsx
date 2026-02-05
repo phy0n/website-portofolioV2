@@ -67,7 +67,7 @@ export default function IconPicker({
       <button
         type="button"
         onClick={() => setOpen((prev) => !prev)}
-        className="mt-2 inline-flex w-full items-center justify-between gap-3 rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm text-white/80 shadow-[0_0_0_1px_rgba(255,255,255,0.02)] transition hover:border-white/30"
+        className="mt-2 cursor-pointer inline-flex w-full items-center justify-between gap-3 rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm text-white/80 shadow-[0_0_0_1px_rgba(255,255,255,0.02)] transition hover:border-white/30"
         aria-haspopup="listbox"
         aria-expanded={open}
       >
@@ -81,9 +81,9 @@ export default function IconPicker({
       {open && (
         <div
           role="listbox"
-          className="absolute left-0 right-0 z-50 mt-2 rounded-2xl border border-white/10 bg-[#13131b] p-3 shadow-[0_30px_120px_rgba(0,0,0,0.6)]"
+          className="absolute left-0 right-0 z-50 mt-2 rounded-2xl border border-white/10 bg-[#13131b] p-2 shadow-[0_30px_120px_rgba(0,0,0,0.6)]"
         >
-          <div className="grid grid-cols-6 gap-2">
+          <div className="grid grid-cols-6 gap-1">
             {options.map((option) => {
               const isActive = option.value === value;
               return (
@@ -96,7 +96,7 @@ export default function IconPicker({
                     setValue(option.value);
                     setOpen(false);
                   }}
-                  className={`inline-flex h-10 w-10 items-center justify-center rounded-xl border transition ${
+                  className={`cursor-pointer inline-flex h-9 w-9 items-center justify-center rounded-xl border transition ${
                     isActive
                       ? 'border-white/40 bg-white/10 text-white'
                       : 'border-white/10 bg-white/5 text-white/70 hover:border-white/30 hover:bg-white/10 hover:text-white'
@@ -115,4 +115,3 @@ export default function IconPicker({
     </div>
   );
 }
-
