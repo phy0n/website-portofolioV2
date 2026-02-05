@@ -78,23 +78,27 @@ export default function ExperienceTab() {
           {experiences.map((exp, index) => {
             const number = String(index + 1).padStart(2, '0');
             return (
-              <div key={exp.id} className="js-reveal grid gap-x-4 gap-y-0 md:grid-cols-[auto_14px_1fr]">
+              <div
+                key={exp.id}
+                className="js-reveal grid grid-cols-[auto_1fr] gap-x-4 gap-y-0 md:grid-cols-[auto_14px_1fr]"
+              >
                 <div className="row-span-3 pt-1 text-xs uppercase tracking-[0.35em] text-[var(--home-muted)]">
                   {number}
                 </div>
 
-                <div className="relative flex items-center justify-center">
+                <div className="relative hidden items-center justify-center md:flex">
                   <span className="absolute inset-y-0 w-px bg-white/10" />
                   <span className="relative z-10 h-2.5 w-2.5 rounded-full bg-[var(--home-accent)]" />
                 </div>
                 <div className="flex flex-wrap items-center gap-3">
+                  <span className="md:hidden h-2.5 w-2.5 rounded-full bg-[var(--home-accent)]" />
                   <h3 className="text-lg font-sans font-semibold text-[var(--home-ink)]">{exp.role}</h3>
                   <span className="rounded-full border border-white/10 bg-black/30 px-3 py-1 text-xs text-[var(--home-muted)]">
                     {exp.status}
                   </span>
                 </div>
 
-                <div className="relative flex items-center justify-center">
+                <div className="relative hidden items-center justify-center md:flex">
                   <span className="absolute inset-y-0 w-px bg-white/10" />
                 </div>
                 <div className="mt-2 flex flex-wrap items-center gap-2 text-sm text-[var(--home-muted)]">
@@ -104,7 +108,7 @@ export default function ExperienceTab() {
                   <span>{exp.period}</span>
                 </div>
 
-                <div className="relative flex items-center justify-center">
+                <div className="relative hidden items-center justify-center md:flex">
                   <span className="absolute inset-y-0 w-px bg-white/10" />
                 </div>
                 <p className="mt-3 text-sm leading-relaxed text-[var(--home-muted)]">{exp.description}</p>
