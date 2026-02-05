@@ -442,12 +442,12 @@ export default function BlogDetailClient({
                   href="/blog"
                   className="inline-flex items-center gap-2 text-[var(--home-muted)] hover:text-white transition-colors group">
                   <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
-                  <span className="text-sm">Kembali ke Journal</span>
+                  <span className="text-sm">Back to Journal</span>
                 </Link>
               </div>
               <div className="mt-6 text-center">
                 <p className="text-xs xs:text-sm text-[var(--home-muted)] italic">
-                  &ldquo;Setiap cerita adalah bagian dari perjalanan hidup&rdquo;
+                  &ldquo;Every story is part of life&apos;s journey&rdquo;
                 </p>
               </div>
             </div>

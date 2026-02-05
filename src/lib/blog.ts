@@ -76,7 +76,7 @@ export function formatDateId(value: string): string {
   return new Date(Date.UTC(yyyy, mm - 1, dd)).toISOString();
 }
 
-export function formatBlogDate(value: string, locale = 'id-ID'): string {
+export function formatBlogDate(value: string, locale = 'en-US'): string {
   if (!value) return '';
   const [yyyyRaw, mmRaw, ddRaw] = value.split('T')[0]?.split('-') ?? [];
   const yyyy = Number(yyyyRaw);
@@ -99,4 +99,3 @@ export function formatBlogDate(value: string, locale = 'id-ID'): string {
     year: 'numeric',
   });
 }
-

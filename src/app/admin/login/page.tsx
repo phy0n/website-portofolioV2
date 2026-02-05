@@ -25,10 +25,10 @@ export default function AdminLoginPage() {
               Private access only
             </div>
             <h1 className="text-4xl font-semibold leading-tight lg:text-5xl">
-              Masuk ke ruang kontrol cerita dan quotes.
+              Sign in to manage stories and quotes.
             </h1>
             <p className="max-w-md text-sm text-white/60">
-              Dashboard ini hanya untuk admin. Pastikan akun kamu sudah terdaftar di daftar admin Supabase.
+              This dashboard is for admins only. Make sure your account is registered as an admin in Supabase.
             </p>
           </div>
 
@@ -38,7 +38,7 @@ export default function AdminLoginPage() {
           >
             <div className="mb-6">
               <h2 className="text-lg font-semibold text-white">Sign in</h2>
-              <p className="text-xs text-white/50">Gunakan email admin Supabase.</p>
+              <p className="text-xs text-white/50">Use your Supabase admin email.</p>
             </div>
             <LoginForm />
           </div>

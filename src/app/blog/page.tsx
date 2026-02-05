@@ -1,7 +1,5 @@
 import SiteShell from '@/components/home/SiteShell';
 import BlogClient from './BlogClient';
-import blogsData from '@/data/blogs.json';
-import dailyQuotesData from '@/data/quotes/daily.json';
 import { createClient } from '@supabase/supabase-js';
 import { supabaseConfig } from '@/lib/supabase/server';
 
@@ -11,7 +9,7 @@ export default async function BlogPage() {
   if (!supabaseConfig.url || !supabaseConfig.anonKey) {
     return (
       <SiteShell contentMode="full">
-        <BlogClient blogs={blogsData} quotes={dailyQuotesData} />
+        <BlogClient blogs={[]} quotes={[]} />
       </SiteShell>
     );
   }
@@ -33,13 +31,9 @@ export default async function BlogPage() {
   ]);
 
   const safeBlogs =
-    blogsError || !blogs
-      ? blogsData
-      : blogs.filter((blog) => (blog as any)?.show_on_phion !== false);
+    blogsError || !blogs ? [] : blogs.filter((blog) => (blog as any)?.show_on_phion !== false);
   const safeQuotes =
-    quotesError || !quotes
-      ? dailyQuotesData
-      : quotes.filter((quote) => (quote as any)?.show_on_phion !== false);
+    quotesError || !quotes ? [] : quotes.filter((quote) => (quote as any)?.show_on_phion !== false);
 
   return (
     <SiteShell contentMode="full">

@@ -70,9 +70,9 @@ export default function ExperienceTab() {
       </div>
 
       {experiences === null ? (
-        <p className="js-reveal text-sm text-[var(--home-muted)]">Memuat...</p>
+        <p className="js-reveal text-sm text-[var(--home-muted)]">Loading...</p>
       ) : experiences.length === 0 ? (
-        <div className="js-reveal text-sm text-[var(--home-muted)]">Tidak Ada Data</div>
+        <div className="js-reveal text-sm text-[var(--home-muted)]">No data available</div>
       ) : (
         <div className="space-y-10">
           {experiences.map((exp, index) => {

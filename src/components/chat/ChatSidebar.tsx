@@ -44,7 +44,7 @@ const getVisitorId = () => {
 const formatClock = (iso: string) => {
   const date = new Date(iso);
   if (Number.isNaN(date.getTime())) return '';
-  return date.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+  return date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
 };
 
 const normalizeName = (value: string) => value.trim().slice(0, 40);
@@ -123,7 +123,7 @@ function ChatPanel({
             ))}
           </div>
         ) : messages.length === 0 ? (
-          <p className="text-sm text-white/50">Belum ada chat. Jadilah yang pertama.</p>
+          <p className="text-sm text-white/50">No messages yet. Be the first.</p>
         ) : (
           messages.map((item) => (
             <div key={item.id} className="rounded-2xl border border-white/10 bg-black/30 p-3">
@@ -158,7 +158,7 @@ function ChatPanel({
       <div className="border-t border-white/10 px-5 py-4">
         <div className="space-y-3">
           <div className="space-y-1.5">
-            <p className="text-[10px] uppercase tracking-[0.3em] text-white/40">Nama</p>
+            <p className="text-[10px] uppercase tracking-[0.3em] text-white/40">Name</p>
             <input
               value={name}
               onChange={(e) => onNameChange(e.target.value)}
@@ -169,11 +169,11 @@ function ChatPanel({
           </div>
 
           <div className="space-y-1.5">
-            <p className="text-[10px] uppercase tracking-[0.3em] text-white/40">Pesan</p>
+            <p className="text-[10px] uppercase tracking-[0.3em] text-white/40">Message</p>
             <textarea
               value={message}
               onChange={(e) => onMessageChange(e.target.value)}
-              placeholder="Ketik pesan..."
+              placeholder="Type a message..."
               maxLength={500}
               rows={3}
               className="w-full resize-none rounded-2xl border border-white/10 bg-black/40 px-4 py-2.5 text-sm text-white placeholder:text-white/30 outline-none focus:border-white/20"
@@ -185,7 +185,7 @@ function ChatPanel({
               }}
             />
             <div className="flex items-center justify-between">
-              <p className="text-[10px] text-white/40">Ctrl/⌘ + Enter untuk kirim</p>
+              <p className="text-[10px] text-white/40">Ctrl/⌘ + Enter to send</p>
               <p className="text-[10px] text-white/40">{message.length}/500</p>
             </div>
           </div>
@@ -197,7 +197,7 @@ function ChatPanel({
             className="inline-flex w-full items-center justify-center gap-2 rounded-2xl border border-white/10 bg-white/[0.06] px-4 py-2.5 text-sm font-semibold text-white transition hover:border-white/20 hover:bg-white/[0.08] disabled:cursor-not-allowed disabled:opacity-50"
           >
             <Send className="h-4 w-4" />
-            {sending ? 'Mengirim...' : 'Kirim'}
+            {sending ? 'Sending...' : 'Send'}
           </button>
         </div>
       </div>
@@ -268,7 +268,7 @@ export default function ChatSidebar() {
       const res = await fetch('/api/chat?limit=60', { cache: 'no-store', signal });
       const data = (await res.json()) as { ok?: boolean; messages?: ChatMessage[]; error?: string };
       if (!res.ok || !data?.ok) {
-        setError('Chat sedang error. Coba refresh.');
+        setError('Chat is having issues. Try refreshing.');
         setLoading(false);
         return;
       }
@@ -277,7 +277,7 @@ export default function ChatSidebar() {
     } catch (err) {
       const e = err as { name?: string };
       if (e?.name === 'AbortError') return;
-      setError('Chat sedang error. Coba refresh.');
+      setError('Chat is having issues. Try refreshing.');
       setLoading(false);
     }
   };
@@ -319,12 +319,12 @@ export default function ChatSidebar() {
       const res = await fetch(`/api/chat?id=${encodeURIComponent(String(id))}`, { method: 'DELETE', cache: 'no-store' });
       const data = (await res.json().catch(() => null)) as { ok?: boolean };
       if (!res.ok || !data?.ok) {
-        setError('Gagal delete pesan. Coba lagi.');
+        setError('Failed to delete the message. Try again.');
         return;
       }
       setMessages((prev) => prev.filter((item) => item.id !== id));
     } catch {
-      setError('Gagal delete pesan. Coba lagi.');
+      setError('Failed to delete the message. Try again.');
     }
   };
 
@@ -352,9 +352,9 @@ export default function ChatSidebar() {
 
       if (!res.ok || !data?.ok) {
         if (res.status === 429) {
-          setError('Terlalu cepat. Tunggu sebentar ya.');
+          setError('Too fast. Please wait a moment.');
         } else {
-          setError('Gagal kirim pesan. Coba lagi.');
+          setError('Failed to send the message. Try again.');
         }
         return;
       }
@@ -368,7 +368,7 @@ export default function ChatSidebar() {
 
       setMessage('');
     } catch {
-      setError('Gagal kirim pesan. Coba lagi.');
+      setError('Failed to send the message. Try again.');
     } finally {
       setSending(false);
     }

@@ -44,7 +44,7 @@ type SortMode = 'newest' | 'oldest' | 'featured';
 const formatQuoteDate = (dateKey: string) => {
   const [yyyy, mm, dd] = dateKey.split('-').map(Number);
   if (!yyyy || !mm || !dd) return dateKey;
-  return new Date(Date.UTC(yyyy, mm - 1, dd)).toLocaleDateString('id-ID', {
+  return new Date(Date.UTC(yyyy, mm - 1, dd)).toLocaleDateString('en-US', {
     day: '2-digit',
     month: 'long',
     year: 'numeric',

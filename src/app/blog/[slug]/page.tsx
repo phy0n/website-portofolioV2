@@ -1,5 +1,4 @@
 import BlogDetailClient from './BlogDetailClient';
-import blogsData from '@/data/blogs.json';
 import { createSupabaseServerClient, supabaseConfig } from '@/lib/supabase/server';
 
 export const dynamic = 'force-dynamic';
@@ -19,23 +18,7 @@ export default async function BlogDetailPage({
   slug = slug.trim();
 
   if (!supabaseConfig.url || !supabaseConfig.anonKey) {
-    const slugLower = slug.toLowerCase();
-    const fallbackBlog =
-      (blogsData as any[]).find(
-        (blog) => String(blog.slug || '').toLowerCase() === slugLower
-      ) ?? null;
-    const relatedBlogs = fallbackBlog
-      ? (blogsData as any[])
-          .filter((blog) => {
-            if (!blog) return false;
-            if (String(blog.slug || '') === String(fallbackBlog.slug || '')) return false;
-            if (blog.is_published === false) return false;
-            return String(blog.category || '') === String(fallbackBlog.category || '');
-          })
-          .sort((a, b) => String(b.date || '').localeCompare(String(a.date || '')))
-          .slice(0, 4)
-      : [];
-    return <BlogDetailClient blog={fallbackBlog} relatedBlogs={relatedBlogs} />;
+    return <BlogDetailClient blog={null} relatedBlogs={[]} />;
   }
 
   const supabase = await createSupabaseServerClient();
@@ -65,23 +48,7 @@ export default async function BlogDetailPage({
   const { data, error } = await blogQuery.maybeSingle();
 
   if (error || !data || (data as any)?.show_on_phion === false) {
-    const slugLower = slug.toLowerCase();
-    const fallbackBlog =
-      (blogsData as any[]).find(
-        (blog) => String(blog.slug || '').toLowerCase() === slugLower
-      ) ?? null;
-    const relatedBlogs = fallbackBlog
-      ? (blogsData as any[])
-          .filter((blog) => {
-            if (!blog) return false;
-            if (String(blog.slug || '') === String(fallbackBlog.slug || '')) return false;
-            if (blog.is_published === false) return false;
-            return String(blog.category || '') === String(fallbackBlog.category || '');
-          })
-          .sort((a, b) => String(b.date || '').localeCompare(String(a.date || '')))
-          .slice(0, 4)
-      : [];
-    return <BlogDetailClient blog={fallbackBlog} relatedBlogs={relatedBlogs} />;
+    return <BlogDetailClient blog={null} relatedBlogs={[]} />;
   }
 
   const { data: relatedBlogs } = await supabase

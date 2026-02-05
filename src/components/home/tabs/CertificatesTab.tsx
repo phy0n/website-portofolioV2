@@ -96,9 +96,9 @@ export default function CertificatesTab() {
 
       <div className="space-y-6">
         {certificates === null ? (
-          <div className="js-reveal text-sm text-[var(--home-muted)]">Memuat...</div>
+          <div className="js-reveal text-sm text-[var(--home-muted)]">Loading...</div>
         ) : certificates.length === 0 ? (
-          <div className="js-reveal text-sm text-[var(--home-muted)]">Tidak Ada Data</div>
+          <div className="js-reveal text-sm text-[var(--home-muted)]">No data available</div>
         ) : (
           certificates.map((cert, index) => {
             const number = String(index + 1).padStart(2, '0');

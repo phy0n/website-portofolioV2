@@ -49,7 +49,7 @@ export default function ContactForm({ source }: { source?: 'home' | 'connect' | 
 
       if (!res.ok || !data?.ok) {
         setStatus('error');
-        setErrorMessage('Gagal mengirim pesan. Coba lagi ya.');
+        setErrorMessage('Failed to send your message. Please try again.');
         return;
       }
 
@@ -57,7 +57,7 @@ export default function ContactForm({ source }: { source?: 'home' | 'connect' | 
       setMessage('');
     } catch {
       setStatus('error');
-      setErrorMessage('Gagal mengirim pesan. Coba lagi ya.');
+      setErrorMessage('Failed to send your message. Please try again.');
     } finally {
       setSending(false);
     }
@@ -83,21 +83,21 @@ export default function ContactForm({ source }: { source?: 'home' | 'connect' | 
         </div>
 
         <div className="space-y-1.5">
-          <p className="text-[10px] uppercase tracking-[0.3em] text-[var(--home-muted)]">Pesan</p>
+          <p className="text-[10px] uppercase tracking-[0.3em] text-[var(--home-muted)]">Message</p>
           <textarea
             value={message}
             onChange={(e) => {
               setMessage(normalizeMessage(e.target.value));
               if (status !== 'idle') setStatus('idle');
             }}
-            placeholder={emailOk ? 'Tulis pesan...' : 'Isi email valid dulu ya'}
+            placeholder={emailOk ? 'Write your message...' : 'Enter a valid email first'}
             rows={3}
             disabled={!emailOk}
             className="w-full resize-none rounded-2xl border border-white/10 bg-black/30 px-4 py-2.5 text-sm text-[var(--home-ink)] placeholder:text-white/30 outline-none focus:border-white/20 disabled:cursor-not-allowed disabled:opacity-50"
           />
           <div className="flex items-center justify-between">
             <p className="text-[10px] text-[var(--home-muted)]">
-              {emailOk ? 'Siap kirim kapan aja.' : 'Email valid dulu, baru bisa nulis pesan.'}
+              {emailOk ? 'Ready when you are.' : 'Enter a valid email first to type your message.'}
             </p>
             <p className="text-[10px] text-[var(--home-muted)]">
               {message.length}/{MAX_MESSAGE_LENGTH}
@@ -117,7 +117,7 @@ export default function ContactForm({ source }: { source?: 'home' | 'connect' | 
 
       {status === 'sent' ? (
         <p className="text-xs text-emerald-300" role="status">
-          Terkirim! Nanti aku balas ke email kamu.
+          Sent! I&apos;ll reply to your email.
         </p>
       ) : null}
 
@@ -134,9 +134,8 @@ export default function ContactForm({ source }: { source?: 'home' | 'connect' | 
         className="inline-flex items-center justify-center gap-2 rounded-2xl border border-white/10 bg-white/[0.06] px-4 py-2.5 text-sm font-semibold text-[var(--home-ink)] transition hover:border-white/20 hover:bg-white/[0.08] disabled:cursor-not-allowed disabled:opacity-50"
       >
         <Send className="h-4 w-4" />
-        {sending ? 'Mengirim...' : 'Kirim'}
+        {sending ? 'Sending...' : 'Send'}
       </button>
     </div>
   );
 }
-

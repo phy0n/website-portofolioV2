@@ -92,9 +92,9 @@ export default function ProjectsTab() {
 
       <div className="divide-y divide-white/10 border-y border-white/10">
         {projects === null ? (
-          <div className="js-reveal py-6 text-sm text-[var(--home-muted)]">Memuat...</div>
+          <div className="js-reveal py-6 text-sm text-[var(--home-muted)]">Loading...</div>
         ) : projects.length === 0 ? (
-          <div className="js-reveal py-6 text-sm text-[var(--home-muted)]">Tidak Ada Data</div>
+          <div className="js-reveal py-6 text-sm text-[var(--home-muted)]">No data available</div>
         ) : (
           projects.map((project, index) => {
             const number = String(index + 1).padStart(2, '0');

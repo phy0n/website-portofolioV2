@@ -63,7 +63,7 @@ export default function ContactTab() {
         <div className="space-y-2">
           <p className="text-[11px] uppercase tracking-[0.35em] text-[var(--home-muted)]">Message</p>
           <p className="text-sm text-[var(--home-muted)]">
-            Isi email valid dulu, lalu tulis pesan yang mau kamu kirim.
+            Enter a valid email first, then write the message you want to send.
           </p>
         </div>
         <div className="mt-6">

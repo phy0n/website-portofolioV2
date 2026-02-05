@@ -1,8 +1,6 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 
-import blogsData from '@/data/blogs.json';
-
 export const revalidate = 30;
 
 type BlogPreview = {
@@ -41,15 +39,8 @@ export async function GET() {
     const supabaseKey = supabaseServiceRoleKey ?? supabaseAnonKey;
 
     if (!supabaseUrl || !supabaseKey) {
-      const fallback = (blogsData as any[])
-        .filter((blog) => blog?.is_published !== false)
-        .map(normalizePreview)
-        .filter((blog): blog is BlogPreview => Boolean(blog))
-        .sort(compareByDateDesc)
-        .slice(0, 3);
-
       return NextResponse.json(
-        { blogs: fallback },
+        { blogs: [] },
         { headers: { 'Cache-Control': 'public, max-age=30, stale-while-revalidate=120' } }
       );
     }
@@ -65,15 +56,8 @@ export async function GET() {
       .limit(12);
 
     if (error || !data) {
-      const fallback = (blogsData as any[])
-        .filter((blog) => blog?.is_published !== false)
-        .map(normalizePreview)
-        .filter((blog): blog is BlogPreview => Boolean(blog))
-        .sort(compareByDateDesc)
-        .slice(0, 3);
-
       return NextResponse.json(
-        { blogs: fallback },
+        { blogs: [] },
         { headers: { 'Cache-Control': 'public, max-age=30, stale-while-revalidate=120' } }
       );
     }
@@ -94,15 +78,8 @@ export async function GET() {
     );
   } catch (error) {
     console.error('Error fetching latest blogs:', error);
-    const fallback = (blogsData as any[])
-      .filter((blog) => blog?.is_published !== false)
-      .map(normalizePreview)
-      .filter((blog): blog is BlogPreview => Boolean(blog))
-      .sort(compareByDateDesc)
-      .slice(0, 3);
-
     return NextResponse.json(
-      { blogs: fallback },
+      { blogs: [] },
       { headers: { 'Cache-Control': 'public, max-age=30, stale-while-revalidate=120' } }
     );
   }

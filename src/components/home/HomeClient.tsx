@@ -5,7 +5,6 @@ import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
-import blogsData from '@/data/blogs.json';
 import { useDiscordStatusRealtime } from '@/lib/discord/useDiscordStatusRealtime';
 
 import ProfileSidebar from './ProfileSidebar';
@@ -46,10 +45,6 @@ const formatBlogDate = (dateKey: string) => {
   });
 };
 
-const fallbackBlogs = [...(blogsData as BlogPreview[])]
-  .sort((a, b) => b.date.localeCompare(a.date))
-  .slice(0, 3);
-
 interface HomeClientProps {
   discordUserId: string | null;
 }
@@ -57,7 +52,7 @@ interface HomeClientProps {
 export default function HomeClient({ discordUserId }: HomeClientProps) {
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
   const { discordStatus } = useDiscordStatusRealtime(discordUserId);
-  const [latestBlogs, setLatestBlogs] = useState<BlogPreview[]>(fallbackBlogs);
+  const [latestBlogs, setLatestBlogs] = useState<BlogPreview[]>([]);
   const scopeRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
@@ -270,37 +265,41 @@ export default function HomeClient({ discordUserId }: HomeClientProps) {
                 href="/blog"
                 className="js-reveal inline-flex items-center rounded-full border border-white/10 bg-black/30 px-4 py-2 text-[11px] uppercase tracking-[0.35em] text-[var(--home-muted)] transition hover:border-white/20 hover:text-[var(--home-ink)]"
               >
-                Lihat semua
+                View all
               </Link>
             </div>
             <div className="divide-y divide-white/10 border-b border-white/10">
-              {latestBlogs.map((post) => (
-                <Link
-                  key={post.id}
-                  href={`/blog/${encodeURIComponent(post.slug)}`}
-                  className="js-reveal group grid gap-4 py-6 md:grid-cols-[180px_1fr]"
-                >
-                  <p className="text-sm text-[var(--home-accent)]">{formatBlogDate(post.date)}</p>
-                  <div className="space-y-3">
-                    <h3 className="text-lg font-sans font-semibold text-[var(--home-ink)] transition group-hover:text-white">
-                      {post.title}
-                    </h3>
-                    {post.tags && post.tags.length > 0 && (
-                      <div className="flex flex-wrap gap-2 text-xs uppercase tracking-[0.2em] text-[var(--home-muted)]">
-                        {post.tags.slice(0, 3).map((tag) => (
-                          <span
-                            key={tag}
-                            className="rounded-full border border-white/10 bg-black/30 px-3 py-1"
-                          >
-                            {tag}
-                          </span>
-                        ))}
-                      </div>
-                    )}
-                    <p className="text-sm text-[var(--home-muted)]">{post.excerpt}</p>
-                  </div>
-                </Link>
-              ))}
+              {latestBlogs.length === 0 ? (
+                <div className="js-reveal py-6 text-sm text-[var(--home-muted)]">No posts yet.</div>
+              ) : (
+                latestBlogs.map((post) => (
+                  <Link
+                    key={post.id}
+                    href={`/blog/${encodeURIComponent(post.slug)}`}
+                    className="js-reveal group grid gap-4 py-6 md:grid-cols-[180px_1fr]"
+                  >
+                    <p className="text-sm text-[var(--home-accent)]">{formatBlogDate(post.date)}</p>
+                    <div className="space-y-3">
+                      <h3 className="text-lg font-sans font-semibold text-[var(--home-ink)] transition group-hover:text-white">
+                        {post.title}
+                      </h3>
+                      {post.tags && post.tags.length > 0 && (
+                        <div className="flex flex-wrap gap-2 text-xs uppercase tracking-[0.2em] text-[var(--home-muted)]">
+                          {post.tags.slice(0, 3).map((tag) => (
+                            <span
+                              key={tag}
+                              className="rounded-full border border-white/10 bg-black/30 px-3 py-1"
+                            >
+                              {tag}
+                            </span>
+                          ))}
+                        </div>
+                      )}
+                      <p className="text-sm text-[var(--home-muted)]">{post.excerpt}</p>
+                    </div>
+                  </Link>
+                ))
+              )}
             </div>
           </div>
         </section>

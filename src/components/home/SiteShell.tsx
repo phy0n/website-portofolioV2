@@ -253,7 +253,7 @@ export default function SiteShell({ children, scopeRef, contentMode = 'contained
                   className="js-nav-item inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-3 py-1.5 text-[10px] font-semibold text-white transition hover:border-white/20 hover:bg-white/[0.06]"
                 >
                   <ShieldCheck className="h-4 w-4 text-[var(--home-accent)]" />
-                  Dashboard Admin
+                  Admin Dashboard
                 </Link>
               ) : null}
             </nav>
@@ -317,7 +317,7 @@ export default function SiteShell({ children, scopeRef, contentMode = 'contained
                   className="js-menu-item inline-flex w-full items-center justify-between rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-4 text-sm font-semibold text-white transition hover:border-white/20 hover:bg-white/[0.06]">
                   <span className="inline-flex items-center gap-3">
                     <ShieldCheck className="h-4 w-4 text-[var(--home-accent)]" />
-                    Dashboard Admin
+                    Admin Dashboard
                   </span>
                   <span className="text-xs uppercase tracking-[0.35em] text-white/60">Go</span>
                 </a>
