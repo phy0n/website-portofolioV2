@@ -6,6 +6,7 @@ import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 import blogsData from '@/data/blogs.json';
+import { useDiscordStatusRealtime } from '@/lib/discord/useDiscordStatusRealtime';
 
 import ProfileSidebar from './ProfileSidebar';
 import SiteShell from './SiteShell';
@@ -14,7 +15,6 @@ import CertificatesTab from './tabs/CertificatesTab';
 import ExperienceTab from './tabs/ExperienceTab';
 import ProjectsTab from './tabs/ProjectsTab';
 import SkillsTab from './tabs/SkillsTab';
-import type { DiscordStatus } from './types';
 
 const PROFILE_SKILLS = ['Software Engineer', 'Data Analyst Enthusiast'];
 
@@ -49,9 +49,13 @@ const fallbackBlogs = [...(blogsData as BlogPreview[])]
   .sort((a, b) => b.date.localeCompare(a.date))
   .slice(0, 3);
 
-export default function HomeClient() {
+interface HomeClientProps {
+  discordUserId: string | null;
+}
+
+export default function HomeClient({ discordUserId }: HomeClientProps) {
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
-  const [discordStatus, setDiscordStatus] = useState<DiscordStatus | null>(null);
+  const { discordStatus } = useDiscordStatusRealtime(discordUserId);
   const [latestBlogs, setLatestBlogs] = useState<BlogPreview[]>(fallbackBlogs);
   const scopeRef = useRef<HTMLDivElement | null>(null);
 
@@ -75,18 +79,6 @@ export default function HomeClient() {
       }
     };
 
-    const fetchDiscordStatus = async () => {
-      try {
-        const res = await fetch('/api/discord-status');
-        const data = await res.json();
-        if (!data.error) {
-          setDiscordStatus(data);
-        }
-      } catch (err) {
-        console.error('Failed to fetch Discord status:', err);
-      }
-    };
-
     const fetchLatestBlogs = async () => {
       try {
         const res = await fetch('/api/latest-blogs');
@@ -102,15 +94,12 @@ export default function HomeClient() {
 
     schedule(() => {
       fetchAvatar();
-      fetchDiscordStatus();
       fetchLatestBlogs();
     });
 
-    const statusInterval = window.setInterval(fetchDiscordStatus, 30000);
     const blogsInterval = window.setInterval(fetchLatestBlogs, 60000);
 
     return () => {
-      clearInterval(statusInterval);
       clearInterval(blogsInterval);
     };
   }, []);

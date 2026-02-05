@@ -1,5 +1,5 @@
 import HomeClient from '@/components/home/HomeClient';
 
 export default function Page() {
-  return <HomeClient />;
+  return <HomeClient discordUserId={process.env.DISCORD_USER_ID ?? null} />;
 }

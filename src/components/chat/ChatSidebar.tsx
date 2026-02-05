@@ -123,7 +123,7 @@ function ChatPanel({
             ))}
           </div>
         ) : messages.length === 0 ? (
-          <p className="text-sm text-white/50">Belum ada chat. Jadi yang pertama.</p>
+          <p className="text-sm text-white/50">Belum ada chat. Jadilah yang pertama.</p>
         ) : (
           messages.map((item) => (
             <div key={item.id} className="rounded-2xl border border-white/10 bg-black/30 p-3">
@@ -137,8 +137,7 @@ function ChatPanel({
                       onClick={() => onDeleteMessage?.(item.id)}
                       className="rounded-full border border-white/10 bg-black/40 p-1.5 text-white/60 transition hover:border-white/20 hover:text-white"
                       aria-label="Delete message"
-                      title="Delete message"
-                    >
+                      title="Delete message">
                       <Trash2 className="h-3.5 w-3.5" />
                     </button>
                   ) : null}
