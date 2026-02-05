@@ -1,12 +1,20 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Briefcase } from 'lucide-react';
 
-import type { Experience } from '../types';
+type ExperienceRow = {
+  id: string;
+  role: string;
+  company: string;
+  period: string;
+  description: string;
+  status: string;
+};
 
-const EXPERIENCES: Experience[] = [
+const FALLBACK_EXPERIENCES: ExperienceRow[] = [
   {
+    id: 'fallback-1',
     role: 'Website Developer',
     company: 'Kh1ev Community',
     period: '2024 - now',
@@ -16,7 +24,50 @@ const EXPERIENCES: Experience[] = [
   },
 ];
 
+const normalizeExperience = (value: any): ExperienceRow | null => {
+  const id = String(value?.id ?? '').trim();
+  const role = String(value?.role ?? '').trim();
+  const company = String(value?.company ?? '').trim();
+  const period = String(value?.period ?? '').trim();
+  const description = String(value?.description ?? '').trim();
+  const status = String(value?.status ?? '').trim();
+
+  if (!id || !role || !company || !period || !description || !status) return null;
+  return { id, role, company, period, description, status };
+};
+
 export default function ExperienceTab() {
+  const [experiences, setExperiences] = useState<ExperienceRow[]>(FALLBACK_EXPERIENCES);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    const fetchExperiences = async () => {
+      try {
+        const res = await fetch('/api/experiences');
+        const data = await res.json();
+        const rows = Array.isArray(data?.experiences) ? (data.experiences as any[]) : null;
+        if (!rows || rows.length === 0) return;
+
+        const normalized = rows
+          .map(normalizeExperience)
+          .filter((row): row is ExperienceRow => Boolean(row));
+
+        if (!cancelled && normalized.length > 0) {
+          setExperiences(normalized);
+        }
+      } catch (err) {
+        console.error('Failed to fetch experiences:', err);
+      }
+    };
+
+    fetchExperiences();
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
   return (
     <div className="space-y-6">
       <div className="space-y-3">
@@ -30,8 +81,8 @@ export default function ExperienceTab() {
       </div>
 
       <div className="relative border-l border-white/10 pl-6">
-        {EXPERIENCES.map((exp, index) => (
-          <div key={index} className="js-reveal relative pb-8">
+        {experiences.map((exp) => (
+          <div key={exp.id} className="js-reveal relative pb-8">
             <span className="absolute -left-3 top-1.5 h-2.5 w-2.5 rounded-full bg-[var(--home-accent)]" />
             <div className="flex flex-wrap items-center gap-3">
               <h3 className="text-lg font-sans font-semibold text-[var(--home-ink)]">{exp.role}</h3>

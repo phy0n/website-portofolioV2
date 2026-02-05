@@ -1,22 +1,96 @@
 'use client';
 
-import React from 'react';
-import { Monitor } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
+import { Code, Cpu, Database, Globe, Monitor, Server, Smartphone } from 'lucide-react';
 
-import type { Project } from '../types';
+type ProjectRow = {
+  id: string;
+  title: string;
+  description: string;
+  tags: string[];
+  link: string;
+  status: string;
+  icon?: string | null;
+};
 
-const PROJECTS: Project[] = [
+const FALLBACK_PROJECTS: ProjectRow[] = [
   {
+    id: 'fallback-1',
     title: 'Kh1ev Project',
     description: 'This is my kh1ev community website',
     tags: ['React', 'TailwindCSS', 'TypeScript'],
     link: 'https://kh1ev.my.id/',
     status: 'Live',
-    icon: <Monitor className="h-4 w-4" />,
+    icon: 'Monitor',
   },
 ];
 
+const normalizeProject = (value: any): ProjectRow | null => {
+  const id = String(value?.id ?? '').trim();
+  const title = String(value?.title ?? '').trim();
+  const description = String(value?.description ?? '').trim();
+  const link = String(value?.link ?? '').trim();
+  const status = String(value?.status ?? '').trim();
+  const iconRaw = typeof value?.icon === 'string' ? value.icon : '';
+  const icon = iconRaw.trim() ? iconRaw.trim() : null;
+  const tags = Array.isArray(value?.tags) ? (value.tags as unknown[]).map((t) => String(t)) : [];
+
+  if (!id || !title || !description || !link || !status) return null;
+  return { id, title, description, tags, link, status, icon };
+};
+
+const renderProjectIcon = (icon?: string | null) => {
+  switch (icon) {
+    case 'Globe':
+      return <Globe className="h-4 w-4" />;
+    case 'Smartphone':
+      return <Smartphone className="h-4 w-4" />;
+    case 'Code':
+      return <Code className="h-4 w-4" />;
+    case 'Database':
+      return <Database className="h-4 w-4" />;
+    case 'Server':
+      return <Server className="h-4 w-4" />;
+    case 'Cpu':
+      return <Cpu className="h-4 w-4" />;
+    case 'Monitor':
+    default:
+      return <Monitor className="h-4 w-4" />;
+  }
+};
+
 export default function ProjectsTab() {
+  const [projects, setProjects] = useState<ProjectRow[]>(FALLBACK_PROJECTS);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    const fetchProjects = async () => {
+      try {
+        const res = await fetch('/api/projects');
+        const data = await res.json();
+        const rows = Array.isArray(data?.projects) ? (data.projects as any[]) : null;
+        if (!rows || rows.length === 0) return;
+
+        const normalized = rows
+          .map(normalizeProject)
+          .filter((row): row is ProjectRow => Boolean(row));
+
+        if (!cancelled && normalized.length > 0) {
+          setProjects(normalized);
+        }
+      } catch (err) {
+        console.error('Failed to fetch projects:', err);
+      }
+    };
+
+    fetchProjects();
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
   return (
     <div className="space-y-6">
       <div className="space-y-3">
@@ -28,11 +102,11 @@ export default function ProjectsTab() {
       </div>
 
       <div className="divide-y divide-white/10 border-y border-white/10">
-        {PROJECTS.map((project, index) => {
+        {projects.map((project, index) => {
           const number = String(index + 1).padStart(2, '0');
           return (
             <a
-              key={index}
+              key={project.id}
               href={project.link}
               target="_blank"
               rel="noopener noreferrer"
@@ -41,7 +115,7 @@ export default function ProjectsTab() {
               <div className="text-xs uppercase tracking-[0.35em] text-[var(--home-muted)]">{number}</div>
               <div className="space-y-3">
                 <div className="flex items-center gap-2">
-                  <span className="text-[var(--home-accent)]">{project.icon}</span>
+                  <span className="text-[var(--home-accent)]">{renderProjectIcon(project.icon)}</span>
                   <h3 className="text-lg font-sans font-semibold text-[var(--home-ink)]">{project.title}</h3>
                 </div>
                 <p className="text-sm text-[var(--home-muted)]">{project.description}</p>

@@ -5,7 +5,14 @@ import { redirect } from 'next/navigation';
 import { requireAdmin } from '@/lib/supabase/admin';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 
-const allowedRedirects = new Set(['/admin', '/admin/blogs', '/admin/quotes']);
+const allowedRedirects = new Set([
+  '/admin',
+  '/admin/blogs',
+  '/admin/quotes',
+  '/admin/experiences',
+  '/admin/projects',
+  '/admin/certificates',
+]);
 
 const resolveRedirectPath = (formData: FormData) => {
   const target = String(formData.get('redirect_to') || '').trim();
@@ -40,6 +47,10 @@ const blogImagesBucket =
   process.env.SUPABASE_BLOG_IMAGE_BUCKET ||
   process.env.NEXT_PUBLIC_SUPABASE_BLOG_IMAGE_BUCKET ||
   'blog-images';
+const certificateImagesBucket =
+  process.env.SUPABASE_CERTIFICATE_IMAGE_BUCKET ||
+  process.env.NEXT_PUBLIC_SUPABASE_CERTIFICATE_IMAGE_BUCKET ||
+  blogImagesBucket;
 
 type UploadableImage = Blob & { name?: string };
 
@@ -114,6 +125,59 @@ const uploadBlogImage = async (
   }
 
   const { data } = supabase.storage.from(blogImagesBucket).getPublicUrl(filePath);
+  return data.publicUrl;
+};
+
+const uploadCertificateImage = async (
+  supabase: Awaited<ReturnType<typeof requireAdmin>>['supabase'],
+  file: UploadableImage | null,
+  title: string,
+  redirectTo: string
+) => {
+  if (!file) return null;
+
+  if (!allowedImageTypes.has(file.type)) {
+    redirectWithError(redirectTo, 'Image must be PNG, JPG, or WebP.');
+  }
+
+  if (file.size > maxImageBytes) {
+    redirectWithError(redirectTo, 'Image must be under 5MB.');
+  }
+
+  const baseName = slugify(title) || 'certificate';
+  const fileName = typeof file.name === 'string' ? file.name : '';
+  const extensionFromName = fileName.split('.').pop()?.toLowerCase();
+  const extension = extensionFromName || extensionFromMimeType(file.type);
+  const filePath = `certificates/${baseName}-${Date.now()}.${extension}`;
+
+  let fileBody: Uint8Array;
+  try {
+    fileBody = new Uint8Array(await file.arrayBuffer());
+  } catch (error) {
+    const message = error instanceof Error ? error.message : 'Could not read file.';
+    redirectWithError(redirectTo, `Image upload failed: ${message}`);
+    return null;
+  }
+
+  let uploadError: { message: string } | null = null;
+  try {
+    const { error } = await supabase.storage.from(certificateImagesBucket).upload(filePath, fileBody, {
+      cacheControl: '3600',
+      upsert: false,
+      contentType: file.type || 'image/jpeg',
+    });
+    uploadError = error;
+  } catch (error) {
+    const message = error instanceof Error ? error.message : 'Network error.';
+    redirectWithError(redirectTo, `Image upload failed: ${message}`);
+    return null;
+  }
+
+  if (uploadError) {
+    redirectWithError(redirectTo, `Image upload failed: ${uploadError.message}`);
+  }
+
+  const { data } = supabase.storage.from(certificateImagesBucket).getPublicUrl(filePath);
   return data.publicUrl;
 };
 
@@ -388,6 +452,366 @@ export async function deleteQuote(formData: FormData) {
 
   revalidatePath('/blog');
   redirectWithSuccess(redirectTo, 'Quote deleted.');
+}
+
+const parseSortOrder = (value: unknown) => {
+  if (typeof value === 'number') return Number.isFinite(value) ? Math.trunc(value) : 0;
+  if (typeof value !== 'string') return 0;
+  const parsed = Number.parseInt(value, 10);
+  return Number.isFinite(parsed) ? parsed : 0;
+};
+
+export async function createExperience(formData: FormData) {
+  const redirectTo = resolveRedirectPath(formData);
+  const role = String(formData.get('role') || '').trim();
+  const company = String(formData.get('company') || '').trim();
+  const period = String(formData.get('period') || '').trim();
+  const status = String(formData.get('status') || '').trim();
+  const description = String(formData.get('description') || '').trim();
+  const sortOrder = parseSortOrder(formData.get('sort_order'));
+  const statusValue = String(formData.get('is_published') || 'published').trim();
+  const showOnMain = String(formData.get('show_on_main') || '').trim() === 'true';
+  const showOnPhion = String(formData.get('show_on_phion') || '').trim() === 'true';
+
+  if (!role || !company || !period || !status || !description) {
+    redirectWithError(redirectTo, 'Role, company, period, status, and description are required.');
+  }
+
+  if (statusValue !== 'published' && statusValue !== 'draft') {
+    redirectWithError(redirectTo, 'Invalid publish status value.');
+  }
+
+  const isPublished = statusValue === 'published';
+  const { supabase } = await requireAdmin();
+  const { error } = await supabase.from('experiences').insert({
+    role,
+    company,
+    period,
+    status,
+    description,
+    sort_order: sortOrder,
+    is_published: isPublished,
+    show_on_main: showOnMain,
+    show_on_phion: showOnPhion,
+  });
+
+  if (error) {
+    redirectWithError(redirectTo, `Create experience failed: ${error.message}`);
+  }
+
+  revalidatePath('/');
+  revalidatePath('/admin/experiences');
+  redirectWithSuccess(redirectTo, 'Experience created.');
+}
+
+export async function updateExperience(formData: FormData) {
+  const redirectTo = resolveRedirectPath(formData);
+  const id = String(formData.get('id') || '').trim();
+  const role = String(formData.get('role') || '').trim();
+  const company = String(formData.get('company') || '').trim();
+  const period = String(formData.get('period') || '').trim();
+  const status = String(formData.get('status') || '').trim();
+  const description = String(formData.get('description') || '').trim();
+  const sortOrder = parseSortOrder(formData.get('sort_order'));
+  const statusValue = String(formData.get('is_published') || 'published').trim();
+  const showOnMain = String(formData.get('show_on_main') || '').trim() === 'true';
+  const showOnPhion = String(formData.get('show_on_phion') || '').trim() === 'true';
+
+  if (!id || !role || !company || !period || !status || !description) {
+    redirectWithError(redirectTo, 'Missing required experience fields.');
+  }
+
+  if (statusValue !== 'published' && statusValue !== 'draft') {
+    redirectWithError(redirectTo, 'Invalid publish status value.');
+  }
+
+  const isPublished = statusValue === 'published';
+  const { supabase } = await requireAdmin();
+  const { error } = await supabase
+    .from('experiences')
+    .update({
+      role,
+      company,
+      period,
+      status,
+      description,
+      sort_order: sortOrder,
+      is_published: isPublished,
+      show_on_main: showOnMain,
+      show_on_phion: showOnPhion,
+      updated_at: new Date().toISOString(),
+    })
+    .eq('id', id);
+
+  if (error) {
+    redirectWithError(redirectTo, `Update experience failed: ${error.message}`);
+  }
+
+  revalidatePath('/');
+  revalidatePath('/admin/experiences');
+  redirectWithSuccess(redirectTo, 'Experience updated.');
+}
+
+export async function deleteExperience(formData: FormData) {
+  const redirectTo = resolveRedirectPath(formData);
+  const id = String(formData.get('id') || '').trim();
+
+  if (!id) {
+    redirectWithError(redirectTo, 'Missing experience id.');
+  }
+
+  const { supabase } = await requireAdmin();
+  const { error } = await supabase.from('experiences').delete().eq('id', id);
+
+  if (error) {
+    redirectWithError(redirectTo, `Delete experience failed: ${error.message}`);
+  }
+
+  revalidatePath('/');
+  revalidatePath('/admin/experiences');
+  redirectWithSuccess(redirectTo, 'Experience deleted.');
+}
+
+export async function createProject(formData: FormData) {
+  const redirectTo = resolveRedirectPath(formData);
+  const title = String(formData.get('title') || '').trim();
+  const description = String(formData.get('description') || '').trim();
+  const tagsValue = String(formData.get('tags') || '');
+  const link = String(formData.get('link') || '').trim();
+  const status = String(formData.get('status') || '').trim();
+  const icon = String(formData.get('icon') || '').trim();
+  const sortOrder = parseSortOrder(formData.get('sort_order'));
+  const statusValue = String(formData.get('is_published') || 'published').trim();
+  const showOnMain = String(formData.get('show_on_main') || '').trim() === 'true';
+  const showOnPhion = String(formData.get('show_on_phion') || '').trim() === 'true';
+
+  if (!title || !description || !link || !status) {
+    redirectWithError(redirectTo, 'Title, description, link, and status are required.');
+  }
+
+  if (statusValue !== 'published' && statusValue !== 'draft') {
+    redirectWithError(redirectTo, 'Invalid publish status value.');
+  }
+
+  const isPublished = statusValue === 'published';
+  const tags = normalizeTags(tagsValue);
+
+  const { supabase } = await requireAdmin();
+  const { error } = await supabase.from('projects').insert({
+    title,
+    description,
+    tags,
+    link,
+    status,
+    icon: icon || null,
+    sort_order: sortOrder,
+    is_published: isPublished,
+    show_on_main: showOnMain,
+    show_on_phion: showOnPhion,
+  });
+
+  if (error) {
+    redirectWithError(redirectTo, `Create project failed: ${error.message}`);
+  }
+
+  revalidatePath('/');
+  revalidatePath('/admin/projects');
+  redirectWithSuccess(redirectTo, 'Project created.');
+}
+
+export async function updateProject(formData: FormData) {
+  const redirectTo = resolveRedirectPath(formData);
+  const id = String(formData.get('id') || '').trim();
+  const title = String(formData.get('title') || '').trim();
+  const description = String(formData.get('description') || '').trim();
+  const tagsValue = String(formData.get('tags') || '');
+  const link = String(formData.get('link') || '').trim();
+  const status = String(formData.get('status') || '').trim();
+  const icon = String(formData.get('icon') || '').trim();
+  const sortOrder = parseSortOrder(formData.get('sort_order'));
+  const statusValue = String(formData.get('is_published') || 'published').trim();
+  const showOnMain = String(formData.get('show_on_main') || '').trim() === 'true';
+  const showOnPhion = String(formData.get('show_on_phion') || '').trim() === 'true';
+
+  if (!id || !title || !description || !link || !status) {
+    redirectWithError(redirectTo, 'Missing required project fields.');
+  }
+
+  if (statusValue !== 'published' && statusValue !== 'draft') {
+    redirectWithError(redirectTo, 'Invalid publish status value.');
+  }
+
+  const isPublished = statusValue === 'published';
+  const tags = normalizeTags(tagsValue);
+
+  const { supabase } = await requireAdmin();
+  const { error } = await supabase
+    .from('projects')
+    .update({
+      title,
+      description,
+      tags,
+      link,
+      status,
+      icon: icon || null,
+      sort_order: sortOrder,
+      is_published: isPublished,
+      show_on_main: showOnMain,
+      show_on_phion: showOnPhion,
+      updated_at: new Date().toISOString(),
+    })
+    .eq('id', id);
+
+  if (error) {
+    redirectWithError(redirectTo, `Update project failed: ${error.message}`);
+  }
+
+  revalidatePath('/');
+  revalidatePath('/admin/projects');
+  redirectWithSuccess(redirectTo, 'Project updated.');
+}
+
+export async function deleteProject(formData: FormData) {
+  const redirectTo = resolveRedirectPath(formData);
+  const id = String(formData.get('id') || '').trim();
+
+  if (!id) {
+    redirectWithError(redirectTo, 'Missing project id.');
+  }
+
+  const { supabase } = await requireAdmin();
+  const { error } = await supabase.from('projects').delete().eq('id', id);
+
+  if (error) {
+    redirectWithError(redirectTo, `Delete project failed: ${error.message}`);
+  }
+
+  revalidatePath('/');
+  revalidatePath('/admin/projects');
+  redirectWithSuccess(redirectTo, 'Project deleted.');
+}
+
+export async function createCertificate(formData: FormData) {
+  const redirectTo = resolveRedirectPath(formData);
+  const title = String(formData.get('title') || '').trim();
+  const issuer = String(formData.get('issuer') || '').trim();
+  const date = String(formData.get('date') || '').trim();
+  const status = String(formData.get('status') || '').trim();
+  const description = String(formData.get('description') || '').trim();
+  const imageFile = extractImageFile(formData);
+  const icon = String(formData.get('icon') || '').trim();
+  const sortOrder = parseSortOrder(formData.get('sort_order'));
+  const statusValue = String(formData.get('is_published') || 'published').trim();
+  const showOnMain = String(formData.get('show_on_main') || '').trim() === 'true';
+  const showOnPhion = String(formData.get('show_on_phion') || '').trim() === 'true';
+
+  if (!title || !issuer || !date || !status || !description) {
+    redirectWithError(redirectTo, 'Title, issuer, date, status, and description are required.');
+  }
+
+  if (statusValue !== 'published' && statusValue !== 'draft') {
+    redirectWithError(redirectTo, 'Invalid publish status value.');
+  }
+
+  const isPublished = statusValue === 'published';
+  const { supabase } = await requireAdmin();
+  const imageUrl = await uploadCertificateImage(supabase, imageFile, title, redirectTo);
+  const { error } = await supabase.from('certificates').insert({
+    title,
+    issuer,
+    date,
+    status,
+    description,
+    image: imageUrl,
+    icon: icon || null,
+    sort_order: sortOrder,
+    is_published: isPublished,
+    show_on_main: showOnMain,
+    show_on_phion: showOnPhion,
+  });
+
+  if (error) {
+    redirectWithError(redirectTo, `Create certificate failed: ${error.message}`);
+  }
+
+  revalidatePath('/');
+  revalidatePath('/admin/certificates');
+  redirectWithSuccess(redirectTo, 'Certificate created.');
+}
+
+export async function updateCertificate(formData: FormData) {
+  const redirectTo = resolveRedirectPath(formData);
+  const id = String(formData.get('id') || '').trim();
+  const title = String(formData.get('title') || '').trim();
+  const issuer = String(formData.get('issuer') || '').trim();
+  const date = String(formData.get('date') || '').trim();
+  const status = String(formData.get('status') || '').trim();
+  const description = String(formData.get('description') || '').trim();
+  const imageFile = extractImageFile(formData);
+  const currentImage = String(formData.get('current_image') || '').trim();
+  const icon = String(formData.get('icon') || '').trim();
+  const sortOrder = parseSortOrder(formData.get('sort_order'));
+  const statusValue = String(formData.get('is_published') || 'published').trim();
+  const showOnMain = String(formData.get('show_on_main') || '').trim() === 'true';
+  const showOnPhion = String(formData.get('show_on_phion') || '').trim() === 'true';
+
+  if (!id || !title || !issuer || !date || !status || !description) {
+    redirectWithError(redirectTo, 'Missing required certificate fields.');
+  }
+
+  if (statusValue !== 'published' && statusValue !== 'draft') {
+    redirectWithError(redirectTo, 'Invalid publish status value.');
+  }
+
+  const isPublished = statusValue === 'published';
+  const { supabase } = await requireAdmin();
+  const uploadedImage = await uploadCertificateImage(supabase, imageFile, title, redirectTo);
+  const imageUrl = uploadedImage ?? (currentImage || null);
+  const { error } = await supabase
+    .from('certificates')
+    .update({
+      title,
+      issuer,
+      date,
+      status,
+      description,
+      image: imageUrl,
+      icon: icon || null,
+      sort_order: sortOrder,
+      is_published: isPublished,
+      show_on_main: showOnMain,
+      show_on_phion: showOnPhion,
+      updated_at: new Date().toISOString(),
+    })
+    .eq('id', id);
+
+  if (error) {
+    redirectWithError(redirectTo, `Update certificate failed: ${error.message}`);
+  }
+
+  revalidatePath('/');
+  revalidatePath('/admin/certificates');
+  redirectWithSuccess(redirectTo, 'Certificate updated.');
+}
+
+export async function deleteCertificate(formData: FormData) {
+  const redirectTo = resolveRedirectPath(formData);
+  const id = String(formData.get('id') || '').trim();
+
+  if (!id) {
+    redirectWithError(redirectTo, 'Missing certificate id.');
+  }
+
+  const { supabase } = await requireAdmin();
+  const { error } = await supabase.from('certificates').delete().eq('id', id);
+
+  if (error) {
+    redirectWithError(redirectTo, `Delete certificate failed: ${error.message}`);
+  }
+
+  revalidatePath('/');
+  revalidatePath('/admin/certificates');
+  redirectWithSuccess(redirectTo, 'Certificate deleted.');
 }
 
 export async function signOut() {

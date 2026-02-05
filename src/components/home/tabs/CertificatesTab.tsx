@@ -1,22 +1,98 @@
 'use client';
 
-import React from 'react';
-import { Award } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
+import { Award, BadgeCheck, BookOpen, FileText, GraduationCap, Star, Trophy } from 'lucide-react';
 
-import type { Certificate } from '../types';
+type CertificateRow = {
+  id: string;
+  title: string;
+  issuer: string;
+  date: string;
+  status: string;
+  description: string;
+  image?: string | null;
+  icon?: string | null;
+};
 
-const CERTIFICATES: Certificate[] = [
+const FALLBACK_CERTIFICATES: CertificateRow[] = [
   {
+    id: 'fallback-1',
     title: 'Intro to Software Engineering',
     issuer: 'RevoU',
     date: '2024',
     status: 'Completed',
     description: 'Just Intro to Software Engineering',
-    icon: <Award className="h-4 w-4" />,
+    icon: 'Award',
   },
 ];
 
+const normalizeCertificate = (value: any): CertificateRow | null => {
+  const id = String(value?.id ?? '').trim();
+  const title = String(value?.title ?? '').trim();
+  const issuer = String(value?.issuer ?? '').trim();
+  const date = String(value?.date ?? '').trim();
+  const status = String(value?.status ?? '').trim();
+  const description = String(value?.description ?? '').trim();
+  const image = typeof value?.image === 'string' ? value.image : null;
+  const iconRaw = typeof value?.icon === 'string' ? value.icon : '';
+  const icon = iconRaw.trim() ? iconRaw.trim() : null;
+
+  if (!id || !title || !issuer || !date || !status || !description) return null;
+  return { id, title, issuer, date, status, description, image, icon };
+};
+
+const renderCertificateIcon = (icon?: string | null) => {
+  switch (icon) {
+    case 'BadgeCheck':
+      return <BadgeCheck className="h-4 w-4" />;
+    case 'GraduationCap':
+      return <GraduationCap className="h-4 w-4" />;
+    case 'BookOpen':
+      return <BookOpen className="h-4 w-4" />;
+    case 'FileText':
+      return <FileText className="h-4 w-4" />;
+    case 'Star':
+      return <Star className="h-4 w-4" />;
+    case 'Trophy':
+      return <Trophy className="h-4 w-4" />;
+    case 'Award':
+    default:
+      return <Award className="h-4 w-4" />;
+  }
+};
+
 export default function CertificatesTab() {
+  const [certificates, setCertificates] = useState<CertificateRow[]>(FALLBACK_CERTIFICATES);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    const fetchCertificates = async () => {
+      try {
+        const res = await fetch('/api/certificates');
+        const data = await res.json();
+        const rows = Array.isArray(data?.certificates) ? (data.certificates as any[]) : null;
+        if (!rows || rows.length === 0) return;
+
+        const normalized = rows
+          .map(normalizeCertificate)
+          .filter((row): row is CertificateRow => Boolean(row));
+
+        if (!cancelled && normalized.length > 0) {
+          setCertificates(normalized);
+        }
+      } catch (err) {
+        console.error('Failed to fetch certificates:', err);
+      }
+    };
+
+    fetchCertificates();
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
   return (
     <div className="space-y-6">
       <div className="space-y-3">
@@ -30,11 +106,11 @@ export default function CertificatesTab() {
       </div>
 
       <div className="space-y-6">
-        {CERTIFICATES.map((cert, index) => (
-          <div key={index} className="js-reveal grid gap-6 border-b border-white/10 pb-6">
+        {certificates.map((cert) => (
+          <div key={cert.id} className="js-reveal grid gap-6 border-b border-white/10 pb-6">
             <div className="space-y-3">
               <div className="flex items-center gap-2 text-[var(--home-accent)]">
-                {cert.icon}
+                {renderCertificateIcon(cert.icon)}
                 <p className="text-xs uppercase tracking-[0.35em] text-[var(--home-muted)]">Certificate</p>
               </div>
               <h3 className="text-lg font-sans font-semibold text-[var(--home-ink)]">{cert.title}</h3>

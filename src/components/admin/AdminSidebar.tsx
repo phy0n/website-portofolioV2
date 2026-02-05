@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { ArrowUpRight, BarChart3, FileText, LogOut, Quote, X } from 'lucide-react';
+import { ArrowUpRight, Award, BarChart3, Briefcase, FileText, LayoutGrid, LogOut, Quote, X } from 'lucide-react';
 import AdminSubmitButton from './AdminSubmitButton';
 
 type AdminAction = (formData?: FormData) => void | Promise<void>;
@@ -11,6 +11,9 @@ const navItems = [
   { href: '/admin', label: 'Analytics', icon: BarChart3 },
   { href: '/admin/blogs', label: 'Blogs', icon: FileText },
   { href: '/admin/quotes', label: 'Quotes', icon: Quote },
+  { href: '/admin/experiences', label: 'Experiences', icon: Briefcase },
+  { href: '/admin/projects', label: 'Projects', icon: LayoutGrid },
+  { href: '/admin/certificates', label: 'Certificates', icon: Award },
 ];
 
 export default function AdminSidebar({
