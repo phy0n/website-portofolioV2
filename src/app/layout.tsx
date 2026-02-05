@@ -40,7 +40,7 @@ export const metadata: Metadata = {
     url: 'https://phy0n.my.id/',
     images: [
       {
-        url: '/image/logo.png',
+        url: '/image/og-banner.jpg',
         width: 1200,
         height: 630,
         alt: 'Phy0n',
@@ -51,7 +51,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'Phy0n',
     description: 'Idk but this is Phy0n portofolio',
-    images: ['/image/logo.png'],
+    images: ['/image/og-banner.jpg'],
   },
   robots: {
     index: true,
