@@ -8,14 +8,13 @@ import {
   Bookmark,
   BookmarkCheck,
   Calendar,
-  Clock,
   Eye,
   Quote,
   Tags,
   Users,
   X,
 } from 'lucide-react';
-import { formatBlogDate, readingTimeMinutes } from '@/lib/blog';
+import { formatBlogDate } from '@/lib/blog';
 import { readReadingList, toggleReadingListSlug } from '@/components/blog/readingList';
 
 interface Blog {
@@ -168,14 +167,6 @@ export default function BlogClient({
       });
     });
     return Array.from(uniqueTags);
-  }, [visibleBlogs]);
-
-  const readingTimeById = useMemo(() => {
-    const map = new Map<string, number>();
-    visibleBlogs.forEach((blog) => {
-      map.set(blog.id, readingTimeMinutes(blog.content || ''));
-    });
-    return map;
   }, [visibleBlogs]);
 
   const savedBlogs = useMemo(() => {
@@ -462,7 +453,7 @@ export default function BlogClient({
                         </div>
                         <div className="p-5">
                             <p className="text-xs text-white/50">
-                            {formatBlogDate(featured.date)} • {readingTimeById.get(featured.id) ?? 1} min read • {(resolvedViewCounts?.[featured.slug] ?? 0).toLocaleString()} views{showUniqueCounts ? ` • ${(resolvedUniqueViews?.[featured.slug] ?? 0).toLocaleString()} users` : ''}
+                            {formatBlogDate(featured.date)} • {(resolvedViewCounts?.[featured.slug] ?? 0).toLocaleString()} views{showUniqueCounts ? ` • ${(resolvedUniqueViews?.[featured.slug] ?? 0).toLocaleString()} users` : ''}
                             </p>
                           <h3 className="mt-3 text-lg sm:text-xl font-semibold text-white line-clamp-2">
                             {featured.title}
@@ -546,10 +537,6 @@ export default function BlogClient({
                               <span className="inline-flex items-center gap-1.5 border border-white/10 bg-white/[0.02] px-2.5 py-1">
                                 <Calendar className="w-3.5 h-3.5" />
                                 {formatBlogDate(blog.date)}
-                              </span>
-                              <span className="inline-flex items-center gap-1.5 border border-white/10 bg-white/[0.02] px-2.5 py-1">
-                                <Clock className="w-3.5 h-3.5" />
-                                {readingTimeById.get(blog.id) ?? 1} min read
                               </span>
                               <span className="inline-flex items-center gap-1.5 border border-white/10 bg-white/[0.02] px-2.5 py-1">
                                 <Eye className="w-3.5 h-3.5" />

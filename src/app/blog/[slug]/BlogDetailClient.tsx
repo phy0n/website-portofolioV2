@@ -9,7 +9,6 @@ import {
   Bookmark,
   BookmarkCheck,
   Calendar,
-  Clock,
   Eye,
   Link2,
   Share2,
@@ -18,7 +17,7 @@ import {
   Users,
 } from 'lucide-react';
 import BlogMarkdown from '@/components/blog/BlogMarkdown';
-import { extractTocFromContent, formatBlogDate, readingTimeMinutes } from '@/lib/blog';
+import { extractTocFromContent, formatBlogDate } from '@/lib/blog';
 import { readReadingList, toggleReadingListSlug } from '@/components/blog/readingList';
 
 interface Blog {
@@ -67,7 +66,6 @@ export default function BlogDetailClient({
 
   const content = blog?.content ?? '';
   const toc = useMemo(() => (content ? extractTocFromContent(content) : []), [content]);
-  const readingTime = useMemo(() => (content ? readingTimeMinutes(content) : 1), [content]);
   const resolvedTotalViews = Math.max(viewCount ?? 0, fetchedCounts?.total ?? 0);
   const resolvedUniqueVisitors = Math.max(uniqueCount ?? 0, fetchedCounts?.unique ?? 0);
   const showUniqueCounts = uniqueCount !== undefined || fetchedCounts?.source === 'counters';
@@ -342,10 +340,6 @@ export default function BlogDetailClient({
                     {formatBlogDate(blog.date)}
                   </span>
                   <span className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-black/40 px-3 py-1.5">
-                    <Clock className="h-4 w-4" />
-                    {readingTime} min read
-                  </span>
-                  <span className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-black/40 px-3 py-1.5">
                     <Eye className="h-4 w-4" />
                     {resolvedTotalViews.toLocaleString()}
                   </span>
@@ -509,13 +503,6 @@ export default function BlogDetailClient({
                       Date
                     </span>
                     <span className="text-white/80">{formatBlogDate(blog.date)}</span>
-                  </div>
-                  <div className="flex items-center justify-between gap-3">
-                    <span className="inline-flex items-center gap-2">
-                      <Clock className="h-4 w-4" />
-                      Reading time
-                    </span>
-                    <span className="text-white/80">{readingTime} min</span>
                   </div>
                   <div className="flex items-center justify-between gap-3">
                     <span className="inline-flex items-center gap-2">
