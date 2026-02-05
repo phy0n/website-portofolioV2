@@ -74,24 +74,38 @@ export default function ExperienceTab() {
       ) : experiences.length === 0 ? (
         <div className="js-reveal text-sm text-[var(--home-muted)]">Tidak Ada Data</div>
       ) : (
-        <div className="relative border-l border-white/10 pl-6">
+        <div className="space-y-10">
           {experiences.map((exp, index) => {
             const number = String(index + 1).padStart(2, '0');
             return (
-              <div key={exp.id} className="js-reveal relative pb-8">
-                <span className="absolute -left-[5px] top-2.5 h-2.5 w-2.5 rounded-full bg-[var(--home-accent)]" />
-                <p className="text-xs uppercase tracking-[0.35em] text-[var(--home-muted)]">{number}</p>
-                <div className="mt-2 flex flex-wrap items-center gap-3">
+              <div key={exp.id} className="js-reveal grid gap-x-4 gap-y-0 md:grid-cols-[auto_14px_1fr]">
+                <div className="row-span-3 pt-1 text-xs uppercase tracking-[0.35em] text-[var(--home-muted)]">
+                  {number}
+                </div>
+
+                <div className="relative flex items-center justify-center">
+                  <span className="absolute inset-y-0 w-px bg-white/10" />
+                  <span className="relative z-10 h-2.5 w-2.5 rounded-full bg-[var(--home-accent)]" />
+                </div>
+                <div className="flex flex-wrap items-center gap-3">
                   <h3 className="text-lg font-sans font-semibold text-[var(--home-ink)]">{exp.role}</h3>
                   <span className="rounded-full border border-white/10 bg-black/30 px-3 py-1 text-xs text-[var(--home-muted)]">
                     {exp.status}
                   </span>
+                </div>
+
+                <div className="relative flex items-center justify-center">
+                  <span className="absolute inset-y-0 w-px bg-white/10" />
                 </div>
                 <div className="mt-2 flex flex-wrap items-center gap-2 text-sm text-[var(--home-muted)]">
                   <Briefcase className="h-4 w-4" />
                   <span>{exp.company}</span>
                   <span>|</span>
                   <span>{exp.period}</span>
+                </div>
+
+                <div className="relative flex items-center justify-center">
+                  <span className="absolute inset-y-0 w-px bg-white/10" />
                 </div>
                 <p className="mt-3 text-sm leading-relaxed text-[var(--home-muted)]">{exp.description}</p>
               </div>

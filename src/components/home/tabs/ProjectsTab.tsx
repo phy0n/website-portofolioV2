@@ -104,13 +104,13 @@ export default function ProjectsTab() {
                 href={project.link}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="js-reveal group grid gap-4 py-6 md:grid-cols-[auto_1fr_auto]"
-              >
-                <div className="text-xs uppercase tracking-[0.35em] text-[var(--home-muted)]">{number}</div>
-                <div className="space-y-3">
-                  <div className="flex items-center gap-2">
-                    <span className="text-[var(--home-accent)]">{renderProjectIcon(project.icon)}</span>
-                    <h3 className="text-lg font-sans font-semibold text-[var(--home-ink)]">{project.title}</h3>
+              className="js-reveal group grid gap-4 py-6 md:grid-cols-[auto_1fr_auto]"
+            >
+              <div className="pt-2 text-xs uppercase tracking-[0.35em] text-[var(--home-muted)]">{number}</div>
+              <div className="space-y-3">
+                <div className="flex items-center gap-2">
+                  <span className="text-[var(--home-accent)]">{renderProjectIcon(project.icon)}</span>
+                  <h3 className="text-lg font-sans font-semibold text-[var(--home-ink)]">{project.title}</h3>
                   </div>
                   <p className="text-sm text-[var(--home-muted)]">{project.description}</p>
                   <div className="flex flex-wrap gap-2">

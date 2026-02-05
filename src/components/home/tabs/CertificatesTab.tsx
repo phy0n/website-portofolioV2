@@ -103,23 +103,36 @@ export default function CertificatesTab() {
           certificates.map((cert, index) => {
             const number = String(index + 1).padStart(2, '0');
             return (
-            <div key={cert.id} className="js-reveal grid gap-6 border-b border-white/10 pb-6">
-              <div className="space-y-3">
-                <p className="text-xs uppercase tracking-[0.35em] text-[var(--home-muted)]">{number}</p>
-                <div className="flex items-center gap-2 text-[var(--home-accent)]">
+              <div
+                key={cert.id}
+                className="js-reveal grid gap-x-4 gap-y-3 border-b border-white/10 py-6 md:grid-cols-[auto_1fr]"
+              >
+                <div className="md:hidden pt-1 text-xs uppercase tracking-[0.35em] text-[var(--home-muted)]">
+                  {number}
+                </div>
+
+                <div className="md:col-start-2 md:row-start-1 flex items-center gap-2 text-[var(--home-accent)]">
                   {renderCertificateIcon(cert.icon)}
                   <p className="text-xs uppercase tracking-[0.35em] text-[var(--home-muted)]">Certificate</p>
                 </div>
-                <h3 className="text-lg font-sans font-semibold text-[var(--home-ink)]">{cert.title}</h3>
-                <p className="text-xs uppercase tracking-[0.35em] text-[var(--home-muted)]">
+
+                <div className="hidden md:block md:col-start-1 md:row-start-2 pt-1 text-xs uppercase tracking-[0.35em] text-[var(--home-muted)]">
+                  {number}
+                </div>
+                <h3 className="md:col-start-2 md:row-start-2 text-lg font-sans font-semibold text-[var(--home-ink)]">
+                  {cert.title}
+                </h3>
+
+                <p className="md:col-start-2 md:row-start-3 text-xs uppercase tracking-[0.35em] text-[var(--home-muted)]">
                   {cert.issuer} | {cert.date}
                 </p>
-                <p className="text-sm text-[var(--home-muted)]">{cert.description}</p>
-                <span className="inline-flex rounded-full border border-white/10 bg-black/30 px-3 py-1 text-xs text-[var(--home-muted)]">
-                  {cert.status}
-                </span>
+                <p className="md:col-start-2 md:row-start-4 text-sm text-[var(--home-muted)]">{cert.description}</p>
+                <div className="md:col-start-2 md:row-start-5">
+                  <span className="inline-flex rounded-full border border-white/10 bg-black/30 px-3 py-1 text-xs text-[var(--home-muted)]">
+                    {cert.status}
+                  </span>
+                </div>
               </div>
-            </div>
             );
           })
         )}
