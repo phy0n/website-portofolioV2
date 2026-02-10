@@ -185,7 +185,6 @@ function ChatPanel({
               }}
             />
             <div className="flex items-center justify-between">
-              <p className="text-[10px] text-white/40">Ctrl/⌘ + Enter to send</p>
               <p className="text-[10px] text-white/40">{message.length}/500</p>
             </div>
           </div>

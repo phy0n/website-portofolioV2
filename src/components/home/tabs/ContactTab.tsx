@@ -59,7 +59,7 @@ export default function ContactTab() {
         </div>
       </div>
 
-      <div className="js-reveal rounded-3xl border border-white/10 bg-black/30 p-6">
+      {/* <div className="js-reveal rounded-3xl border border-white/10 bg-black/30 p-6">
         <div className="space-y-2">
           <p className="text-[11px] uppercase tracking-[0.35em] text-[var(--home-muted)]">Message</p>
           <p className="text-sm text-[var(--home-muted)]">
@@ -69,7 +69,7 @@ export default function ContactTab() {
         <div className="mt-6">
           <ContactForm source="home" />
         </div>
-      </div>
+      </div> */}
     </div>
   );
 }
