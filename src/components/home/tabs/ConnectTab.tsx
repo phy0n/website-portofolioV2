@@ -96,7 +96,7 @@ export default function ConnectTab() {
           ))}
         </div>
       </div>
-
+{/* 
       <div className="space-y-3 border-t border-white/10 pt-6" data-gsap="reveal">
         <div className="flex items-center justify-between">
           <p className="text-[11px] uppercase tracking-[0.35em] text-[var(--home-muted)]">Message</p>
@@ -105,7 +105,7 @@ export default function ConnectTab() {
         <div className="rounded-3xl border border-white/10 bg-black/30 p-6">
           <ContactForm source="connect" />
         </div>
-      </div>
+      </div> */}
     </div>
   );
 }

@@ -1,28 +1,18 @@
 'use client';
 
-import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { BookOpen, Gamepad2, Home, Info, Mail, Menu, ShieldCheck, Sparkles, X } from 'lucide-react';
-import { gsap } from 'gsap';
+import { BookOpen, Gamepad2, Home, Info, Menu, ShieldCheck, X } from 'lucide-react';
 import Image from 'next/image';
 import ChatSidebar from '@/components/chat/ChatSidebar';
+import ChatBar from '@/components/chat/ChatBar';
 
 const NAV_LINKS = [
   { label: 'Home', href: '/' },
   { label: 'Games', href: '/games' },
   { label: 'Connect', href: '/connect' },
-  { label: 'Blog', href: '/blog' },
-];
-
-const SECTION_LINKS = [
-  { label: 'About', href: '/#about', icon: Info },
-  { label: 'Skills', href: '/#skills', icon: Sparkles },
-  { label: 'Experience', href: '/#experience', icon: ShieldCheck },
-  { label: 'Projects', href: '/#projects', icon: Home },
-  { label: 'Certificates', href: '/#certificates', icon: ShieldCheck },
-  { label: 'Latest', href: '/#latest', icon: BookOpen },
-  { label: 'Contact', href: '/#contact', icon: Mail },
+  { label: 'Posts', href: '/blog' },
 ];
 
 interface SiteShellProps {
@@ -34,15 +24,11 @@ interface SiteShellProps {
 export default function SiteShell({ children, scopeRef, contentMode = 'contained' }: SiteShellProps) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [sidebarAvatarUrl, setSidebarAvatarUrl] = useState<string | null>(null);
-  const [isAdmin, setIsAdmin] = useState(false);
-  const menuRef = useRef<HTMLDivElement | null>(null);
-  const menuTimeline = useRef<gsap.core.Timeline | null>(null);
   const pathname = usePathname();
   const mainClassName =
     contentMode === 'full'
       ? 'relative z-10 pb-20 pt-24'
       : 'relative z-10 mx-auto max-w-6xl px-4 pb-20 pt-24';
-  const showAdminDashboard = pathname === '/' && isAdmin;
 
   useEffect(() => {
     const schedule = (fn: () => void) => {
@@ -68,27 +54,6 @@ export default function SiteShell({ children, scopeRef, contentMode = 'contained
   }, []);
 
   useEffect(() => {
-    if (pathname !== '/') return;
-
-    const controller = new AbortController();
-
-    const checkAdminSession = async () => {
-      try {
-        const res = await fetch('/api/admin-session', { cache: 'no-store', signal: controller.signal });
-        if (!res.ok) return;
-        const data = (await res.json()) as { isAdmin?: boolean };
-        setIsAdmin(Boolean(data.isAdmin));
-      } catch (err) {
-        const error = err as { name?: string };
-        if (error?.name === 'AbortError') return;
-      }
-    };
-
-    void checkAdminSession();
-    return () => controller.abort();
-  }, [pathname]);
-
-  useEffect(() => {
     if (!menuOpen) return;
     const previous = document.body.style.overflow;
     document.body.style.overflow = 'hidden';
@@ -97,45 +62,11 @@ export default function SiteShell({ children, scopeRef, contentMode = 'contained
     };
   }, [menuOpen]);
 
-  useLayoutEffect(() => {
-    if (!menuRef.current) return;
-
-    const menuHeader = menuRef.current.querySelector('.js-menu-header');
-    const menuItems = menuRef.current.querySelectorAll('.js-menu-item');
-
-    menuTimeline.current = gsap
-      .timeline({ paused: true })
-      .set(menuRef.current, { autoAlpha: 0, xPercent: 100, pointerEvents: 'none' })
-      .to(menuRef.current, {
-        autoAlpha: 1,
-        xPercent: 0,
-        duration: 0.4,
-        ease: 'power3.out',
-        pointerEvents: 'auto',
-      })
-      .from(menuHeader, { y: -12, opacity: 0, duration: 0.3, ease: 'power2.out' }, '-=0.2')
-      .from(menuItems, { y: 18, opacity: 0, duration: 0.4, stagger: 0.08 }, '-=0.15');
-
-    return () => {
-      menuTimeline.current?.kill();
-      menuTimeline.current = null;
-    };
-  }, []);
-
-  useEffect(() => {
-    if (!menuTimeline.current) return;
-    if (menuOpen) {
-      menuTimeline.current.play();
-    } else {
-      menuTimeline.current.reverse();
-    }
-  }, [menuOpen]);
-
   return (
     <div ref={scopeRef} className="home-portfolio min-h-screen bg-[var(--home-bg)] text-[var(--home-ink)] font-nunito">
       <div className="relative isolate">
         {/* Desktop left sidebar */}
-        <aside className="js-nav fixed left-0 top-0 z-50 hidden h-screen w-72 flex-col border-r border-white/10 bg-black/85 backdrop-blur lg:flex">
+        <aside className="js-nav fixed left-0 top-0 z-50 hidden h-screen w-80 flex-col border-r border-white/10 bg-black/85 backdrop-blur lg:flex">
           <div className="px-6 pt-6">
             <div className="mt-6 flex items-center justify-between">
               <Link
@@ -203,22 +134,9 @@ export default function SiteShell({ children, scopeRef, contentMode = 'contained
             </div>
           </div>
 
-          <div className="mt-8 px-6">
-            <p className="text-[11px] uppercase tracking-[0.35em] text-[var(--home-muted)]">Sections</p>
-            <div className="mt-4 grid gap-2">
-              {SECTION_LINKS.map((item) => {
-                const Icon = item.icon;
-                return (
-                  <a
-                    key={item.href}
-                    href={item.href}
-                    className="js-nav-item flex items-center gap-3 rounded-2xl border border-white/10 bg-black/30 px-4 py-3 text-sm text-[var(--home-muted)] transition hover:border-white/20 hover:text-white"
-                  >
-                    <Icon className="h-4 w-4 text-[var(--home-accent)]" />
-                    {item.label}
-                  </a>
-                );
-              })}
+          <div className="mt-8 flex min-h-0 flex-1 flex-col px-6 pb-6">
+            <div className="min-h-0 flex-1 overflow-hidden rounded-3xl border border-white/10 bg-black/30">
+              <ChatBar />
             </div>
           </div>
         </aside>
@@ -247,15 +165,13 @@ export default function SiteShell({ children, scopeRef, contentMode = 'contained
                   {item.label}
                 </Link>
               ))}
-              {showAdminDashboard ? (
-                <Link
-                  href="/admin"
-                  className="js-nav-item inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-3 py-1.5 text-[10px] font-semibold text-white transition hover:border-white/20 hover:bg-white/[0.06]"
-                >
-                  <ShieldCheck className="h-4 w-4 text-[var(--home-accent)]" />
-                  Admin Dashboard
-                </Link>
-              ) : null}
+              <Link
+                href="/admin"
+                className="js-nav-item inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-3 py-1.5 text-[10px] font-semibold text-white transition hover:border-white/20 hover:bg-white/[0.06]"
+              >
+                <ShieldCheck className="h-4 w-4 text-[var(--home-accent)]" />
+                Admin Dashboard
+              </Link>
             </nav>
             <button
               type="button"
@@ -270,20 +186,22 @@ export default function SiteShell({ children, scopeRef, contentMode = 'contained
           </div>
         </header>
 
-        <div className="lg:pl-72 lg:pr-80">
-        {showAdminDashboard ? (
-          <Link
-            href="/admin"
-            className="fixed right-5 top-5 z-[55] hidden items-center gap-2 rounded-full border border-white/10 bg-black/70 px-4 py-2 text-[10px] font-semibold uppercase tracking-[0.28em] text-white backdrop-blur transition hover:border-white/20 hover:bg-black/60 lg:right-[calc(20rem+1.25rem)] lg:inline-flex">
-            <ShieldCheck className="h-4 w-4 text-[var(--home-accent)]" />
-          </Link>
-        ) : null}
+        <div className="lg:pl-80">
+        <Link
+          href="/admin"
+          className="fixed right-5 top-5 z-[55] hidden items-center gap-2 rounded-full border border-white/10 bg-black/70 px-4 py-2 text-[10px] font-semibold uppercase tracking-[0.28em] text-white backdrop-blur transition hover:border-white/20 hover:bg-black/60 lg:inline-flex"
+        >
+          <ShieldCheck className="h-4 w-4 text-[var(--home-accent)]" />
+        </Link>
         <div
-          ref={menuRef}
-          className="fixed inset-0 z-[60] bg-black/95 backdrop-blur opacity-0 invisible"
+          className={[
+            'fixed inset-0 z-[60] bg-black/95 backdrop-blur',
+            menuOpen ? 'opacity-100 visible' : 'opacity-0 invisible pointer-events-none',
+          ].join(' ')}
           role="dialog"
           aria-modal="true"
-          aria-hidden={!menuOpen}>
+          aria-hidden={!menuOpen}
+        >
           <div className="relative flex h-full flex-col px-6 py-6">
             <div className="js-menu-header flex items-center justify-between">
               <span className="text-[11px] uppercase tracking-[0.35em] text-[var(--home-muted)]">Menu</span>
@@ -309,20 +227,18 @@ export default function SiteShell({ children, scopeRef, contentMode = 'contained
                 </a>
               ))}
             </div>
-            {showAdminDashboard ? (
-              <div className="mt-auto pt-10 md:hidden">
-                <a
-                  href="/admin"
-                  onClick={() => setMenuOpen(false)}
-                  className="js-menu-item inline-flex w-full items-center justify-between rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-4 text-sm font-semibold text-white transition hover:border-white/20 hover:bg-white/[0.06]">
-                  <span className="inline-flex items-center gap-3">
-                    <ShieldCheck className="h-4 w-4 text-[var(--home-accent)]" />
-                    Admin Dashboard
-                  </span>
-                  <span className="text-xs uppercase tracking-[0.35em] text-white/60">Go</span>
-                </a>
-              </div>
-            ) : null}
+            <div className="mt-auto pt-10 md:hidden">
+              <a
+                href="/admin"
+                onClick={() => setMenuOpen(false)}
+                className="js-menu-item inline-flex w-full items-center justify-between rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-4 text-sm font-semibold text-white transition hover:border-white/20 hover:bg-white/[0.06]">
+                <span className="inline-flex items-center gap-3">
+                  <ShieldCheck className="h-4 w-4 text-[var(--home-accent)]" />
+                  Admin Dashboard
+                </span>
+                <span className="text-xs uppercase tracking-[0.35em] text-white/60">Go</span>
+              </a>
+            </div>
           </div>
         </div>
 

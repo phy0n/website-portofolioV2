@@ -4,7 +4,7 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { MessageSquare, Send, Trash2, X } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 
-type ChatMessage = {
+export type ChatMessage = {
   id: number;
   createdAt: string;
   name: string;
@@ -50,7 +50,7 @@ const formatClock = (iso: string) => {
 const normalizeName = (value: string) => value.trim().slice(0, 40);
 const normalizeMessage = (value: string) => value.trim().slice(0, 500);
 
-function ChatPanel({
+export function ChatPanel({
   titleTag,
   messages,
   loading,
@@ -208,6 +208,11 @@ export default function ChatSidebar() {
   const pathname = usePathname();
   const hideChat = !pathname || pathname.startsWith('/admin');
 
+  const isDesktop = () => {
+    if (typeof window === 'undefined') return false;
+    return window.matchMedia('(min-width: 1024px)').matches;
+  };
+
   const [open, setOpen] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
   const [name, setName] = useState('');
@@ -224,6 +229,7 @@ export default function ChatSidebar() {
 
   useEffect(() => {
     if (hideChat) return;
+    if (isDesktop()) return;
     try {
       const stored = window.localStorage.getItem(NAME_KEY);
       if (stored) setName(stored);
@@ -234,6 +240,7 @@ export default function ChatSidebar() {
 
   useEffect(() => {
     if (hideChat) return;
+    if (isDesktop()) return;
     try {
       window.localStorage.setItem(NAME_KEY, normalizeName(name));
     } catch {
@@ -243,6 +250,7 @@ export default function ChatSidebar() {
 
   useEffect(() => {
     if (hideChat) return;
+    if (isDesktop()) return;
     const controller = new AbortController();
 
     const checkAdmin = async () => {
@@ -283,6 +291,7 @@ export default function ChatSidebar() {
 
   useEffect(() => {
     if (hideChat) return;
+    if (isDesktop()) return;
     const controller = new AbortController();
 
     const schedule = (fn: () => void) => {
@@ -377,23 +386,6 @@ export default function ChatSidebar() {
 
   return (
     <>
-      <aside className="fixed right-0 top-0 z-40 hidden h-screen w-80 flex-col border-l border-white/10 bg-black/85 backdrop-blur lg:flex">
-        <ChatPanel
-          titleTag="Phion"
-          messages={messages}
-          loading={loading}
-          error={error}
-          isAdmin={isAdmin}
-          name={name}
-          onNameChange={setName}
-          message={message}
-          onMessageChange={setMessage}
-          onSend={handleSend}
-          sending={sending}
-          onDeleteMessage={handleDelete}
-        />
-      </aside>
-
       <button
         type="button"
         onClick={() => setOpen(true)}

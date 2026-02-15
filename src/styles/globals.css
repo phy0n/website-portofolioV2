@@ -309,3 +309,15 @@ body {
   perspective: 1000px;
   will-change: transform, opacity;
 }
+
+/* Disable all animations & transitions (project-wide). */
+html {
+  scroll-behavior: auto !important;
+}
+
+*,
+*::before,
+*::after {
+  animation: none !important;
+  transition: none !important;
+}

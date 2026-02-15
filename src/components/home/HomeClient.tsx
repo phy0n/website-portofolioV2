@@ -1,9 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
-import { gsap } from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import React, { useEffect, useRef, useState } from 'react';
 
 import { useDiscordStatusRealtime } from '@/lib/discord/useDiscordStatusRealtime';
 
@@ -97,97 +95,6 @@ export default function HomeClient({ discordUserId }: HomeClientProps) {
 
     return () => {
       clearInterval(blogsInterval);
-    };
-  }, []);
-
-  useLayoutEffect(() => {
-    if (!scopeRef.current) return;
-
-    gsap.registerPlugin(ScrollTrigger);
-
-    const ctx = gsap.context(() => {
-      const heroTimeline = gsap.timeline({ defaults: { ease: 'power3.out' } });
-      const navItems = gsap
-        .utils.toArray<HTMLElement>('.js-nav-item')
-        .filter((item) => item.getClientRects().length > 0);
-
-      heroTimeline
-        .from('.js-nav', { y: -24, opacity: 0, duration: 0.6, clearProps: 'opacity,transform' })
-        .from('.js-nav-logo', { y: -10, opacity: 0, duration: 0.4, clearProps: 'opacity,transform' }, '-=0.3')
-        .from(navItems, { y: -10, opacity: 0, duration: 0.4, stagger: 0.08, clearProps: 'opacity,transform' }, '-=0.35')
-        .from('.js-nav-toggle', { y: -10, opacity: 0, duration: 0.4, clearProps: 'opacity,transform' }, '-=0.4')
-        .from('.js-hero-line', { scaleX: 0, transformOrigin: 'left center', duration: 0.6 }, '-=0.3')
-        .from('.js-hero-tag', { y: 10, opacity: 0, duration: 0.4 }, '-=0.45')
-        .from('.js-hero-title span', { y: 36, opacity: 0, duration: 0.75, stagger: 0.12 }, '-=0.2')
-        .from('.js-hero-sub', { y: 24, opacity: 0, duration: 0.6 }, '-=0.35')
-        .from('.js-hero-cta', { y: 16, opacity: 0, duration: 0.5, stagger: 0.12 }, '-=0.35')
-        .from('.js-hero-meta', { y: 14, opacity: 0, duration: 0.45, stagger: 0.12 }, '-=0.25')
-        .from('.js-profile', { y: 26, opacity: 0, duration: 0.7 }, '-=0.4')
-        .from('.js-profile-item', { y: 12, opacity: 0, duration: 0.45, stagger: 0.08 }, '-=0.45');
-    }, scopeRef);
-
-    return () => ctx.revert();
-  }, []);
-
-  useEffect(() => {
-    if (!scopeRef.current) return;
-    gsap.registerPlugin(ScrollTrigger);
-
-    const schedule = (fn: () => void) => {
-      const w = window as unknown as { requestIdleCallback?: (cb: () => void, opts?: { timeout: number }) => number };
-      if (w.requestIdleCallback) {
-        w.requestIdleCallback(fn, { timeout: 1200 });
-      } else {
-        window.setTimeout(fn, 250);
-      }
-    };
-
-    let cancelled = false;
-    let ctx: gsap.Context | null = null;
-
-    schedule(() => {
-      if (cancelled || !scopeRef.current) return;
-
-      ctx = gsap.context(() => {
-        gsap.utils.toArray<HTMLElement>('.js-section').forEach((section) => {
-          const items = section.querySelectorAll('.js-reveal');
-          const timeline = gsap.timeline({
-            scrollTrigger: {
-              trigger: section,
-              start: 'top 75%',
-              toggleActions: 'play none none reverse',
-            },
-            defaults: { ease: 'power3.out' },
-          });
-
-          timeline.from(section, { y: 26, opacity: 0, duration: 0.5 });
-
-          if (items.length) {
-            timeline.from(items, { y: 28, opacity: 0, duration: 0.8, stagger: 0.12 }, '-=0.3');
-          }
-        });
-
-        gsap.utils.toArray<HTMLElement>('.js-skill').forEach((skill) => {
-          gsap.from(skill, {
-            scrollTrigger: {
-              trigger: skill,
-              start: 'top 85%',
-              toggleActions: 'play none none reverse',
-            },
-            scale: 0.9,
-            opacity: 0,
-            duration: 0.6,
-            ease: 'power3.out',
-          });
-        });
-      }, scopeRef);
-
-      ScrollTrigger.refresh();
-    });
-
-    return () => {
-      cancelled = true;
-      ctx?.revert();
     };
   }, []);
 
