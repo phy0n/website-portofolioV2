@@ -14,9 +14,10 @@ const HOBBIES: Hobby[] = [
 
 const FACTS = [
   { label: 'Name', value: 'Phion Rushandle' },
-  { label: 'Pronouns', value: 'She/He' },
+  { label: 'Pronouns', value: 'He/Him' },
   { label: 'Age', value: '18 years old' },
   { label: 'Role', value: 'Developer' },
+  { label: 'Focus', value: 'User Experience' },
   { label: 'Passion', value: 'Make good things' },
   { label: 'Status', value: 'Learning' },
 ];
@@ -30,18 +31,18 @@ export default function AboutTab() {
           Focused on clean structure and clear communication.
         </h2>
         <p className="js-reveal max-w-2xl text-sm text-[var(--home-muted)] sm:text-base">
-          I am Phion, a developer who enjoys making good things and learning every day. I keep interfaces simple, modern,
-          and easy to navigate.
+          I am Phion, a developer who enjoys making good things and learning every day. I keep interfaces simple,
+          modern, and easy to navigate.
         </p>
       </div>
 
       <div className="grid gap-10 lg:grid-cols-[1.1fr_0.9fr]">
         <div className="space-y-6">
           <div className="js-reveal border-l-2 border-[var(--home-accent)] pl-4 text-lg text-[var(--home-ink)]">
-            Building calm, modern web experiences that feel intentional.
+            Building calm, modern experiences that feel intentional.
           </div>
           <div className="js-reveal border border-white/10 bg-black/30 px-5 py-4 text-sm text-[var(--home-muted)]">
-            I build web experiences with a steady process, paying attention to the details that make a product feel
+            I build experiences with a steady process, paying attention to the details that make a product feel
             confident and professional.
           </div>
         </div>

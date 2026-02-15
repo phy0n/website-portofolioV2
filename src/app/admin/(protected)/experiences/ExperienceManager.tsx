@@ -305,7 +305,7 @@ export default function ExperienceManager({
           <div className="grid gap-4 sm:grid-cols-2">
             <div>
               <label className="text-sm text-white/70">Role</label>
-              <input name="role" placeholder="Website Developer" className={inputClassName} required />
+              <input name="role" placeholder="Developer" className={inputClassName} required />
             </div>
             <div>
               <label className="text-sm text-white/70">Company</label>

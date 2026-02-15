@@ -48,7 +48,7 @@ export default function ConnectTab() {
     <div className="space-y-6">
       <div className="space-y-3" data-gsap="reveal">
         <p className="text-[11px] uppercase tracking-[0.35em] text-[var(--home-muted)]">Connect</p>
-        <h2 className="text-2xl font-sans font-semibold text-[var(--home-ink)] sm:text-3xl">Find me around the web</h2>
+        <h2 className="text-2xl font-sans font-semibold text-[var(--home-ink)] sm:text-3xl">Find me online</h2>
         <p className="max-w-2xl text-sm text-[var(--home-muted)]">Social spaces and places to reach me.</p>
       </div>
 

@@ -14,11 +14,11 @@ import ExperienceTab from './tabs/ExperienceTab';
 import ProjectsTab from './tabs/ProjectsTab';
 import SkillsTab from './tabs/SkillsTab';
 
-const PROFILE_SKILLS = ['Software Engineer', 'Data Analyst Enthusiast'];
+const PROFILE_SKILLS = ['Software Engineering', 'Data Analyst Enthusiast'];
 
 const HIGHLIGHTS = [
-  { label: 'Role', value: 'Software Engineer' },
-  { label: 'Focus', value: 'Modern UI and UX' },
+  { label: 'Role', value: 'Developer' },
+  { label: 'Focus', value: 'User Experience' },
   { label: 'Location', value: 'Surabaya, Indonesia' },
   { label: 'Status', value: 'Open to collaboration' },
 ];
