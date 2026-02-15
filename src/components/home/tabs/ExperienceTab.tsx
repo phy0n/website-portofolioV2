@@ -65,7 +65,7 @@ export default function ExperienceTab() {
           Focused on community work
         </h2>
         <p className="js-reveal max-w-2xl text-sm text-[var(--home-muted)]">
-          Roles that prioritize clean frontend execution, steady collaboration, and thoughtful user experience.
+          Roles that prioritize clean delivery, steady collaboration, and thoughtful outcomes.
         </p>
       </div>
 

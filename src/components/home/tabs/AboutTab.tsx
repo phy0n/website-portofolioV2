@@ -17,7 +17,7 @@ const FACTS = [
   { label: 'Pronouns', value: 'He/Him' },
   { label: 'Age', value: '18 years old' },
   { label: 'Role', value: 'Developer' },
-  { label: 'Focus', value: 'User Experience' },
+  { label: 'Focus', value: 'Consistency' },
   { label: 'Passion', value: 'Make good things' },
   { label: 'Status', value: 'Learning' },
 ];
@@ -31,8 +31,8 @@ export default function AboutTab() {
           Focused on clean structure and clear communication.
         </h2>
         <p className="js-reveal max-w-2xl text-sm text-[var(--home-muted)] sm:text-base">
-          I am Phion, a developer who enjoys making good things and learning every day. I keep interfaces simple,
-          modern, and easy to navigate.
+          I am Phion, a developer who enjoys making good things and learning every day. I keep things simple, clear, and
+          easy to use.
         </p>
       </div>
 

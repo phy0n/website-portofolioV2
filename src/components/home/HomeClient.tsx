@@ -14,11 +14,11 @@ import ExperienceTab from './tabs/ExperienceTab';
 import ProjectsTab from './tabs/ProjectsTab';
 import SkillsTab from './tabs/SkillsTab';
 
-const PROFILE_SKILLS = ['Software Engineering', 'Data Analyst Enthusiast'];
+const PROFILE_SKILLS = ['Developer', 'Learner'];
 
 const HIGHLIGHTS = [
   { label: 'Role', value: 'Developer' },
-  { label: 'Focus', value: 'User Experience' },
+  { label: 'Focus', value: 'Consistency' },
   { label: 'Location', value: 'Surabaya, Indonesia' },
   { label: 'Status', value: 'Open to collaboration' },
 ];
@@ -110,7 +110,7 @@ export default function HomeClient({ discordUserId }: HomeClientProps) {
             <span className="block">Welcome to my Portofolio</span>
           </h1>
           <p className="js-hero-sub max-w-xl text-base text-[var(--home-muted)] sm:text-lg">
-            I build frontend interfaces with clarity, motion that matters, and a visual system that stays professional.
+            I build projects with clarity, thoughtful details, and a steady process.
           </p>
           {/* <div className="flex flex-wrap gap-3">
             <a

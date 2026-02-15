@@ -86,7 +86,7 @@ export default function ProjectsTab() {
         <p className="js-reveal text-[11px] uppercase tracking-[0.35em] text-[var(--home-muted)]">Projects</p>
         <h2 className="js-reveal text-2xl font-sans font-semibold text-[var(--home-ink)] sm:text-3xl">Personal Project</h2>
         <p className="js-reveal max-w-2xl text-sm text-[var(--home-muted)]">
-          A focused set of projects with clean UI and stable delivery.
+          A focused set of projects with clear details and stable delivery.
         </p>
       </div>
 

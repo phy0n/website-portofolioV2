@@ -39,7 +39,7 @@ export default function ContactTab() {
           <div className="space-y-3">
             <p className="text-[11px] uppercase tracking-[0.35em] text-[var(--home-muted)]">Say hello</p>
             <p className="text-lg font-sans font-semibold text-[var(--home-ink)]">
-              I am available for software projects and collaborations.
+              I am available for projects and collaborations.
             </p>
             <p className="text-sm text-[var(--home-muted)]">Send a message and we can talk about the next idea.</p>
           </div>
