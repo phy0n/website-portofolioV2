@@ -75,6 +75,14 @@ export interface RobloxProfile {
   followersCount?: number;
 }
 
+export interface MinecraftProfile {
+  username: string;
+  uuid: string;
+  skinUrl: string | null;
+  capeUrl: string | null;
+  model: 'default' | 'slim';
+}
+
 export interface DiscordActivity {
   type: number;
   name: string;
