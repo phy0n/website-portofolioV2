@@ -310,14 +310,16 @@ body {
   will-change: transform, opacity;
 }
 
-/* Disable all animations & transitions (project-wide). */
-html {
-  scroll-behavior: auto !important;
-}
+/* Respect reduced-motion preferences. */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto !important;
+  }
 
-*,
-*::before,
-*::after {
-  animation: none !important;
-  transition: none !important;
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+  }
 }
