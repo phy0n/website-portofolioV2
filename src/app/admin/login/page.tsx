@@ -20,25 +20,20 @@ export default function AdminLoginPage() {
 
         <div className="mt-12 grid gap-12 lg:grid-cols-2 items-center">
           <div className="space-y-6" data-gsap="reveal">
-            <div className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-4 py-2 text-xs text-white/80">
-              <Shield className="h-4 w-4" />
-              Private access only
-            </div>
             <h1 className="text-4xl font-semibold leading-tight lg:text-5xl">
-              Sign in to manage stories and quotes.
+              Sign in to manage database
             </h1>
             <p className="max-w-md text-sm text-white/60">
-              This dashboard is for admins only. Make sure your account is registered as an admin in Supabase.
+              This dashboard is for admins only. Make sure your account is registered as an admin.
             </p>
           </div>
 
           <div
             className="rounded-[32px] border border-white/10 bg-black/70 p-8 shadow-[0_30px_120px_rgba(0,0,0,0.6)]"
-            data-gsap="reveal"
-          >
+            data-gsap="reveal">
             <div className="mb-6">
               <h2 className="text-lg font-semibold text-white">Sign in</h2>
-              <p className="text-xs text-white/50">Use your Supabase admin email.</p>
+              <p className="text-xs text-white/50">Use your admin email.</p>
             </div>
             <LoginForm />
           </div>
