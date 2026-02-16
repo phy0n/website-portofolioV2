@@ -1,12 +1,10 @@
 import SiteShell from '@/components/home/SiteShell';
-import Link from 'next/link';
-import Image from 'next/image';
 import { createSupabaseServerClient, supabaseConfig } from '@/lib/supabase/server';
-import { formatBlogDate } from '@/lib/blog';
 import PostsFeed from './PostsFeed';
 import type { PostRow } from './PostCard';
 import PostComposer from './PostComposer';
 import { createQuote, deleteQuote } from './quoteActions';
+import BlogSidebarList, { type BlogSidebarItem } from './BlogSidebarList';
 
 export const dynamic = 'force-dynamic';
 
@@ -161,6 +159,13 @@ export default async function BlogPage({
   const quoteRows: QuoteRow[] = safeQuotes as QuoteRow[];
   const avatarUrl = await getDiscordAvatarUrl();
   const today = new Date().toISOString().slice(0, 10);
+  const blogSidebarItems: BlogSidebarItem[] = blogRows.map((blog) => ({
+    id: String(blog.id),
+    slug: String(blog.slug || ''),
+    title: String(blog.title || ''),
+    date: String(blog.date || ''),
+    image: blog.image ?? null,
+  }));
 
   return (
     <SiteShell contentMode="full">
@@ -206,37 +211,7 @@ export default async function BlogPage({
               {blogRows.length === 0 ? (
                 <p className="mt-3 text-sm text-white/50">No blog posts yet.</p>
               ) : (
-                <div className="mt-4 max-h-[420px] space-y-3 overflow-y-auto pr-1 hide-scrollbar">
-                  {blogRows.map((blog) => (
-                    <Link
-                      key={blog.id}
-                      href={`/blog/${encodeURIComponent(String(blog.slug || ''))}`}
-                      className="block rounded-2xl border border-white/10 bg-black/30 px-4 py-3 hover:border-white/20"
-                    >
-                      <div className="flex items-start gap-3">
-                        <div className="relative mt-0.5 h-12 w-12 shrink-0 overflow-hidden rounded-2xl border border-white/10 bg-[var(--home-soft)]">
-                          {blog.image ? (
-                            <Image
-                              src={blog.image}
-                              alt={blog.title}
-                              fill
-                              sizes="48px"
-                              className="object-cover"
-                            />
-                          ) : (
-                            <div className="flex h-full w-full items-center justify-center text-[10px] font-semibold text-white/40">
-                              BLOG
-                            </div>
-                          )}
-                        </div>
-                        <div className="min-w-0">
-                          <p className="text-sm font-semibold text-white/80 line-clamp-2">{blog.title}</p>
-                          <p className="mt-1 text-xs text-white/40">{formatBlogDate(String(blog.date || ''))}</p>
-                        </div>
-                      </div>
-                    </Link>
-                  ))}
-                </div>
+                <BlogSidebarList blogs={blogSidebarItems} />
               )}
             </div>
 

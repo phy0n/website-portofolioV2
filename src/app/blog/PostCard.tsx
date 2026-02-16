@@ -1,5 +1,6 @@
 import Image from 'next/image';
 import { deletePost } from './postActions';
+import PostLikeButton from './PostLikeButton';
 
 export type PostRow = {
   id: string;
@@ -85,6 +86,10 @@ export default function PostCard({
           </div>
         ) : null}
       </div>
+
+      <footer className="flex items-center justify-between gap-4 border-t border-white/10 px-5 py-3">
+        <PostLikeButton postId={post.id} />
+      </footer>
     </article>
   );
 }

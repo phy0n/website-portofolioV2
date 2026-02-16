@@ -3,6 +3,7 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { MessageSquare, Send, Trash2, X } from 'lucide-react';
 import { usePathname } from 'next/navigation';
+import { getVisitorId } from '@/lib/visitor';
 
 export type ChatMessage = {
   id: number;
@@ -11,35 +12,7 @@ export type ChatMessage = {
   message: string;
 };
 
-const VISITOR_KEY = 'phion_visitor_id';
 const NAME_KEY = 'phion_chat_name';
-
-const createVisitorId = () => {
-  if (typeof crypto !== 'undefined') {
-    if (typeof crypto.randomUUID === 'function') {
-      return crypto.randomUUID();
-    }
-    if (typeof crypto.getRandomValues === 'function') {
-      const bytes = new Uint8Array(16);
-      crypto.getRandomValues(bytes);
-      return Array.from(bytes, (byte) => byte.toString(16).padStart(2, '0')).join('');
-    }
-  }
-
-  return `${Date.now().toString(16)}${Math.random().toString(16).slice(2)}`;
-};
-
-const getVisitorId = () => {
-  try {
-    const existing = window.localStorage.getItem(VISITOR_KEY);
-    if (existing) return existing;
-    const created = createVisitorId();
-    window.localStorage.setItem(VISITOR_KEY, created);
-    return created;
-  } catch {
-    return createVisitorId();
-  }
-};
 
 const formatClock = (iso: string) => {
   const date = new Date(iso);
