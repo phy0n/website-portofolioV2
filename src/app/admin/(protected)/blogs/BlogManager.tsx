@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useMemo, useState, type ChangeEvent, type ReactNode } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 import { useFormStatus } from 'react-dom';
 import { Pencil, Plus, Trash2, X } from 'lucide-react';
 import AdminSubmitButton from '@/components/admin/AdminSubmitButton';
@@ -156,9 +156,8 @@ export default function BlogManager({
   errorMessage?: string;
 }) {
   const searchParams = useSearchParams();
-  const router = useRouter();
-  const createOpen = searchParams.get('create') === '1';
-  const editId = searchParams.get('edit');
+  const [createOpen, setCreateOpen] = useState(() => searchParams.get('create') === '1');
+  const [editId, setEditId] = useState<string | null>(() => searchParams.get('edit'));
   const editingBlog = useMemo(() => {
     if (!editId) return null;
     return blogs.find((blog) => blog.id === editId) ?? null;
@@ -204,20 +203,6 @@ export default function BlogManager({
     if (successMessage) return { message: successMessage, tone: 'success' as const };
     return null;
   }, [errorMessage, successMessage]);
-
-  const clearQueryParam = (key: string) => {
-    const params = new URLSearchParams(searchParams.toString());
-    params.delete(key);
-    const query = params.toString();
-    router.replace(query ? `/admin/blogs?${query}` : '/admin/blogs');
-  };
-
-  const setQueryParam = (key: string, value: string) => {
-    const params = new URLSearchParams(searchParams.toString());
-    params.set(key, value);
-    const query = params.toString();
-    router.replace(query ? `/admin/blogs?${query}` : '/admin/blogs');
-  };
 
   useEffect(() => {
     return () => {
@@ -301,7 +286,8 @@ export default function BlogManager({
             title="Add blog"
             aria-label="Add blog"
             onClick={() => {
-              setQueryParam('create', '1');
+              setEditId(null);
+              setCreateOpen(true);
             }}
             className="cursor-pointer inline-flex items-center gap-2 rounded-xl border border-white bg-white px-4 py-2 text-sm font-semibold text-black shadow-sm transition hover:bg-white/90"
           >
@@ -434,7 +420,8 @@ export default function BlogManager({
                         onClick={() => {
                           setEditTitleValue(null);
                           setEditImagePreview(null);
-                          setQueryParam('edit', blog.id);
+                          setCreateOpen(false);
+                          setEditId(blog.id);
                         }}
                         className="cursor-pointer inline-flex items-center gap-2 rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white/70 transition hover:border-white/40 hover:text-white hover:bg-white/10"
                       >
@@ -487,7 +474,7 @@ export default function BlogManager({
           setCreateFileKey((prev) => prev + 1);
           setCreateTitleValue('');
           setCreateCategoryValue('Life');
-          clearQueryParam('create');
+          setCreateOpen(false);
         }}
       >
         <form action={createBlog} className="grid gap-4">
@@ -638,7 +625,7 @@ export default function BlogManager({
           setEditImagePreview(null);
           setEditImageError(null);
           setEditFileKey((prev) => prev + 1);
-          clearQueryParam('edit');
+          setEditId(null);
         }}
       >
         {editingBlog && (

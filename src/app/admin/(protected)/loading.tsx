@@ -20,7 +20,7 @@ export default function Loading() {
 
       <div className="rounded-2xl border border-white/10 bg-white/5 p-5 shadow-[0_20px_60px_rgba(0,0,0,0.35)]">
         <div className="h-4 w-40 rounded-full bg-white/10 animate-pulse" />
-        <div className="mt-5 h-52 w-full rounded-2xl bg-white/5 animate-shimmer" />
+        <div className="mt-5 h-52 w-full rounded-2xl bg-white/5 animate-pulse" />
       </div>
 
       <div className="grid gap-4 lg:grid-cols-5">

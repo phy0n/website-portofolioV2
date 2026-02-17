@@ -2,18 +2,19 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { ArrowUpRight, Award, BarChart3, Briefcase, FileText, LayoutGrid, LogOut, Quote, X } from 'lucide-react';
+import { ArrowUpRight, Award, BarChart3, Briefcase, FileText, LayoutGrid, LogOut, Quote, Languages, X } from 'lucide-react';
 import AdminSubmitButton from './AdminSubmitButton';
 
 type AdminAction = (formData?: FormData) => void | Promise<void>;
 
 const navItems = [
-  { href: '/admin', label: 'Analytics', icon: BarChart3 },
+  { href: '/admin', label: 'Dashboard', icon: BarChart3 },
   { href: '/admin/blogs', label: 'Blogs', icon: FileText },
   { href: '/admin/quotes', label: 'Quotes', icon: Quote },
   { href: '/admin/experiences', label: 'Experiences', icon: Briefcase },
   { href: '/admin/projects', label: 'Projects', icon: LayoutGrid },
   { href: '/admin/certificates', label: 'Certificates', icon: Award },
+  { href: '/admin/languages', label: 'Languages', icon: Languages },
 ];
 
 export default function AdminSidebar({
@@ -28,7 +29,7 @@ export default function AdminSidebar({
   const pathname = usePathname();
 
   return (
-    <aside className="h-full w-full border-r border-white/10 bg-black/60 backdrop-blur-2xl px-6 py-8 flex flex-col gap-8 shadow-[0_20px_60px_rgba(0,0,0,0.45)]">
+    <aside className="h-full w-full border-r border-white/10 bg-[#0f0f14] px-6 py-8 flex flex-col gap-8 shadow-[0_20px_60px_rgba(0,0,0,0.45)]">
       <div className="flex items-start justify-between gap-3">
         <div>
           <p className="text-[11px] uppercase tracking-[0.4em] text-white/40">Admin</p>
@@ -75,11 +76,11 @@ export default function AdminSidebar({
         </div>
         <div className="grid gap-2">
           <Link
-            href="/blog"
+            href="/"
             onClick={() => onClose?.()}
-            className="group flex items-center justify-between rounded-xl border border-white/10 bg-gradient-to-r from-white/10 to-white/5 px-3 py-2.5 text-sm text-white/80 transition hover:border-white/30 hover:from-white/20 hover:to-white/10 hover:text-white"
+            className="group flex items-center justify-between rounded-xl border border-white/10 bg-white/5 px-3 py-2.5 text-sm text-white/80 transition hover:border-white/30 hover:bg-white/10 hover:text-white"
           >
-            <span>View blog</span>
+            <span>Back to portfolio</span>
             <ArrowUpRight className="h-4 w-4 text-white/60 transition group-hover:text-white" />
           </Link>
           <form action={signOutAction}>

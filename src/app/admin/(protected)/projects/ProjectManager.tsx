@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useMemo, useState, type ReactNode } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 import { Code, Cpu, Database, Globe, Monitor, Server, Smartphone, Pencil, Plus, Trash2, X } from 'lucide-react';
 import AdminSubmitButton from '@/components/admin/AdminSubmitButton';
 import AdminToast from '@/components/admin/AdminToast';
@@ -126,9 +126,8 @@ export default function ProjectManager({
   errorMessage?: string;
 }) {
   const searchParams = useSearchParams();
-  const router = useRouter();
-  const createOpen = searchParams.get('create') === '1';
-  const editId = searchParams.get('edit');
+  const [createOpen, setCreateOpen] = useState(() => searchParams.get('create') === '1');
+  const [editId, setEditId] = useState<string | null>(() => searchParams.get('edit'));
   const editingProject = useMemo(() => {
     if (!editId) return null;
     return projects.find((project) => project.id === editId) ?? null;
@@ -139,20 +138,6 @@ export default function ProjectManager({
     if (successMessage) return { message: successMessage, tone: 'success' as const };
     return null;
   }, [errorMessage, successMessage]);
-
-  const clearQueryParam = (key: string) => {
-    const params = new URLSearchParams(searchParams.toString());
-    params.delete(key);
-    const query = params.toString();
-    router.replace(query ? `/admin/projects?${query}` : '/admin/projects');
-  };
-
-  const setQueryParam = (key: string, value: string) => {
-    const params = new URLSearchParams(searchParams.toString());
-    params.set(key, value);
-    const query = params.toString();
-    router.replace(query ? `/admin/projects?${query}` : '/admin/projects');
-  };
 
   const filteredProjects = useMemo(() => {
     const query = listQuery.trim().toLowerCase();
@@ -173,7 +158,10 @@ export default function ProjectManager({
         </div>
         <button
           type="button"
-          onClick={() => setQueryParam('create', '1')}
+          onClick={() => {
+            setEditId(null);
+            setCreateOpen(true);
+          }}
           className="cursor-pointer inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-5 py-2.5 text-sm text-white/80 transition hover:border-white/30 hover:bg-white/10 hover:text-white"
         >
           <Plus className="h-4 w-4" />
@@ -285,7 +273,8 @@ export default function ProjectManager({
                           title="Edit project"
                           aria-label="Edit project"
                           onClick={() => {
-                            setQueryParam('edit', project.id);
+                            setCreateOpen(false);
+                            setEditId(project.id);
                           }}
                           className="cursor-pointer inline-flex items-center gap-2 rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white/70 transition hover:border-white/40 hover:text-white hover:bg-white/10"
                         >
@@ -321,7 +310,7 @@ export default function ProjectManager({
         </div>
       </section>
 
-      <Modal open={createOpen} title="Create project" onClose={() => clearQueryParam('create')}>
+      <Modal open={createOpen} title="Create project" onClose={() => setCreateOpen(false)}>
         <form action={createProject} className="space-y-5">
           <input type="hidden" name="redirect_to" value="/admin/projects" />
 
@@ -399,7 +388,7 @@ export default function ProjectManager({
           <div className="flex justify-end gap-3 pt-2">
             <button
               type="button"
-              onClick={() => clearQueryParam('create')}
+              onClick={() => setCreateOpen(false)}
               className="cursor-pointer rounded-full border border-white/10 bg-white/5 px-5 py-2 text-sm text-white/70 transition hover:border-white/30 hover:bg-white/10 hover:text-white"
             >
               Cancel
@@ -417,7 +406,7 @@ export default function ProjectManager({
       <Modal
         open={Boolean(editingProject)}
         title="Edit project"
-        onClose={() => clearQueryParam('edit')}
+        onClose={() => setEditId(null)}
       >
         {editingProject && (
           <form action={updateProject} className="space-y-5">
@@ -530,7 +519,7 @@ export default function ProjectManager({
             <div className="flex justify-end gap-3 pt-2">
               <button
                 type="button"
-                onClick={() => clearQueryParam('edit')}
+                onClick={() => setEditId(null)}
                 className="cursor-pointer rounded-full border border-white/10 bg-white/5 px-5 py-2 text-sm text-white/70 transition hover:border-white/30 hover:bg-white/10 hover:text-white"
               >
                 Cancel

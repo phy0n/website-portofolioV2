@@ -4,6 +4,7 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import {
+  Eye,
   ArrowLeft,
   ArrowUp,
   Bookmark,
@@ -334,7 +335,7 @@ export default function BlogDetailClient({
                   </span>
                   {showUniqueCounts ? (
                     <span className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-black/40 px-3 py-1.5">
-                      <Users className="h-4 w-4" />
+                      <Eye className="h-4 w-4" />
                       {resolvedUniqueVisitors.toLocaleString()}
                     </span>
                   ) : null}
@@ -496,8 +497,8 @@ export default function BlogDetailClient({
                   {showUniqueCounts ? (
                     <div className="flex items-center justify-between gap-3">
                       <span className="inline-flex items-center gap-2">
-                        <Users className="h-4 w-4" />
-                        Users
+                        <Eye className="h-4 w-4" />
+                        Views
                       </span>
                       <span className="text-white/80">{resolvedUniqueVisitors.toLocaleString()}</span>
                     </div>

@@ -1,7 +1,7 @@
 'use client';
 
-import React from 'react';
-import { BookOpen, Code, Gamepad2, Music, Star } from 'lucide-react';
+import React, { useEffect, useMemo, useState } from 'react';
+import { BookOpen, Code, Gamepad2, Languages, Music, Star } from 'lucide-react';
 
 import type { Hobby } from '../types';
 
@@ -22,7 +22,70 @@ const FACTS = [
   { label: 'Status', value: 'Learning' },
 ];
 
+type SpokenLanguage = {
+  id: string;
+  name: string;
+  label: string;
+  level: number;
+  sort_order?: number | null;
+};
+
+const FALLBACK_LANGUAGES: SpokenLanguage[] = [
+  { id: 'id', name: 'Bahasa Indonesia', level: 100, label: 'Native' },
+  { id: 'en', name: 'English', level: 75, label: 'Intermediate' },
+  { id: 'ja', name: 'Japanese', level: 40, label: 'Basic' },
+  { id: 'de', name: 'German', level: 35, label: 'Basic' },
+];
+
+const normalizeLanguage = (value: any): SpokenLanguage | null => {
+  const id = String(value?.id ?? '').trim();
+  const name = String(value?.name ?? '').trim();
+  const label = String(value?.label ?? '').trim();
+  const level = typeof value?.level === 'number' && Number.isFinite(value.level) ? Math.trunc(value.level) : 0;
+  const sort_order =
+    typeof value?.sort_order === 'number' && Number.isFinite(value.sort_order) ? Math.trunc(value.sort_order) : null;
+
+  if (!id || !name || !label) return null;
+  return { id, name, label, level: Math.max(0, Math.min(level, 100)), sort_order };
+};
+
 export default function AboutTab() {
+  const [languageSource, setLanguageSource] = useState<'fallback' | 'api'>('fallback');
+  const [spokenLanguages, setSpokenLanguages] = useState<SpokenLanguage[]>(FALLBACK_LANGUAGES);
+
+  useEffect(() => {
+    const controller = new AbortController();
+
+    const loadLanguages = async () => {
+      try {
+        const res = await fetch('/api/languages', { cache: 'no-store', signal: controller.signal });
+        if (!res.ok) return;
+        const data = (await res.json()) as { ok?: boolean; languages?: unknown };
+        if (!data?.ok) return;
+        const rows = Array.isArray(data.languages) ? data.languages : [];
+        const normalized = rows.map(normalizeLanguage).filter((row): row is SpokenLanguage => Boolean(row));
+        setSpokenLanguages(normalized);
+        setLanguageSource('api');
+      } catch (err) {
+        const error = err as { name?: string };
+        if (error?.name === 'AbortError') return;
+      }
+    };
+
+    void loadLanguages();
+    return () => controller.abort();
+  }, []);
+
+  const sortedLanguages = useMemo(() => {
+    if (spokenLanguages.length <= 1) return spokenLanguages;
+    return [...spokenLanguages].sort((a, b) => {
+      const orderA = typeof a.sort_order === 'number' ? a.sort_order : 0;
+      const orderB = typeof b.sort_order === 'number' ? b.sort_order : 0;
+      if (orderA !== orderB) return orderB - orderA;
+      return a.name.localeCompare(b.name);
+    });
+  }, [spokenLanguages]);
+
   return (
     <div className="space-y-10">
       <div className="space-y-3">
@@ -60,6 +123,37 @@ export default function AboutTab() {
             </div>
           ))}
         </div>
+      </div>
+
+      <div className="space-y-4 border-t border-white/10 pt-6">
+        <div className="js-reveal flex items-center gap-2">
+          <Languages className="h-4 w-4 text-[var(--home-accent)]" />
+          <h3 className="text-[11px] uppercase tracking-[0.35em] text-[var(--home-muted)]">Languages</h3>
+        </div>
+        {languageSource === 'api' && sortedLanguages.length === 0 ? (
+          <div className="js-reveal rounded-2xl border border-white/10 bg-black/30 p-4 text-sm text-[var(--home-muted)]">
+            No languages yet.
+          </div>
+        ) : (
+          <div className="grid gap-3 sm:grid-cols-2">
+            {sortedLanguages.map((language) => {
+              const level = Math.max(0, Math.min(language.level, 100));
+              return (
+                <div key={language.id} className="js-reveal rounded-2xl border border-white/10 bg-black/30 p-4">
+                  <div className="flex items-center justify-between gap-3 text-xs text-[var(--home-muted)]">
+                    <span className="truncate text-[var(--home-ink)]">{language.name}</span>
+                    <span className="shrink-0 tabular-nums">
+                      {language.label} • {level}%
+                    </span>
+                  </div>
+                  <div className="mt-2 h-1.5 w-full rounded-full bg-white/10">
+                    <div className="h-full rounded-full bg-[var(--home-accent)]" style={{ width: `${level}%` }} />
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
       </div>
 
       <div className="space-y-4 border-t border-white/10 pt-6">

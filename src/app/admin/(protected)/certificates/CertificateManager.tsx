@@ -1,7 +1,7 @@
 'use client';
   
 import { useEffect, useMemo, useState, type ChangeEvent, type ReactNode } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 import { Award, BadgeCheck, BookOpen, FileText, GraduationCap, Pencil, Plus, Star, Trash2, Trophy, X } from 'lucide-react';
 import AdminSubmitButton from '@/components/admin/AdminSubmitButton';
 import AdminToast from '@/components/admin/AdminToast';
@@ -125,9 +125,8 @@ export default function CertificateManager({
   errorMessage?: string;
 }) {
   const searchParams = useSearchParams();
-  const router = useRouter();
-  const createOpen = searchParams.get('create') === '1';
-  const editId = searchParams.get('edit');
+  const [createOpen, setCreateOpen] = useState(() => searchParams.get('create') === '1');
+  const [editId, setEditId] = useState<string | null>(() => searchParams.get('edit'));
   const editingCertificate = useMemo(() => {
     if (!editId) return null;
     return certificates.find((cert) => cert.id === editId) ?? null;
@@ -144,20 +143,6 @@ export default function CertificateManager({
     if (successMessage) return { message: successMessage, tone: 'success' as const };
     return null;
   }, [errorMessage, successMessage]);
-
-  const clearQueryParam = (key: string) => {
-    const params = new URLSearchParams(searchParams.toString());
-    params.delete(key);
-    const query = params.toString();
-    router.replace(query ? `/admin/certificates?${query}` : '/admin/certificates');
-  };
-
-  const setQueryParam = (key: string, value: string) => {
-    const params = new URLSearchParams(searchParams.toString());
-    params.set(key, value);
-    const query = params.toString();
-    router.replace(query ? `/admin/certificates?${query}` : '/admin/certificates');
-  };
 
   useEffect(() => {
     return () => {
@@ -236,6 +221,26 @@ export default function CertificateManager({
     });
   }, [certificates, listQuery]);
 
+  const closeCreateModal = () => {
+    if (createImagePreview?.startsWith('blob:')) {
+      URL.revokeObjectURL(createImagePreview);
+    }
+    setCreateImagePreview(null);
+    setCreateImageError(null);
+    setCreateFileKey((prev) => prev + 1);
+    setCreateOpen(false);
+  };
+
+  const closeEditModal = () => {
+    if (editImagePreview?.startsWith('blob:')) {
+      URL.revokeObjectURL(editImagePreview);
+    }
+    setEditImagePreview(null);
+    setEditImageError(null);
+    setEditFileKey((prev) => prev + 1);
+    setEditId(null);
+  };
+
   return (
     <div className="space-y-8">
       <div className="flex flex-wrap items-center justify-between gap-4" data-gsap="reveal">
@@ -245,7 +250,10 @@ export default function CertificateManager({
         </div>
         <button
           type="button"
-          onClick={() => setQueryParam('create', '1')}
+          onClick={() => {
+            setEditId(null);
+            setCreateOpen(true);
+          }}
           className="cursor-pointer inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-5 py-2.5 text-sm text-white/80 transition hover:border-white/30 hover:bg-white/10 hover:text-white"
         >
           <Plus className="h-4 w-4" />
@@ -348,7 +356,8 @@ export default function CertificateManager({
                           title="Edit certificate"
                           aria-label="Edit certificate"
                           onClick={() => {
-                            setQueryParam('edit', cert.id);
+                            setCreateOpen(false);
+                            setEditId(cert.id);
                           }}
                           className="cursor-pointer inline-flex items-center gap-2 rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white/70 transition hover:border-white/40 hover:text-white hover:bg-white/10"
                         >
@@ -387,15 +396,7 @@ export default function CertificateManager({
       <Modal
         open={createOpen}
         title="Create certificate"
-        onClose={() => {
-          if (createImagePreview?.startsWith('blob:')) {
-            URL.revokeObjectURL(createImagePreview);
-          }
-          setCreateImagePreview(null);
-          setCreateImageError(null);
-          setCreateFileKey((prev) => prev + 1);
-          clearQueryParam('create');
-        }}
+        onClose={closeCreateModal}
       >
         <form action={createCertificate} className="space-y-5">
           <input type="hidden" name="redirect_to" value="/admin/certificates" />
@@ -493,7 +494,7 @@ export default function CertificateManager({
           <div className="flex justify-end gap-3 pt-2">
             <button
               type="button"
-              onClick={() => clearQueryParam('create')}
+              onClick={closeCreateModal}
               className="cursor-pointer rounded-full border border-white/10 bg-white/5 px-5 py-2 text-sm text-white/70 transition hover:border-white/30 hover:bg-white/10 hover:text-white"
             >
               Cancel
@@ -511,15 +512,7 @@ export default function CertificateManager({
       <Modal
         open={Boolean(editingCertificate)}
         title="Edit certificate"
-        onClose={() => {
-          if (editImagePreview?.startsWith('blob:')) {
-            URL.revokeObjectURL(editImagePreview);
-          }
-          setEditImagePreview(null);
-          setEditImageError(null);
-          setEditFileKey((prev) => prev + 1);
-          clearQueryParam('edit');
-        }}
+        onClose={closeEditModal}
       >
         {editingCertificate && (
           <form action={updateCertificate} className="space-y-5" key={editingCertificate.id}>
@@ -669,7 +662,7 @@ export default function CertificateManager({
             <div className="flex justify-end gap-3 pt-2">
               <button
                 type="button"
-                onClick={() => clearQueryParam('edit')}
+                onClick={closeEditModal}
                 className="cursor-pointer rounded-full border border-white/10 bg-white/5 px-5 py-2 text-sm text-white/70 transition hover:border-white/30 hover:bg-white/10 hover:text-white"
               >
                 Cancel

@@ -167,7 +167,7 @@ export default function AdminAnalytics({
 
           <div className="rounded-2xl border border-white/10 bg-white/5 p-5 shadow-[0_20px_60px_rgba(0,0,0,0.35)]">
             <div className="h-4 w-40 rounded-full bg-white/10 animate-pulse" />
-            <div className="mt-5 h-52 w-full rounded-2xl bg-white/5 animate-shimmer" />
+            <div className="mt-5 h-52 w-full rounded-2xl bg-white/5 animate-pulse" />
           </div>
 
           <div className="grid gap-4 lg:grid-cols-5">
@@ -228,7 +228,7 @@ export default function AdminAnalytics({
                 <p className="mt-2 text-lg font-semibold text-white">{rangeLabel}</p>
                 <div className="mt-2 flex items-center gap-4 text-xs text-white/50">
                   <span className="inline-flex items-center gap-2">
-                    <span className="h-2 w-2 rounded-full bg-red-400" />
+                    <span className="h-2 w-2 rounded-full bg-orange-400" />
                     Visits
                   </span>
                   <span className="inline-flex items-center gap-2">
@@ -256,20 +256,6 @@ export default function AdminAnalytics({
                     data={chartData}
                     margin={{ top: 10, right: 10, left: -10, bottom: 0 }}
                   >
-                    <defs>
-                      <linearGradient id="visitsLine" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="0%" stopColor="#f59e0b" stopOpacity={0.95} />
-                        <stop offset="100%" stopColor="#f97316" stopOpacity={0.8} />
-                      </linearGradient>
-                      <linearGradient id="visitsArea" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="0%" stopColor="#f59e0b" stopOpacity={0.2} />
-                        <stop offset="100%" stopColor="#f97316" stopOpacity={0} />
-                      </linearGradient>
-                      <linearGradient id="usersLine" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="0%" stopColor="#34d399" stopOpacity={0.9} />
-                        <stop offset="100%" stopColor="#22c55e" stopOpacity={0.7} />
-                      </linearGradient>
-                    </defs>
                     <CartesianGrid
                       stroke="rgba(255,255,255,0.08)"
                       strokeDasharray="4 6"
@@ -306,9 +292,9 @@ export default function AdminAnalytics({
                       type="monotone"
                       dataKey="visits"
                       name="Visits"
-                      stroke="url(#visitsLine)"
+                      stroke="#fb923c"
                       strokeWidth={2}
-                      fill="url(#visitsArea)"
+                      fill="rgba(251,146,60,0.14)"
                       isAnimationActive
                       animationDuration={900}
                       animationEasing="ease-out"
@@ -317,7 +303,7 @@ export default function AdminAnalytics({
                       type="monotone"
                       dataKey="unique"
                       name="Unique users"
-                      stroke="url(#usersLine)"
+                      stroke="#34d399"
                       strokeWidth={2}
                       dot={false}
                       activeDot={{ r: 3 }}
@@ -372,7 +358,7 @@ export default function AdminAnalytics({
                     </div>
                     <div className="h-1.5 w-full overflow-hidden rounded-full bg-white/5">
                       <div
-                        className="h-full rounded-full bg-gradient-to-r from-red-500/80 via-red-400/80 to-red-300/80 transition-[width] duration-700 ease-out"
+                        className="h-full rounded-full bg-orange-400/80 transition-[width] duration-700 ease-out"
                         style={{
                           width: topPagesMax ? `${(page.count / topPagesMax) * 100}%` : '0%',
                         }}

@@ -28,7 +28,7 @@ export default function AdminShell({
   }, [sidebarOpen]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#0a0a0f] via-[#0f0f16] to-[#151525] text-white">
+    <div className="min-h-screen bg-[#0b0b10] text-white">
       <div
         className={`fixed inset-y-0 left-0 z-50 w-72 transition-transform duration-300 lg:translate-x-0 ${
           sidebarOpen ? 'translate-x-0' : '-translate-x-full'
@@ -67,7 +67,7 @@ export default function AdminShell({
             href="/"
             className="text-xs text-white/50 hover:text-white transition"
           >
-            Back to site
+            Back to portfolio
           </Link>
         </div>
         {children}

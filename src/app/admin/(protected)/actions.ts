@@ -12,6 +12,7 @@ const allowedRedirects = new Set([
   '/admin/experiences',
   '/admin/projects',
   '/admin/certificates',
+  '/admin/languages',
 ]);
 
 const resolveRedirectPath = (formData: FormData) => {
@@ -812,6 +813,116 @@ export async function deleteCertificate(formData: FormData) {
   revalidatePath('/');
   revalidatePath('/admin/certificates');
   redirectWithSuccess(redirectTo, 'Certificate deleted.');
+}
+
+export async function createLanguage(formData: FormData) {
+  const redirectTo = resolveRedirectPath(formData);
+  const name = String(formData.get('name') || '').trim();
+  const label = String(formData.get('label') || '').trim();
+  const levelRaw = parseSortOrder(formData.get('level'));
+  const sortOrder = parseSortOrder(formData.get('sort_order'));
+  const statusValue = String(formData.get('is_published') || 'published').trim();
+  const showOnMain = String(formData.get('show_on_main') || '').trim() === 'true';
+  const showOnPhion = String(formData.get('show_on_phion') || '').trim() === 'true';
+
+  if (!name || !label) {
+    redirectWithError(redirectTo, 'Language name and label are required.');
+  }
+
+  if (statusValue !== 'published' && statusValue !== 'draft') {
+    redirectWithError(redirectTo, 'Invalid publish status value.');
+  }
+
+  const level = Math.max(0, Math.min(levelRaw, 100));
+  const isPublished = statusValue === 'published';
+
+  const { supabase } = await requireAdmin();
+  const { error } = await supabase.from('languages').insert({
+    name,
+    label,
+    level,
+    sort_order: sortOrder,
+    is_published: isPublished,
+    show_on_main: showOnMain,
+    show_on_phion: showOnPhion,
+  });
+
+  if (error) {
+    redirectWithError(redirectTo, `Create language failed: ${error.message}`);
+  }
+
+  revalidatePath('/');
+  revalidatePath('/admin');
+  revalidatePath('/admin/languages');
+  redirectWithSuccess(redirectTo, 'Language created.');
+}
+
+export async function updateLanguage(formData: FormData) {
+  const redirectTo = resolveRedirectPath(formData);
+  const id = String(formData.get('id') || '').trim();
+  const name = String(formData.get('name') || '').trim();
+  const label = String(formData.get('label') || '').trim();
+  const levelRaw = parseSortOrder(formData.get('level'));
+  const sortOrder = parseSortOrder(formData.get('sort_order'));
+  const statusValue = String(formData.get('is_published') || 'published').trim();
+  const showOnMain = String(formData.get('show_on_main') || '').trim() === 'true';
+  const showOnPhion = String(formData.get('show_on_phion') || '').trim() === 'true';
+
+  if (!id || !name || !label) {
+    redirectWithError(redirectTo, 'Missing required language fields.');
+  }
+
+  if (statusValue !== 'published' && statusValue !== 'draft') {
+    redirectWithError(redirectTo, 'Invalid publish status value.');
+  }
+
+  const level = Math.max(0, Math.min(levelRaw, 100));
+  const isPublished = statusValue === 'published';
+
+  const { supabase } = await requireAdmin();
+  const { error } = await supabase
+    .from('languages')
+    .update({
+      name,
+      label,
+      level,
+      sort_order: sortOrder,
+      is_published: isPublished,
+      show_on_main: showOnMain,
+      show_on_phion: showOnPhion,
+      updated_at: new Date().toISOString(),
+    })
+    .eq('id', id);
+
+  if (error) {
+    redirectWithError(redirectTo, `Update language failed: ${error.message}`);
+  }
+
+  revalidatePath('/');
+  revalidatePath('/admin');
+  revalidatePath('/admin/languages');
+  redirectWithSuccess(redirectTo, 'Language updated.');
+}
+
+export async function deleteLanguage(formData: FormData) {
+  const redirectTo = resolveRedirectPath(formData);
+  const id = String(formData.get('id') || '').trim();
+
+  if (!id) {
+    redirectWithError(redirectTo, 'Missing language id.');
+  }
+
+  const { supabase } = await requireAdmin();
+  const { error } = await supabase.from('languages').delete().eq('id', id);
+
+  if (error) {
+    redirectWithError(redirectTo, `Delete language failed: ${error.message}`);
+  }
+
+  revalidatePath('/');
+  revalidatePath('/admin');
+  revalidatePath('/admin/languages');
+  redirectWithSuccess(redirectTo, 'Language deleted.');
 }
 
 export async function signOut() {

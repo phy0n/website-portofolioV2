@@ -4,13 +4,13 @@ import LoginForm from './LoginForm';
 export default function AdminLoginPage() {
   return (
     <div
-      className="min-h-screen bg-gradient-to-br from-[#0a0a0f] via-[#0e0e16] to-[#141421] text-white relative overflow-hidden"
+      className="min-h-screen bg-[#0b0b10] text-white relative overflow-hidden"
       data-page-content>
       <div className="relative max-w-5xl mx-auto px-6 py-16">
         <div className="flex items-center justify-between text-xs uppercase tracking-[0.4em] text-white/50" data-gsap="reveal">
           <span>Phion Admin</span>
           <Link href="/" className="text-white/50 hover:text-white transition">
-            Back to site
+            Back to portfolio
           </Link>
         </div>
 

@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useMemo, useState, type ReactNode } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 import { Pencil, Plus, Trash2, X } from 'lucide-react';
 import AdminSubmitButton from '@/components/admin/AdminSubmitButton';
 import AdminToast from '@/components/admin/AdminToast';
@@ -102,9 +102,8 @@ export default function QuoteManager({
   errorMessage?: string;
 }) {
   const searchParams = useSearchParams();
-  const router = useRouter();
-  const createOpen = searchParams.get('create') === '1';
-  const editId = searchParams.get('edit');
+  const [createOpen, setCreateOpen] = useState(() => searchParams.get('create') === '1');
+  const [editId, setEditId] = useState<string | null>(() => searchParams.get('edit'));
   const editingQuote = useMemo(() => {
     if (!editId) return null;
     return quotes.find((quote) => quote.id === editId) ?? null;
@@ -115,20 +114,6 @@ export default function QuoteManager({
     if (successMessage) return { message: successMessage, tone: 'success' as const };
     return null;
   }, [errorMessage, successMessage]);
-
-  const clearQueryParam = (key: string) => {
-    const params = new URLSearchParams(searchParams.toString());
-    params.delete(key);
-    const query = params.toString();
-    router.replace(query ? `/admin/quotes?${query}` : '/admin/quotes');
-  };
-
-  const setQueryParam = (key: string, value: string) => {
-    const params = new URLSearchParams(searchParams.toString());
-    params.set(key, value);
-    const query = params.toString();
-    router.replace(query ? `/admin/quotes?${query}` : '/admin/quotes');
-  };
 
   const filteredQuotes = useMemo(() => {
     const query = listQuery.trim().toLowerCase();
@@ -153,7 +138,8 @@ export default function QuoteManager({
             title="Add quote"
             aria-label="Add quote"
             onClick={() => {
-              setQueryParam('create', '1');
+              setEditId(null);
+              setCreateOpen(true);
             }}
             className="cursor-pointer inline-flex items-center gap-2 rounded-xl border border-white bg-white px-4 py-2 text-sm font-semibold text-black shadow-sm transition hover:bg-white/90"
           >
@@ -238,17 +224,18 @@ export default function QuoteManager({
                   </td>
                   <td className="px-4 py-4">
                     <div className="flex items-center gap-2">
-                      <button
-                        type="button"
-                        title="Edit quote"
-                        aria-label="Edit quote"
-                        onClick={() => {
-                          setQueryParam('edit', quote.id);
-                        }}
-                        className="cursor-pointer inline-flex items-center gap-2 rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white/70 transition hover:border-white/40 hover:text-white hover:bg-white/10"
-                      >
-                        <Pencil className="h-4 w-4" />
-                        Edit
+                        <button
+                          type="button"
+                          title="Edit quote"
+                          aria-label="Edit quote"
+                          onClick={() => {
+                            setCreateOpen(false);
+                            setEditId(quote.id);
+                          }}
+                          className="cursor-pointer inline-flex items-center gap-2 rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white/70 transition hover:border-white/40 hover:text-white hover:bg-white/10"
+                        >
+                          <Pencil className="h-4 w-4" />
+                          Edit
                       </button>
                       <form
                         action={deleteQuote}
@@ -282,7 +269,7 @@ export default function QuoteManager({
         open={createOpen}
         title="Add new quote"
         onClose={() => {
-          clearQueryParam('create');
+          setCreateOpen(false);
         }}
       >
         <form action={createQuote} className="grid gap-4">
@@ -340,7 +327,7 @@ export default function QuoteManager({
         open={Boolean(editingQuote)}
         title="Edit quote"
         onClose={() => {
-          clearQueryParam('edit');
+          setEditId(null);
         }}
       >
         {editingQuote && (
