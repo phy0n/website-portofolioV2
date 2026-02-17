@@ -30,13 +30,6 @@ type SpokenLanguage = {
   sort_order?: number | null;
 };
 
-const FALLBACK_LANGUAGES: SpokenLanguage[] = [
-  { id: 'id', name: 'Bahasa Indonesia', level: 100, label: 'Native' },
-  { id: 'en', name: 'English', level: 75, label: 'Intermediate' },
-  { id: 'ja', name: 'Japanese', level: 40, label: 'Basic' },
-  { id: 'de', name: 'German', level: 35, label: 'Basic' },
-];
-
 const normalizeLanguage = (value: any): SpokenLanguage | null => {
   const id = String(value?.id ?? '').trim();
   const name = String(value?.name ?? '').trim();
@@ -50,8 +43,7 @@ const normalizeLanguage = (value: any): SpokenLanguage | null => {
 };
 
 export default function AboutTab() {
-  const [languageSource, setLanguageSource] = useState<'fallback' | 'api'>('fallback');
-  const [spokenLanguages, setSpokenLanguages] = useState<SpokenLanguage[]>(FALLBACK_LANGUAGES);
+  const [spokenLanguages, setSpokenLanguages] = useState<SpokenLanguage[] | null>(null);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -59,16 +51,22 @@ export default function AboutTab() {
     const loadLanguages = async () => {
       try {
         const res = await fetch('/api/languages', { cache: 'no-store', signal: controller.signal });
-        if (!res.ok) return;
+        if (!res.ok) {
+          setSpokenLanguages([]);
+          return;
+        }
         const data = (await res.json()) as { ok?: boolean; languages?: unknown };
-        if (!data?.ok) return;
+        if (!data?.ok) {
+          setSpokenLanguages([]);
+          return;
+        }
         const rows = Array.isArray(data.languages) ? data.languages : [];
         const normalized = rows.map(normalizeLanguage).filter((row): row is SpokenLanguage => Boolean(row));
         setSpokenLanguages(normalized);
-        setLanguageSource('api');
       } catch (err) {
         const error = err as { name?: string };
         if (error?.name === 'AbortError') return;
+        setSpokenLanguages([]);
       }
     };
 
@@ -77,8 +75,9 @@ export default function AboutTab() {
   }, []);
 
   const sortedLanguages = useMemo(() => {
-    if (spokenLanguages.length <= 1) return spokenLanguages;
-    return [...spokenLanguages].sort((a, b) => {
+    const languages = spokenLanguages ?? [];
+    if (languages.length <= 1) return languages;
+    return [...languages].sort((a, b) => {
       const orderA = typeof a.sort_order === 'number' ? a.sort_order : 0;
       const orderB = typeof b.sort_order === 'number' ? b.sort_order : 0;
       if (orderA !== orderB) return orderB - orderA;
@@ -130,7 +129,11 @@ export default function AboutTab() {
           <Languages className="h-4 w-4 text-[var(--home-accent)]" />
           <h3 className="text-[11px] uppercase tracking-[0.35em] text-[var(--home-muted)]">Languages</h3>
         </div>
-        {languageSource === 'api' && sortedLanguages.length === 0 ? (
+        {spokenLanguages === null ? (
+          <div className="js-reveal rounded-2xl border border-white/10 bg-black/30 p-4 text-sm text-[var(--home-muted)]">
+            Loading...
+          </div>
+        ) : sortedLanguages.length === 0 ? (
           <div className="js-reveal rounded-2xl border border-white/10 bg-black/30 p-4 text-sm text-[var(--home-muted)]">
             No languages yet.
           </div>
