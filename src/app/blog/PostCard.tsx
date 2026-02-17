@@ -12,12 +12,15 @@ export type PostRow = {
 const formatPostTimestamp = (iso: string) => {
   const date = new Date(iso);
   if (Number.isNaN(date.getTime())) return '';
-  return date.toLocaleString('en-US', {
+  return date.toLocaleString('id-ID', {
     day: '2-digit',
     month: 'short',
     year: 'numeric',
     hour: '2-digit',
     minute: '2-digit',
+    hour12: false,
+    timeZone: 'Asia/Jakarta',
+    timeZoneName: 'short',
   });
 };
 

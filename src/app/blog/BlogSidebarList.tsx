@@ -4,7 +4,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect, useMemo, useState } from 'react';
 import { formatBlogDate } from '@/lib/blog';
-import { Eye } from 'lucide-react';
+import { Users } from 'lucide-react';
 
 export type BlogSidebarItem = {
   id: string;
@@ -109,7 +109,7 @@ export default function BlogSidebarList({ blogs }: { blogs: BlogSidebarItem[] })
                     •
                   </span>
                   <span className="inline-flex items-center gap-1">
-                    <Eye className="h-3.5 w-3.5" />
+                    <Users className="h-3.5 w-3.5" />
                     <span className="tabular-nums">{uniqueVisitors.toLocaleString()}</span>
                   </span>
                 </p>

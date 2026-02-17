@@ -15,8 +15,7 @@ function SubmitButton() {
     <button
       type="submit"
       disabled={pending}
-      className="inline-flex w-full items-center justify-center gap-2 rounded-full border border-white bg-white px-5 py-3 text-sm font-semibold text-black shadow-sm transition hover:bg-white/90 disabled:cursor-not-allowed disabled:opacity-60"
-    >
+      className="inline-flex w-full items-center justify-center gap-2 rounded-full border border-white bg-white px-5 py-3 text-sm font-semibold text-black shadow-sm transition hover:bg-white/90 disabled:cursor-not-allowed disabled:opacity-60">
       {pending ? 'Signing in...' : 'Sign in'}
     </button>
   );
@@ -37,7 +36,7 @@ export default function LoginForm() {
           autoComplete="email"
           required
           className="w-full rounded-2xl border border-white/10 bg-black/70 px-4 py-3 text-sm text-white outline-none transition focus:border-white/40"
-          placeholder="admin@yourmail.com"
+          placeholder="admin@mail.com"
         />
       </div>
       <div className="space-y-2">

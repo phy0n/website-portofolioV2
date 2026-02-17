@@ -9,7 +9,6 @@ import {
   Bookmark,
   BookmarkCheck,
   Calendar,
-  Eye,
   Link2,
   Share2,
   Tags,
@@ -43,12 +42,10 @@ type RelatedBlog = Pick<
 export default function BlogDetailClient({
   blog,
   relatedBlogs = [],
-  viewCount = 0,
   uniqueCount,
 }: {
   blog: Blog | null;
   relatedBlogs?: RelatedBlog[];
-  viewCount?: number;
   uniqueCount?: number;
 }) {
   const [readingProgress, setReadingProgress] = useState(0);
@@ -57,7 +54,6 @@ export default function BlogDetailClient({
   const [saved, setSaved] = useState(() => (blog?.slug ? readReadingList().has(blog.slug) : false));
   const [fetchedCounts, setFetchedCounts] = useState<{
     source: 'counters' | 'events';
-    total: number;
     unique: number;
   } | null>(null);
   const rafRef = useRef<number | null>(null);
@@ -66,7 +62,6 @@ export default function BlogDetailClient({
 
   const content = blog?.content ?? '';
   const toc = useMemo(() => (content ? extractTocFromContent(content) : []), [content]);
-  const resolvedTotalViews = Math.max(viewCount ?? 0, fetchedCounts?.total ?? 0);
   const resolvedUniqueVisitors = Math.max(uniqueCount ?? 0, fetchedCounts?.unique ?? 0);
   const showUniqueCounts = uniqueCount !== undefined || fetchedCounts?.source === 'counters';
 
@@ -107,12 +102,10 @@ export default function BlogDetailClient({
           return 0;
         };
 
-        const nextTotal = data?.totals?.[slug] ?? data?.counts?.[slug];
         const nextUnique = data?.uniques?.[slug];
 
         setFetchedCounts({
           source: data?.source === 'counters' ? 'counters' : 'events',
-          total: toCount(nextTotal),
           unique: toCount(nextUnique),
         });
       } catch (err) {
@@ -339,10 +332,6 @@ export default function BlogDetailClient({
                     <Calendar className="h-4 w-4" />
                     {formatBlogDate(blog.date)}
                   </span>
-                  <span className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-black/40 px-3 py-1.5">
-                    <Eye className="h-4 w-4" />
-                    {resolvedTotalViews.toLocaleString()}
-                  </span>
                   {showUniqueCounts ? (
                     <span className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-black/40 px-3 py-1.5">
                       <Users className="h-4 w-4" />
@@ -503,13 +492,6 @@ export default function BlogDetailClient({
                       Date
                     </span>
                     <span className="text-white/80">{formatBlogDate(blog.date)}</span>
-                  </div>
-                  <div className="flex items-center justify-between gap-3">
-                    <span className="inline-flex items-center gap-2">
-                      <Eye className="h-4 w-4" />
-                      Views
-                    </span>
-                    <span className="text-white/80">{resolvedTotalViews.toLocaleString()}</span>
                   </div>
                   {showUniqueCounts ? (
                     <div className="flex items-center justify-between gap-3">
