@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useMemo, useState, type ReactNode } from 'react';
+import { useEffect, useMemo, useState, type CSSProperties, type ReactNode } from 'react';
 import { Pencil, Plus, Trash2, X } from 'lucide-react';
 import AdminSubmitButton from '@/components/admin/AdminSubmitButton';
 import AdminToast from '@/components/admin/AdminToast';
@@ -22,6 +22,20 @@ type Language = {
 
 const inputClassName =
   'mt-2 w-full rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm text-white placeholder-white/40 shadow-[0_0_0_1px_rgba(255,255,255,0.02)] focus:border-white/40 focus:outline-none';
+
+const selectControlStyle: CSSProperties = { colorScheme: 'dark' };
+
+const languageLabelOptions = ['Beginner', 'Intermediate', 'Advanced', 'Expert'] as const;
+
+const resolveLabelOptions = (current: string | null | undefined) => {
+  const trimmed = (current ?? '').trim();
+  if (!trimmed) return [...languageLabelOptions];
+  return languageLabelOptions.includes(
+    trimmed as (typeof languageLabelOptions)[number]
+  )
+    ? [...languageLabelOptions]
+    : [trimmed, ...languageLabelOptions];
+};
 
 const resolveTargetValue = (value: boolean | null | undefined) => value !== false;
 const resolvePublishValue = (value: boolean | null | undefined) => value !== false;
@@ -281,7 +295,19 @@ export default function LanguageManager({
             </div>
             <div>
               <label className="text-xs uppercase tracking-[0.3em] text-white/50">Label</label>
-              <input name="label" required placeholder="Intermediate" className={inputClassName} maxLength={60} />
+              <select
+                name="label"
+                required
+                defaultValue="Intermediate"
+                className={inputClassName}
+                style={selectControlStyle}
+              >
+                {languageLabelOptions.map((option) => (
+                  <option key={option} value={option} className="bg-[#13131b] text-white">
+                    {option}
+                  </option>
+                ))}
+              </select>
             </div>
           </div>
 
@@ -303,17 +329,26 @@ export default function LanguageManager({
             </div>
           </div>
 
-          <div className="grid gap-4 sm:grid-cols-2">
-            <div>
-              <label className="text-xs uppercase tracking-[0.3em] text-white/50">Publish</label>
-              <select name="is_published" defaultValue="published" className={inputClassName}>
-                <option value="published">Published</option>
-                <option value="draft">Draft</option>
-              </select>
-            </div>
-            <div className="flex items-end gap-4">
-              <label className="inline-flex items-center gap-2 text-sm text-white/70">
-                <input type="checkbox" name="show_on_main" value="true" defaultChecked className="h-4 w-4 rounded border-white/20 bg-black/40" />
+            <div className="grid gap-4 sm:grid-cols-2">
+              <div>
+                <label className="text-xs uppercase tracking-[0.3em] text-white/50">Publish</label>
+                <select
+                  name="is_published"
+                  defaultValue="published"
+                  className={inputClassName}
+                  style={selectControlStyle}
+                >
+                  <option value="published" className="bg-[#13131b] text-white">
+                    Published
+                  </option>
+                  <option value="draft" className="bg-[#13131b] text-white">
+                    Draft
+                  </option>
+                </select>
+              </div>
+              <div className="flex items-end gap-4">
+                <label className="inline-flex items-center gap-2 text-sm text-white/70">
+                  <input type="checkbox" name="show_on_main" value="true" defaultChecked className="h-4 w-4 rounded border-white/20 bg-black/40" />
                 Show on Main
               </label>
               <label className="inline-flex items-center gap-2 text-sm text-white/70">
@@ -364,13 +399,19 @@ export default function LanguageManager({
               </div>
               <div>
                 <label className="text-xs uppercase tracking-[0.3em] text-white/50">Label</label>
-                <input
+                <select
                   name="label"
                   required
                   defaultValue={editingLanguage.label}
                   className={inputClassName}
-                  maxLength={60}
-                />
+                  style={selectControlStyle}
+                >
+                  {resolveLabelOptions(editingLanguage.label).map((option) => (
+                    <option key={option} value={option} className="bg-[#13131b] text-white">
+                      {option}
+                    </option>
+                  ))}
+                </select>
               </div>
             </div>
 
@@ -404,9 +445,14 @@ export default function LanguageManager({
                   name="is_published"
                   defaultValue={resolvePublishValue(editingLanguage.is_published) ? 'published' : 'draft'}
                   className={inputClassName}
+                  style={selectControlStyle}
                 >
-                  <option value="published">Published</option>
-                  <option value="draft">Draft</option>
+                  <option value="published" className="bg-[#13131b] text-white">
+                    Published
+                  </option>
+                  <option value="draft" className="bg-[#13131b] text-white">
+                    Draft
+                  </option>
                 </select>
               </div>
               <div className="flex items-end gap-4">
@@ -454,4 +500,3 @@ export default function LanguageManager({
     </div>
   );
 }
-
