@@ -10,6 +10,7 @@ type BlogPreview = {
   excerpt: string;
   date: string;
   tags?: string[] | null;
+  image?: string | null;
 };
 
 const normalizePreview = (value: any): BlogPreview | null => {
@@ -19,9 +20,11 @@ const normalizePreview = (value: any): BlogPreview | null => {
   const excerpt = String(value?.excerpt ?? '').trim();
   const date = String(value?.date ?? '').trim();
   const tags = Array.isArray(value?.tags) ? (value.tags as unknown[]).map((t) => String(t)) : null;
+  const imageRaw = typeof value?.image === 'string' ? value.image : '';
+  const image = imageRaw.trim() ? imageRaw.trim() : null;
 
   if (!id || !slug || !title || !excerpt || !date) return null;
-  return { id, slug, title, excerpt, date, tags };
+  return { id, slug, title, excerpt, date, tags, image };
 };
 
 const compareByDateDesc = (a: BlogPreview, b: BlogPreview) => {

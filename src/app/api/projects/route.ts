@@ -8,9 +8,14 @@ type ProjectRow = {
   title: string;
   description: string;
   tags: string[];
+  stack: string[];
+  highlights: string[];
   link: string;
+  github_url?: string | null;
+  image?: string | null;
   status: string;
   icon?: string | null;
+  is_featured?: boolean | null;
   sort_order?: number | null;
 };
 
@@ -23,11 +28,20 @@ const normalizeProject = (value: any): ProjectRow | null => {
   const iconRaw = typeof value?.icon === 'string' ? value.icon : '';
   const icon = iconRaw.trim() ? iconRaw.trim() : null;
   const tags = Array.isArray(value?.tags) ? (value.tags as unknown[]).map((tag) => String(tag)) : [];
+  const stack = Array.isArray(value?.stack) ? (value.stack as unknown[]).map((tag) => String(tag)) : [];
+  const highlights = Array.isArray(value?.highlights)
+    ? (value.highlights as unknown[]).map((tag) => String(tag))
+    : [];
+  const githubRaw = typeof value?.github_url === 'string' ? value.github_url : '';
+  const github_url = githubRaw.trim() ? githubRaw.trim() : null;
+  const imageRaw = typeof value?.image === 'string' ? value.image : '';
+  const image = imageRaw.trim() ? imageRaw.trim() : null;
+  const is_featured = typeof value?.is_featured === 'boolean' ? value.is_featured : null;
   const sort_order =
     typeof value?.sort_order === 'number' && Number.isFinite(value.sort_order) ? value.sort_order : null;
 
   if (!id || !title || !description || !link || !status) return null;
-  return { id, title, description, tags, link, status, icon, sort_order };
+  return { id, title, description, tags, stack, highlights, link, github_url, image, status, icon, is_featured, sort_order };
 };
 
 export async function GET() {
@@ -50,7 +64,9 @@ export async function GET() {
 
     const { data, error } = await supabase
       .from('projects')
-      .select('id, title, description, tags, link, status, icon, sort_order, is_published, show_on_phion')
+      .select(
+        'id, title, description, tags, stack, highlights, link, github_url, image, status, icon, is_featured, sort_order, is_published, show_on_phion, created_at'
+      )
       .order('sort_order', { ascending: false })
       .order('created_at', { ascending: false })
       .limit(100);

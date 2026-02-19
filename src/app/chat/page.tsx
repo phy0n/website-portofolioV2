@@ -1,17 +1,17 @@
 import type { Metadata } from 'next';
+import ChatPageClient from '@/components/chat/ChatPageClient';
 import SiteShell from '@/components/home/SiteShell';
-import ConnectTab from '@/components/home/tabs/ConnectTab';
 
 export const metadata: Metadata = {
-  title: 'Connect',
-  description: 'Social links, contact details, services, and testimonials.',
+  title: 'Chat',
+  description: 'Public chat room for viewers and the author.',
 };
 
-export default function ConnectPage() {
+export default function ChatPage() {
   return (
     <SiteShell>
       <section className="pt-10">
-        <ConnectTab />
+        <ChatPageClient />
       </section>
     </SiteShell>
   );

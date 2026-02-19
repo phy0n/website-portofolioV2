@@ -1,6 +1,7 @@
 'use client';
   
 import { useEffect, useMemo, useState, type ChangeEvent, type ReactNode } from 'react';
+import Image from 'next/image';
 import { useSearchParams } from 'next/navigation';
 import { Award, BadgeCheck, BookOpen, FileText, GraduationCap, Pencil, Plus, Star, Trash2, Trophy, X } from 'lucide-react';
 import AdminSubmitButton from '@/components/admin/AdminSubmitButton';
@@ -441,8 +442,15 @@ export default function CertificateManager({
             <p className="mt-2 text-xs text-white/40">PNG/JPG/WebP, max 5MB.</p>
             {createImageError && <p className="mt-2 text-xs text-red-300">{createImageError}</p>}
             {createImagePreview && (
-              <div className="mt-3 overflow-hidden rounded-xl border border-white/10 bg-white/5">
-                <img src={createImagePreview} alt="Preview" className="h-32 w-full object-cover" />
+              <div className="relative mt-3 h-32 w-full overflow-hidden rounded-xl border border-white/10 bg-white/5">
+                <Image
+                  src={createImagePreview}
+                  alt="Preview"
+                  fill
+                  sizes="100vw"
+                  className="object-cover"
+                  unoptimized
+                />
               </div>
             )}
           </div>
@@ -565,11 +573,14 @@ export default function CertificateManager({
               <p className="mt-2 text-xs text-white/40">PNG/JPG/WebP, max 5MB.</p>
               {editImageError && <p className="mt-2 text-xs text-red-300">{editImageError}</p>}
               {(editImagePreview || editingCertificate.image) && (
-                <div className="mt-3 overflow-hidden rounded-xl border border-white/10 bg-white/5">
-                  <img
+                <div className="relative mt-3 h-32 w-full overflow-hidden rounded-xl border border-white/10 bg-white/5">
+                  <Image
                     src={editImagePreview ?? editingCertificate.image ?? ''}
                     alt="Preview"
-                    className="h-32 w-full object-cover"
+                    fill
+                    sizes="100vw"
+                    className="object-cover"
+                    unoptimized
                   />
                 </div>
               )}

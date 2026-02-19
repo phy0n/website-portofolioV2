@@ -1,7 +1,71 @@
+import type { Metadata } from 'next';
 import BlogDetailClient from './BlogDetailClient';
 import { createSupabaseServerClient, supabaseConfig } from '@/lib/supabase/server';
 
 export const dynamic = 'force-dynamic';
+
+const safeDecode = (value: string) => {
+  try {
+    return decodeURIComponent(value);
+  } catch {
+    return value;
+  }
+};
+
+type BlogMetaRow = {
+  slug: string;
+  title: string;
+  excerpt: string;
+  image: string | null;
+  is_published?: boolean | null;
+  show_on_phion?: boolean | null;
+};
+
+async function getPublicBlogMeta(slug: string): Promise<BlogMetaRow | null> {
+  if (!supabaseConfig.url || !supabaseConfig.anonKey) return null;
+
+  const supabase = await createSupabaseServerClient();
+  const slugs = slug.toLowerCase() === slug ? [slug] : [slug, slug.toLowerCase()];
+
+  const { data, error } = await supabase
+    .from('blogs')
+    .select('slug,title,excerpt,image,is_published,show_on_phion')
+    .in('slug', slugs)
+    .or('is_published.eq.true,is_published.is.null')
+    .order('date', { ascending: false })
+    .limit(1)
+    .maybeSingle();
+
+  if (error || !data) return null;
+  if ((data as any)?.show_on_phion === false) return null;
+
+  return data as BlogMetaRow;
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
+  const { slug: rawSlug } = await params;
+  const slug = safeDecode(String(rawSlug ?? '')).trim();
+
+  const blog = slug ? await getPublicBlogMeta(slug) : null;
+  if (!blog) {
+    return { title: 'Story', description: 'Blog post.' };
+  }
+
+  const title = blog.title;
+  const description = blog.excerpt || 'Blog post.';
+  const images = blog.image ? [{ url: blog.image }] : undefined;
+
+  return {
+    title,
+    description,
+    openGraph: images ? { title, description, type: 'article', images } : { title, description, type: 'article' },
+    twitter: blog.image ? { card: 'summary_large_image', title, description, images: [blog.image] } : undefined,
+  };
+}
 
 export default async function BlogDetailPage({
   params,
@@ -9,13 +73,7 @@ export default async function BlogDetailPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug: rawSlug } = await params;
-  let slug = '';
-  try {
-    slug = decodeURIComponent(rawSlug || '');
-  } catch {
-    slug = rawSlug || '';
-  }
-  slug = slug.trim();
+  const slug = safeDecode(String(rawSlug ?? '')).trim();
 
   if (!supabaseConfig.url || !supabaseConfig.anonKey) {
     return <BlogDetailClient blog={null} relatedBlogs={[]} />;

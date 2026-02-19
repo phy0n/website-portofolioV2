@@ -1,4 +1,7 @@
+'use client';
+
 import PostCard, { type PostRow } from './PostCard';
+import { useSearchParams } from 'next/navigation';
 
 export default function PostsFeed({
   posts,
@@ -6,13 +9,18 @@ export default function PostsFeed({
   avatarUrl,
   avatarFallback,
   canDelete = false,
+  canEdit = false,
 }: {
   posts: PostRow[];
   authorLabel: string;
   avatarUrl?: string | null;
   avatarFallback: string;
   canDelete?: boolean;
+  canEdit?: boolean;
 }) {
+  const searchParams = useSearchParams();
+  const editPostId = searchParams.get('edit')?.trim() || undefined;
+
   if (posts.length === 0) {
     return (
       <div className="rounded-3xl border border-white/10 bg-black/30 px-6 py-8 text-sm text-white/50">
@@ -31,6 +39,8 @@ export default function PostsFeed({
           avatarUrl={avatarUrl}
           avatarFallback={avatarFallback}
           canDelete={canDelete}
+          canEdit={canEdit}
+          editPostId={editPostId}
         />
       ))}
     </div>

@@ -3,32 +3,37 @@ import { createClient } from '@supabase/supabase-js';
 
 export const revalidate = 60;
 
-type ExperienceRow = {
+type EducationRow = {
   id: string;
-  role: string;
-  company: string;
+  institution: string;
+  degree: string;
+  field?: string | null;
   period: string;
-  description: string;
+  location?: string | null;
+  description?: string | null;
   highlights: string[];
-  status: string;
   sort_order?: number | null;
 };
 
-const normalizeExperience = (value: any): ExperienceRow | null => {
+const normalizeEducation = (value: any): EducationRow | null => {
   const id = String(value?.id ?? '').trim();
-  const role = String(value?.role ?? '').trim();
-  const company = String(value?.company ?? '').trim();
+  const institution = String(value?.institution ?? '').trim();
+  const degree = String(value?.degree ?? '').trim();
   const period = String(value?.period ?? '').trim();
-  const description = String(value?.description ?? '').trim();
+  const fieldRaw = typeof value?.field === 'string' ? value.field : '';
+  const locationRaw = typeof value?.location === 'string' ? value.location : '';
+  const descriptionRaw = typeof value?.description === 'string' ? value.description : '';
+  const field = fieldRaw.trim() ? fieldRaw.trim() : null;
+  const location = locationRaw.trim() ? locationRaw.trim() : null;
+  const description = descriptionRaw.trim() ? descriptionRaw.trim() : null;
   const highlights = Array.isArray(value?.highlights)
     ? (value.highlights as unknown[]).map((item) => String(item)).filter(Boolean)
     : [];
-  const status = String(value?.status ?? '').trim();
   const sort_order =
     typeof value?.sort_order === 'number' && Number.isFinite(value.sort_order) ? value.sort_order : null;
 
-  if (!id || !role || !company || !period || !description || !status) return null;
-  return { id, role, company, period, description, highlights, status, sort_order };
+  if (!id || !institution || !degree || !period) return null;
+  return { id, institution, degree, field, period, location, description, highlights, sort_order };
 };
 
 export async function GET() {
@@ -40,19 +45,17 @@ export async function GET() {
 
     if (!supabaseUrl || !supabaseKey) {
       return NextResponse.json(
-        { experiences: [] },
+        { education: [] },
         { headers: { 'Cache-Control': 'public, max-age=60, stale-while-revalidate=300' } }
       );
     }
 
-    const supabase = createClient(supabaseUrl, supabaseKey, {
-      auth: { persistSession: false },
-    });
+    const supabase = createClient(supabaseUrl, supabaseKey, { auth: { persistSession: false } });
 
     const { data, error } = await supabase
-      .from('experiences')
+      .from('education')
       .select(
-        'id, role, company, period, description, highlights, status, sort_order, is_published, show_on_phion'
+        'id,institution,degree,field,period,location,description,highlights,sort_order,is_published,show_on_phion,created_at'
       )
       .order('sort_order', { ascending: false })
       .order('created_at', { ascending: false })
@@ -60,25 +63,26 @@ export async function GET() {
 
     if (error || !data) {
       return NextResponse.json(
-        { experiences: [] },
+        { education: [] },
         { headers: { 'Cache-Control': 'public, max-age=60, stale-while-revalidate=300' } }
       );
     }
 
-    const experiences = (data as any[])
+    const education = (data as any[])
       .filter((row) => row?.is_published !== false && row?.show_on_phion !== false)
-      .map(normalizeExperience)
-      .filter((row): row is ExperienceRow => Boolean(row));
+      .map(normalizeEducation)
+      .filter((row): row is EducationRow => Boolean(row));
 
     return NextResponse.json(
-      { experiences },
+      { education },
       { headers: { 'Cache-Control': 'public, max-age=60, stale-while-revalidate=300' } }
     );
   } catch (error) {
-    console.error('Error fetching experiences:', error);
+    console.error('Error fetching education:', error);
     return NextResponse.json(
-      { experiences: [] },
+      { education: [] },
       { headers: { 'Cache-Control': 'public, max-age=60, stale-while-revalidate=300' } }
     );
   }
 }
+

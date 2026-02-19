@@ -129,6 +129,20 @@ body {
   }
 }
 
+@keyframes page-fade {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+.animate-page-fade {
+  animation: page-fade 0.45s ease-out both;
+}
+
 /* Smooth gradient animation */
 @keyframes gradient {
   0%, 100% {
@@ -203,6 +217,21 @@ body {
   }
 }
 
+@media (prefers-reduced-motion: reduce) {
+  html:focus-within {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
 /* Shimmer effect */
 @keyframes shimmer {
   0% {
@@ -273,7 +302,33 @@ body {
 }
 
 .animate-slide-up {
-  animation: slide-up 0.6s ease-out;
+  opacity: 1;
+}
+
+[data-page-content] [data-gsap="reveal"]:not(.animate-slide-up),
+[data-page-content] .js-reveal:not(.animate-slide-up),
+[data-page-content] section:not(.animate-slide-up),
+[data-page-content] article:not(.animate-slide-up),
+[data-page-content] aside:not(.animate-slide-up),
+[data-page-content] form:not(.animate-slide-up),
+[data-page-content] figure:not(.animate-slide-up),
+[data-page-content] footer:not(.animate-slide-up),
+[data-page-content] div:not(.animate-slide-up),
+[data-page-content] img:not(.animate-slide-up),
+[data-page-content] [class~="border"]:not(.animate-slide-up),
+[data-page-content] .rounded-3xl:not(.animate-slide-up),
+[data-page-content] .rounded-2xl:not(.animate-slide-up),
+[data-page-content] .rounded-xl:not(.animate-slide-up),
+[data-page-content] .rounded-lg:not(.animate-slide-up),
+[data-page-content] h1:not(.animate-slide-up),
+[data-page-content] h2:not(.animate-slide-up),
+[data-page-content] h3:not(.animate-slide-up),
+[data-page-content] h4:not(.animate-slide-up),
+[data-page-content] h5:not(.animate-slide-up),
+[data-page-content] p:not(.animate-slide-up),
+[data-page-content] li:not(.animate-slide-up),
+[data-page-content] blockquote:not(.animate-slide-up) {
+  opacity: 0;
 }
 
 .animate-slide-down {

@@ -1,13 +1,15 @@
 import Link from 'next/link';
 import LoginForm from './LoginForm';
+import AdminLoginShell from './AdminLoginShell';
 
 export default function AdminLoginPage() {
   return (
-    <div
-      className="min-h-screen bg-[#0b0b10] text-white relative overflow-hidden"
-      data-page-content>
+    <AdminLoginShell>
       <div className="relative max-w-5xl mx-auto px-6 py-16">
-        <div className="flex items-center justify-between text-xs uppercase tracking-[0.4em] text-white/50" data-gsap="reveal">
+        <div
+          className="flex items-center justify-between text-xs uppercase tracking-[0.4em] text-white/50"
+          data-gsap="reveal"
+        >
           <span>Phion Admin</span>
           <Link href="/" className="text-white/50 hover:text-white transition">
             Back to portfolio
@@ -25,6 +27,6 @@ export default function AdminLoginPage() {
           </div>
         </div>
       </div>
-    </div>
+    </AdminLoginShell>
   );
 }

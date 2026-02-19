@@ -9,7 +9,7 @@ export default function PostComposer() {
       </div>
 
       <div className="rounded-3xl border border-white/10 bg-black/30 p-6">
-        <form action={createPost} encType="multipart/form-data" className="space-y-4">
+        <form action={createPost} className="space-y-4">
           <textarea
             name="content"
             placeholder="Write something… (leave empty if you upload an image)"

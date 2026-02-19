@@ -1,26 +1,18 @@
 'use client';
 
 import React, { useEffect, useMemo, useState } from 'react';
-import { usePathname } from 'next/navigation';
-import { ChatPanel, type ChatMessage } from './ChatSidebar';
+import { ChatPanel, type ChatMessage } from '@/components/chat/ChatSidebar';
 import { CHAT_AUTHOR_NAME, normalizeChatMessage, normalizeChatName } from '@/lib/chat';
 import { getVisitorId } from '@/lib/visitor';
 
 const NAME_KEY = 'phion_chat_name';
 
-export default function ChatBar() {
-  const pathname = usePathname();
-  const hideChat = !pathname || pathname.startsWith('/admin');
-
-  const isDesktop = () => {
-    if (typeof window === 'undefined') return false;
-    return window.matchMedia('(min-width: 1024px)').matches;
-  };
-
+export default function ChatPageClient() {
   const [isAdmin, setIsAdmin] = useState(false);
   const [name, setName] = useState('');
   const [message, setMessage] = useState('');
   const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const [replyTo, setReplyTo] = useState<ChatMessage | null>(null);
   const [loading, setLoading] = useState(true);
   const [sending, setSending] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -31,30 +23,24 @@ export default function ChatBar() {
   }, []);
 
   useEffect(() => {
-    if (hideChat) return;
-    if (!isDesktop()) return;
     try {
       const stored = window.localStorage.getItem(NAME_KEY);
       if (stored) setName(stored);
     } catch {
       // ignore
     }
-  }, [hideChat]);
+  }, []);
 
   useEffect(() => {
-    if (hideChat) return;
-    if (!isDesktop()) return;
     try {
       if (isAdmin) return;
       window.localStorage.setItem(NAME_KEY, normalizeChatName(name));
     } catch {
       // ignore
     }
-  }, [name, hideChat, isAdmin]);
+  }, [name, isAdmin]);
 
   useEffect(() => {
-    if (hideChat) return;
-    if (!isDesktop()) return;
     const controller = new AbortController();
 
     const checkAdmin = async () => {
@@ -71,14 +57,12 @@ export default function ChatBar() {
 
     void checkAdmin();
     return () => controller.abort();
-  }, [hideChat]);
+  }, []);
 
   useEffect(() => {
     if (!isAdmin) return;
-    if (hideChat) return;
-    if (!isDesktop()) return;
     setName(CHAT_AUTHOR_NAME);
-  }, [isAdmin, hideChat]);
+  }, [isAdmin]);
 
   const fetchMessages = async (signal?: AbortSignal) => {
     try {
@@ -101,8 +85,6 @@ export default function ChatBar() {
   };
 
   useEffect(() => {
-    if (hideChat) return;
-    if (!isDesktop()) return;
     const controller = new AbortController();
 
     const schedule = (fn: () => void) => {
@@ -126,7 +108,7 @@ export default function ChatBar() {
       controller.abort();
       window.clearInterval(interval);
     };
-  }, [hideChat]);
+  }, []);
 
   const handleDelete = async (id: number) => {
     if (!isAdmin) return;
@@ -142,8 +124,31 @@ export default function ChatBar() {
         return;
       }
       setMessages((prev) => prev.filter((item) => item.id !== id));
+      setReplyTo((current) => (current?.id === id ? null : current));
     } catch {
       setError('Failed to delete the message. Try again.');
+    }
+  };
+
+  const handleTogglePin = async (id: number, pinned: boolean) => {
+    if (!isAdmin) return;
+    setError(null);
+
+    try {
+      const res = await fetch('/api/chat', {
+        method: 'PATCH',
+        cache: 'no-store',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id, pinned }),
+      });
+      const data = (await res.json().catch(() => null)) as { ok?: boolean };
+      if (!res.ok || !data?.ok) {
+        setError('Failed to update pinned message. Try again.');
+        return;
+      }
+      await fetchMessages();
+    } catch {
+      setError('Failed to update pinned message. Try again.');
     }
   };
 
@@ -160,7 +165,7 @@ export default function ChatBar() {
       const res = await fetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name: safeName, message: safeMessage, visitorId }),
+        body: JSON.stringify({ name: safeName, message: safeMessage, visitorId, replyToId: replyTo?.id ?? null }),
       });
 
       const data = (await res.json()) as {
@@ -178,6 +183,10 @@ export default function ChatBar() {
           setError('Please enter a name (max 40 chars).');
         } else if (data?.error === 'INVALID_MESSAGE') {
           setError('Please write a message (max 500 chars).');
+        } else if (data?.error === 'LINKS_NOT_ALLOWED') {
+          setError('Links are not allowed in public chat.');
+        } else if (data?.error === 'BLOCKED_CONTENT') {
+          setError('Message blocked by moderation.');
         } else {
           setError('Failed to send the message. Try again.');
         }
@@ -192,6 +201,7 @@ export default function ChatBar() {
       }
 
       setMessage('');
+      setReplyTo(null);
     } catch {
       setError('Failed to send the message. Try again.');
     } finally {
@@ -199,22 +209,35 @@ export default function ChatBar() {
     }
   };
 
-  if (hideChat) return null;
-
   return (
-    <ChatPanel
-      titleTag="Phion"
-      messages={messages}
-      loading={loading}
-      error={error}
-      isAdmin={isAdmin}
-      name={name}
-      onNameChange={setName}
-      message={message}
-      onMessageChange={setMessage}
-      onSend={handleSend}
-      sending={sending}
-      onDeleteMessage={handleDelete}
-    />
+    <div className="mx-auto w-full max-w-4xl space-y-4">
+      <div className="flex flex-wrap items-end justify-between gap-4">
+        <div className="space-y-1">
+          <h1 className="text-2xl font-sans font-semibold text-[var(--home-ink)]">Chat</h1>
+          <p className="text-sm text-[var(--home-muted)]">Public room. Be respectful.</p>
+        </div>
+        <p className="text-[10px] uppercase tracking-[0.35em] text-white/40">{isAdmin ? 'Admin' : 'Community'}</p>
+      </div>
+
+      <div className="h-[min(78vh,820px)] overflow-hidden rounded-3xl border border-white/10 bg-black/20">
+        <ChatPanel
+          titleTag="Phion"
+          messages={messages}
+          loading={loading}
+          error={error}
+          isAdmin={isAdmin}
+          replyTo={replyTo}
+          onReplyToChange={setReplyTo}
+          name={name}
+          onNameChange={setName}
+          message={message}
+          onMessageChange={setMessage}
+          onSend={handleSend}
+          sending={sending}
+          onTogglePinMessage={handleTogglePin}
+          onDeleteMessage={handleDelete}
+        />
+      </div>
+    </div>
   );
 }

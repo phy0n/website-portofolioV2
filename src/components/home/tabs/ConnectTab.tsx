@@ -1,32 +1,29 @@
 'use client';
 
-import React from 'react';
-import { Instagram, Mail, MapPin } from 'lucide-react';
-import { FaDiscord, FaTiktok } from 'react-icons/fa';
-import ContactForm from '@/components/contact/ContactForm';
+import React, { useEffect, useState } from 'react';
+import { ArrowUpRight, BadgeCheck, Quote, Sparkles, Mail, MapPin } from 'lucide-react';
 
-import type { ContactInfo, SocialMedia } from '../types';
+import type { ContactInfo } from '../types';
+import { SOCIAL_MEDIA } from '../data/social';
 
-const SOCIAL_MEDIA: SocialMedia[] = [
-  {
-    name: 'Instagram',
-    icon: <Instagram className="h-5 w-5" />,
-    url: 'https://www.instagram.com/rushandle/',
-    color: '',
-  },
-  {
-    name: 'TikTok',
-    icon: <FaTiktok className="h-5 w-5" />,
-    url: 'https://www.tiktok.com/@phy0n',
-    color: '',
-  },
-  {
-    name: 'Discord Server',
-    icon: <FaDiscord className="h-5 w-5" />,
-    url: 'https://discord.gg/MwNE7Vfb6t',
-    color: '',
-  },
-];
+type ServiceRow = {
+  id: string;
+  title: string;
+  description: string;
+  deliverables: string[];
+  starting_from?: string | null;
+  cta_label?: string | null;
+  cta_link?: string | null;
+};
+
+type TestimonialRow = {
+  id: string;
+  name: string;
+  title?: string | null;
+  company?: string | null;
+  quote: string;
+  source_url?: string | null;
+};
 
 const CONTACT_INFO: ContactInfo[] = [
   {
@@ -44,6 +41,47 @@ const CONTACT_INFO: ContactInfo[] = [
 ];
 
 export default function ConnectTab() {
+  const [services, setServices] = useState<ServiceRow[] | null>(null);
+  const [testimonials, setTestimonials] = useState<TestimonialRow[] | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    const schedule = (fn: () => void) => {
+      const w = window as unknown as { requestIdleCallback?: (cb: () => void, opts?: { timeout: number }) => number };
+      if (w.requestIdleCallback) {
+        w.requestIdleCallback(fn, { timeout: 1200 });
+      } else {
+        window.setTimeout(fn, 200);
+      }
+    };
+
+    const fetchJson = async <T,>(url: string, fallback: T): Promise<T> => {
+      try {
+        const res = await fetch(url);
+        if (!res.ok) return fallback;
+        return (await res.json()) as T;
+      } catch {
+        return fallback;
+      }
+    };
+
+    schedule(() => {
+      Promise.all([
+        fetchJson<{ services?: ServiceRow[] }>('/api/services', {}),
+        fetchJson<{ testimonials?: TestimonialRow[] }>('/api/testimonials', {}),
+      ]).then(([servicesPayload, testimonialsPayload]) => {
+        if (cancelled) return;
+        setServices(Array.isArray(servicesPayload.services) ? servicesPayload.services : []);
+        setTestimonials(Array.isArray(testimonialsPayload.testimonials) ? testimonialsPayload.testimonials : []);
+      });
+    });
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
   return (
     <div className="space-y-6">
       <div className="space-y-3" data-gsap="reveal">
@@ -96,16 +134,142 @@ export default function ConnectTab() {
           ))}
         </div>
       </div>
-{/* 
+
       <div className="space-y-3 border-t border-white/10 pt-6" data-gsap="reveal">
         <div className="flex items-center justify-between">
-          <p className="text-[11px] uppercase tracking-[0.35em] text-[var(--home-muted)]">Message</p>
-          <span className="text-xs text-[var(--home-muted)]">Email</span>
+          <p className="text-[11px] uppercase tracking-[0.35em] text-[var(--home-muted)]">Services</p>
+          <span className="text-xs text-[var(--home-muted)]">Freelance</span>
         </div>
-        <div className="rounded-3xl border border-white/10 bg-black/30 p-6">
-          <ContactForm source="connect" />
+
+        {services === null ? (
+          <div className="grid gap-4 md:grid-cols-2">
+            {Array.from({ length: 2 }).map((_, idx) => (
+              <div
+                key={idx}
+                className="h-40 rounded-3xl border border-white/10 bg-white/[0.03] animate-pulse"
+              />
+            ))}
+          </div>
+        ) : services.length === 0 ? (
+          <div className="rounded-3xl border border-white/10 bg-black/30 p-6">
+            <p className="text-sm font-semibold text-[var(--home-ink)]">No services yet.</p>
+          </div>
+        ) : (
+          <div className="grid gap-4 md:grid-cols-2">
+            {services.map((service) => {
+              const ctaHref = service.cta_link?.trim() || `mailto:${CONTACT_INFO[0]?.value ?? 'phymee@proton.me'}`;
+              const ctaLabel = service.cta_label?.trim() || 'Discuss';
+
+              return (
+                <div
+                  key={service.id}
+                  className="rounded-3xl border border-white/10 bg-black/30 p-6 shadow-[0_18px_40px_rgba(0,0,0,0.45)]"
+                >
+                  <div className="flex items-start justify-between gap-4">
+                    <div className="min-w-0 space-y-2">
+                      <div className="flex flex-wrap items-center gap-2">
+                        <span className="text-[var(--home-accent)]">
+                          <Sparkles className="h-4 w-4" />
+                        </span>
+                        <h3 className="text-sm font-semibold text-[var(--home-ink)]">{service.title}</h3>
+                        {service.starting_from ? (
+                          <span className="rounded-full border border-white/10 bg-white/[0.04] px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.28em] text-white/60">
+                            {service.starting_from}
+                          </span>
+                        ) : null}
+                      </div>
+                      <p className="text-sm text-[var(--home-muted)]">{service.description}</p>
+                    </div>
+
+                    <a
+                      href={ctaHref}
+                      target={ctaHref.startsWith('http') ? '_blank' : undefined}
+                      rel={ctaHref.startsWith('http') ? 'noreferrer noopener' : undefined}
+                      className="inline-flex shrink-0 items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.28em] text-white/70 transition hover:border-white/20 hover:bg-white/[0.06] hover:text-white"
+                      aria-label={`${ctaLabel} about ${service.title}`}
+                    >
+                      {ctaLabel}
+                      <ArrowUpRight className="h-4 w-4" />
+                    </a>
+                  </div>
+
+                  {service.deliverables.length > 0 ? (
+                    <div className="mt-4 grid gap-2">
+                      {service.deliverables.slice(0, 6).map((item) => (
+                        <div key={item} className="flex items-start gap-2 text-xs text-white/70">
+                          <BadgeCheck className="mt-0.5 h-4 w-4 text-[var(--home-accent)]" />
+                          <span className="leading-relaxed">{item}</span>
+                        </div>
+                      ))}
+                    </div>
+                  ) : null}
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </div>
+
+      <div className="space-y-3 border-t border-white/10 pt-6" data-gsap="reveal">
+        <div className="flex items-center justify-between">
+          <p className="text-[11px] uppercase tracking-[0.35em] text-[var(--home-muted)]">Testimonials</p>
+          <span className="text-xs text-[var(--home-muted)]">What people say</span>
         </div>
-      </div> */}
+
+        {testimonials === null ? (
+          <div className="grid gap-4 md:grid-cols-2">
+            {Array.from({ length: 2 }).map((_, idx) => (
+              <div
+                key={idx}
+                className="h-40 rounded-3xl border border-white/10 bg-white/[0.03] animate-pulse"
+              />
+            ))}
+          </div>
+        ) : testimonials.length === 0 ? (
+          <div className="rounded-3xl border border-white/10 bg-black/30 p-6">
+            <p className="text-sm font-semibold text-[var(--home-ink)]">No testimonials yet.</p>
+          </div>
+        ) : (
+          <div className="grid gap-4 md:grid-cols-2">
+            {testimonials.slice(0, 6).map((item) => {
+              const subtitle = [item.title?.trim(), item.company?.trim()].filter(Boolean).join(' • ');
+
+              return (
+                <div
+                  key={item.id}
+                  className="rounded-3xl border border-white/10 bg-black/30 p-6 shadow-[0_18px_40px_rgba(0,0,0,0.45)]"
+                >
+                  <div className="flex items-start gap-3">
+                    <span className="mt-0.5 text-[var(--home-accent)]">
+                      <Quote className="h-5 w-5" />
+                    </span>
+                    <p className="text-sm leading-relaxed text-white/70">“{item.quote}”</p>
+                  </div>
+
+                  <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
+                    <div>
+                      <p className="text-sm font-semibold text-[var(--home-ink)]">{item.name}</p>
+                      {subtitle ? <p className="mt-1 text-xs text-white/50">{subtitle}</p> : null}
+                    </div>
+                    {item.source_url ? (
+                      <a
+                        href={item.source_url}
+                        target="_blank"
+                        rel="noreferrer noopener"
+                        className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.28em] text-white/70 transition hover:border-white/20 hover:bg-white/[0.06] hover:text-white"
+                        aria-label={`Open testimonial source for ${item.name}`}
+                      >
+                        Source
+                        <ArrowUpRight className="h-4 w-4" />
+                      </a>
+                    ) : null}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </div>
     </div>
   );
 }

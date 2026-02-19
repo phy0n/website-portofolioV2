@@ -1,3 +1,4 @@
+import type { Metadata } from 'next';
 import SiteShell from '@/components/home/SiteShell';
 import { createSupabaseServerClient, supabaseConfig } from '@/lib/supabase/server';
 import PostsFeed from './PostsFeed';
@@ -7,6 +8,11 @@ import { createQuote, deleteQuote } from './quoteActions';
 import BlogSidebarList, { type BlogSidebarItem } from './BlogSidebarList';
 
 export const dynamic = 'force-dynamic';
+
+export const metadata: Metadata = {
+  title: 'Blog',
+  description: 'Posts, notes, and short stories.',
+};
 
 type BlogRow = {
   id: string;
@@ -56,7 +62,7 @@ const getDiscordAvatarUrl = async () => {
 export default async function BlogPage({
   searchParams,
 }: {
-  searchParams?: { success?: string; error?: string };
+  searchParams?: { success?: string; error?: string; edit?: string };
 }) {
   if (!supabaseConfig.url || !supabaseConfig.anonKey) {
     return (
@@ -159,13 +165,18 @@ export default async function BlogPage({
   const quoteRows: QuoteRow[] = safeQuotes as QuoteRow[];
   const avatarUrl = await getDiscordAvatarUrl();
   const today = new Date().toISOString().slice(0, 10);
-  const blogSidebarItems: BlogSidebarItem[] = blogRows.map((blog) => ({
-    id: String(blog.id),
-    slug: String(blog.slug || ''),
-    title: String(blog.title || ''),
-    date: String(blog.date || ''),
-    image: blog.image ?? null,
-  }));
+  const blogSidebarItems: BlogSidebarItem[] = blogRows.map((blog) => {
+    const imageRaw = typeof blog.image === 'string' ? blog.image : '';
+    const image = imageRaw.trim() ? imageRaw.trim() : null;
+
+    return {
+      id: String(blog.id),
+      slug: String(blog.slug || ''),
+      title: String(blog.title || ''),
+      date: String(blog.date || ''),
+      image,
+    };
+  });
 
   return (
     <SiteShell contentMode="full">
@@ -198,6 +209,7 @@ export default async function BlogPage({
               avatarUrl={avatarUrl}
               avatarFallback="P"
               canDelete={isAdmin}
+              canEdit={isAdmin}
             />
           </section>
 

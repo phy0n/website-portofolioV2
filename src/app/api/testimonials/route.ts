@@ -3,32 +3,34 @@ import { createClient } from '@supabase/supabase-js';
 
 export const revalidate = 60;
 
-type ExperienceRow = {
+type TestimonialRow = {
   id: string;
-  role: string;
-  company: string;
-  period: string;
-  description: string;
-  highlights: string[];
-  status: string;
+  name: string;
+  title?: string | null;
+  company?: string | null;
+  quote: string;
+  avatar_url?: string | null;
+  source_url?: string | null;
   sort_order?: number | null;
 };
 
-const normalizeExperience = (value: any): ExperienceRow | null => {
+const normalizeTestimonial = (value: any): TestimonialRow | null => {
   const id = String(value?.id ?? '').trim();
-  const role = String(value?.role ?? '').trim();
-  const company = String(value?.company ?? '').trim();
-  const period = String(value?.period ?? '').trim();
-  const description = String(value?.description ?? '').trim();
-  const highlights = Array.isArray(value?.highlights)
-    ? (value.highlights as unknown[]).map((item) => String(item)).filter(Boolean)
-    : [];
-  const status = String(value?.status ?? '').trim();
+  const name = String(value?.name ?? '').trim();
+  const quote = String(value?.quote ?? '').trim();
+  const titleRaw = typeof value?.title === 'string' ? value.title : '';
+  const companyRaw = typeof value?.company === 'string' ? value.company : '';
+  const avatarRaw = typeof value?.avatar_url === 'string' ? value.avatar_url : '';
+  const sourceRaw = typeof value?.source_url === 'string' ? value.source_url : '';
+  const title = titleRaw.trim() ? titleRaw.trim() : null;
+  const company = companyRaw.trim() ? companyRaw.trim() : null;
+  const avatar_url = avatarRaw.trim() ? avatarRaw.trim() : null;
+  const source_url = sourceRaw.trim() ? sourceRaw.trim() : null;
   const sort_order =
     typeof value?.sort_order === 'number' && Number.isFinite(value.sort_order) ? value.sort_order : null;
 
-  if (!id || !role || !company || !period || !description || !status) return null;
-  return { id, role, company, period, description, highlights, status, sort_order };
+  if (!id || !name || !quote) return null;
+  return { id, name, quote, title, company, avatar_url, source_url, sort_order };
 };
 
 export async function GET() {
@@ -40,19 +42,17 @@ export async function GET() {
 
     if (!supabaseUrl || !supabaseKey) {
       return NextResponse.json(
-        { experiences: [] },
+        { testimonials: [] },
         { headers: { 'Cache-Control': 'public, max-age=60, stale-while-revalidate=300' } }
       );
     }
 
-    const supabase = createClient(supabaseUrl, supabaseKey, {
-      auth: { persistSession: false },
-    });
+    const supabase = createClient(supabaseUrl, supabaseKey, { auth: { persistSession: false } });
 
     const { data, error } = await supabase
-      .from('experiences')
+      .from('testimonials')
       .select(
-        'id, role, company, period, description, highlights, status, sort_order, is_published, show_on_phion'
+        'id,name,title,company,quote,avatar_url,source_url,sort_order,is_published,show_on_phion,created_at'
       )
       .order('sort_order', { ascending: false })
       .order('created_at', { ascending: false })
@@ -60,25 +60,26 @@ export async function GET() {
 
     if (error || !data) {
       return NextResponse.json(
-        { experiences: [] },
+        { testimonials: [] },
         { headers: { 'Cache-Control': 'public, max-age=60, stale-while-revalidate=300' } }
       );
     }
 
-    const experiences = (data as any[])
+    const testimonials = (data as any[])
       .filter((row) => row?.is_published !== false && row?.show_on_phion !== false)
-      .map(normalizeExperience)
-      .filter((row): row is ExperienceRow => Boolean(row));
+      .map(normalizeTestimonial)
+      .filter((row): row is TestimonialRow => Boolean(row));
 
     return NextResponse.json(
-      { experiences },
+      { testimonials },
       { headers: { 'Cache-Control': 'public, max-age=60, stale-while-revalidate=300' } }
     );
   } catch (error) {
-    console.error('Error fetching experiences:', error);
+    console.error('Error fetching testimonials:', error);
     return NextResponse.json(
-      { experiences: [] },
+      { testimonials: [] },
       { headers: { 'Cache-Control': 'public, max-age=60, stale-while-revalidate=300' } }
     );
   }
 }
+

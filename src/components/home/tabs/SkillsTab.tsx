@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   SiCss3,
   SiC,
@@ -100,18 +100,78 @@ const SKILL_GROUPS: SkillGroup[] = [
   },
 ];
 
-function SkillBadge({ name, icon, tone }: { name: string; icon: React.ReactNode; tone: string }) {
+function SkillIcon({
+  name,
+  icon,
+  tone,
+  groupTitle,
+  isActive,
+  onToggle,
+}: {
+  name: string;
+  icon: React.ReactNode;
+  tone: string;
+  groupTitle: string;
+  isActive: boolean;
+  onToggle: () => void;
+}) {
   return (
-    <div className="js-skill flex items-center gap-3 rounded-full border border-white/10 bg-black/30 px-4 py-2 text-sm text-[var(--home-ink)]">
-      <span className={`flex h-9 w-9 items-center justify-center rounded-full bg-white/5 ${tone}`}>{icon}</span>
-      <span>{name}</span>
+    <div className="js-skill relative">
+      <button
+        type="button"
+        aria-label={name}
+        aria-expanded={isActive}
+        onClick={onToggle}
+        className={[
+          'group flex h-12 w-12 cursor-pointer items-center justify-center rounded-full border border-white/10 bg-black/30 text-[var(--home-ink)] transition',
+          'hover:border-white/20 hover:bg-black/40',
+          'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--home-accent)]/40',
+        ].join(' ')}
+      >
+        <span className={`flex h-10 w-10 items-center justify-center rounded-full bg-white/5 ${tone}`}>{icon}</span>
+      </button>
+
+      {isActive ? (
+        <div
+          role="tooltip"
+          className="absolute left-full top-1/2 z-20 ml-3 w-max -translate-y-1/2 rounded-2xl border border-white/10 bg-black/80 px-3 py-2 shadow-[0_18px_40px_rgba(0,0,0,0.45)] backdrop-blur"
+        >
+          <p className="text-xs font-semibold text-white">{name}</p>
+          <p className="mt-0.5 text-[10px] uppercase tracking-[0.28em] text-white/60">{groupTitle}</p>
+        </div>
+      ) : null}
     </div>
   );
 }
 
 export default function SkillsTab() {
+  const [activeSkill, setActiveSkill] = useState<string | null>(null);
+  const rootRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    if (!activeSkill) return;
+
+    const handlePointerDown = (event: PointerEvent) => {
+      const target = event.target instanceof Element ? event.target : null;
+      if (!target) return;
+      if (target.closest('.js-skill')) return;
+      setActiveSkill(null);
+    };
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') setActiveSkill(null);
+    };
+
+    window.addEventListener('pointerdown', handlePointerDown);
+    window.addEventListener('keydown', handleKeyDown);
+    return () => {
+      window.removeEventListener('pointerdown', handlePointerDown);
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [activeSkill]);
+
   return (
-    <div className="space-y-6">
+    <div ref={rootRef} className="space-y-6">
       <div className="space-y-3">
         <p className="js-reveal text-[11px] uppercase tracking-[0.35em] text-[var(--home-muted)]">Skills</p>
         <h2 className="js-reveal text-2xl font-sans font-semibold text-[var(--home-ink)] sm:text-3xl">
@@ -133,11 +193,14 @@ export default function SkillsTab() {
             </div>
             <div className="flex flex-wrap gap-3">
               {group.items.map((skill, index) => (
-                <SkillBadge
+                <SkillIcon
                   key={skill.name}
                   name={skill.name}
                   icon={skill.icon}
                   tone={group.tones[index % group.tones.length]}
+                  groupTitle={group.title}
+                  isActive={activeSkill === skill.name}
+                  onToggle={() => setActiveSkill((current) => (current === skill.name ? null : skill.name))}
                 />
               ))}
             </div>

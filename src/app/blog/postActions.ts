@@ -137,6 +137,74 @@ const extractStoragePathFromPublicUrl = (publicUrl: string, bucketId: string) =>
   }
 };
 
+export async function updatePost(formData: FormData) {
+  const id = String(formData.get('id') || '').trim();
+  const contentRaw = String(formData.get('content') || '');
+  const content = contentRaw.trim();
+  const imageFile = extractImageFile(formData);
+  const removeImage = String(formData.get('remove_image') || '').trim() === 'true';
+
+  if (!id) {
+    redirectWithError('Missing post id.');
+  }
+
+  const { supabase } = await requireAdmin();
+
+  const { data: currentRow, error: currentError } = await supabase
+    .from('posts')
+    .select('image')
+    .eq('id', id)
+    .maybeSingle();
+
+  if (currentError || !currentRow) {
+    redirectWithError('Post not found.');
+  }
+
+  const currentImageRaw = typeof (currentRow as any)?.image === 'string' ? String((currentRow as any).image) : '';
+  const currentImage = currentImageRaw.trim() ? currentImageRaw.trim() : null;
+
+  const nextContent = content ? content : null;
+  let nextImage = currentImage;
+  let previousImageToRemove: string | null = null;
+
+  if (imageFile) {
+    nextImage = await uploadPostImage(supabase, imageFile);
+    if (currentImage && nextImage && currentImage !== nextImage) {
+      previousImageToRemove = currentImage;
+    }
+  } else if (removeImage) {
+    if (currentImage) previousImageToRemove = currentImage;
+    nextImage = null;
+  }
+
+  if (!nextContent && !nextImage) {
+    redirectWithError('Write something or upload an image.');
+  }
+
+  const { error } = await supabase
+    .from('posts')
+    .update({ content: nextContent, image: nextImage })
+    .eq('id', id);
+
+  if (error) {
+    redirectWithError(`Update post failed: ${error.message}`);
+  }
+
+  if (previousImageToRemove) {
+    const filePath = extractStoragePathFromPublicUrl(previousImageToRemove, postImagesBucket);
+    if (filePath) {
+      try {
+        await supabase.storage.from(postImagesBucket).remove([filePath]);
+      } catch {
+        // Ignore storage cleanup failures.
+      }
+    }
+  }
+
+  revalidatePath('/blog');
+  redirectWithSuccess('Post updated.');
+}
+
 export async function deletePost(formData: FormData) {
   const id = String(formData.get('id') || '').trim();
 

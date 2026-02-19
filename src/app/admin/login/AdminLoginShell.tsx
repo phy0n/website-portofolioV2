@@ -1,9 +1,6 @@
 'use client';
 
-import { useEffect, useLayoutEffect, useRef, useState } from 'react';
-import Link from 'next/link';
-import { Menu } from 'lucide-react';
-import AdminSidebar from './AdminSidebar';
+import React, { useLayoutEffect, useRef } from 'react';
 import gsap from 'gsap';
 
 const REVEAL_SELECTOR = [
@@ -33,31 +30,11 @@ const REVEAL_SELECTOR = [
 ].join(', ');
 const REVEAL_ANIMATION_CLASS = 'animate-slide-up';
 
-type AdminAction = (formData?: FormData) => void | Promise<void>;
-
-export default function AdminShell({
-  email,
-  signOutAction,
-  children,
-}: {
-  email: string;
-  signOutAction: AdminAction;
-  children: React.ReactNode;
-}) {
-  const [sidebarOpen, setSidebarOpen] = useState(false);
-  const contentRef = useRef<HTMLElement | null>(null);
-
-  useEffect(() => {
-    if (!sidebarOpen) return;
-    const previousOverflow = document.body.style.overflow;
-    document.body.style.overflow = 'hidden';
-    return () => {
-      document.body.style.overflow = previousOverflow;
-    };
-  }, [sidebarOpen]);
+export default function AdminLoginShell({ children }: { children: React.ReactNode }) {
+  const pageRef = useRef<HTMLDivElement | null>(null);
 
   useLayoutEffect(() => {
-    const root = contentRef.current;
+    const root = pageRef.current;
     if (!root) return;
 
     const prefersReducedMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches;
@@ -186,51 +163,9 @@ export default function AdminShell({
   }, []);
 
   return (
-    <div className="min-h-screen bg-[#0b0b10] text-white">
-      <div
-        className={`fixed inset-y-0 left-0 z-50 w-72 transition-transform duration-300 lg:translate-x-0 ${
-          sidebarOpen ? 'translate-x-0' : '-translate-x-full'
-        }`}
-      >
-        <AdminSidebar
-          email={email}
-          signOutAction={signOutAction}
-          onClose={() => setSidebarOpen(false)}
-        />
-      </div>
-
-      <div
-        className={`fixed inset-0 z-40 cursor-pointer bg-black/70 backdrop-blur-sm transition-opacity lg:hidden ${
-          sidebarOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'
-        }`}
-        onClick={() => setSidebarOpen(false)}
-        aria-hidden="true"
-      />
-
-      <main
-        ref={contentRef}
-        data-page-content
-        className="min-h-screen px-4 sm:px-6 lg:pl-80 lg:pr-12 py-10"
-      >
-        <div className="lg:hidden mb-6 flex items-center justify-between gap-3">
-          <button
-            type="button"
-            onClick={() => setSidebarOpen(true)}
-            className="cursor-pointer inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2 text-xs text-white/70 transition hover:border-white/30 hover:text-white"
-            aria-label="Open admin navigation"
-          >
-            <Menu className="h-4 w-4" />
-            Menu
-          </button>
-          <Link
-            href="/"
-            className="text-xs text-white/50 hover:text-white transition"
-          >
-            Back to portfolio
-          </Link>
-        </div>
-        {children}
-      </main>
+    <div ref={pageRef} className="min-h-screen bg-[#0b0b10] text-white relative overflow-hidden" data-page-content>
+      {children}
     </div>
   );
 }
+

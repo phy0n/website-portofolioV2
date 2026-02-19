@@ -94,7 +94,7 @@ export default function BlogSidebarList({ blogs }: { blogs: BlogSidebarItem[] })
             <div className="flex items-start gap-3">
               <div className="relative mt-0.5 h-12 w-12 shrink-0 overflow-hidden rounded-2xl border border-white/10 bg-[var(--home-soft)]">
                 {blog.image ? (
-                  <Image src={blog.image} alt={blog.title} fill sizes="48px" className="object-cover" />
+                  <Image src={blog.image} alt={blog.title} fill sizes="48px" className="object-cover" unoptimized />
                 ) : (
                   <div className="flex h-full w-full items-center justify-center text-[10px] font-semibold text-white/40">
                     BLOG

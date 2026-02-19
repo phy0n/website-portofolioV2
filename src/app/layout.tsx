@@ -22,8 +22,11 @@ const nunito = Nunito({
 });
 
 export const metadata: Metadata = {
-  title: "Phy0n",
-  description: "Idk but this is Phy0n portofolio",
+  title: {
+    default: "Phy0n",
+    template: "Phy0n %s",
+  },
+  description: "Developer building modern web experiences with clean UI and smooth interactions.",
   metadataBase: new URL("https://phy0n.my.id"),
   icons: {
     icon: [
@@ -35,7 +38,7 @@ export const metadata: Metadata = {
   },
   openGraph: {
     title: 'Phy0n',
-    description: 'Idk but this is Phy0n portofolio',
+    description: 'Developer building modern web experiences with clean UI and smooth interactions.',
     type: 'website',
     url: 'https://phy0n.my.id/',
     images: [
@@ -50,7 +53,7 @@ export const metadata: Metadata = {
   twitter: {
     card: 'summary_large_image',
     title: 'Phy0n',
-    description: 'Idk but this is Phy0n portofolio',
+    description: 'Developer building modern web experiences with clean UI and smooth interactions.',
     images: ['/image/og-banner.jpg'],
   },
   robots: {
