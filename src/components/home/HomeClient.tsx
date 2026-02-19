@@ -7,6 +7,7 @@ import { useDiscordStatusRealtime } from '@/lib/discord/useDiscordStatusRealtime
 
 import DiscordActivitySection from './DiscordActivitySection';
 import HomeRightSidebar from './HomeRightSidebar';
+import ProfileFactsCard from './ProfileFactsCard';
 import SiteShell from './SiteShell';
 import AboutTab from './tabs/AboutTab';
 import ContactTab from './tabs/ContactTab';
@@ -116,9 +117,12 @@ export default function HomeClient({ discordUserId }: HomeClientProps) {
 
       <div className="mt-20 grid gap-14 lg:grid-cols-[1fr_360px] lg:gap-14">
         <div className="space-y-20">
-          <section id="about" className="js-section scroll-mt-24">
-            <AboutTab />
-          </section>
+          <div className="space-y-8">
+            <section id="about" className="js-section scroll-mt-24">
+              <AboutTab />
+            </section>
+            <ProfileFactsCard className="lg:hidden" />
+          </div>
           <section id="skills" className="js-section scroll-mt-24">
             <SkillsTab />
           </section>

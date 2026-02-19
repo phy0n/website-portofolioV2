@@ -53,7 +53,7 @@ const nextConfig: NextConfig = {
     serverActions: {
       bodySizeLimit: '20mb',
     },
-    middlewareClientMaxBodySize: '20mb',
+    proxyClientMaxBodySize: '20mb',
   },
   images: {
     remotePatterns,

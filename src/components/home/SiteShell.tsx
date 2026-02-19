@@ -58,7 +58,7 @@ interface SiteShellProps {
 
 export default function SiteShell({ children, scopeRef, contentMode = 'contained' }: SiteShellProps) {
   const pathname = usePathname();
-  const pageRef = useRef<HTMLElement | null>(null);
+  const pageRef = useRef<HTMLDivElement | null>(null);
   const navOverlayRef = useRef<HTMLElement | null>(null);
   const navListRef = useRef<HTMLUListElement | null>(null);
   const navTimelineRef = useRef<gsap.core.Timeline | null>(null);
