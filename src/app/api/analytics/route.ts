@@ -78,6 +78,7 @@ export async function POST(request: Request) {
   const pathValue = String(path || '').trim();
   const ipAddress = getClientIp(request.headers);
   const ipHash = ipAddress ? hashValue(ipAddress) : null;
+  const visitorKey = ipHash || visitorValue;
 
   if (!pathValue || pathValue.length > 200 || !pathValue.startsWith('/') || /\s/.test(pathValue)) {
     return NextResponse.json({ ok: false }, { status: 400 });
@@ -87,7 +88,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ ok: false }, { status: 400 });
   }
 
-  if (!visitorValue && !ipHash) {
+  if (!visitorKey) {
     return NextResponse.json({ ok: false }, { status: 400 });
   }
 
@@ -96,7 +97,7 @@ export async function POST(request: Request) {
   const safeReferrer = referrerValue && referrerValue.length <= 500 ? referrerValue : null;
 
   const { error } = await supabase.from('analytics_events').insert({
-    visitor_id: visitorValue || ipHash,
+    visitor_id: visitorKey,
     ip_hash: ipHash,
     path: pathValue,
     referrer: safeReferrer,
