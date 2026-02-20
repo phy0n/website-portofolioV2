@@ -14,21 +14,29 @@ import {
 
 type RangeValue = '24h' | '7d' | '30d';
 
+type CountValue = number | string;
+
 type AnalyticsPayload = {
   ok: boolean;
   range: RangeValue;
   summary: {
-    uniqueVisitors: number;
-    pageViews: number;
-    viewsPerVisitor: number;
+    uniqueVisitors: CountValue;
+    pageViews: CountValue;
+    viewsPerVisitor: number | string;
   };
   buckets: {
     labels: string[];
-    views: number[];
-    unique: number[];
+    views: CountValue[];
+    unique: CountValue[];
     labelStep: number;
   };
   topPages: { path: string; count: number }[];
+  traffic?: {
+    direct?: CountValue;
+    referrals?: CountValue;
+    topReferrers?: { label: string; count: CountValue }[];
+  };
+  capped?: boolean;
   generatedAt: string;
   error?: string;
 };
@@ -40,6 +48,15 @@ const normalizeRange = (value?: string): RangeValue => {
   return '7d';
 };
 
+const toCount = (value: unknown) => {
+  if (typeof value === 'number') return Number.isFinite(value) ? value : 0;
+  if (typeof value === 'string') {
+    const parsed = Number.parseInt(value, 10);
+    return Number.isFinite(parsed) ? parsed : 0;
+  }
+  return 0;
+};
+
 export default function AdminAnalytics({
   initialRange,
 }: {
@@ -49,6 +66,7 @@ export default function AdminAnalytics({
   const [data, setData] = useState<AnalyticsPayload | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [hasMounted, setHasMounted] = useState(false);
   const [animationKey, setAnimationKey] = useState(0);
   const refreshTimer = useRef<number | null>(null);
   const showSkeleton = isLoading && !data;
@@ -74,6 +92,10 @@ export default function AdminAnalytics({
   };
 
   useEffect(() => {
+    setHasMounted(true);
+  }, []);
+
+  useEffect(() => {
     loadAnalytics(range);
     if (refreshTimer.current) {
       window.clearInterval(refreshTimer.current);
@@ -93,9 +115,16 @@ export default function AdminAnalytics({
 
   const labels = data?.buckets.labels ?? [];
   const labelStep = data?.buckets.labelStep ?? 1;
-  const topPages = data?.topPages ?? [];
+  const topPages = useMemo(() => {
+    return (data?.topPages ?? [])
+      .map((entry) => ({ path: entry.path, count: toCount(entry.count) }))
+      .filter((entry) => entry.path);
+  }, [data?.topPages]);
   const topPagesMax = topPages[0]?.count ?? 0;
-  const totalVisits = data?.summary.pageViews ?? 0;
+  const totalVisits = toCount(data?.summary.pageViews);
+  const uniqueVisitors = toCount(data?.summary.uniqueVisitors);
+  const viewsPerVisitor =
+    uniqueVisitors > 0 ? totalVisits / uniqueVisitors : toCount(data?.summary.viewsPerVisitor);
 
   const rangeLabel = useMemo(() => {
     if (!data?.generatedAt) return '--';
@@ -114,10 +143,28 @@ export default function AdminAnalytics({
     if (!data) return [];
     return data.buckets.labels.map((label, index) => ({
       label,
-      visits: data.buckets.views[index] ?? 0,
-      unique: data.buckets.unique[index] ?? 0,
+      visits: toCount(data.buckets.views[index]),
+      unique: toCount(data.buckets.unique[index]),
     }));
   }, [data]);
+
+  const trafficDirect = toCount(data?.traffic?.direct);
+  const trafficReferrals = toCount(data?.traffic?.referrals);
+  const topReferrers = useMemo(() => {
+    const entries = data?.traffic?.topReferrers ?? [];
+    if (!Array.isArray(entries)) return [];
+    return entries
+      .map((entry) => {
+        const label = String(entry?.label ?? '').trim();
+        const count = toCount(entry?.count);
+        if (!label || count <= 0) return null;
+        return { label, count };
+      })
+      .filter((entry): entry is { label: string; count: number } => Boolean(entry))
+      .sort((a, b) => b.count - a.count)
+      .slice(0, 5);
+  }, [data?.traffic?.topReferrers]);
+  const topReferrersMax = topReferrers[0]?.count ?? 0;
 
   return (
     <section id="audience" className="space-y-5">
@@ -199,11 +246,11 @@ export default function AdminAnalytics({
         <>
           <div className="grid gap-4 md:grid-cols-3">
             {[
-              { label: 'Unique users (IP)', value: data?.summary.uniqueVisitors ?? 0 },
-              { label: 'Page views', value: data?.summary.pageViews ?? 0 },
+              { label: 'Unique users (IP)', value: uniqueVisitors.toLocaleString() },
+              { label: 'Page views', value: totalVisits.toLocaleString() },
               {
                 label: 'Views per user',
-                value: data ? data.summary.viewsPerVisitor.toFixed(1) : '0.0',
+                value: viewsPerVisitor.toFixed(1),
               },
             ].map((metricItem) => (
               <div
@@ -240,18 +287,28 @@ export default function AdminAnalytics({
               <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2 text-xs uppercase tracking-[0.3em] text-white/60">
                 <span>Total visits</span>
                 <span className="rounded-full bg-white/10 px-2 py-1 text-white">
-                  {totalVisits}
+                  {totalVisits.toLocaleString()}
                 </span>
               </div>
             </div>
 
             <div className="mt-6 h-52">
-              {chartData.length === 0 ? (
+              {!hasMounted ? (
+                <div className="flex h-full items-center justify-center text-sm text-white/40">
+                  Loading chart...
+                </div>
+              ) : chartData.length === 0 ? (
                 <div className="flex h-full items-center justify-center text-sm text-white/40">
                   No chart data yet.
                 </div>
               ) : (
-                <ResponsiveContainer width="100%" height="100%" key={animationKey}>
+                <ResponsiveContainer
+                  width="100%"
+                  height="100%"
+                  minHeight={180}
+                  minWidth={280}
+                  key={animationKey}
+                >
                   <ComposedChart
                     data={chartData}
                     margin={{ top: 10, right: 10, left: -10, bottom: 0 }}
@@ -373,11 +430,67 @@ export default function AdminAnalytics({
               <div className="mt-4 space-y-4 text-sm text-white/60">
                 <div className="flex items-center justify-between">
                   <span>Total events</span>
-                  <span className="text-white">{data?.summary.pageViews ?? 0}</span>
+                  <span className="text-white">{totalVisits.toLocaleString()}</span>
                 </div>
                 <div className="flex items-center justify-between">
                   <span>Unique visitors</span>
-                  <span className="text-white">{data?.summary.uniqueVisitors ?? 0}</span>
+                  <span className="text-white">{uniqueVisitors.toLocaleString()}</span>
+                </div>
+
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="rounded-xl border border-white/10 bg-white/5 p-3">
+                    <p className="text-[10px] uppercase tracking-[0.3em] text-white/40">
+                      Direct
+                    </p>
+                    <p className="mt-2 text-lg font-semibold text-white">
+                      {trafficDirect.toLocaleString()}
+                    </p>
+                  </div>
+                  <div className="rounded-xl border border-white/10 bg-white/5 p-3">
+                    <p className="text-[10px] uppercase tracking-[0.3em] text-white/40">
+                      Referrals
+                    </p>
+                    <p className="mt-2 text-lg font-semibold text-white">
+                      {trafficReferrals.toLocaleString()}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="rounded-xl border border-white/10 bg-white/5 p-3">
+                  <div className="flex items-center justify-between gap-3">
+                    <p className="text-[10px] uppercase tracking-[0.3em] text-white/40">
+                      Top referrers
+                    </p>
+                    {data?.capped ? (
+                      <span className="text-[10px] uppercase tracking-[0.3em] text-white/40">
+                        capped
+                      </span>
+                    ) : null}
+                  </div>
+                  {topReferrers.length === 0 ? (
+                    <p className="mt-2 text-xs text-white/40">No referrer data yet.</p>
+                  ) : (
+                    <div className="mt-3 space-y-2">
+                      {topReferrers.map((entry) => (
+                        <div key={entry.label} className="space-y-1">
+                          <div className="flex items-center justify-between gap-3 text-xs text-white/60">
+                            <span className="truncate">{entry.label}</span>
+                            <span className="text-white/60">{entry.count}</span>
+                          </div>
+                          <div className="h-1.5 w-full overflow-hidden rounded-full bg-white/5">
+                            <div
+                              className="h-full rounded-full bg-emerald-400/70 transition-[width] duration-700 ease-out"
+                              style={{
+                                width: topReferrersMax
+                                  ? `${(entry.count / topReferrersMax) * 100}%`
+                                  : '0%',
+                              }}
+                            />
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
                 <div className="rounded-xl border border-white/10 bg-white/5 p-3 text-xs text-white/50">
                   Watch live movement as visitors arrive. The chart auto-updates.

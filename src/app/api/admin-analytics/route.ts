@@ -3,9 +3,63 @@ import { createSupabaseServerClient, supabaseConfig } from '@/lib/supabase/serve
 
 type RangeValue = '24h' | '7d' | '30d';
 
+type TrafficReferrer = { label: string; count: number };
+
 const normalizeRange = (value?: string | null): RangeValue => {
   if (value === '24h' || value === '30d') return value;
   return '7d';
+};
+
+const MAX_EVENTS_FOR_FALLBACK = 10_000;
+const FALLBACK_PAGE_SIZE = 1_000;
+
+const toCount = (value: unknown) => {
+  if (typeof value === 'number') return Number.isFinite(value) ? value : 0;
+  if (typeof value === 'string') {
+    const parsed = Number.parseInt(value, 10);
+    return Number.isFinite(parsed) ? parsed : 0;
+  }
+  return 0;
+};
+
+const getRangeConfig = (rangeValue: RangeValue) => {
+  if (rangeValue === '24h') {
+    return { rangeHours: 24, bucketCount: 24, bucketSizeMs: 60 * 60 * 1000, labelStep: 4 };
+  }
+  if (rangeValue === '30d') {
+    return { rangeHours: 24 * 30, bucketCount: 30, bucketSizeMs: 24 * 60 * 60 * 1000, labelStep: 5 };
+  }
+  return { rangeHours: 24 * 7, bucketCount: 7, bucketSizeMs: 24 * 60 * 60 * 1000, labelStep: 1 };
+};
+
+const formatBucketLabels = (rangeValue: RangeValue, bucketStartMs: number, bucketSizeMs: number, bucketCount: number) => {
+  return Array.from({ length: bucketCount }, (_, index) => {
+    const labelDate = new Date(bucketStartMs + (index + 1) * bucketSizeMs);
+    if (rangeValue === '24h') {
+      return labelDate.toLocaleTimeString('en-GB', {
+        hour: '2-digit',
+        minute: '2-digit',
+      });
+    }
+    return labelDate.toLocaleDateString('en-GB', {
+      day: '2-digit',
+      month: 'short',
+    });
+  });
+};
+
+const normalizeTopReferrers = (value: unknown): TrafficReferrer[] => {
+  if (!Array.isArray(value)) return [];
+  return value
+    .map((entry) => {
+      const rawLabel = (entry as any)?.label;
+      const rawCount = (entry as any)?.count;
+      const label = typeof rawLabel === 'string' ? rawLabel.trim() : '';
+      const count = toCount(rawCount);
+      if (!label || count <= 0) return null;
+      return { label, count };
+    })
+    .filter((item): item is TrafficReferrer => Boolean(item));
 };
 
 export async function GET(request: Request) {
@@ -37,26 +91,130 @@ export async function GET(request: Request) {
 
   const { searchParams } = new URL(request.url);
   const rangeValue = normalizeRange(searchParams.get('range'));
-  const rangeHours = rangeValue === '24h' ? 24 : rangeValue === '30d' ? 24 * 30 : 24 * 7;
-  const now = Date.now();
-  const rangeStart = new Date(now - rangeHours * 60 * 60 * 1000).toISOString();
+  const { rangeHours, bucketCount, bucketSizeMs, labelStep } = getRangeConfig(rangeValue);
+  const nowMs = Date.now();
+  const rangeStart = new Date(nowMs - rangeHours * 60 * 60 * 1000).toISOString();
 
-  const { data: analyticsData, error } = await supabase
-    .from('analytics_events')
-    .select('visitor_id, ip_hash, path, created_at')
-    .gte('created_at', rangeStart);
+  const { data: reportData, error: reportError } = await supabase.rpc('admin_analytics_report', {
+    range_value: rangeValue,
+  });
 
-  if (error) {
-    return NextResponse.json({ ok: false, error: error.message }, { status: 500 });
+  if (!reportError && reportData) {
+    const report = Array.isArray(reportData) ? (reportData[0] as any) : (reportData as any);
+    const generatedAtIso =
+      typeof report?.generatedAt === 'string' ? report.generatedAt : new Date().toISOString();
+
+    const generatedAtMs = new Date(generatedAtIso).getTime();
+    const safeEndMs = Number.isFinite(generatedAtMs) ? generatedAtMs : nowMs;
+    const safeBucketCount = toCount(report?.bucketCount) || bucketCount;
+    const bucketSizeSeconds = toCount(report?.bucketSizeSeconds);
+    const safeBucketSizeMs = bucketSizeSeconds ? bucketSizeSeconds * 1000 : bucketSizeMs;
+    const safeLabelStep = toCount(report?.labelStep) || labelStep;
+    const bucketStartMs = safeEndMs - safeBucketCount * safeBucketSizeMs;
+
+    const pageViews = toCount(report?.summary?.pageViews);
+    const uniqueVisitors = toCount(report?.summary?.uniqueVisitors);
+    const viewsPerVisitor = uniqueVisitors ? pageViews / uniqueVisitors : 0;
+
+    const viewsRaw = Array.isArray(report?.buckets?.views) ? report.buckets.views : [];
+    const uniqueRaw = Array.isArray(report?.buckets?.unique) ? report.buckets.unique : [];
+
+    const views = Array.from({ length: safeBucketCount }, (_, index) => toCount(viewsRaw[index]));
+    const unique = Array.from({ length: safeBucketCount }, (_, index) => toCount(uniqueRaw[index]));
+
+    const topPages = Array.isArray(report?.topPages)
+      ? report.topPages
+          .map((entry: any) => ({
+            path: String(entry?.path ?? ''),
+            count: toCount(entry?.count),
+          }))
+          .filter((entry: { path: string; count: number }) => entry.path && entry.count >= 0)
+      : [];
+
+    const traffic = report?.traffic && typeof report.traffic === 'object' ? report.traffic : null;
+    const direct = toCount(traffic?.direct);
+    const referrals = toCount(traffic?.referrals);
+    const topReferrers = normalizeTopReferrers(traffic?.topReferrers);
+
+    const response = NextResponse.json({
+      ok: true,
+      range: rangeValue,
+      summary: {
+        uniqueVisitors,
+        pageViews,
+        viewsPerVisitor,
+      },
+      buckets: {
+        labels: formatBucketLabels(rangeValue, bucketStartMs, safeBucketSizeMs, safeBucketCount),
+        views,
+        unique,
+        labelStep: safeLabelStep,
+      },
+      topPages,
+      traffic: {
+        direct,
+        referrals,
+        topReferrers,
+      },
+      generatedAt: generatedAtIso,
+    });
+
+    response.headers.set('Cache-Control', 'no-store');
+    return response;
   }
 
-  type AnalyticsRow = { visitor_id: string; ip_hash: string | null; path: string; created_at: string };
-  const analyticsRows = (analyticsData as AnalyticsRow[] | null) ?? [];
+  const [pageViewsResult, directResult, referralResult] = await Promise.all([
+    supabase
+      .from('analytics_events')
+      .select('id', { count: 'exact', head: true })
+      .gte('created_at', rangeStart),
+    supabase
+      .from('analytics_events')
+      .select('id', { count: 'exact', head: true })
+      .gte('created_at', rangeStart)
+      .is('referrer', null),
+    supabase
+      .from('analytics_events')
+      .select('id', { count: 'exact', head: true })
+      .gte('created_at', rangeStart)
+      .not('referrer', 'is', null),
+  ]);
 
-  const uniqueVisitors = new Set(
-    analyticsRows.map((row) => row.ip_hash || row.visitor_id)
-  ).size;
-  const pageViews = analyticsRows.length;
+  const pageViews = pageViewsResult.error ? 0 : toCount(pageViewsResult.count);
+  const direct = directResult.error ? 0 : toCount(directResult.count);
+  const referrals = referralResult.error ? 0 : toCount(referralResult.count);
+
+  type AnalyticsRow = {
+    visitor_id: string;
+    ip_hash: string | null;
+    path: string;
+    created_at: string;
+    referrer: string | null;
+  };
+
+  const analyticsRows: AnalyticsRow[] = [];
+
+  for (
+    let offset = 0;
+    offset < MAX_EVENTS_FOR_FALLBACK;
+    offset += FALLBACK_PAGE_SIZE
+  ) {
+    const { data: rows, error } = await supabase
+      .from('analytics_events')
+      .select('visitor_id, ip_hash, path, created_at, referrer')
+      .gte('created_at', rangeStart)
+      .order('created_at', { ascending: false })
+      .range(offset, offset + FALLBACK_PAGE_SIZE - 1);
+
+    if (error) break;
+    if (!rows || rows.length === 0) break;
+    analyticsRows.push(...(rows as AnalyticsRow[]));
+    if (rows.length < FALLBACK_PAGE_SIZE) break;
+  }
+
+  const visitorKeyForRow = (row: AnalyticsRow) => row.ip_hash || row.visitor_id;
+
+  const uniqueVisitors = new Set(analyticsRows.map(visitorKeyForRow)).size;
   const viewsPerVisitor = uniqueVisitors ? pageViews / uniqueVisitors : 0;
 
   const pageCounts = new Map<string, number>();
@@ -70,38 +228,37 @@ export async function GET(request: Request) {
     .slice(0, 5)
     .map(([path, count]) => ({ path, count }));
 
-  const bucketCount = rangeValue === '24h' ? 24 : rangeValue === '30d' ? 30 : 7;
-  const bucketSizeMs = rangeValue === '24h' ? 60 * 60 * 1000 : 24 * 60 * 60 * 1000;
-  const bucketStart = now - bucketCount * bucketSizeMs;
+  const bucketStartMs = nowMs - bucketCount * bucketSizeMs;
   const viewBuckets = Array.from({ length: bucketCount }, () => 0);
   const visitorBuckets = Array.from({ length: bucketCount }, () => new Set<string>());
 
   analyticsRows.forEach((row) => {
     const timestamp = new Date(row.created_at).getTime();
-    if (Number.isNaN(timestamp) || timestamp < bucketStart || timestamp > now) return;
-    const index = Math.min(
-      bucketCount - 1,
-      Math.floor((timestamp - bucketStart) / bucketSizeMs)
-    );
+    if (Number.isNaN(timestamp) || timestamp < bucketStartMs || timestamp > nowMs) return;
+    const index = Math.min(bucketCount - 1, Math.floor((timestamp - bucketStartMs) / bucketSizeMs));
     viewBuckets[index] += 1;
-    visitorBuckets[index].add(row.ip_hash || row.visitor_id);
+    visitorBuckets[index].add(visitorKeyForRow(row));
   });
 
   const uniqueBuckets = visitorBuckets.map((bucket) => bucket.size);
-  const labelStep = rangeValue === '24h' ? 4 : rangeValue === '30d' ? 5 : 1;
-  const bucketLabels = Array.from({ length: bucketCount }, (_, index) => {
-    const labelDate = new Date(bucketStart + (index + 1) * bucketSizeMs);
-    if (rangeValue === '24h') {
-      return labelDate.toLocaleTimeString('en-GB', {
-        hour: '2-digit',
-        minute: '2-digit',
-      });
+
+  const referrerCounts = new Map<string, number>();
+  analyticsRows.forEach((row) => {
+    const raw = typeof row.referrer === 'string' ? row.referrer.trim() : '';
+    if (!raw) return;
+    try {
+      const host = new URL(raw).hostname.replace(/^www\./i, '').trim();
+      if (!host) return;
+      referrerCounts.set(host, (referrerCounts.get(host) || 0) + 1);
+    } catch {
+      return;
     }
-    return labelDate.toLocaleDateString('en-GB', {
-      day: '2-digit',
-      month: 'short',
-    });
   });
+
+  const topReferrers = Array.from(referrerCounts.entries())
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 5)
+    .map(([label, count]) => ({ label, count }));
 
   const response = NextResponse.json({
     ok: true,
@@ -112,13 +269,21 @@ export async function GET(request: Request) {
       viewsPerVisitor,
     },
     buckets: {
-      labels: bucketLabels,
+      labels: formatBucketLabels(rangeValue, bucketStartMs, bucketSizeMs, bucketCount),
       views: viewBuckets,
       unique: uniqueBuckets,
       labelStep,
     },
     topPages,
-    generatedAt: new Date().toISOString(),
+    traffic: {
+      direct,
+      referrals,
+      topReferrers,
+    },
+    capped: analyticsRows.length >= MAX_EVENTS_FOR_FALLBACK,
+    generatedAt: new Date(nowMs).toISOString(),
+    source: reportError ? 'fallback' : 'events',
+    rpcError: reportError?.message ?? undefined,
   });
 
   response.headers.set('Cache-Control', 'no-store');
