@@ -2,7 +2,6 @@
 
 import React, { useDeferredValue, useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
 import {
   BookOpen,
   Bookmark,
@@ -40,6 +39,53 @@ interface DailyQuote {
 }
 
 type SortMode = 'newest' | 'oldest' | 'featured';
+
+const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL ?? '';
+const BLOG_IMAGES_BUCKET = process.env.NEXT_PUBLIC_SUPABASE_BLOG_IMAGE_BUCKET ?? 'blog-images';
+
+const joinUrl = (base: string, path: string) => {
+  const normalizedBase = base.replace(/\/$/, '');
+  const normalizedPath = path.startsWith('/') ? path : `/${path}`;
+  return `${normalizedBase}${normalizedPath}`;
+};
+
+const resolveBlogImageSrc = (value?: string | null) => {
+  const raw = typeof value === 'string' ? value.trim() : '';
+  if (!raw) return null;
+
+  if (
+    raw.startsWith('http://') ||
+    raw.startsWith('https://') ||
+    raw.startsWith('data:') ||
+    raw.startsWith('blob:')
+  ) {
+    return raw;
+  }
+
+  if (raw.startsWith('/')) {
+    if (raw.startsWith('/image/blogImage/')) {
+      return raw;
+    }
+    if (raw.startsWith('/storage/v1/') && SUPABASE_URL) {
+      return joinUrl(SUPABASE_URL, raw);
+    }
+    return raw;
+  }
+
+  if (raw.startsWith('storage/v1/') && SUPABASE_URL) {
+    return joinUrl(SUPABASE_URL, raw);
+  }
+
+  if (raw.startsWith('blogs/') && SUPABASE_URL) {
+    return joinUrl(SUPABASE_URL, `/storage/v1/object/public/${BLOG_IMAGES_BUCKET}/${raw}`);
+  }
+
+  if (raw.startsWith('image/') || raw.startsWith('images/') || raw.startsWith('assets/')) {
+    return `/${raw}`;
+  }
+
+  return `/${raw}`;
+};
 
 const formatQuoteDate = (dateKey: string) => {
   const [yyyy, mm, dd] = dateKey.split('-').map(Number);
@@ -436,15 +482,17 @@ export default function BlogClient({
                     >
                       <article className="overflow-hidden border border-white/10 bg-white/[0.02] hover:border-white/25 transition-all duration-300">
                         <div className="relative h-44 overflow-hidden bg-gradient-to-br from-white/5 via-black/30 to-black">
-                          {featured.image ? (
-                            <Image
-                              src={featured.image}
-                              alt={featured.title}
-                              fill
-                              sizes="(min-width: 640px) 50vw, 100vw"
-                              quality={80}
-                              className="object-cover group-hover:scale-105 transition-transform duration-700"
-                            />
+                          {resolveBlogImageSrc(featured.image) ? (
+                            <>
+                              {/* eslint-disable-next-line @next/next/no-img-element */}
+                              <img
+                                src={resolveBlogImageSrc(featured.image) ?? ''}
+                                alt={featured.title}
+                                loading="lazy"
+                                decoding="async"
+                                className="absolute inset-0 h-full w-full object-cover group-hover:scale-105 transition-transform duration-700"
+                              />
+                            </>
                           ) : null}
                           <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
                           <div className="absolute left-4 top-4 bg-black/80 backdrop-blur-sm border border-white/10 px-3 py-1.5 text-[10px] uppercase tracking-[0.3em] text-white/70">
@@ -488,15 +536,17 @@ export default function BlogClient({
                         <article className="relative bg-white/[0.02] border border-white/10 hover:border-white/25 transition-all duration-300 overflow-hidden rounded-2xl">
                           <div className="grid md:grid-cols-5 gap-0">
                             <div className="md:col-span-2 relative h-48 xs:h-56 sm:h-64 md:h-auto overflow-hidden bg-gradient-to-br from-white/5 via-black/30 to-black">
-                              {blog.image ? (
-                                <Image
-                                  src={blog.image}
-                                  alt={blog.title}
-                                  fill
-                                  sizes="(min-width: 1024px) 40vw, 100vw"
-                                  quality={75}
-                                  className="object-cover group-hover:scale-105 transition-transform duration-700"
-                                />
+                              {resolveBlogImageSrc(blog.image) ? (
+                                <>
+                                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                                  <img
+                                    src={resolveBlogImageSrc(blog.image) ?? ''}
+                                    alt={blog.title}
+                                    loading="lazy"
+                                    decoding="async"
+                                    className="absolute inset-0 h-full w-full object-cover group-hover:scale-105 transition-transform duration-700"
+                                  />
+                                </>
                               ) : null}
                               <div className="absolute inset-0 bg-gradient-to-r from-transparent via-black/30 to-black/60 md:to-black"></div>
                               <div className="absolute top-3 xs:top-4 left-3 xs:left-4 flex flex-wrap items-center gap-2">

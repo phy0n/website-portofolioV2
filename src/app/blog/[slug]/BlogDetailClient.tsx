@@ -2,7 +2,6 @@
 
 import React, { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
 import {
   Eye,
   ArrowLeft,
@@ -68,6 +67,53 @@ const REVEAL_SELECTOR = [
 ].join(', ');
 const REVEAL_ANIMATION_CLASS = 'animate-slide-up';
 
+const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL ?? '';
+const BLOG_IMAGES_BUCKET = process.env.NEXT_PUBLIC_SUPABASE_BLOG_IMAGE_BUCKET ?? 'blog-images';
+
+const joinUrl = (base: string, path: string) => {
+  const normalizedBase = base.replace(/\/$/, '');
+  const normalizedPath = path.startsWith('/') ? path : `/${path}`;
+  return `${normalizedBase}${normalizedPath}`;
+};
+
+const resolveBlogImageSrc = (value?: string | null) => {
+  const raw = typeof value === 'string' ? value.trim() : '';
+  if (!raw) return null;
+
+  if (
+    raw.startsWith('http://') ||
+    raw.startsWith('https://') ||
+    raw.startsWith('data:') ||
+    raw.startsWith('blob:')
+  ) {
+    return raw;
+  }
+
+  if (raw.startsWith('/')) {
+    if (raw.startsWith('/image/blogImage/')) {
+      return raw;
+    }
+    if (raw.startsWith('/storage/v1/') && SUPABASE_URL) {
+      return joinUrl(SUPABASE_URL, raw);
+    }
+    return raw;
+  }
+
+  if (raw.startsWith('storage/v1/') && SUPABASE_URL) {
+    return joinUrl(SUPABASE_URL, raw);
+  }
+
+  if (raw.startsWith('blogs/') && SUPABASE_URL) {
+    return joinUrl(SUPABASE_URL, `/storage/v1/object/public/${BLOG_IMAGES_BUCKET}/${raw}`);
+  }
+
+  if (raw.startsWith('image/') || raw.startsWith('images/') || raw.startsWith('assets/')) {
+    return `/${raw}`;
+  }
+
+  return `/${raw}`;
+};
+
 export default function BlogDetailClient({
   blog,
   relatedBlogs = [],
@@ -94,6 +140,7 @@ export default function BlogDetailClient({
   const toc = useMemo(() => (content ? extractTocFromContent(content) : []), [content]);
   const resolvedUniqueVisitors = Math.max(uniqueCount ?? 0, fetchedCounts?.unique ?? 0);
   const showUniqueCounts = uniqueCount !== undefined || fetchedCounts?.source === 'counters';
+  const coverImageSrc = resolveBlogImageSrc(blog?.image);
 
   useEffect(() => {
     return () => {
@@ -526,18 +573,18 @@ export default function BlogDetailClient({
               </div>
             </header>
 
-            {blog.image && (
+            {coverImageSrc && (
               <div
                 className="relative w-full h-56 xs:h-64 sm:h-72 md:h-[420px] overflow-hidden mb-10 xs:mb-12 rounded-2xl border border-white/10 bg-gradient-to-br from-white/5 via-black/30 to-black shadow-[0_30px_120px_rgba(0,0,0,0.55)]"
                 data-gsap="reveal">
-                <Image
-                  src={blog.image}
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={coverImageSrc}
                   alt={blog.title}
-                  fill
-                  sizes="(min-width: 1024px) 860px, 100vw"
-                  quality={85}
-                  className="object-cover"
-                  priority
+                  fetchPriority="high"
+                  loading="eager"
+                  decoding="async"
+                  className="absolute inset-0 h-full w-full object-cover"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/45 via-black/10 to-transparent" />
               </div>
@@ -555,36 +602,39 @@ export default function BlogDetailClient({
                     <span className="text-xs text-white/40">{relatedBlogs.length} picks</span>
                   </div>
                   <div className="mt-5 grid gap-4 sm:grid-cols-2">
-                    {relatedBlogs.map((item) => (
-                      <Link
-                        key={item.id}
-                        href={`/blog/${encodeURIComponent(item.slug)}`}
-                        className="group rounded-2xl border border-white/10 bg-white/[0.03] overflow-hidden shadow-[0_20px_60px_rgba(0,0,0,0.25)] transition hover:border-white/25 hover:bg-white/[0.05]"
-                      >
-                        <div className="grid grid-cols-[110px_minmax(0,1fr)] gap-4 p-4">
-                          <div className="relative h-20 w-full overflow-hidden rounded-xl border border-white/10 bg-black/40">
-                            {item.image && (
-                              <Image
-                                src={item.image}
-                                alt={item.title}
-                                fill
-                                sizes="110px"
-                                className="object-cover transition-transform duration-700 group-hover:scale-105"
-                              />
-                            )}
+                    {relatedBlogs.map((item) => {
+                      const relatedImageSrc = resolveBlogImageSrc(item.image);
+
+                      return (
+                        <Link
+                          key={item.id}
+                          href={`/blog/${encodeURIComponent(item.slug)}`}
+                          className="group rounded-2xl border border-white/10 bg-white/[0.03] overflow-hidden shadow-[0_20px_60px_rgba(0,0,0,0.25)] transition hover:border-white/25 hover:bg-white/[0.05]"
+                        >
+                          <div className="grid grid-cols-[110px_minmax(0,1fr)] gap-4 p-4">
+                            <div className="relative h-20 w-full overflow-hidden rounded-xl border border-white/10 bg-black/40">
+                              {relatedImageSrc ? (
+                                <>
+                                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                                  <img
+                                    src={relatedImageSrc}
+                                    alt={item.title}
+                                    loading="lazy"
+                                    decoding="async"
+                                    className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+                                  />
+                                </>
+                              ) : null}
+                            </div>
+                            <div className="min-w-0">
+                              <p className="text-xs text-white/50">{formatBlogDate(item.date)}</p>
+                              <p className="mt-1 font-semibold text-white line-clamp-2">{item.title}</p>
+                              <p className="mt-2 text-xs text-white/60 line-clamp-2">{item.excerpt}</p>
+                            </div>
                           </div>
-                          <div className="min-w-0">
-                            <p className="text-xs text-white/50">{formatBlogDate(item.date)}</p>
-                            <p className="mt-1 font-semibold text-white line-clamp-2">
-                              {item.title}
-                            </p>
-                            <p className="mt-2 text-xs text-white/60 line-clamp-2">
-                              {item.excerpt}
-                            </p>
-                          </div>
-                        </div>
-                      </Link>
-                    ))}
+                        </Link>
+                      );
+                    })}
                   </div>
                 </section>
               )}

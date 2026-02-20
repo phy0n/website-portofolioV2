@@ -254,7 +254,7 @@ export function ChatPanel({
           </div>
         ) : null}
 
-        <div className="flex flex-col gap-3 sm:flex-row sm:items-end">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
           <input
             value={name}
             onChange={(e) => onNameChange(e.target.value)}
@@ -270,7 +270,7 @@ export function ChatPanel({
               onChange={(e) => onMessageChange(e.target.value)}
               placeholder="Message…"
               maxLength={500}
-              rows={2}
+              rows={1}
               className="w-full resize-none rounded-2xl border border-white/10 bg-black/40 px-4 py-2.5 text-sm text-white placeholder:text-white/30 outline-none focus:border-white/20"
               onKeyDown={(event) => {
                 if (event.key === 'Enter' && !event.shiftKey) {
@@ -279,10 +279,6 @@ export function ChatPanel({
                 }
               }}
             />
-            <div className="mt-1 flex items-center justify-between text-[10px] text-white/40">
-              <p>{message.length}/500</p>
-              <p className="hidden sm:block">Enter to send</p>
-            </div>
           </div>
 
           <button
@@ -294,6 +290,11 @@ export function ChatPanel({
             <Send className="h-4 w-4" />
             {sending ? '...' : 'Send'}
           </button>
+        </div>
+
+        <div className="mt-1 flex items-center justify-between text-[10px] text-white/40">
+          <p>{message.length}/500</p>
+          <p className="hidden sm:block">Enter to send</p>
         </div>
       </div>
     </div>
