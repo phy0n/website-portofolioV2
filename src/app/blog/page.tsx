@@ -202,9 +202,9 @@ export default async function BlogPage({
             </div>
 
             {isAdmin ? (
-              <details className="flex flex-col items-end">
+              <details className="flex flex-col">
                 <summary
-                  className="list-none inline-flex h-9 w-9 cursor-pointer select-none items-center justify-center rounded-full border border-white/10 bg-white/[0.06] text-lg font-semibold leading-none text-white/70 transition hover:border-white/20 hover:bg-white/[0.08] hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-white/30 [&::-webkit-details-marker]:hidden"
+                  className="list-none inline-flex h-9 w-9 cursor-pointer select-none self-end items-center justify-center rounded-full border border-white/10 bg-white/[0.06] text-lg font-semibold leading-none text-white/70 transition hover:border-white/20 hover:bg-white/[0.08] hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-white/30 [&::-webkit-details-marker]:hidden"
                   aria-label="Create post"
                   title="Create post"
                 >
@@ -247,9 +247,9 @@ export default async function BlogPage({
               </div>
 
               {isAdmin ? (
-                <details className="mt-4 flex flex-col items-end">
+                <details className="mt-4 flex flex-col">
                   <summary
-                    className="list-none inline-flex h-9 w-9 cursor-pointer select-none items-center justify-center rounded-full border border-white/10 bg-white/[0.06] text-lg font-semibold leading-none text-white/70 transition hover:border-white/20 hover:bg-white/[0.08] hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-white/30 [&::-webkit-details-marker]:hidden"
+                    className="list-none inline-flex h-9 w-9 cursor-pointer select-none self-end items-center justify-center rounded-full border border-white/10 bg-white/[0.06] text-lg font-semibold leading-none text-white/70 transition hover:border-white/20 hover:bg-white/[0.08] hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-white/30 [&::-webkit-details-marker]:hidden"
                     aria-label="Add quote"
                     title="Add quote"
                   >
