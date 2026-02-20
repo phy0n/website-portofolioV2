@@ -4,7 +4,7 @@ import path from 'node:path';
 import { readFile } from 'node:fs/promises';
 
 export const runtime = 'nodejs';
-export const revalidate = 60 * 60 * 24;
+export const revalidate = 86400;
 
 const getContentType = (filename: string) => {
   const extension = filename.split('.').pop()?.toLowerCase();
