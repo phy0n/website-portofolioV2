@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 import { createHash } from 'node:crypto';
+import { isIP } from 'node:net';
 
 export const dynamic = 'force-dynamic';
 export const runtime = 'nodejs';
@@ -17,17 +18,56 @@ const supabase =
       })
     : null;
 
+const normalizeIp = (value: string) => {
+  let candidate = value.trim();
+  if (!candidate) return null;
+  if (candidate.toLowerCase() === 'unknown') return null;
+
+  candidate = candidate.replace(/^"+|"+$/g, '').trim();
+
+  if (candidate.startsWith('[')) {
+    const endBracket = candidate.indexOf(']');
+    if (endBracket > 1) {
+      candidate = candidate.slice(1, endBracket).trim();
+    }
+  }
+
+  const ipv4WithPort = candidate.includes('.') && candidate.split(':').length === 2;
+  if (ipv4WithPort) {
+    candidate = candidate.split(':')[0]?.trim() || '';
+  }
+
+  const ipv4Mapped = candidate.match(/^(?:0*:)*ffff:(\d{1,3}(?:\.\d{1,3}){3})$/i);
+  if (ipv4Mapped?.[1]) {
+    candidate = ipv4Mapped[1];
+  }
+
+  if (isIP(candidate) === 0) return null;
+  return candidate;
+};
+
 const getClientIp = (headers: Headers) => {
+  const preferred = [
+    headers.get('cf-connecting-ip'),
+    headers.get('x-real-ip'),
+    headers.get('x-client-ip'),
+  ].filter((value): value is string => typeof value === 'string' && value.trim().length > 0);
+
+  for (const value of preferred) {
+    const normalized = normalizeIp(value);
+    if (normalized) return normalized;
+  }
+
   const forwarded = headers.get('x-forwarded-for');
   if (forwarded) {
-    return forwarded.split(',')[0]?.trim() || null;
+    const parts = forwarded.split(',');
+    for (const part of parts) {
+      const normalized = normalizeIp(part);
+      if (normalized) return normalized;
+    }
   }
-  return (
-    headers.get('x-real-ip') ||
-    headers.get('cf-connecting-ip') ||
-    headers.get('x-client-ip') ||
-    null
-  );
+
+  return null;
 };
 
 const hashValue = (value: string) => {
