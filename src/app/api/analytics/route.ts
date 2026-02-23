@@ -26,6 +26,123 @@ const toIpv4Octets = (ip: string) => {
   return octets as [number, number, number, number];
 };
 
+const canonicalizeIpv4 = (ip: string) => {
+  const octets = toIpv4Octets(ip);
+  if (!octets) return null;
+  return octets.join('.');
+};
+
+const canonicalizeIpv6 = (ip: string) => {
+  const lower = ip.trim().toLowerCase();
+  if (!lower) return null;
+
+  if (lower.includes('::')) {
+    if (lower.indexOf('::') !== lower.lastIndexOf('::')) return null;
+  }
+
+  const splitSection = (section: string) => {
+    if (!section) return [];
+    const parts = section.split(':');
+    if (parts.some((part) => part.length === 0)) return null;
+    return parts;
+  };
+
+  const expandIpv4 = (part: string) => {
+    const octets = toIpv4Octets(part);
+    if (!octets) return null;
+    const first = ((octets[0] << 8) | octets[1]).toString(16);
+    const second = ((octets[2] << 8) | octets[3]).toString(16);
+    return [first, second];
+  };
+
+  const expandParts = (parts: string[]) => {
+    const expanded: string[] = [];
+    for (const part of parts) {
+      if (!part) return null;
+      if (part.includes('.')) {
+        const ipv4Parts = expandIpv4(part);
+        if (!ipv4Parts) return null;
+        expanded.push(...ipv4Parts);
+        continue;
+      }
+      expanded.push(part);
+    }
+    return expanded;
+  };
+
+  let parts: string[] | null = null;
+
+  if (lower.includes('::')) {
+    const [headRaw, tailRaw] = lower.split('::', 2);
+    const headPartsRaw = splitSection(headRaw);
+    const tailPartsRaw = splitSection(tailRaw);
+    if (!headPartsRaw || !tailPartsRaw) return null;
+
+    const headParts = expandParts(headPartsRaw);
+    const tailParts = expandParts(tailPartsRaw);
+    if (!headParts || !tailParts) return null;
+
+    const missing = 8 - (headParts.length + tailParts.length);
+    if (missing < 0) return null;
+    parts = [...headParts, ...Array.from({ length: missing }, () => '0'), ...tailParts];
+  } else {
+    const rawParts = splitSection(lower);
+    if (!rawParts) return null;
+    parts = expandParts(rawParts);
+  }
+
+  if (!parts || parts.length !== 8) return null;
+
+  const hextets: number[] = [];
+  for (const part of parts) {
+    const parsed = Number.parseInt(part, 16);
+    if (!Number.isFinite(parsed) || parsed < 0 || parsed > 0xffff) return null;
+    hextets.push(parsed);
+  }
+
+  const normalizedParts = hextets.map((value) => value.toString(16));
+
+  let bestStart = -1;
+  let bestLen = 0;
+  let currentStart = -1;
+  let currentLen = 0;
+
+  for (let index = 0; index < hextets.length; index += 1) {
+    if (hextets[index] === 0) {
+      if (currentStart === -1) {
+        currentStart = index;
+        currentLen = 1;
+      } else {
+        currentLen += 1;
+      }
+    } else {
+      if (currentLen > bestLen) {
+        bestStart = currentStart;
+        bestLen = currentLen;
+      }
+      currentStart = -1;
+      currentLen = 0;
+    }
+  }
+
+  if (currentLen > bestLen) {
+    bestStart = currentStart;
+    bestLen = currentLen;
+  }
+
+  if (bestLen < 2) {
+    return normalizedParts.join(':');
+  }
+
+  const head = normalizedParts.slice(0, bestStart).join(':');
+  const tail = normalizedParts.slice(bestStart + bestLen).join(':');
+
+  if (head && tail) return `${head}::${tail}`;
+  if (head) return `${head}::`;
+  if (tail) return `::${tail}`;
+  return '::';
+};
+
 const isPublicIpv4 = (ip: string) => {
   const octets = toIpv4Octets(ip);
   if (!octets) return false;
@@ -106,7 +223,17 @@ const normalizeIp = (value: string) => {
     candidate = ipv4Mapped[1];
   }
 
-  if (isIP(candidate) === 0) return null;
+  const version = isIP(candidate);
+  if (version === 0) return null;
+
+  if (version === 4) {
+    return canonicalizeIpv4(candidate) ?? candidate;
+  }
+
+  if (version === 6) {
+    return canonicalizeIpv6(candidate) ?? candidate.toLowerCase();
+  }
+
   return candidate;
 };
 
@@ -127,40 +254,52 @@ const parseForwardedHeader = (value: string) => {
 };
 
 const getClientIp = (headers: Headers) => {
-  const candidates: string[] = [];
+  const sources: Array<{ name: string; values: string[] }> = [];
 
-  const pushCandidate = (value: string | null) => {
-    if (!value) return;
-    const trimmed = value.trim();
+  const pushSingle = (name: string, value: string | null) => {
+    const trimmed = typeof value === 'string' ? value.trim() : '';
     if (!trimmed) return;
-    candidates.push(trimmed);
+    sources.push({ name, values: [trimmed] });
   };
 
-  pushCandidate(headers.get('cf-connecting-ip'));
-  pushCandidate(headers.get('x-real-ip'));
-  pushCandidate(headers.get('x-client-ip'));
+  const pushList = (name: string, raw: string | null) => {
+    const value = typeof raw === 'string' ? raw.trim() : '';
+    if (!value) return;
+    const parts = value.split(',').map((part) => part.trim()).filter(Boolean);
+    if (parts.length === 0) return;
+    sources.push({ name, values: parts });
+  };
 
-  const forwardedFor = headers.get('x-forwarded-for');
-  if (forwardedFor) {
-    forwardedFor.split(',').forEach((part) => candidates.push(part));
-  }
+  pushSingle('cf-connecting-ip', headers.get('cf-connecting-ip'));
+  pushList('x-vercel-forwarded-for', headers.get('x-vercel-forwarded-for'));
+  pushSingle('x-real-ip', headers.get('x-real-ip'));
+  pushSingle('x-client-ip', headers.get('x-client-ip'));
+  pushList('x-forwarded-for', headers.get('x-forwarded-for'));
 
   const forwarded = headers.get('forwarded');
   if (forwarded) {
-    parseForwardedHeader(forwarded).forEach((part) => candidates.push(part));
+    const forwardedParts = parseForwardedHeader(forwarded).map((part) => part.trim()).filter(Boolean);
+    if (forwardedParts.length > 0) {
+      sources.push({ name: 'forwarded', values: forwardedParts });
+    }
   }
 
-  const normalized = candidates
-    .map((value) => normalizeIp(value))
-    .filter((value): value is string => Boolean(value));
+  let firstCandidate: string | null = null;
 
-  const publicIpv4 = normalized.find((ip) => isIP(ip) === 4 && isPublicIp(ip));
-  if (publicIpv4) return publicIpv4;
+  for (const source of sources) {
+    const normalized = source.values
+      .map((value) => normalizeIp(value))
+      .filter((value): value is string => Boolean(value));
 
-  const publicIp = normalized.find((ip) => isPublicIp(ip));
-  if (publicIp) return publicIp;
+    if (!firstCandidate) {
+      firstCandidate = normalized[0] ?? null;
+    }
 
-  return normalized[0] ?? null;
+    const publicIp = normalized.find((ip) => isPublicIp(ip));
+    if (publicIp) return publicIp;
+  }
+
+  return firstCandidate;
 };
 
 const hashValue = (value: string) => {

@@ -22,7 +22,7 @@ import { SOCIAL_MEDIA } from './data/social';
 import SkillsTab from './tabs/SkillsTab';
 
 const DISPLAY_NAME = 'Phion Rushandle';
-const HERO_DEGREE = 'Website Developer | Cyber Security | Data Analyst';
+const HERO_DEGREE = 'Software Engineer Enthusiast | Data Analyst Enthusiast';
 const HERO_TAGLINE = 'Crafting digital experiences with code, creativity, and a touch of magic. Welcome to my portfolio!';
 const HERO_IMAGE_SRC = '/image/profile.png';
 const HERO_IMAGE_FALLBACK = 'P';
