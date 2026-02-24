@@ -62,6 +62,18 @@ const normalizeTopReferrers = (value: unknown): TrafficReferrer[] => {
     .filter((item): item is TrafficReferrer => Boolean(item));
 };
 
+const isValidRpcReport = (value: unknown) => {
+  if (!value || typeof value !== 'object') return false;
+  const report = value as any;
+  if (!report.summary || typeof report.summary !== 'object') return false;
+  if (!report.buckets || typeof report.buckets !== 'object') return false;
+  if (!Array.isArray(report.buckets.views)) return false;
+  if (!Array.isArray(report.buckets.unique)) return false;
+  if (!('topPages' in report) || !Array.isArray(report.topPages)) return false;
+  if (!report.traffic || typeof report.traffic !== 'object') return false;
+  return true;
+};
+
 export async function GET(request: Request) {
   if (!supabaseConfig.url || !supabaseConfig.anonKey) {
     return NextResponse.json({ ok: false, error: 'Supabase not configured' }, { status: 503 });
@@ -99,8 +111,10 @@ export async function GET(request: Request) {
     range_value: rangeValue,
   });
 
-  if (!reportError && reportData) {
-    const report = Array.isArray(reportData) ? (reportData[0] as any) : (reportData as any);
+  const rpcCandidate = Array.isArray(reportData) ? (reportData[0] as any) : (reportData as any);
+
+  if (!reportError && reportData && isValidRpcReport(rpcCandidate)) {
+    const report = rpcCandidate;
     const generatedAtIso =
       typeof report?.generatedAt === 'string' ? report.generatedAt : new Date().toISOString();
 
@@ -163,6 +177,10 @@ export async function GET(request: Request) {
     return response;
   }
 
+  // If RPC exists but doesn't return expected keys, prefer fallback so UI still works.
+  // (Common when an older/truncated admin_analytics_report SQL was applied.)
+  const rpcPayloadIncomplete = !reportError && reportData && !isValidRpcReport(rpcCandidate);
+
   const [pageViewsResult, directResult, referralResult] = await Promise.all([
     supabase
       .from('analytics_events')
@@ -212,7 +230,7 @@ export async function GET(request: Request) {
     if (rows.length < FALLBACK_PAGE_SIZE) break;
   }
 
-  const visitorKeyForRow = (row: AnalyticsRow) => row.ip_hash || row.visitor_id;
+  const visitorKeyForRow = (row: AnalyticsRow) => row.visitor_id || row.ip_hash || '';
 
   const uniqueVisitors = new Set(analyticsRows.map(visitorKeyForRow)).size;
   const viewsPerVisitor = uniqueVisitors ? pageViews / uniqueVisitors : 0;
@@ -282,8 +300,8 @@ export async function GET(request: Request) {
     },
     capped: analyticsRows.length >= MAX_EVENTS_FOR_FALLBACK,
     generatedAt: new Date(nowMs).toISOString(),
-    source: reportError ? 'fallback' : 'events',
-    rpcError: reportError?.message ?? undefined,
+    source: reportError || rpcPayloadIncomplete ? 'fallback' : 'events',
+    rpcError: reportError?.message ?? (rpcPayloadIncomplete ? 'RPC payload incomplete' : undefined),
   });
 
   response.headers.set('Cache-Control', 'no-store');
