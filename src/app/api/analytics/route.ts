@@ -350,13 +350,13 @@ export async function POST(request: Request) {
   const pathValue = String(path || '').trim();
   const ipAddress = getClientIp(request.headers);
   const ipHash = ipAddress ? hashValue(ipAddress) : null;
-  const visitorKey = ipHash || visitorValue;
+  const visitorKey = visitorValue;
 
   if (!pathValue || pathValue.length > 200 || !pathValue.startsWith('/') || /\s/.test(pathValue)) {
     return NextResponse.json({ ok: false }, { status: 400 });
   }
 
-  if (visitorValue.length > 80) {
+  if (!visitorValue || visitorValue.length > 80) {
     return NextResponse.json({ ok: false }, { status: 400 });
   }
 

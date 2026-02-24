@@ -1,16 +1,7 @@
 'use client';
 
 import { useEffect, useMemo, useRef, useState } from 'react';
-import {
-  Area,
-  CartesianGrid,
-  ComposedChart,
-  Line,
-  ResponsiveContainer,
-  Tooltip,
-  XAxis,
-  YAxis,
-} from 'recharts';
+import AdminAnalyticsLineChart from '@/components/analytics/AdminAnalyticsLineChart';
 
 type RangeValue = '24h' | '7d' | '30d';
 
@@ -246,7 +237,7 @@ export default function AdminAnalytics({
         <>
           <div className="grid gap-4 md:grid-cols-3">
             {[
-              { label: 'Unique users (IP)', value: uniqueVisitors.toLocaleString() },
+              { label: 'Unique users (device)', value: uniqueVisitors.toLocaleString() },
               { label: 'Page views', value: totalVisits.toLocaleString() },
               {
                 label: 'Views per user',
@@ -302,74 +293,9 @@ export default function AdminAnalytics({
                   No chart data yet.
                 </div>
               ) : (
-                <ResponsiveContainer
-                  width="100%"
-                  height="100%"
-                  minHeight={180}
-                  minWidth={280}
-                  key={animationKey}
-                >
-                  <ComposedChart
-                    data={chartData}
-                    margin={{ top: 10, right: 10, left: -10, bottom: 0 }}
-                  >
-                    <CartesianGrid
-                      stroke="rgba(255,255,255,0.08)"
-                      strokeDasharray="4 6"
-                      vertical={false}
-                    />
-                    <XAxis
-                      dataKey="label"
-                      tick={{ fill: 'rgba(255,255,255,0.5)', fontSize: 10 }}
-                      tickLine={false}
-                      axisLine={false}
-                      interval={0}
-                      tickFormatter={(value, index) =>
-                        index % labelStep === 0 ? String(value) : ''
-                      }
-                    />
-                    <YAxis
-                      tick={{ fill: 'rgba(255,255,255,0.5)', fontSize: 10 }}
-                      tickLine={false}
-                      axisLine={false}
-                      width={32}
-                    />
-                    <Tooltip
-                      contentStyle={{
-                        background: 'rgba(15, 15, 20, 0.92)',
-                        border: '1px solid rgba(255,255,255,0.15)',
-                        borderRadius: '12px',
-                        fontSize: '12px',
-                      }}
-                      labelStyle={{ color: 'rgba(255,255,255,0.7)' }}
-                      itemStyle={{ color: '#f8fafc' }}
-                      cursor={{ stroke: 'rgba(255,255,255,0.2)', strokeWidth: 1 }}
-                    />
-                    <Area
-                      type="monotone"
-                      dataKey="visits"
-                      name="Visits"
-                      stroke="#fb923c"
-                      strokeWidth={2}
-                      fill="rgba(251,146,60,0.14)"
-                      isAnimationActive
-                      animationDuration={900}
-                      animationEasing="ease-out"
-                    />
-                    <Line
-                      type="monotone"
-                      dataKey="unique"
-                      name="Unique users"
-                      stroke="#34d399"
-                      strokeWidth={2}
-                      dot={false}
-                      activeDot={{ r: 3 }}
-                      isAnimationActive
-                      animationDuration={900}
-                      animationEasing="ease-out"
-                    />
-                  </ComposedChart>
-                </ResponsiveContainer>
+                <div className="h-full w-full" key={animationKey}>
+                  <AdminAnalyticsLineChart points={chartData} />
+                </div>
               )}
             </div>
             <div
