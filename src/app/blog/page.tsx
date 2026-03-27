@@ -1,9 +1,6 @@
 import type { Metadata } from 'next';
 import SiteShell from '@/components/home/SiteShell';
 import { createSupabaseServerClient, supabaseConfig } from '@/lib/supabase/server';
-import PostsFeed from './PostsFeed';
-import type { PostRow } from './PostCard';
-import PostComposer from './PostComposer';
 import { createQuote, deleteQuote } from './quoteActions';
 import BlogSidebarList, { type BlogSidebarItem } from './BlogSidebarList';
 
@@ -69,20 +66,22 @@ export default async function BlogPage({
       <SiteShell contentMode="full">
         <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 pt-8 pb-20">
           <div className="grid gap-8 lg:grid-cols-12">
-            <section className="space-y-6 lg:col-span-8">
-              <div className="flex items-center justify-between gap-4">
-                <h1 className="text-lg font-semibold text-white">My Posts</h1>
+            <section className="space-y-6 lg:col-span-7">
+              <div className="space-y-1">
+                <h1 className="text-lg font-semibold text-white">Blog</h1>
+                <p className="text-xs text-white/50">Latest posts and short reads.</p>
               </div>
-              <PostsFeed posts={[]} authorLabel="Phy0n" avatarFallback="P" />
-            </section>
-            <aside className="space-y-6 lg:col-span-4 lg:sticky lg:top-24 lg:self-start lg:max-h-[calc(100vh-6rem)] lg:overflow-auto hide-scrollbar">
+
               <div className="rounded-3xl border border-white/10 bg-black/30 p-6">
-                <h2 className="text-sm font-semibold text-white">Blog</h2>
-                <p className="mt-2 text-sm text-white/50">No blog posts yet.</p>
+                <h2 className="text-sm font-semibold text-white">Posts</h2>
+                <p className="mt-3 text-sm text-white/50">No blog posts yet.</p>
               </div>
+            </section>
+
+            <aside className="space-y-6 lg:col-span-5 lg:sticky lg:top-24 lg:self-start lg:max-h-[calc(100vh-6rem)] lg:overflow-auto hide-scrollbar">
               <div className="rounded-3xl border border-white/10 bg-black/30 p-6">
                 <h2 className="text-sm font-semibold text-white">Quotes</h2>
-                <p className="mt-2 text-sm text-white/50">No quotes yet.</p>
+                <p className="mt-3 text-sm text-white/50">No quotes yet.</p>
               </div>
             </aside>
           </div>
@@ -138,29 +137,6 @@ export default async function BlogPage({
   const safeQuotes =
     quotesError || !quotes ? [] : (quotes as any[]).filter((quote) => (quote as any)?.show_on_phion !== false);
 
-  let posts: PostRow[] = [];
-  try {
-    const { data: postRows, error: postsError } = await supabase
-      .from('posts')
-      .select('id, content, image, created_at, is_published, show_on_phion')
-      .or('is_published.eq.true,is_published.is.null')
-      .order('created_at', { ascending: false })
-      .limit(60);
-
-    if (!postsError && Array.isArray(postRows)) {
-      posts = (postRows as any[])
-        .filter((row) => (row as any)?.show_on_phion !== false)
-        .map((row) => ({
-          id: String((row as any).id),
-          content: (row as any).content ?? null,
-          image: (row as any).image ?? null,
-          created_at: String((row as any).created_at ?? ''),
-        }));
-    }
-  } catch {
-    posts = [];
-  }
-
   const blogRows: BlogRow[] = safeBlogs as BlogRow[];
   const quoteRows: QuoteRow[] = safeQuotes as QuoteRow[];
   const avatarUrl = await getDiscordAvatarUrl();
@@ -195,41 +171,18 @@ export default async function BlogPage({
         ) : null}
 
         <div className="grid gap-8 lg:grid-cols-12">
-          <section className="space-y-6 lg:col-span-8">
+          <section className="space-y-6 lg:col-span-7">
             <div className="flex items-center justify-between gap-4">
-              <h1 className="text-lg font-semibold text-white">My Posts</h1>
+              <div className="space-y-1">
+                <h1 className="text-lg font-semibold text-white">Blog</h1>
+                <p className="text-xs text-white/50">Latest posts and short reads.</p>
+              </div>
               <p className="text-[10px] uppercase tracking-[0.35em] text-white/40">Phion</p>
             </div>
 
-            {isAdmin ? (
-              <details className="flex flex-col">
-                <summary
-                  className="list-none inline-flex h-9 w-9 cursor-pointer select-none self-end items-center justify-center rounded-full border border-white/10 bg-white/[0.06] text-lg font-semibold leading-none text-white/70 transition hover:border-white/20 hover:bg-white/[0.08] hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-white/30 [&::-webkit-details-marker]:hidden"
-                  aria-label="Create post"
-                  title="Create post"
-                >
-                  +
-                </summary>
-                <div className="mt-4 w-full">
-                  <PostComposer />
-                </div>
-              </details>
-            ) : null}
-
-            <PostsFeed
-              posts={posts}
-              authorLabel="Phy0n"
-              avatarUrl={avatarUrl}
-              avatarFallback="P"
-              canDelete={isAdmin}
-              canEdit={isAdmin}
-            />
-          </section>
-
-          <aside className="space-y-6 lg:col-span-4 lg:sticky lg:top-24 lg:self-start lg:max-h-[calc(100vh-6rem)] lg:overflow-auto hide-scrollbar">
             <div className="rounded-3xl border border-white/10 bg-black/30 p-6">
               <div className="flex items-center justify-between gap-4">
-                <h2 className="text-sm font-semibold text-white">Blog</h2>
+                <h2 className="text-sm font-semibold text-white">Posts</h2>
                 <span className="text-xs text-white/40">{safeBlogs.length}</span>
               </div>
 
@@ -239,7 +192,9 @@ export default async function BlogPage({
                 <BlogSidebarList blogs={blogSidebarItems} />
               )}
             </div>
+          </section>
 
+          <aside className="space-y-6 lg:col-span-5 lg:sticky lg:top-24 lg:self-start lg:max-h-[calc(100vh-6rem)] lg:overflow-auto hide-scrollbar">
             <div className="rounded-3xl border border-white/10 bg-black/30 p-6">
               <div className="flex items-center justify-between gap-4">
                 <h2 className="text-sm font-semibold text-white">Quotes</h2>
