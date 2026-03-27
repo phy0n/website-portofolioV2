@@ -186,7 +186,7 @@ export default function AdminShell({
   }, []);
 
   return (
-    <div className="min-h-screen bg-[#0b0b10] text-white">
+    <div className="min-h-screen bg-zinc-950 text-white">
       <div
         className={`fixed inset-y-0 left-0 z-50 w-72 transition-transform duration-300 lg:translate-x-0 ${
           sidebarOpen ? 'translate-x-0' : '-translate-x-full'
@@ -200,7 +200,7 @@ export default function AdminShell({
       </div>
 
       <div
-        className={`fixed inset-0 z-40 cursor-pointer bg-black/70 backdrop-blur-sm transition-opacity lg:hidden ${
+        className={`fixed inset-0 z-40 cursor-pointer bg-black/80 backdrop-blur-sm transition-opacity lg:hidden ${
           sidebarOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'
         }`}
         onClick={() => setSidebarOpen(false)}

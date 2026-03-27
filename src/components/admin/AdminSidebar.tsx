@@ -29,7 +29,7 @@ export default function AdminSidebar({
   const pathname = usePathname();
 
   return (
-    <aside className="h-full w-full border-r border-white/10 bg-[#0f0f14] px-6 py-8 flex flex-col gap-8 shadow-[0_20px_60px_rgba(0,0,0,0.45)]">
+    <aside className="h-full w-full border-r border-white/10 bg-zinc-950 px-6 py-8 flex flex-col gap-8 shadow-[0_20px_60px_rgba(0,0,0,0.45)]">
       <div className="flex items-start justify-between gap-3">
         <div>
           <p className="text-[11px] uppercase tracking-[0.4em] text-white/40">Admin</p>
@@ -75,6 +75,15 @@ export default function AdminSidebar({
           <p className="mt-2 text-sm text-white/80">{email}</p>
         </div>
         <div className="grid gap-2">
+          <a
+            href="https://phymoneytracker.vercel.app/app"
+            target="_blank"
+            rel="noreferrer"
+            className="group flex items-center justify-between rounded-xl border border-white/10 bg-white/5 px-3 py-2.5 text-sm text-white/80 transition hover:border-white/30 hover:bg-white/10 hover:text-white"
+          >
+            <span>Open money tracker</span>
+            <ArrowUpRight className="h-4 w-4 text-white/60 transition group-hover:text-white" />
+          </a>
           <Link
             href="/"
             onClick={() => onClose?.()}

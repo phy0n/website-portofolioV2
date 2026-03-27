@@ -16,6 +16,7 @@ type Blog = {
   title: string;
   excerpt: string;
   content: string;
+  chapters?: string[] | null;
   author: string;
   date: string;
   category: string;
@@ -93,7 +94,7 @@ function Modal({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-6">
       <div className="absolute inset-0 cursor-pointer" onClick={onClose} />
-      <div className="relative w-full max-w-3xl rounded-2xl border border-white/10 bg-[#13131b] p-6 text-white shadow-[0_30px_120px_rgba(0,0,0,0.6)]">
+      <div className="relative w-full max-w-5xl rounded-2xl border border-white/10 bg-[#13131b] p-6 text-white shadow-[0_30px_120px_rgba(0,0,0,0.6)]">
         <div className="mb-6 flex items-center justify-between">
           <h3 className="text-xl font-semibold">{title}</h3>
           <button
@@ -172,6 +173,10 @@ export default function BlogManager({
   const [createTitleValue, setCreateTitleValue] = useState('');
   const [editTitleValue, setEditTitleValue] = useState<string | null>(null);
   const [createCategoryValue, setCreateCategoryValue] = useState('Life');
+  const [createChapters, setCreateChapters] = useState<string[]>(['']);
+  const [createActiveChapter, setCreateActiveChapter] = useState(0);
+  const [editChapters, setEditChapters] = useState<string[]>(['']);
+  const [editActiveChapter, setEditActiveChapter] = useState(0);
   const [listQuery, setListQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState<'all' | 'published' | 'draft'>('all');
   const [featuredOnly, setFeaturedOnly] = useState(false);
@@ -188,6 +193,55 @@ export default function BlogManager({
       : categoryOptions;
   const createSlug = slugify(createTitleValue);
   const editSlug = slugify((editTitleValue ?? editingBlog?.title) || '');
+
+  const normalizeChapters = (value: string[]) => {
+    const cleaned = value.map((entry) => String(entry ?? '')).map((entry) => entry);
+    return cleaned.length === 0 ? [''] : cleaned;
+  };
+
+  const removeCreateChapter = (index: number) => {
+    setCreateChapters((prev) => {
+      const next = normalizeChapters(prev.filter((_, idx) => idx !== index));
+      setCreateActiveChapter((currentActive) => {
+        const removedBefore = index < currentActive;
+        const removedActive = index === currentActive;
+        const shifted = removedBefore ? currentActive - 1 : currentActive;
+        const tentative = removedActive ? Math.min(shifted, next.length - 1) : shifted;
+        return Math.max(0, Math.min(tentative, next.length - 1));
+      });
+      return next;
+    });
+  };
+
+  const removeEditChapter = (index: number) => {
+    setEditChapters((prev) => {
+      const next = normalizeChapters(prev.filter((_, idx) => idx !== index));
+      setEditActiveChapter((currentActive) => {
+        const removedBefore = index < currentActive;
+        const removedActive = index === currentActive;
+        const shifted = removedBefore ? currentActive - 1 : currentActive;
+        const tentative = removedActive ? Math.min(shifted, next.length - 1) : shifted;
+        return Math.max(0, Math.min(tentative, next.length - 1));
+      });
+      return next;
+    });
+  };
+
+  const addCreateChapter = () => {
+    setCreateChapters((prev) => {
+      const next = [...prev, ''];
+      setCreateActiveChapter(next.length - 1);
+      return next;
+    });
+  };
+
+  const addEditChapter = () => {
+    setEditChapters((prev) => {
+      const next = [...prev, ''];
+      setEditActiveChapter(next.length - 1);
+      return next;
+    });
+  };
   const filteredRows = useMemo(() => {
     const query = listQuery.trim().toLowerCase();
     return blogs.filter((blog) => {
@@ -422,6 +476,13 @@ export default function BlogManager({
                           setEditTitleValue(null);
                           setEditImagePreview(null);
                           setCreateOpen(false);
+                          const raw = (blog as any)?.chapters;
+                          if (Array.isArray(raw) && raw.length > 0) {
+                            setEditChapters(raw.map((entry) => (typeof entry === 'string' ? entry : '')));
+                          } else {
+                            setEditChapters([String((blog as any)?.content ?? '')]);
+                          }
+                          setEditActiveChapter(0);
                           setEditId(blog.id);
                         }}
                         className="cursor-pointer inline-flex items-center gap-2 rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white/70 transition hover:border-white/40 hover:text-white hover:bg-white/10"
@@ -475,143 +536,283 @@ export default function BlogManager({
           setCreateFileKey((prev) => prev + 1);
           setCreateTitleValue('');
           setCreateCategoryValue('Life');
+          setCreateChapters(['']);
+          setCreateActiveChapter(0);
           setCreateOpen(false);
         }}
       >
-        <form action={createBlog} className="grid gap-4">
+        <form action={createBlog} className="grid gap-6">
           <input type="hidden" name="redirect_to" value="/admin/blogs" />
-          <div className="grid gap-4 md:grid-cols-2">
-            <div>
-              <label className="text-sm text-white/60">Title</label>
-              <input
-                name="title"
-                required
-                value={createTitleValue}
-                onChange={(event) => setCreateTitleValue(event.target.value)}
-                className={inputClassName}
-                placeholder="Story title"
-              />
-            </div>
-            <div>
-              <label className="text-sm text-white/60">Slug</label>
-              <div className="mt-2 rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm text-white/70">
-                {createSlug ? `/${createSlug}` : 'Auto from title'}
+          <input type="hidden" name="slug" value={createSlug} />
+          <input type="hidden" name="chapters" value={JSON.stringify(createChapters)} />
+
+          <div className="grid gap-6 lg:grid-cols-12">
+            <section className="space-y-4 lg:col-span-8">
+              <div className="grid gap-4 md:grid-cols-2">
+                <div>
+                  <label className="text-sm text-white/60">Title</label>
+                  <input
+                    name="title"
+                    required
+                    value={createTitleValue}
+                    onChange={(event) => setCreateTitleValue(event.target.value)}
+                    className={inputClassName}
+                    placeholder="Story title"
+                  />
+                </div>
+                <div>
+                  <label className="text-sm text-white/60">Slug</label>
+                  <div className="mt-2 rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm text-white/70">
+                    {createSlug ? `/${createSlug}` : 'Auto from title'}
+                  </div>
+                </div>
               </div>
-              <input type="hidden" name="slug" value={createSlug} />
-            </div>
-          </div>
-          <div>
-            <label className="text-sm text-white/60">Excerpt</label>
-            <textarea name="excerpt" required rows={2} className={textareaClassName} />
-          </div>
-          <div>
-            <label className="text-sm text-white/60">Content</label>
-            <textarea name="content" required rows={6} className={textareaClassName} />
-          </div>
-          <div className="grid gap-4 md:grid-cols-3">
-            <div>
-              <label className="text-sm text-white/60">Author</label>
-              <input name="author" required className={inputClassName} placeholder="Phion" />
-            </div>
-            <div>
-              <label className="text-sm text-white/60">Date</label>
-              <input name="date" type="date" required className={inputClassName} />
-            </div>
-            <div>
-              <label className="text-sm text-white/60">Category</label>
-              <select
-                name="category"
-                value={createCategoryValue}
-                onChange={(event) => setCreateCategoryValue(event.target.value)}
-                required
-                className={selectClassName}
-              >
-                {categoryOptions.map((category) => (
-                  <option key={category} value={category}>
-                    {category}
-                  </option>
-                ))}
-              </select>
-            </div>
-          </div>
-          <div className="grid gap-4 md:grid-cols-2">
-            <div>
-              <label className="text-sm text-white/60">Status</label>
-              <select name="is_published" defaultValue="published" className={selectClassName}>
-                <option value="published">Published</option>
-                <option value="draft">Draft</option>
-              </select>
-            </div>
-            <div>
-              <label className="text-sm text-white/60">Featured</label>
-              <select name="featured" defaultValue="standard" className={selectClassName}>
-                <option value="standard">Standard</option>
-                <option value="featured">Featured</option>
-              </select>
-            </div>
-          </div>
-          <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
-            <p className="text-sm font-semibold text-white">Post to</p>
-            <p className="mt-1 text-xs text-white/40">
-              Select destinations (leave empty to hide on both sites).
-            </p>
-            <div className="mt-3 grid gap-2 sm:grid-cols-2">
-              <label className="inline-flex items-center gap-2 text-sm text-white/70">
-                <input
-                  type="checkbox"
-                  name="show_on_main"
-                  value="true"
-                  defaultChecked
-                  className="h-4 w-4 accent-white"
-                />
-                MainPortofolio
-              </label>
-              <label className="inline-flex items-center gap-2 text-sm text-white/70">
-                <input
-                  type="checkbox"
-                  name="show_on_phion"
-                  value="true"
-                  defaultChecked
-                  className="h-4 w-4 accent-white"
-                />
-                PhionPortofolio
-              </label>
-            </div>
-          </div>
-          <div>
-            <label className="text-sm text-white/60">Tags</label>
-            <input
-              name="tags"
-              className={inputClassName}
-              placeholder="life, love, daily"
-            />
-            <p className="mt-2 text-xs text-white/40">Comma separated (optional).</p>
-          </div>
-          <div>
-            <label className="text-sm text-white/60">Local Image</label>
-            <input
-              key={createFileKey}
-              name="image_file"
-              type="file"
-              accept="image/png,image/jpeg,image/webp"
-              onChange={handleCreateImageChange}
-              className="mt-2 block w-full text-sm text-white/70 file:mr-4 file:rounded-full file:border-0 file:bg-white/10 file:px-4 file:py-2 file:text-xs file:font-semibold file:text-white hover:file:bg-white/20"
-            />
-            <p className="mt-2 text-xs text-white/40">PNG/JPG/WebP, max 5MB.</p>
-            {createImageError && <p className="mt-2 text-xs text-red-300">{createImageError}</p>}
-            {createImagePreview && (
-              <div className="relative mt-3 h-32 w-full overflow-hidden rounded-xl border border-white/10 bg-white/5">
-                <Image
-                  src={createImagePreview}
-                  alt="Preview"
-                  fill
-                  sizes="100vw"
-                  className="object-cover"
-                  unoptimized
-                />
+
+              <div>
+                <label className="text-sm text-white/60">Excerpt</label>
+                <textarea name="excerpt" required rows={2} className={textareaClassName} />
               </div>
-            )}
+
+              <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
+                <div className="flex items-center justify-between gap-3">
+                  <div>
+                    <p className="text-sm font-semibold text-white">Chapters</p>
+                    <p className="mt-1 text-xs text-white/40">Add unlimited chapters. Chapter 1 is the default.</p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={addCreateChapter}
+                    className="inline-flex items-center gap-2 rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white/70 hover:border-white/30 hover:bg-white/10 hover:text-white"
+                  >
+                    <Plus className="h-4 w-4" />
+                    Add
+                  </button>
+                </div>
+
+                <div className="mt-3 flex flex-wrap gap-2">
+                  {createChapters.map((_, index) => (
+                    <button
+                      key={`create-chapter-${index}`}
+                      type="button"
+                      onClick={() => setCreateActiveChapter(index)}
+                      className={
+                        index === createActiveChapter
+                          ? 'inline-flex items-center gap-2 rounded-full border border-white/40 bg-white/10 px-3 py-1.5 text-xs font-semibold text-white'
+                          : 'inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs text-white/70 hover:border-white/30 hover:text-white'
+                      }
+                    >
+                      Chapter {index + 1}
+                      {createChapters.length > 1 ? (
+                        <span
+                          role="presentation"
+                          onClick={(event) => {
+                            event.stopPropagation();
+                            removeCreateChapter(index);
+                          }}
+                          className="inline-flex h-4 w-4 items-center justify-center rounded-full border border-white/10 text-[10px] leading-none text-white/60 hover:text-white"
+                          title="Remove"
+                        >
+                          ×
+                        </span>
+                      ) : null}
+                    </button>
+                  ))}
+                </div>
+
+                <div className="mt-4">
+                  <div className="flex items-center justify-between gap-3">
+                    <label className="text-sm text-white/60">Content</label>
+                    <p className="text-xs text-white/40">Chapter {createActiveChapter + 1} of {createChapters.length}</p>
+                  </div>
+
+                  <div className="mt-2 overflow-hidden rounded-2xl border border-white/10 bg-[#0b0b10]">
+                    <div className="p-3">
+                      <div className="overflow-hidden">
+                        <div
+                          className="flex transition-transform duration-500 ease-out will-change-transform"
+                          style={{ transform: `translateX(-${createActiveChapter * 100}%)` }}
+                        >
+                          {createChapters.map((value, index) => (
+                            <div key={`create-chapter-panel-${index}`} className="w-full shrink-0 px-1">
+                              <div className="rounded-xl border border-white/10 bg-white/5 p-3">
+                                <div className="flex items-center justify-between gap-2">
+                                  <p className="text-xs uppercase tracking-[0.3em] text-white/40">Chapter {index + 1}</p>
+                                  {createChapters.length > 1 ? (
+                                    <button
+                                      type="button"
+                                      onClick={() => removeCreateChapter(index)}
+                                      className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs text-white/60 transition hover:border-white/30 hover:text-white"
+                                    >
+                                      Remove
+                                    </button>
+                                  ) : null}
+                                </div>
+                                <textarea
+                                  required={index === 0}
+                                  rows={10}
+                                  value={value ?? ''}
+                                  onChange={(event) => {
+                                    const nextValue = event.target.value;
+                                    setCreateChapters((prev) => {
+                                      const next = [...prev];
+                                      next[index] = nextValue;
+                                      return next;
+                                    });
+                                  }}
+                                  className={textareaClassName}
+                                  placeholder="Write chapter content..."
+                                />
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+
+                      <div className="mt-3 flex items-center justify-between">
+                        <div className="inline-flex items-center gap-2">
+                          <button
+                            type="button"
+                            onClick={() => setCreateActiveChapter((prev) => Math.max(0, prev - 1))}
+                            disabled={createActiveChapter === 0}
+                            className="rounded-full border border-white/10 bg-white/5 px-4 py-2 text-xs text-white/70 transition enabled:hover:border-white/30 enabled:hover:bg-white/10 disabled:opacity-40"
+                          >
+                            Prev
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => setCreateActiveChapter((prev) => Math.min(createChapters.length - 1, prev + 1))}
+                            disabled={createActiveChapter >= createChapters.length - 1}
+                            className="rounded-full border border-white/10 bg-white/5 px-4 py-2 text-xs text-white/70 transition enabled:hover:border-white/30 enabled:hover:bg-white/10 disabled:opacity-40"
+                          >
+                            Next
+                          </button>
+                        </div>
+
+                        <button
+                          type="button"
+                          onClick={addCreateChapter}
+                          className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2 text-xs text-white/70 transition hover:border-white/30 hover:bg-white/10 hover:text-white"
+                        >
+                          <Plus className="h-4 w-4" />
+                          Add chapter
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <input type="hidden" name="content" value={createChapters[0] ?? ''} />
+              </div>
+            </section>
+
+            <aside className="space-y-4 lg:col-span-4">
+              <div className="grid gap-4">
+                <div>
+                  <label className="text-sm text-white/60">Author</label>
+                  <input name="author" required className={inputClassName} placeholder="Phion" />
+                </div>
+                <div>
+                  <label className="text-sm text-white/60">Date</label>
+                  <input name="date" type="date" required className={inputClassName} />
+                </div>
+                <div>
+                  <label className="text-sm text-white/60">Category</label>
+                  <select
+                    name="category"
+                    value={createCategoryValue}
+                    onChange={(event) => setCreateCategoryValue(event.target.value)}
+                    required
+                    className={selectClassName}
+                  >
+                    {categoryOptions.map((category) => (
+                      <option key={category} value={category}>
+                        {category}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-1">
+                  <div>
+                    <label className="text-sm text-white/60">Status</label>
+                    <select name="is_published" defaultValue="published" className={selectClassName}>
+                      <option value="published">Published</option>
+                      <option value="draft">Draft</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="text-sm text-white/60">Featured</label>
+                    <select name="featured" defaultValue="standard" className={selectClassName}>
+                      <option value="standard">Standard</option>
+                      <option value="featured">Featured</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
+                  <p className="text-sm font-semibold text-white">Post to</p>
+                  <p className="mt-1 text-xs text-white/40">
+                    Select destinations (leave empty to hide on both sites).
+                  </p>
+                  <div className="mt-3 grid gap-2 sm:grid-cols-2 lg:grid-cols-1">
+                    <label className="inline-flex items-center gap-2 text-sm text-white/70">
+                      <input
+                        type="checkbox"
+                        name="show_on_main"
+                        value="true"
+                        defaultChecked
+                        className="h-4 w-4 accent-white"
+                      />
+                      MainPortofolio
+                    </label>
+                    <label className="inline-flex items-center gap-2 text-sm text-white/70">
+                      <input
+                        type="checkbox"
+                        name="show_on_phion"
+                        value="true"
+                        defaultChecked
+                        className="h-4 w-4 accent-white"
+                      />
+                      PhionPortofolio
+                    </label>
+                  </div>
+                </div>
+
+                <div>
+                  <label className="text-sm text-white/60">Tags</label>
+                  <input name="tags" className={inputClassName} placeholder="life, love, daily" />
+                  <p className="mt-2 text-xs text-white/40">Comma separated (optional).</p>
+                </div>
+
+                <div>
+                  <label className="text-sm text-white/60">Local Image</label>
+                  <input
+                    key={createFileKey}
+                    name="image_file"
+                    type="file"
+                    accept="image/png,image/jpeg,image/webp"
+                    onChange={handleCreateImageChange}
+                    className="mt-2 block w-full text-sm text-white/70 file:mr-4 file:rounded-full file:border-0 file:bg-white/10 file:px-4 file:py-2 file:text-xs file:font-semibold file:text-white hover:file:bg-white/20"
+                  />
+                  <p className="mt-2 text-xs text-white/40">PNG/JPG/WebP, max 5MB.</p>
+                  {createImageError && <p className="mt-2 text-xs text-red-300">{createImageError}</p>}
+                  {createImagePreview && (
+                    <div className="relative mt-3 h-32 w-full overflow-hidden rounded-xl border border-white/10 bg-white/5">
+                      <Image
+                        src={createImagePreview}
+                        alt="Preview"
+                        fill
+                        sizes="100vw"
+                        className="object-cover"
+                        unoptimized
+                      />
+                    </div>
+                  )}
+                </div>
+              </div>
+            </aside>
           </div>
+
           <AdminSubmitButton
             pendingText="Saving..."
             className="inline-flex w-full items-center justify-center rounded-xl border border-white bg-white px-4 py-2 text-sm font-semibold text-black shadow-sm transition hover:bg-white/90"
@@ -629,144 +830,279 @@ export default function BlogManager({
           setEditImagePreview(null);
           setEditImageError(null);
           setEditFileKey((prev) => prev + 1);
+          setEditChapters(['']);
+          setEditActiveChapter(0);
           setEditId(null);
         }}
       >
         {editingBlog && (
           <form
             action={updateBlog}
-            className="grid gap-4"
+            className="grid gap-6"
             key={editingBlog.id}
           >
             <input type="hidden" name="redirect_to" value="/admin/blogs" />
             <input type="hidden" name="id" value={editingBlog.id} />
             <input type="hidden" name="current_image" value={editingBlog.image ?? ''} />
-            <div className="grid gap-4 md:grid-cols-2">
-              <div>
-                <label className="text-sm text-white/60">Title</label>
-                <input
-                  name="title"
-                  required
-                  defaultValue={editingBlog.title}
-                  onChange={(event) => setEditTitleValue(event.target.value)}
-                  className={inputClassName}
-                />
-              </div>
-              <div>
-                <label className="text-sm text-white/60">Slug</label>
-                <div className="mt-2 rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm text-white/70">
-                  {editSlug ? `/${editSlug}` : 'Auto from title'}
+            <input type="hidden" name="slug" value={editSlug} />
+            <input type="hidden" name="chapters" value={JSON.stringify(editChapters)} />
+
+            <div className="grid gap-6 lg:grid-cols-12">
+              <section className="space-y-4 lg:col-span-8">
+                <div className="grid gap-4 md:grid-cols-2">
+                  <div>
+                    <label className="text-sm text-white/60">Title</label>
+                    <input
+                      name="title"
+                      required
+                      defaultValue={editingBlog.title}
+                      onChange={(event) => setEditTitleValue(event.target.value)}
+                      className={inputClassName}
+                    />
+                  </div>
+                  <div>
+                    <label className="text-sm text-white/60">Slug</label>
+                    <div className="mt-2 rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm text-white/70">
+                      {editSlug ? `/${editSlug}` : 'Auto from title'}
+                    </div>
+                  </div>
                 </div>
-                <input type="hidden" name="slug" value={editSlug} />
-              </div>
-            </div>
-            <div>
-              <label className="text-sm text-white/60">Excerpt</label>
-              <textarea
-                name="excerpt"
-                required
-                rows={2}
-                defaultValue={editingBlog.excerpt}
-                className={textareaClassName}
-              />
-            </div>
-            <div>
-              <label className="text-sm text-white/60">Content</label>
-              <textarea
-                name="content"
-                required
-                rows={6}
-                defaultValue={editingBlog.content}
-                className={textareaClassName}
-              />
-            </div>
-            <div className="grid gap-4 md:grid-cols-3">
-              <div>
-                <label className="text-sm text-white/60">Author</label>
-                <input
-                  name="author"
-                  required
-                  defaultValue={editingBlog.author}
-                  className={inputClassName}
-                />
-              </div>
-              <div>
-                <label className="text-sm text-white/60">Date</label>
-                <input
-                  name="date"
-                  type="date"
-                  required
-                  defaultValue={formatDateInput(editingBlog.date)}
-                  className={inputClassName}
-                />
-              </div>
-              <div>
-                <label className="text-sm text-white/60">Category</label>
-                <select
-                  name="category"
-                  defaultValue={editingBlog.category}
-                  required
-                  className={selectClassName}
-                >
-                  {editCategoryOptions.map((category) => (
-                    <option key={category} value={category}>
-                      {category}
-                    </option>
-                  ))}
-                </select>
-              </div>
-            </div>
-            <div className="grid gap-4 md:grid-cols-2">
-              <div>
-                <label className="text-sm text-white/60">Status</label>
-                <select
-                  name="is_published"
-                  defaultValue={editingBlog.is_published === false ? 'draft' : 'published'}
-                  className={selectClassName}
-                >
-                  <option value="published">Published</option>
-                  <option value="draft">Draft</option>
-                </select>
-              </div>
-              <div>
-                <label className="text-sm text-white/60">Featured</label>
-                <select
-                  name="featured"
-                  defaultValue={editingBlog.featured ? 'featured' : 'standard'}
-                  className={selectClassName}
-                >
-                  <option value="standard">Standard</option>
-                  <option value="featured">Featured</option>
-                </select>
-              </div>
-            </div>
-            <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
-              <p className="text-sm font-semibold text-white">Post to</p>
-              <p className="mt-1 text-xs text-white/40">
-                Select destinations (leave empty to hide on both sites).
-              </p>
-              <div className="mt-3 grid gap-2 sm:grid-cols-2">
-                <label className="inline-flex items-center gap-2 text-sm text-white/70">
-                  <input
-                    type="checkbox"
-                    name="show_on_main"
-                    value="true"
-                    defaultChecked={resolveTargetValue(editingBlog.show_on_main)}
-                    className="h-4 w-4 accent-white"
+
+                <div>
+                  <label className="text-sm text-white/60">Excerpt</label>
+                  <textarea
+                    name="excerpt"
+                    required
+                    rows={2}
+                    defaultValue={editingBlog.excerpt}
+                    className={textareaClassName}
                   />
-                  MainPortofolio
-                </label>
-                <label className="inline-flex items-center gap-2 text-sm text-white/70">
-                  <input
-                    type="checkbox"
-                    name="show_on_phion"
-                    value="true"
-                    defaultChecked={resolveTargetValue(editingBlog.show_on_phion)}
-                    className="h-4 w-4 accent-white"
-                  />
-                  PhionPortofolio
-                </label>
-              </div>
+                </div>
+
+                <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
+                  <div className="flex items-center justify-between gap-3">
+                    <div>
+                      <p className="text-sm font-semibold text-white">Chapters</p>
+                      <p className="mt-1 text-xs text-white/40">Unlimited chapters. Use chapters for longer posts.</p>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={addEditChapter}
+                      className="inline-flex items-center gap-2 rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white/70 hover:border-white/30 hover:bg-white/10 hover:text-white"
+                    >
+                      <Plus className="h-4 w-4" />
+                      Add
+                    </button>
+                  </div>
+
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    {editChapters.map((_, index) => (
+                      <button
+                        key={`edit-chapter-${index}`}
+                        type="button"
+                        onClick={() => setEditActiveChapter(index)}
+                        className={
+                          index === editActiveChapter
+                            ? 'inline-flex items-center gap-2 rounded-full border border-white/40 bg-white/10 px-3 py-1.5 text-xs font-semibold text-white'
+                            : 'inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs text-white/70 hover:border-white/30 hover:text-white'
+                        }
+                      >
+                        Chapter {index + 1}
+                        {editChapters.length > 1 ? (
+                          <span
+                            role="presentation"
+                            onClick={(event) => {
+                              event.stopPropagation();
+                              removeEditChapter(index);
+                            }}
+                            className="inline-flex h-4 w-4 items-center justify-center rounded-full border border-white/10 text-[10px] leading-none text-white/60 hover:text-white"
+                            title="Remove"
+                          >
+                            ×
+                          </span>
+                        ) : null}
+                      </button>
+                    ))}
+                  </div>
+
+                  <div className="mt-4">
+                    <div className="flex items-center justify-between gap-3">
+                      <label className="text-sm text-white/60">Content</label>
+                      <p className="text-xs text-white/40">Chapter {editActiveChapter + 1} of {editChapters.length}</p>
+                    </div>
+
+                    <div className="mt-2 overflow-hidden rounded-2xl border border-white/10 bg-[#0b0b10]">
+                      <div className="p-3">
+                        <div className="overflow-hidden">
+                          <div
+                            className="flex transition-transform duration-500 ease-out will-change-transform"
+                            style={{ transform: `translateX(-${editActiveChapter * 100}%)` }}
+                          >
+                            {editChapters.map((value, index) => (
+                              <div key={`edit-chapter-panel-${index}`} className="w-full shrink-0 px-1">
+                                <div className="rounded-xl border border-white/10 bg-white/5 p-3">
+                                  <div className="flex items-center justify-between gap-2">
+                                    <p className="text-xs uppercase tracking-[0.3em] text-white/40">Chapter {index + 1}</p>
+                                    {editChapters.length > 1 ? (
+                                      <button
+                                        type="button"
+                                        onClick={() => removeEditChapter(index)}
+                                        className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs text-white/60 transition hover:border-white/30 hover:text-white"
+                                      >
+                                        Remove
+                                      </button>
+                                    ) : null}
+                                  </div>
+                                  <textarea
+                                    required={index === 0}
+                                    rows={10}
+                                    value={value ?? ''}
+                                    onChange={(event) => {
+                                      const nextValue = event.target.value;
+                                      setEditChapters((prev) => {
+                                        const next = [...prev];
+                                        next[index] = nextValue;
+                                        return next;
+                                      });
+                                    }}
+                                    className={textareaClassName}
+                                    placeholder="Write chapter content..."
+                                  />
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+
+                        <div className="mt-3 flex items-center justify-between">
+                          <div className="inline-flex items-center gap-2">
+                            <button
+                              type="button"
+                              onClick={() => setEditActiveChapter((prev) => Math.max(0, prev - 1))}
+                              disabled={editActiveChapter === 0}
+                              className="rounded-full border border-white/10 bg-white/5 px-4 py-2 text-xs text-white/70 transition enabled:hover:border-white/30 enabled:hover:bg-white/10 disabled:opacity-40"
+                            >
+                              Prev
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => setEditActiveChapter((prev) => Math.min(editChapters.length - 1, prev + 1))}
+                              disabled={editActiveChapter >= editChapters.length - 1}
+                              className="rounded-full border border-white/10 bg-white/5 px-4 py-2 text-xs text-white/70 transition enabled:hover:border-white/30 enabled:hover:bg-white/10 disabled:opacity-40"
+                            >
+                              Next
+                            </button>
+                          </div>
+
+                          <button
+                            type="button"
+                            onClick={addEditChapter}
+                            className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2 text-xs text-white/70 transition hover:border-white/30 hover:bg-white/10 hover:text-white"
+                          >
+                            <Plus className="h-4 w-4" />
+                            Add chapter
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <input type="hidden" name="content" value={editChapters[0] ?? ''} />
+                </div>
+              </section>
+
+              <aside className="space-y-4 lg:col-span-4">
+                <div className="grid gap-4">
+                  <div>
+                    <label className="text-sm text-white/60">Author</label>
+                    <input
+                      name="author"
+                      required
+                      defaultValue={editingBlog.author}
+                      className={inputClassName}
+                    />
+                  </div>
+                  <div>
+                    <label className="text-sm text-white/60">Date</label>
+                    <input
+                      name="date"
+                      type="date"
+                      required
+                      defaultValue={formatDateInput(editingBlog.date)}
+                      className={inputClassName}
+                    />
+                  </div>
+                  <div>
+                    <label className="text-sm text-white/60">Category</label>
+                    <select
+                      name="category"
+                      defaultValue={editingBlog.category}
+                      required
+                      className={selectClassName}
+                    >
+                      {editCategoryOptions.map((category) => (
+                        <option key={category} value={category}>
+                          {category}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-1">
+                    <div>
+                      <label className="text-sm text-white/60">Status</label>
+                      <select
+                        name="is_published"
+                        defaultValue={editingBlog.is_published === false ? 'draft' : 'published'}
+                        className={selectClassName}
+                      >
+                        <option value="published">Published</option>
+                        <option value="draft">Draft</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label className="text-sm text-white/60">Featured</label>
+                      <select
+                        name="featured"
+                        defaultValue={editingBlog.featured ? 'featured' : 'standard'}
+                        className={selectClassName}
+                      >
+                        <option value="standard">Standard</option>
+                        <option value="featured">Featured</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
+                    <p className="text-sm font-semibold text-white">Post to</p>
+                    <p className="mt-1 text-xs text-white/40">
+                      Select destinations (leave empty to hide on both sites).
+                    </p>
+                    <div className="mt-3 grid gap-2 sm:grid-cols-2 lg:grid-cols-1">
+                      <label className="inline-flex items-center gap-2 text-sm text-white/70">
+                        <input
+                          type="checkbox"
+                          name="show_on_main"
+                          value="true"
+                          defaultChecked={resolveTargetValue(editingBlog.show_on_main)}
+                          className="h-4 w-4 accent-white"
+                        />
+                        MainPortofolio
+                      </label>
+                      <label className="inline-flex items-center gap-2 text-sm text-white/70">
+                        <input
+                          type="checkbox"
+                          name="show_on_phion"
+                          value="true"
+                          defaultChecked={resolveTargetValue(editingBlog.show_on_phion)}
+                          className="h-4 w-4 accent-white"
+                        />
+                        PhionPortofolio
+                      </label>
+                    </div>
+                  </div>
+                </div>
+              </aside>
             </div>
             <div>
               <label className="text-sm text-white/60">Tags</label>

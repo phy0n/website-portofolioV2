@@ -3,6 +3,7 @@ import { Award, Briefcase, FileText, LayoutGrid, Languages, Quote } from 'lucide
 import { requireAdmin } from '@/lib/supabase/admin';
 import AdminAnalytics from '@/components/analytics/AdminAnalytics';
 import AdminToast from '@/components/admin/AdminToast';
+import AdminDashboardSummaryChart from '@/components/analytics/AdminDashboardSummaryChart';
 
 interface BlogSummary {
   id: string;
@@ -106,58 +107,121 @@ export default async function AdminPage({
       ? { message: successMessage, tone: 'success' as const }
       : null;
 
+  const contentMetrics = [
+    { label: 'Blogs', value: totalBlogs, meta: `${publishedBlogs} published` },
+    { label: 'Drafts', value: draftBlogs, meta: 'Hidden from portfolio' },
+    { label: 'Featured', value: featuredBlogs, meta: 'Pinned on home' },
+    { label: 'Quotes', value: totalQuotes, meta: 'Short highlights' },
+    { label: 'Projects', value: totalProjects, meta: `${publishedProjects} published` },
+    { label: 'Certificates', value: totalCertificates, meta: `${publishedCertificates} published` },
+    { label: 'Experiences', value: totalExperiences, meta: `${publishedExperiences} published` },
+    { label: 'Languages', value: totalLanguages, meta: `${publishedLanguages} published` },
+  ];
+
+  const chartMetrics = [
+    { label: 'Blogs', value: totalBlogs },
+    { label: 'Drafts', value: draftBlogs },
+    { label: 'Quotes', value: totalQuotes },
+    { label: 'Projects', value: totalProjects },
+    { label: 'Experiences', value: totalExperiences },
+    { label: 'Certificates', value: totalCertificates },
+    { label: 'Languages', value: totalLanguages },
+  ];
+
   return (
     <div className="space-y-10">
-      <div className="flex flex-wrap items-center justify-between gap-4" data-gsap="reveal">
-        <div>
-          <p className="text-sm uppercase tracking-[0.3em] text-white/50">Dashboard</p>
-          <h2 className="text-3xl font-semibold text-white">Portfolio Snapshot</h2>
-        </div>
-        <p className="text-sm text-white/50">Content + audience metrics</p>
-      </div>
+      <section
+        className="rounded-3xl border border-white/10 bg-[radial-gradient(circle_at_top_left,_rgba(59,130,246,0.16),_transparent_44%),linear-gradient(135deg,rgba(24,24,27,0.48),rgba(9,9,11,0.96))] p-6 shadow-[0_20px_60px_rgba(0,0,0,0.35)] sm:p-8"
+        data-gsap="reveal"
+      >
+        <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
+          <div className="max-w-2xl">
+            <p className="text-sm uppercase tracking-[0.3em] text-blue-200/80">Dashboard</p>
+            <h2 className="mt-2 text-3xl font-semibold tracking-tight text-white sm:text-4xl">
+              Portfolio Snapshot
+            </h2>
+            <p className="mt-3 text-sm leading-relaxed text-white/60 sm:text-base">
+              Monitor content status and audience metrics without extra layers.
+            </p>
+          </div>
 
-      {toast && <AdminToast message={toast.message} tone={toast.tone} />}
-
-      <section id="dashboard" className="space-y-5" data-gsap="reveal">
-        <div className="flex items-center justify-between">
-          <h3 className="text-xl font-semibold text-white">Content overview</h3>
+          <div className="flex flex-wrap gap-2">
+            <Link
+              href="/admin/blogs"
+              className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2 text-xs text-white/70 transition hover:border-white/30 hover:bg-white/10 hover:text-white"
+            >
+              <FileText className="h-4 w-4" />
+              Blogs
+            </Link>
+            <Link
+              href="/admin/quotes"
+              className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2 text-xs text-white/70 transition hover:border-white/30 hover:bg-white/10 hover:text-white"
+            >
+              <Quote className="h-4 w-4" />
+              Quotes
+            </Link>
+            <Link
+              href="/admin/projects"
+              className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2 text-xs text-white/70 transition hover:border-white/30 hover:bg-white/10 hover:text-white"
+            >
+              <LayoutGrid className="h-4 w-4" />
+              Projects
+            </Link>
+          </div>
         </div>
-        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-6">
-          {[
-            { label: 'Blogs', value: totalBlogs },
-            { label: 'Blog drafts', value: draftBlogs },
-            { label: 'Blog featured', value: featuredBlogs },
-            { label: 'Quotes', value: totalQuotes },
-            { label: 'Projects', value: totalProjects },
-            { label: 'Certificates', value: totalCertificates },
-          ].map((metric) => (
+
+        {toast && <div className="mt-6">{<AdminToast message={toast.message} tone={toast.tone} />}</div>}
+      </section>
+
+      <section className="rounded-3xl border border-white/10 bg-zinc-950/60 shadow-[0_20px_60px_rgba(0,0,0,0.35)]" data-gsap="reveal">
+        <div className="grid gap-0 sm:grid-cols-2 xl:grid-cols-4">
+          {contentMetrics.map((metric) => (
             <div
               key={metric.label}
-              className="rounded-2xl border border-white/10 bg-white/5 p-5 shadow-[0_20px_60px_rgba(0,0,0,0.35)]"
+              className="border-b border-white/10 p-5 sm:border-b-0 sm:border-r sm:last:border-r-0 xl:border-b xl:border-r xl:last:border-r-0"
             >
-              <p className="text-sm text-white/50">{metric.label}</p>
-              <p className="text-3xl font-semibold text-white">{metric.value}</p>
-            </div>
-          ))}
-        </div>
-        <div className="grid gap-4 md:grid-cols-3">
-          {[
-            { label: 'Experiences', value: totalExperiences, meta: `${publishedExperiences} published` },
-            { label: 'Projects', value: totalProjects, meta: `${publishedProjects} published` },
-            { label: 'Certificates', value: totalCertificates, meta: `${publishedCertificates} published` },
-            { label: 'Languages', value: totalLanguages, meta: `${publishedLanguages} published` },
-            { label: 'Draft projects', value: draftProjects, meta: 'Hidden from portfolio' },
-            { label: 'Draft certificates', value: draftCertificates, meta: 'Hidden from portfolio' },
-          ].map((metric) => (
-            <div
-              key={metric.label}
-              className="rounded-2xl border border-white/10 bg-white/5 p-5 shadow-[0_20px_60px_rgba(0,0,0,0.35)]"
-            >
-              <p className="text-xs uppercase tracking-[0.3em] text-white/40">{metric.label}</p>
-              <p className="mt-3 text-3xl font-semibold text-white">{metric.value}</p>
+              <p className="text-[11px] font-semibold uppercase tracking-[0.3em] text-white/40">
+                {metric.label}
+              </p>
+              <p className="mt-3 text-3xl font-semibold tracking-tight text-white">{metric.value}</p>
               <p className="mt-2 text-xs text-white/40">{metric.meta}</p>
             </div>
           ))}
+        </div>
+      </section>
+
+      <section className="grid gap-4 lg:grid-cols-3" data-gsap="reveal">
+        <div className="rounded-2xl border border-white/10 bg-zinc-950/60 p-5 shadow-[0_20px_60px_rgba(0,0,0,0.35)] lg:col-span-2">
+          <div className="flex items-center justify-between gap-3">
+            <div>
+              <p className="text-xs uppercase tracking-[0.3em] text-white/40">Summary</p>
+              <h3 className="mt-2 text-lg font-semibold text-white">Content distribution</h3>
+              <p className="mt-2 text-sm text-white/50">Quick view of totals across sections.</p>
+            </div>
+            <div className="text-xs text-white/40">Counts</div>
+          </div>
+          <div className="mt-5 h-56">
+            <AdminDashboardSummaryChart metrics={chartMetrics} />
+          </div>
+        </div>
+
+        <div className="rounded-2xl border border-white/10 bg-zinc-950/60 p-5 shadow-[0_20px_60px_rgba(0,0,0,0.35)]">
+          <p className="text-xs uppercase tracking-[0.3em] text-white/40">Notes</p>
+          <h3 className="mt-2 text-lg font-semibold text-white">At a glance</h3>
+          <div className="mt-4 space-y-3 text-sm text-white/60">
+            <p>
+              Draft blogs: <span className="font-semibold text-white">{draftBlogs}</span>
+            </p>
+            <p>
+              Featured blogs: <span className="font-semibold text-white">{featuredBlogs}</span>
+            </p>
+            <p>
+              Draft projects: <span className="font-semibold text-white">{draftProjects}</span>
+            </p>
+            <p>
+              Draft certificates: <span className="font-semibold text-white">{draftCertificates}</span>
+            </p>
+          </div>
         </div>
       </section>
 

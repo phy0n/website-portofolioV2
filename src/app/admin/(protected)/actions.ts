@@ -188,6 +188,7 @@ export async function createBlog(formData: FormData) {
   const slugInput = String(formData.get('slug') || '').trim();
   const excerpt = String(formData.get('excerpt') || '').trim();
   const content = String(formData.get('content') || '').trim();
+  const chaptersRaw = String(formData.get('chapters') || '').trim();
   const author = String(formData.get('author') || '').trim();
   const date = String(formData.get('date') || '').trim();
   const category = String(formData.get('category') || '').trim();
@@ -204,6 +205,23 @@ export async function createBlog(formData: FormData) {
     redirectWithError(redirectTo, 'Missing required blog fields.');
   }
 
+  const parseChapters = (raw: string): string[] => {
+    if (!raw) return [];
+    try {
+      const parsed = JSON.parse(raw) as unknown;
+      if (!Array.isArray(parsed)) return [];
+      return parsed
+        .map((value) => (typeof value === 'string' ? value : ''))
+        .map((value) => value.trim())
+        .filter(Boolean);
+    } catch {
+      return [];
+    }
+  };
+
+  const chapters = parseChapters(chaptersRaw);
+  const primaryContent = chapters[0] ?? content;
+
   const slug = slugify(slugInput || title);
 
   if (!slug) {
@@ -212,23 +230,29 @@ export async function createBlog(formData: FormData) {
 
   const { supabase } = await requireAdmin();
   const imageUrl = await uploadBlogImage(supabase, imageFile, slug, redirectTo);
+  const insertData: Record<string, unknown> = {
+    title,
+    slug,
+    excerpt,
+    content: primaryContent,
+    author,
+    date,
+    category,
+    tags: normalizeTags(tagsValue),
+    image: imageUrl,
+    featured,
+    is_published: isPublished,
+    show_on_main: showOnMain,
+    show_on_phion: showOnPhion,
+  };
+
+  if (chapters.length > 0) {
+    insertData.chapters = chapters;
+  }
+
   const { error } = await supabase
     .from('blogs')
-    .insert({
-      title,
-      slug,
-      excerpt,
-      content,
-      author,
-      date,
-      category,
-      tags: normalizeTags(tagsValue),
-      image: imageUrl,
-      featured,
-      is_published: isPublished,
-      show_on_main: showOnMain,
-      show_on_phion: showOnPhion,
-    });
+      .insert(insertData);
 
   if (error) {
     redirectWithError(redirectTo, `Create blog failed: ${error.message}`);
@@ -248,6 +272,7 @@ export async function updateBlog(formData: FormData) {
   const slugInput = String(formData.get('slug') || '').trim();
   const excerpt = String(formData.get('excerpt') || '').trim();
   const content = String(formData.get('content') || '').trim();
+  const chaptersRaw = String(formData.get('chapters') || '').trim();
   const author = String(formData.get('author') || '').trim();
   const date = String(formData.get('date') || '').trim();
   const category = String(formData.get('category') || '').trim();
@@ -265,6 +290,23 @@ export async function updateBlog(formData: FormData) {
     redirectWithError(redirectTo, 'Missing required blog fields.');
   }
 
+  const parseChapters = (raw: string): string[] => {
+    if (!raw) return [];
+    try {
+      const parsed = JSON.parse(raw) as unknown;
+      if (!Array.isArray(parsed)) return [];
+      return parsed
+        .map((value) => (typeof value === 'string' ? value : ''))
+        .map((value) => value.trim())
+        .filter(Boolean);
+    } catch {
+      return [];
+    }
+  };
+
+  const chapters = parseChapters(chaptersRaw);
+  const primaryContent = chapters[0] ?? content;
+
   const slug = slugify(slugInput || title);
 
   if (!slug) {
@@ -278,7 +320,7 @@ export async function updateBlog(formData: FormData) {
     title,
     slug,
     excerpt,
-    content,
+    content: primaryContent,
     author,
     date,
     category,
@@ -287,6 +329,10 @@ export async function updateBlog(formData: FormData) {
     show_on_phion: showOnPhion,
     updated_at: new Date().toISOString(),
   };
+
+  if (chapters.length > 0) {
+    updateData.chapters = chapters;
+  }
 
   if (tagsValue !== null) {
     updateData.tags = normalizeTags(String(tagsValue));

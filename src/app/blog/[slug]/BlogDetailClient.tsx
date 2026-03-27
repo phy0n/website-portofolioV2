@@ -2,6 +2,7 @@
 
 import React, { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import Link from 'next/link';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import {
   Eye,
   ArrowLeft,
@@ -26,6 +27,7 @@ interface Blog {
   title: string;
   excerpt: string;
   content: string;
+  chapters?: string[] | null;
   author: string;
   date: string;
   category: string;
@@ -123,6 +125,9 @@ export default function BlogDetailClient({
   relatedBlogs?: RelatedBlog[];
   uniqueCount?: number;
 }) {
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
   const [readingProgress, setReadingProgress] = useState(0);
   const [activeHeadingId, setActiveHeadingId] = useState<string | null>(null);
   const [toast, setToast] = useState<string | null>(null);
@@ -134,9 +139,28 @@ export default function BlogDetailClient({
   const pageRef = useRef<HTMLDivElement | null>(null);
   const rafRef = useRef<number | null>(null);
   const articleRef = useRef<HTMLElement | null>(null);
+  const chapterContentRef = useRef<HTMLDivElement | null>(null);
   const toastTimerRef = useRef<number | null>(null);
 
-  const content = blog?.content ?? '';
+  const chapters = useMemo(() => {
+    const raw = (blog as any)?.chapters;
+    if (Array.isArray(raw) && raw.length > 0) {
+      return raw.map((value) => (typeof value === 'string' ? value : '')).filter((value) => value.trim().length > 0);
+    }
+    const fallback = String(blog?.content ?? '').trim();
+    return fallback ? [fallback] : [''];
+  }, [blog]);
+
+  const chapterCount = chapters.length;
+  const chapterParam = (searchParams?.get('chapter') ?? '').trim();
+  const activeChapterIndex = useMemo(() => {
+    const parsed = Number.parseInt(chapterParam, 10);
+    const oneBased = Number.isFinite(parsed) ? parsed : 1;
+    const idx = Math.max(0, Math.min(chapterCount - 1, oneBased - 1));
+    return idx;
+  }, [chapterCount, chapterParam]);
+
+  const content = chapters[activeChapterIndex] ?? '';
   const toc = useMemo(() => (content ? extractTocFromContent(content) : []), [content]);
   const resolvedUniqueVisitors = Math.max(uniqueCount ?? 0, fetchedCounts?.unique ?? 0);
   const showUniqueCounts = uniqueCount !== undefined || fetchedCounts?.source === 'counters';
@@ -328,7 +352,22 @@ export default function BlogDetailClient({
       observer.disconnect();
       gsap.killTweensOf(animatedNodes);
     };
-  }, [blog?.slug]);
+  }, [blog?.slug, activeChapterIndex]);
+
+  useLayoutEffect(() => {
+    const el = chapterContentRef.current;
+    if (!el) return;
+    const prefersReducedMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches;
+    gsap.killTweensOf(el);
+    gsap.fromTo(
+      el,
+      { autoAlpha: 0, x: prefersReducedMotion ? 0 : 22, filter: prefersReducedMotion ? 'none' : 'blur(10px)' },
+      { autoAlpha: 1, x: 0, filter: 'blur(0px)', duration: prefersReducedMotion ? 0.25 : 0.45, ease: 'power3.out' }
+    );
+    return () => {
+      gsap.killTweensOf(el);
+    };
+  }, [activeChapterIndex]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -423,6 +462,20 @@ export default function BlogDetailClient({
     const result = toggleReadingListSlug(blog.slug);
     setSaved(result.saved);
     showToast(result.saved ? 'Saved to reading list.' : 'Removed from reading list.');
+  };
+
+  const setChapter = (nextIndex: number) => {
+    const bounded = Math.max(0, Math.min(chapterCount - 1, nextIndex));
+    if (bounded === activeChapterIndex) return;
+    const params = new URLSearchParams(searchParams?.toString() ?? '');
+    if (bounded === 0) {
+      params.delete('chapter');
+    } else {
+      params.set('chapter', String(bounded + 1));
+    }
+
+    const query = params.toString();
+    router.replace(query ? `${pathname}?${query}` : pathname, { scroll: false });
   };
 
   if (!blog) {
@@ -531,6 +584,48 @@ export default function BlogDetailClient({
                 {blog.title}
               </h1>
 
+              <div className="mt-4 flex flex-wrap items-center justify-between gap-3 text-xs text-white/50">
+                <span className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-black/40 px-3 py-1.5">
+                  <Users className="h-4 w-4" />
+                  /{blog.slug}
+                </span>
+                {chapterCount > 1 ? (
+                  <div className="flex items-center gap-2">
+                    <button
+                      type="button"
+                      onClick={() => setChapter(activeChapterIndex - 1)}
+                      disabled={activeChapterIndex === 0}
+                      className={
+                        activeChapterIndex === 0
+                          ? 'inline-flex items-center justify-center rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs text-white/40 opacity-60 cursor-not-allowed'
+                          : 'inline-flex items-center justify-center rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs text-white/70 transition hover:border-white/30 hover:text-white'
+                      }
+                      aria-label="Previous chapter"
+                      title="Previous chapter"
+                    >
+                      Prev
+                    </button>
+                    <span className="text-[10px] uppercase tracking-[0.35em] text-white/40">
+                      Chapter {activeChapterIndex + 1}/{chapterCount}
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => setChapter(activeChapterIndex + 1)}
+                      disabled={activeChapterIndex >= chapterCount - 1}
+                      className={
+                        activeChapterIndex >= chapterCount - 1
+                          ? 'inline-flex items-center justify-center rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs text-white/40 opacity-60 cursor-not-allowed'
+                          : 'inline-flex items-center justify-center rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs text-white/70 transition hover:border-white/30 hover:text-white'
+                      }
+                      aria-label="Next chapter"
+                      title="Next chapter"
+                    >
+                      Next
+                    </button>
+                  </div>
+                ) : null}
+              </div>
+
               <div className="mt-6 rounded-2xl border border-white/10 bg-white/[0.03] p-5 xs:p-6 shadow-[0_20px_60px_rgba(0,0,0,0.25)]">
                 <div className="relative pl-4 border-l-2 border-[var(--home-accent)]">
                   <p className="text-sm xs:text-base sm:text-lg text-white/75 leading-relaxed">
@@ -590,7 +685,7 @@ export default function BlogDetailClient({
               </div>
             )}
 
-            <div data-gsap="reveal">
+            <div data-gsap="reveal" ref={chapterContentRef}>
               <BlogMarkdown content={content} enableCodeCopy />
             </div>
 
