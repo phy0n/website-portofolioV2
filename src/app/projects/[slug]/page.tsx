@@ -103,7 +103,7 @@ export default async function CaseStudyPage({
   if (!caseStudy || !caseStudy.project) {
     return (
       <SiteShell contentMode="full">
-        <div className="mx-auto max-w-6xl px-4 pt-10">
+        <div className="w-full pt-10">
           <div className="rounded-3xl border border-white/10 bg-black/30 p-8">
             <p className="text-[11px] uppercase tracking-[0.35em] text-white/50">Case Study</p>
             <h1 className="mt-3 text-2xl font-sans font-semibold text-white">Not found</h1>
@@ -131,7 +131,7 @@ export default async function CaseStudyPage({
 
   return (
     <SiteShell contentMode="full">
-      <div className="mx-auto max-w-6xl px-4 pt-10 pb-20">
+      <div className="w-full pt-10 pb-20">
         <div className="flex flex-wrap items-center justify-between gap-3" data-gsap="reveal">
           <Link
             href="/#projects"

@@ -7,9 +7,9 @@ import type { Hobby } from '../types';
 
 const HOBBIES: Hobby[] = [
   { icon: <Code className="h-4 w-4" />, text: 'Programming', color: '' },
-  { icon: <Gamepad2 className="h-4 w-4" />, text: 'Playing Game', color: '' },
-  { icon: <Music className="h-4 w-4" />, text: 'Listening Music', color: '' },
-  { icon: <BookOpen className="h-4 w-4" />, text: 'Reading Comic', color: '' },
+  { icon: <Gamepad2 className="h-4 w-4" />, text: 'Games', color: '' },
+  { icon: <Music className="h-4 w-4" />, text: 'Music', color: '' },
+  { icon: <BookOpen className="h-4 w-4" />, text: 'Art', color: '' },
 ];
 
 export default function AboutTab() {
@@ -18,21 +18,19 @@ export default function AboutTab() {
       <div className="space-y-3">
         <p className="js-reveal text-[11px] uppercase tracking-[0.35em] text-[var(--home-muted)]">About</p>
         <h2 className="js-reveal text-2xl font-sans font-semibold text-[var(--home-ink)] sm:text-3xl">
-          Focused on clean structure and clear communication.
+          Focused on Consistency
         </h2>
         <p className="js-reveal max-w-2xl text-sm text-[var(--home-muted)] sm:text-base">
-          I am Phion, a developer who enjoys making good things and learning every day. I keep things simple, clear, and
-          easy to use.
+          I am Phion, I enjoy building useful and meaningful solutions while continuously learning and improving. I focus on keeping things simple, structured, and easy to understand whether it's software, systems, or ideas.
         </p>
       </div>
 
       <div className="space-y-6">
         <div className="js-reveal border-l-2 border-[var(--home-accent)] pl-4 text-lg text-[var(--home-ink)]">
-          Building calm, modern experiences that feel intentional.
+          Building reliable and thoughtful solutions across different fields and challenges.
         </div>
         <div className="js-reveal border border-white/10 bg-black/30 px-5 py-4 text-sm text-[var(--home-muted)]">
-          I build experiences with a steady process, paying attention to the details that make a product feel confident
-          and professional.
+          I follow a steady process: understand the problem, explore solutions, test, and refine, so the result stays clear, maintainable, and ready to grow.
         </div>
       </div>
 
@@ -45,8 +43,7 @@ export default function AboutTab() {
           {HOBBIES.map((hobby, index) => (
             <div
               key={index}
-              className="js-reveal flex items-center gap-2 rounded-full border border-white/10 bg-black/30 px-4 py-2 text-sm text-[var(--home-muted)]"
-            >
+              className="js-reveal flex items-center gap-2 rounded-full border border-white/10 bg-black/30 px-4 py-2 text-sm text-[var(--home-muted)]">
               <span className="text-[var(--home-accent)]">{hobby.icon}</span>
               {hobby.text}
             </div>

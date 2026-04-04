@@ -322,7 +322,7 @@ export default function BlogClient({
   return (
     <div className="relative">
       <section className="relative border-b border-white/10" data-gsap="reveal">
-        <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 xs:py-10 sm:py-12 md:py-16">
+        <div className="relative w-full py-8 xs:py-10 sm:py-12 md:py-16">
           <div className="grid lg:grid-cols-4 gap-6 xs:gap-8">
             <div className="lg:col-span-3 space-y-3 xs:space-y-4">
               <div className="flex items-center gap-2 xs:gap-3">
@@ -438,7 +438,7 @@ export default function BlogClient({
           </div>
         </div>
       </section>
-      <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 xs:pt-10 sm:pt-12" data-gsap="reveal">
+      <div className="relative w-full pt-8 xs:pt-10 sm:pt-12" data-gsap="reveal">
         <div className="flex items-center justify-between">
           <p className="text-xs xs:text-sm text-[var(--home-muted)]">
             {filteredBlogs.length === totalStories
@@ -461,7 +461,7 @@ export default function BlogClient({
         </div>
       </div>
 
-      <section className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6 xs:py-8 pb-16 xs:pb-20 sm:pb-24" data-gsap="reveal">
+      <section className="relative w-full py-6 xs:py-8 pb-16 xs:pb-20 sm:pb-24" data-gsap="reveal">
           <div className="grid lg:grid-cols-12 gap-6 xs:gap-8 items-start">
           <div className="lg:col-span-8 space-y-10">
             {showFeaturedSection && (

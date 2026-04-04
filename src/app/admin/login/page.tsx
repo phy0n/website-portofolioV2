@@ -5,7 +5,7 @@ import AdminLoginShell from './AdminLoginShell';
 export default function AdminLoginPage() {
   return (
     <AdminLoginShell>
-      <div className="relative max-w-5xl mx-auto px-6 py-16">
+      <div className="relative mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 py-16">
         <div
           className="flex items-center justify-between text-xs uppercase tracking-[0.4em] text-white/50"
           data-gsap="reveal"

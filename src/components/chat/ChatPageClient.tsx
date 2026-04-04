@@ -210,7 +210,7 @@ export default function ChatPageClient() {
   };
 
   return (
-    <div className="mx-auto w-full max-w-4xl space-y-4">
+    <div className="w-full space-y-4">
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div className="space-y-1">
           <h1 className="text-2xl font-sans font-semibold text-[var(--home-ink)]">Chat</h1>

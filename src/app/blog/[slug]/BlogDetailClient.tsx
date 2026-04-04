@@ -526,7 +526,7 @@ export default function BlogDetailClient({
         </button>
       )}
 
-      <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10 xs:py-12">
+      <div className="relative mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 py-10 xs:py-12">
         <div className="mb-8 flex flex-wrap items-center justify-between gap-3" data-gsap="reveal">
           <Link
             href="/blog"

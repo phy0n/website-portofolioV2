@@ -73,8 +73,8 @@ export default function SiteShell({ children, scopeRef, contentMode = 'contained
   const toggleCta = () => setCtaOpen((current) => !current);
   const mainClassName =
     contentMode === 'full'
-      ? 'relative z-10 pb-20 pt-24'
-      : 'relative z-10 mx-auto max-w-6xl px-4 pb-20 pt-24';
+      ? 'relative z-10 mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 pb-20 pt-24'
+      : 'relative z-10 mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 pb-20 pt-24';
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -328,7 +328,7 @@ export default function SiteShell({ children, scopeRef, contentMode = 'contained
     <div ref={scopeRef} className="home-portfolio min-h-screen bg-[var(--home-bg)] text-[var(--home-ink)] font-nunito">
       <div className="relative isolate">
         <header className="js-nav fixed left-0 right-0 top-0 z-40 px-4 pt-5 animate-slide-down">
-          <div className="mx-auto flex max-w-6xl items-center justify-between">
+          <div className="mx-auto flex w-full max-w-7xl items-center justify-between">
             <Link
               href="/"
               className="inline-flex items-center gap-3 rounded-full border border-white/10 bg-black/70 px-4 py-2 text-white shadow-[0_18px_40px_rgba(0,0,0,0.45)] backdrop-blur transition hover:border-white/20"
@@ -380,7 +380,7 @@ export default function SiteShell({ children, scopeRef, contentMode = 'contained
             role="dialog"
             aria-modal="true"
             aria-label="Navigation menu"
-            className="mx-auto flex w-full max-w-6xl flex-col gap-5 px-6 sm:gap-6 sm:px-10"
+            className="mx-auto flex w-full max-w-7xl flex-col gap-5 px-6 sm:gap-6 sm:px-10"
           >
             {NAV_LINKS.map((item) => {
               const isActive = item.href === '/' ? pathname === '/' : pathname?.startsWith(item.href);
@@ -424,10 +424,10 @@ export default function SiteShell({ children, scopeRef, contentMode = 'contained
           <main className={mainClassName}>{children}</main>
 
           <footer className="relative z-10 overflow-hidden border-t border-white/10">
-            <div className="relative z-10 mx-auto max-w-6xl px-4 pb-10 pt-8 text-xs text-[var(--home-muted)]">
+            <div className="relative z-10 mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 pb-10 pt-8 text-xs text-[var(--home-muted)]">
               Copyright {new Date().getFullYear()} Phy0n. All rights reserved.
             </div>
-            <div className="mx-auto max-w-6xl px-4 pb-6 text-center">
+            <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 pb-6 text-center">
               <p className="text-[clamp(6rem,24vw,18rem)] font-sans font-bold uppercase tracking-[0.12em] leading-none text-white">
                 PHY0N
               </p>

@@ -97,8 +97,7 @@ export default function ConnectTab() {
             href={social.url}
             target="_blank"
             rel="noopener noreferrer"
-            className="group flex flex-wrap items-center justify-between gap-4 py-4"
-          >
+            className="group flex flex-wrap items-center justify-between gap-4 py-4">
             <div className="flex items-center gap-4">
               <div className="flex h-12 w-12 items-center justify-center rounded-2xl border border-white/10 bg-black/30 text-[var(--home-ink)]">
                 {social.icon}
@@ -135,7 +134,7 @@ export default function ConnectTab() {
         </div>
       </div>
 
-      <div className="space-y-3 border-t border-white/10 pt-6" data-gsap="reveal">
+      {/* <div className="space-y-3 border-t border-white/10 pt-6" data-gsap="reveal">
         <div className="flex items-center justify-between">
           <p className="text-[11px] uppercase tracking-[0.35em] text-[var(--home-muted)]">Services</p>
           <span className="text-xs text-[var(--home-muted)]">Freelance</span>
@@ -163,8 +162,7 @@ export default function ConnectTab() {
               return (
                 <div
                   key={service.id}
-                  className="rounded-3xl border border-white/10 bg-black/30 p-6 shadow-[0_18px_40px_rgba(0,0,0,0.45)]"
-                >
+                  className="rounded-3xl border border-white/10 bg-black/30 p-6 shadow-[0_18px_40px_rgba(0,0,0,0.45)]">
                   <div className="flex items-start justify-between gap-4">
                     <div className="min-w-0 space-y-2">
                       <div className="flex flex-wrap items-center gap-2">
@@ -186,8 +184,7 @@ export default function ConnectTab() {
                       target={ctaHref.startsWith('http') ? '_blank' : undefined}
                       rel={ctaHref.startsWith('http') ? 'noreferrer noopener' : undefined}
                       className="inline-flex shrink-0 items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.28em] text-white/70 transition hover:border-white/20 hover:bg-white/[0.06] hover:text-white"
-                      aria-label={`${ctaLabel} about ${service.title}`}
-                    >
+                      aria-label={`${ctaLabel} about ${service.title}`}>
                       {ctaLabel}
                       <ArrowUpRight className="h-4 w-4" />
                     </a>
@@ -237,8 +234,7 @@ export default function ConnectTab() {
               return (
                 <div
                   key={item.id}
-                  className="rounded-3xl border border-white/10 bg-black/30 p-6 shadow-[0_18px_40px_rgba(0,0,0,0.45)]"
-                >
+                  className="rounded-3xl border border-white/10 bg-black/30 p-6 shadow-[0_18px_40px_rgba(0,0,0,0.45)]">
                   <div className="flex items-start gap-3">
                     <span className="mt-0.5 text-[var(--home-accent)]">
                       <Quote className="h-5 w-5" />
@@ -257,8 +253,7 @@ export default function ConnectTab() {
                         target="_blank"
                         rel="noreferrer noopener"
                         className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.28em] text-white/70 transition hover:border-white/20 hover:bg-white/[0.06] hover:text-white"
-                        aria-label={`Open testimonial source for ${item.name}`}
-                      >
+                        aria-label={`Open testimonial source for ${item.name}`}>
                         Source
                         <ArrowUpRight className="h-4 w-4" />
                       </a>
@@ -269,7 +264,7 @@ export default function ConnectTab() {
             })}
           </div>
         )}
-      </div>
+      </div> */}
     </div>
   );
 }
