@@ -43,12 +43,15 @@ const STATUS_STYLES: Record<string, string> = {
 
 interface HomeClientProps {
   discordUserId: string | null;
+  profileImageUrl?: string | null;
 }
 
-export default function HomeClient({ discordUserId }: HomeClientProps) {
-  const [heroImageErrored, setHeroImageErrored] = useState(false);
+export default function HomeClient({ discordUserId, profileImageUrl }: HomeClientProps) {
+  const [heroImageErrorSrc, setHeroImageErrorSrc] = useState<string | null>(null);
   const { discordStatus } = useDiscordStatusRealtime(discordUserId);
   const scopeRef = useRef<HTMLDivElement | null>(null);
+  const heroImageSrc = profileImageUrl || HERO_IMAGE_SRC;
+  const heroImageErrored = heroImageErrorSrc === heroImageSrc;
 
   const statusKey = discordStatus?.status ?? 'offline';
   const statusLabel = STATUS_LABELS[statusKey] ?? 'Offline';
@@ -57,22 +60,23 @@ export default function HomeClient({ discordUserId }: HomeClientProps) {
 
   return (
     <HomeSidebarDataProvider>
-      <SiteShell scopeRef={scopeRef}>
+      <SiteShell scopeRef={scopeRef} navAvatarSrc={heroImageSrc}>
         <section id="top" className="grid gap-10 pb-14 pt-6 lg:grid-cols-[280px_1fr] lg:items-center">
-          <div className="js-hero-image relative mx-auto h-56 w-56 overflow-hidden rounded-3xl border border-white/10 bg-[var(--home-soft)] shadow-[0_18px_40px_rgba(0,0,0,0.45)] sm:h-64 sm:w-64 lg:mx-0">
+          <div className="js-hero-image relative mx-auto h-56 w-56 overflow-hidden rounded-full border border-white/10 bg-[var(--home-soft)] shadow-[0_18px_40px_rgba(0,0,0,0.45)] sm:h-64 sm:w-64 lg:mx-0">
             {heroImageErrored ? (
               <div className="flex h-full w-full items-center justify-center text-3xl font-semibold text-[var(--home-ink)]">
                 {HERO_IMAGE_FALLBACK}
               </div>
             ) : (
               <Image
-                src={HERO_IMAGE_SRC}
+                key={heroImageSrc}
+                src={heroImageSrc}
                 alt={`${DISPLAY_NAME} profile photo`}
                 fill
                 sizes="(max-width: 1024px) 256px, 280px"
                 className="object-cover"
                 priority
-                onError={() => setHeroImageErrored(true)}
+                onError={() => setHeroImageErrorSrc(heroImageSrc)}
               />
             )}
             <span

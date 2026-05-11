@@ -29,17 +29,17 @@ export default function AdminSidebar({
   const pathname = usePathname();
 
   return (
-    <aside className="h-full w-full border-r border-white/10 bg-zinc-950 px-6 py-8 flex flex-col gap-8 shadow-[0_20px_60px_rgba(0,0,0,0.45)]">
+    <aside className="admin-sidebar h-full w-full px-6 py-8 flex flex-col gap-8">
       <div className="flex items-start justify-between gap-3">
         <div>
-          <p className="text-[11px] uppercase tracking-[0.4em] text-white/40">Admin</p>
+          <p className="text-[11px] uppercase tracking-[0.4em] text-[var(--admin-accent)]">Admin</p>
           <h1 className="text-lg font-semibold text-white">Phion Console</h1>
         </div>
         {onClose && (
           <button
             type="button"
             onClick={onClose}
-            className="lg:hidden cursor-pointer inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/5 text-white/70 transition hover:border-white/30 hover:text-white"
+            className="admin-sidebar-icon-button lg:hidden cursor-pointer"
             aria-label="Close navigation"
           >
             <X className="h-4 w-4" />
@@ -57,11 +57,7 @@ export default function AdminSidebar({
               prefetch
               aria-current={isActive ? 'page' : undefined}
               onClick={() => onClose?.()}
-              className={`flex items-center gap-3 rounded-xl border px-3 py-2.5 transition ${
-                isActive
-                  ? 'border-white/30 bg-white/10 text-white shadow-[0_0_0_1px_rgba(255,255,255,0.08)]'
-                  : 'border-transparent text-white/70 hover:border-white/15 hover:bg-white/5 hover:text-white'
-              }`}
+              className={`admin-sidebar-link ${isActive ? 'is-active' : ''}`}
             >
               <Icon className="h-4 w-4" />
               {item.label}
@@ -70,7 +66,7 @@ export default function AdminSidebar({
         })}
       </nav>
       <div className="mt-auto space-y-4 text-sm text-white/60">
-        <div className="rounded-xl border border-white/10 bg-white/5 px-4 py-3">
+        <div className="admin-sidebar-panel px-4 py-3">
           <p className="text-[11px] uppercase tracking-[0.3em] text-white/40">Signed in</p>
           <p className="mt-2 text-sm text-white/80">{email}</p>
         </div>
@@ -79,7 +75,7 @@ export default function AdminSidebar({
             href="https://phymoneytracker.vercel.app/app"
             target="_blank"
             rel="noreferrer"
-            className="group flex items-center justify-between rounded-xl border border-white/10 bg-white/5 px-3 py-2.5 text-sm text-white/80 transition hover:border-white/30 hover:bg-white/10 hover:text-white"
+            className="admin-sidebar-link admin-sidebar-secondary group justify-between"
           >
             <span>Open money tracker</span>
             <ArrowUpRight className="h-4 w-4 text-white/60 transition group-hover:text-white" />
@@ -87,7 +83,7 @@ export default function AdminSidebar({
           <Link
             href="/"
             onClick={() => onClose?.()}
-            className="group flex items-center justify-between rounded-xl border border-white/10 bg-white/5 px-3 py-2.5 text-sm text-white/80 transition hover:border-white/30 hover:bg-white/10 hover:text-white"
+            className="admin-sidebar-link admin-sidebar-secondary group justify-between"
           >
             <span>Back to portfolio</span>
             <ArrowUpRight className="h-4 w-4 text-white/60 transition group-hover:text-white" />
@@ -95,7 +91,7 @@ export default function AdminSidebar({
           <form action={signOutAction}>
             <AdminSubmitButton
               pendingText="Signing out..."
-              className="group inline-flex w-full items-center justify-between rounded-xl border border-white/10 bg-white/5 px-3 py-2.5 text-sm text-white/70 transition hover:border-white/30 hover:bg-white/10 hover:text-white"
+              className="admin-sidebar-link admin-sidebar-secondary group w-full justify-between"
             >
               <span className="inline-flex items-center gap-2">
                 <LogOut className="h-4 w-4" />

@@ -1,5 +1,5 @@
 import "../styles/globals.css";
-import { Geist, Geist_Mono, Nunito } from "next/font/google";
+import { Geist, Geist_Mono, Nunito, Manrope } from "next/font/google";
 import type { Metadata } from "next";
 import AnalyticsTracker from "@/components/analytics/AnalyticsTracker";
 import GlobalGsap from "@/components/shared/GlobalGsap";
@@ -18,6 +18,12 @@ const geistMono = Geist_Mono({
 const nunito = Nunito({
   weight: ['300', '400', '600', '700', '800'],
   variable: "--font-nunito",
+  subsets: ["latin"],
+});
+
+const manrope = Manrope({
+  weight: ["300", "400", "500", "600", "700"],
+  variable: "--font-manrope",
   subsets: ["latin"],
 });
 
@@ -75,7 +81,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
     <html lang="en" suppressHydrationWarning>
       <body
         suppressHydrationWarning
-        className={`${geistSans.variable} ${geistMono.variable} ${nunito.variable} antialiased`}
+        className={`minimal-root ${geistSans.variable} ${geistMono.variable} ${nunito.variable} ${manrope.variable} antialiased`}
       >
         <GlobalGsap>{children}</GlobalGsap>
         <AnalyticsTracker />

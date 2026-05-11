@@ -1,6 +1,8 @@
 import HomeClient from '@/components/home/HomeClient';
+import { getSiteProfile } from '@/lib/site-profile';
 
-export default function Page() {
+export default async function Page() {
+  const { profileImageUrl } = await getSiteProfile();
   const jsonLd = [
     {
       '@context': 'https://schema.org',
@@ -26,7 +28,7 @@ export default function Page() {
   return (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
-      <HomeClient discordUserId={process.env.DISCORD_USER_ID ?? null} />
+      <HomeClient discordUserId={process.env.DISCORD_USER_ID ?? null} profileImageUrl={profileImageUrl} />
     </>
   );
 }

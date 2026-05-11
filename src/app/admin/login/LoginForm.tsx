@@ -1,5 +1,6 @@
 'use client';
 
+import { AlertCircle, ArrowRight, LoaderCircle, LockKeyhole, Mail } from 'lucide-react';
 import { useActionState } from 'react';
 import { useFormStatus } from 'react-dom';
 import { login } from './actions';
@@ -15,7 +16,13 @@ function SubmitButton() {
     <button
       type="submit"
       disabled={pending}
-      className="inline-flex w-full items-center justify-center gap-2 rounded-full border border-white bg-white px-5 py-3 text-sm font-semibold text-black shadow-sm transition hover:bg-white/90 disabled:cursor-not-allowed disabled:opacity-60">
+      className="admin-login-submit"
+    >
+      {pending ? (
+        <LoaderCircle className="h-4 w-4 animate-spin" aria-hidden="true" />
+      ) : (
+        <ArrowRight className="h-4 w-4" aria-hidden="true" />
+      )}
       {pending ? 'Signing in...' : 'Sign in'}
     </button>
   );
@@ -27,35 +34,42 @@ export default function LoginForm() {
   return (
     <form action={formAction} className="space-y-5">
       <div className="space-y-2">
-        <label className="text-xs uppercase tracking-[0.3em] text-white/50">
+        <label className="text-[11px] uppercase tracking-[0.32em] text-white/45">
           Email
         </label>
-        <input
-          name="email"
-          type="email"
-          autoComplete="email"
-          required
-          className="w-full rounded-2xl border border-white/10 bg-black/70 px-4 py-3 text-sm text-white outline-none transition focus:border-white/40"
-          placeholder="admin@mail.com"
-        />
+        <div className="admin-login-field">
+          <Mail className="admin-login-field-icon h-4 w-4" aria-hidden="true" />
+          <input
+            name="email"
+            type="email"
+            autoComplete="email"
+            required
+            className="admin-login-input"
+            placeholder="admin@gmail.com"
+          />
+        </div>
       </div>
       <div className="space-y-2">
-        <label className="text-xs uppercase tracking-[0.3em] text-white/50">
+        <label className="text-[11px] uppercase tracking-[0.32em] text-white/45">
           Password
         </label>
-        <input
-          name="password"
-          type="password"
-          autoComplete="current-password"
-          required
-          className="w-full rounded-2xl border border-white/10 bg-black/70 px-4 py-3 text-sm text-white outline-none transition focus:border-white/40"
-          placeholder="••••••••"
-        />
+        <div className="admin-login-field">
+          <LockKeyhole className="admin-login-field-icon h-4 w-4" aria-hidden="true" />
+          <input
+            name="password"
+            type="password"
+            autoComplete="current-password"
+            required
+            className="admin-login-input"
+            placeholder="••••••••"
+          />
+        </div>
       </div>
 
       {state?.error && (
-        <div className="whitespace-pre-wrap rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-xs text-white/70 shadow-[0_0_0_1px_rgba(255,255,255,0.02)]">
-          {state.error}
+        <div className="admin-login-message" role="alert">
+          <AlertCircle className="mt-0.5 h-4 w-4 shrink-0 text-[var(--home-accent)]" aria-hidden="true" />
+          <span>{state.error}</span>
         </div>
       )}
 

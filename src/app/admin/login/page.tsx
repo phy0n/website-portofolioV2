@@ -1,31 +1,31 @@
 import Link from 'next/link';
+import { ArrowLeft } from 'lucide-react';
 import LoginForm from './LoginForm';
 import AdminLoginShell from './AdminLoginShell';
 
 export default function AdminLoginPage() {
   return (
     <AdminLoginShell>
-      <div className="relative mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 py-16">
-        <div
-          className="flex items-center justify-between text-xs uppercase tracking-[0.4em] text-white/50"
-          data-gsap="reveal"
-        >
-          <span>Phion Admin</span>
-          <Link href="/" className="text-white/50 hover:text-white transition">
-            Back to portfolio
+      <div className="relative z-10 mx-auto flex min-h-screen w-full max-w-7xl flex-col px-4 py-6 sm:px-6 lg:px-8">
+        <header className="flex items-center justify-between gap-4 text-[11px] uppercase tracking-[0.35em]" data-gsap="reveal">
+          <span className="text-white/45">Phion Admin</span>
+          <Link href="/" className="admin-login-back">
+            <ArrowLeft className="h-3.5 w-3.5" aria-hidden="true" />
+            Portfolio
           </Link>
-        </div>
+        </header>
 
-        <div className="mt-12 flex justify-center">
-          <div
-            className="w-full max-w-lg rounded-[32px] border border-white/10 bg-black/70 p-8 shadow-[0_30px_120px_rgba(0,0,0,0.6)]"
-            data-gsap="reveal">
-            <div className="mb-6">
-              <h2 className="text-lg font-semibold text-white">Sign in</h2>
+        <main className="flex flex-1 items-center justify-center py-12">
+          <section className="w-full max-w-[420px]" data-gsap="reveal">
+            <div className="admin-login-card">
+              <div className="mb-8 space-y-2">
+                <p className="text-[11px] uppercase tracking-[0.35em] text-white/45">Restricted</p>
+                <h1 className="text-2xl font-semibold leading-tight text-white">Sign in</h1>
+              </div>
+              <LoginForm />
             </div>
-            <LoginForm />
-          </div>
-        </div>
+          </section>
+        </main>
       </div>
     </AdminLoginShell>
   );

@@ -163,9 +163,140 @@ export default function AdminLoginShell({ children }: { children: React.ReactNod
   }, []);
 
   return (
-    <div ref={pageRef} className="min-h-screen bg-[#0b0b10] text-white relative overflow-hidden" data-page-content>
+    <div
+      ref={pageRef}
+      className="admin-login-root home-portfolio relative min-h-screen overflow-hidden bg-[var(--home-bg)] text-[var(--home-ink)] font-nunito"
+      data-page-content
+    >
+      <style>{`
+        .admin-login-root {
+          --admin-login-panel: rgba(10, 10, 12, 0.92);
+          --admin-login-line: rgba(255, 255, 255, 0.14);
+          --admin-login-muted: rgba(255, 255, 255, 0.55);
+          isolation: isolate;
+        }
+
+        .admin-login-root::before {
+          content: "";
+          position: absolute;
+          inset: 0;
+          z-index: 0;
+          pointer-events: none;
+          background:
+            linear-gradient(to bottom, rgba(255, 255, 255, 0.045), transparent 34%),
+            radial-gradient(circle at 50% 42%, rgba(255, 255, 255, 0.055), transparent 24%);
+          opacity: 0.8;
+        }
+
+        .minimal-root .admin-login-root .admin-login-back {
+          display: inline-flex !important;
+          align-items: center !important;
+          gap: 0.5rem !important;
+          padding: 0 !important;
+          border: 0 !important;
+          background: transparent !important;
+          color: rgba(255, 255, 255, 0.58) !important;
+          text-decoration: none !important;
+          transition: color 180ms ease, transform 180ms ease !important;
+        }
+
+        .minimal-root .admin-login-root .admin-login-back:hover {
+          color: #ffffff !important;
+          transform: translateX(-2px);
+          text-decoration: none !important;
+        }
+
+        .minimal-root .admin-login-root .admin-login-card {
+          width: 100% !important;
+          border: 1px solid var(--admin-login-line) !important;
+          border-radius: 8px !important;
+          background: var(--admin-login-panel) !important;
+          padding: 2rem !important;
+          box-shadow: 0 28px 110px rgba(0, 0, 0, 0.72), inset 0 1px 0 rgba(255, 255, 255, 0.05) !important;
+          backdrop-filter: blur(16px);
+        }
+
+        .admin-login-field {
+          position: relative;
+        }
+
+        .admin-login-field-icon {
+          position: absolute;
+          left: 0.95rem;
+          top: 50%;
+          color: var(--admin-login-muted);
+          transform: translateY(-50%);
+          pointer-events: none;
+        }
+
+        .minimal-root .admin-login-root .admin-login-input {
+          display: block !important;
+          width: 100% !important;
+          min-height: 3rem !important;
+          border: 1px solid rgba(255, 255, 255, 0.13) !important;
+          border-radius: 8px !important;
+          background: rgba(255, 255, 255, 0.055) !important;
+          padding: 0.8rem 1rem 0.8rem 2.75rem !important;
+          color: #ffffff !important;
+          font-size: 0.875rem !important;
+          outline: none !important;
+          transition: border-color 180ms ease, background 180ms ease, box-shadow 180ms ease !important;
+        }
+
+        .minimal-root .admin-login-root .admin-login-input::placeholder {
+          color: rgba(255, 255, 255, 0.34);
+        }
+
+        .minimal-root .admin-login-root .admin-login-input:focus {
+          border-color: rgba(209, 74, 74, 0.78) !important;
+          background: rgba(255, 255, 255, 0.075) !important;
+          box-shadow: 0 0 0 3px rgba(209, 74, 74, 0.15) !important;
+        }
+
+        .minimal-root .admin-login-root .admin-login-message {
+          display: flex !important;
+          gap: 0.7rem !important;
+          border: 1px solid rgba(209, 74, 74, 0.28) !important;
+          border-radius: 8px !important;
+          background: rgba(209, 74, 74, 0.1) !important;
+          padding: 0.85rem 0.95rem !important;
+          color: rgba(255, 255, 255, 0.8) !important;
+          font-size: 0.76rem !important;
+          line-height: 1.45 !important;
+          white-space: pre-wrap !important;
+        }
+
+        .minimal-root .admin-login-root .admin-login-submit {
+          display: inline-flex !important;
+          align-items: center !important;
+          justify-content: center !important;
+          gap: 0.55rem !important;
+          width: 100% !important;
+          min-height: 3rem !important;
+          border: 1px solid #ffffff !important;
+          border-radius: 999px !important;
+          background: #ffffff !important;
+          padding: 0.8rem 1.2rem !important;
+          color: #000000 !important;
+          font-size: 0.875rem !important;
+          font-weight: 800 !important;
+          text-decoration: none !important;
+          transition: background 180ms ease, border-color 180ms ease, opacity 180ms ease, transform 180ms ease !important;
+        }
+
+        .minimal-root .admin-login-root .admin-login-submit:hover:not(:disabled) {
+          background: rgba(255, 255, 255, 0.9) !important;
+          border-color: rgba(255, 255, 255, 0.9) !important;
+          transform: translateY(-1px);
+          text-decoration: none !important;
+        }
+
+        .minimal-root .admin-login-root .admin-login-submit:disabled {
+          cursor: not-allowed !important;
+          opacity: 0.62 !important;
+        }
+      `}</style>
       {children}
     </div>
   );
 }
-

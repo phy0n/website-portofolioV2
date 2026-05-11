@@ -20,11 +20,11 @@ const resolveRedirectPath = (formData: FormData) => {
   return allowedRedirects.has(target) ? target : '/admin';
 };
 
-const redirectWithError = (path: string, message: string) => {
+const redirectWithError = (path: string, message: string): never => {
   redirect(`${path}?error=${encodeURIComponent(message)}`);
 };
 
-const redirectWithSuccess = (path: string, message: string) => {
+const redirectWithSuccess = (path: string, message: string): never => {
   redirect(`${path}?success=${encodeURIComponent(message)}`);
 };
 
@@ -52,6 +52,10 @@ const certificateImagesBucket =
   process.env.SUPABASE_CERTIFICATE_IMAGE_BUCKET ||
   process.env.NEXT_PUBLIC_SUPABASE_CERTIFICATE_IMAGE_BUCKET ||
   blogImagesBucket;
+const profileImagesBucket =
+  process.env.SUPABASE_PROFILE_IMAGE_BUCKET ||
+  process.env.NEXT_PUBLIC_SUPABASE_PROFILE_IMAGE_BUCKET ||
+  'profile-images';
 
 type UploadableImage = Blob & { name?: string };
 
@@ -181,6 +185,90 @@ const uploadCertificateImage = async (
   const { data } = supabase.storage.from(certificateImagesBucket).getPublicUrl(filePath);
   return data.publicUrl;
 };
+
+const uploadProfileImage = async (
+  supabase: Awaited<ReturnType<typeof requireAdmin>>['supabase'],
+  file: UploadableImage | null,
+  redirectTo: string
+) => {
+  if (!file) {
+    redirectWithError(redirectTo, 'Choose a profile image first.');
+    return null;
+  }
+
+  if (!allowedImageTypes.has(file.type)) {
+    redirectWithError(redirectTo, 'Profile image must be PNG, JPG, or WebP.');
+  }
+
+  if (file.size > maxImageBytes) {
+    redirectWithError(redirectTo, 'Profile image must be under 5MB.');
+  }
+
+  const fileName = typeof file.name === 'string' ? file.name : '';
+  const extensionFromName = fileName.split('.').pop()?.toLowerCase();
+  const extension = extensionFromName || extensionFromMimeType(file.type);
+  const filePath = `profile/profile-${Date.now()}.${extension}`;
+
+  let fileBody: Uint8Array;
+  try {
+    fileBody = new Uint8Array(await file.arrayBuffer());
+  } catch (error) {
+    const message = error instanceof Error ? error.message : 'Could not read file.';
+    redirectWithError(redirectTo, `Profile image upload failed: ${message}`);
+    return null;
+  }
+
+  let uploadError: { message: string } | null = null;
+  try {
+    const { error } = await supabase.storage.from(profileImagesBucket).upload(filePath, fileBody, {
+      cacheControl: '3600',
+      upsert: true,
+      contentType: file.type || 'image/jpeg',
+    });
+    uploadError = error;
+  } catch (error) {
+    const message = error instanceof Error ? error.message : 'Network error.';
+    redirectWithError(redirectTo, `Profile image upload failed: ${message}`);
+    return null;
+  }
+
+  if (uploadError) {
+    redirectWithError(redirectTo, `Profile image upload failed: ${uploadError.message}`);
+  }
+
+  const { data } = supabase.storage.from(profileImagesBucket).getPublicUrl(filePath);
+  return data.publicUrl;
+};
+
+export async function updateProfilePicture(formData: FormData) {
+  const redirectTo = resolveRedirectPath(formData);
+  const imageFile = extractImageFile(formData);
+  const { supabase } = await requireAdmin();
+  const imageUrl = await uploadProfileImage(supabase, imageFile, redirectTo);
+
+  if (!imageUrl) {
+    redirectWithError(redirectTo, 'Profile image upload failed.');
+  }
+
+  const { error } = await supabase
+    .from('site_profile')
+    .upsert(
+      {
+        id: 'default',
+        profile_image_url: imageUrl,
+        updated_at: new Date().toISOString(),
+      },
+      { onConflict: 'id' }
+    );
+
+  if (error) {
+    redirectWithError(redirectTo, `Update profile picture failed: ${error.message}`);
+  }
+
+  revalidatePath('/');
+  revalidatePath('/admin');
+  redirectWithSuccess(redirectTo, 'Profile picture updated.');
+}
 
 export async function createBlog(formData: FormData) {
   const redirectTo = resolveRedirectPath(formData);

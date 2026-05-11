@@ -161,20 +161,16 @@ export default function AdminAnalytics({
     <section id="audience" className="space-y-5">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <p className="text-sm uppercase tracking-[0.3em] text-white/50">Audience</p>
+          <p className="text-sm uppercase tracking-[0.3em] text-[var(--admin-accent)]">Audience</p>
           <h3 className="text-xl font-semibold text-white">User Analytics</h3>
         </div>
-        <div className="inline-flex items-center gap-1 rounded-full border border-white/10 bg-white/5 p-1 text-[10px] uppercase tracking-[0.3em] text-white/60">
+        <div className="admin-analytics-range">
           {rangeOptions.map((option) => (
             <button
               key={option}
               type="button"
               onClick={() => setRange(option)}
-              className={`cursor-pointer rounded-full px-3 py-1 transition ${
-                range === option
-                  ? 'bg-white text-black'
-                  : 'text-white/60 hover:text-white'
-              }`}
+              className={`admin-analytics-range-button cursor-pointer ${range === option ? 'is-active' : ''}`}
               aria-pressed={range === option}
             >
               {option}
@@ -266,11 +262,11 @@ export default function AdminAnalytics({
                 <p className="mt-2 text-lg font-semibold text-white">{rangeLabel}</p>
                 <div className="mt-2 flex items-center gap-4 text-xs text-white/50">
                   <span className="inline-flex items-center gap-2">
-                    <span className="h-2 w-2 rounded-full bg-orange-400" />
+                    <span className="h-2 w-2 rounded-full bg-[var(--admin-accent)]" />
                     Visits
                   </span>
                   <span className="inline-flex items-center gap-2">
-                    <span className="h-2 w-2 rounded-full bg-emerald-400" />
+                    <span className="h-2 w-2 rounded-full bg-white/70" />
                     Unique users
                   </span>
                 </div>
@@ -341,7 +337,7 @@ export default function AdminAnalytics({
                     </div>
                     <div className="h-1.5 w-full overflow-hidden rounded-full bg-white/5">
                       <div
-                        className="h-full rounded-full bg-orange-400/80 transition-[width] duration-700 ease-out"
+                        className="h-full rounded-full bg-[var(--admin-accent)] transition-[width] duration-700 ease-out"
                         style={{
                           width: topPagesMax ? `${(page.count / topPagesMax) * 100}%` : '0%',
                         }}
@@ -405,7 +401,7 @@ export default function AdminAnalytics({
                           </div>
                           <div className="h-1.5 w-full overflow-hidden rounded-full bg-white/5">
                             <div
-                              className="h-full rounded-full bg-emerald-400/70 transition-[width] duration-700 ease-out"
+                              className="h-full rounded-full bg-white/70 transition-[width] duration-700 ease-out"
                               style={{
                                 width: topReferrersMax
                                   ? `${(entry.count / topReferrersMax) * 100}%`

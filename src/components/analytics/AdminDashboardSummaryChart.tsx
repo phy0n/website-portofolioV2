@@ -48,10 +48,10 @@ export default function AdminDashboardSummaryChart({
         {
           label: 'Items',
           data: values,
-          backgroundColor: 'rgba(59,130,246,0.25)',
-          borderColor: 'rgba(59,130,246,0.75)',
+          backgroundColor: '#d14a4a',
+          borderColor: '#e05d5d',
           borderWidth: 1,
-          borderRadius: 10,
+          borderRadius: 6,
           barPercentage: 0.7,
           categoryPercentage: 0.75,
         },
@@ -68,13 +68,13 @@ export default function AdminDashboardSummaryChart({
       plugins: {
         legend: { display: false },
         tooltip: {
-          backgroundColor: 'rgba(15, 15, 20, 0.92)',
-          borderColor: 'rgba(255,255,255,0.15)',
+          backgroundColor: '#111111',
+          borderColor: '#2b1515',
           borderWidth: 1,
           titleColor: 'rgba(255,255,255,0.7)',
           bodyColor: '#f8fafc',
           padding: 10,
-          cornerRadius: 12,
+          cornerRadius: 8,
         },
       },
       scales: {

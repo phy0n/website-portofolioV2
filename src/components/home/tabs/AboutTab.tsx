@@ -21,7 +21,7 @@ export default function AboutTab() {
           Focused on Consistency
         </h2>
         <p className="js-reveal max-w-2xl text-sm text-[var(--home-muted)] sm:text-base">
-          I am Phion, I enjoy building useful and meaningful solutions while continuously learning and improving. I focus on keeping things simple, structured, and easy to understand whether it's software, systems, or ideas.
+          I am Phion, I enjoy building useful and meaningful solutions while continuously learning and improving. I focus on keeping things simple, structured, and easy to understand whether it is software, systems, or ideas.
         </p>
       </div>
 

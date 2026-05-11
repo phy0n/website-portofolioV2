@@ -186,7 +186,7 @@ export default function AdminShell({
   }, []);
 
   return (
-    <div className="min-h-screen bg-zinc-950 text-white">
+    <div className="admin-console min-h-screen bg-[var(--admin-bg)] text-white">
       <div
         className={`fixed inset-y-0 left-0 z-50 w-72 transition-transform duration-300 lg:translate-x-0 ${
           sidebarOpen ? 'translate-x-0' : '-translate-x-full'
@@ -210,13 +210,13 @@ export default function AdminShell({
       <main
         ref={contentRef}
         data-page-content
-        className="min-h-screen px-4 sm:px-6 lg:pl-80 lg:pr-12 py-10"
+        className="min-h-screen px-4 py-10 sm:px-6 lg:pl-80 lg:pr-12"
       >
         <div className="lg:hidden mb-6 flex items-center justify-between gap-3">
           <button
             type="button"
             onClick={() => setSidebarOpen(true)}
-            className="cursor-pointer inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2 text-xs text-white/70 transition hover:border-white/30 hover:text-white"
+            className="admin-button cursor-pointer"
             aria-label="Open admin navigation"
           >
             <Menu className="h-4 w-4" />
@@ -224,7 +224,7 @@ export default function AdminShell({
           </button>
           <Link
             href="/"
-            className="text-xs text-white/50 hover:text-white transition"
+            className="admin-text-link"
           >
             Back to portfolio
           </Link>

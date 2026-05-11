@@ -54,16 +54,22 @@ interface SiteShellProps {
   children: React.ReactNode;
   scopeRef?: React.Ref<HTMLDivElement>;
   contentMode?: 'contained' | 'full';
+  navAvatarSrc?: string | null;
 }
 
-export default function SiteShell({ children, scopeRef, contentMode = 'contained' }: SiteShellProps) {
+export default function SiteShell({
+  children,
+  scopeRef,
+  contentMode = 'contained',
+  navAvatarSrc,
+}: SiteShellProps) {
   const pathname = usePathname();
   const pageRef = useRef<HTMLDivElement | null>(null);
   const navOverlayRef = useRef<HTMLElement | null>(null);
   const navListRef = useRef<HTMLUListElement | null>(null);
   const navTimelineRef = useRef<gsap.core.Timeline | null>(null);
   const [navOpenFor, setNavOpenFor] = useState<string | null>(null);
-  const [navAvatarErrored, setNavAvatarErrored] = useState(false);
+  const [navAvatarErrorSrc, setNavAvatarErrorSrc] = useState<string | null>(null);
   const [isAdminSession, setIsAdminSession] = useState(false);
   const [ctaOpen, setCtaOpen] = useState(false);
   const ctaRef = useRef<HTMLDivElement | null>(null);
@@ -71,6 +77,8 @@ export default function SiteShell({ children, scopeRef, contentMode = 'contained
   const closeNav = () => setNavOpenFor(null);
   const toggleNav = () => setNavOpenFor((current) => (current === pathname ? null : pathname));
   const toggleCta = () => setCtaOpen((current) => !current);
+  const resolvedNavAvatarSrc = navAvatarSrc || NAV_AVATAR_SRC;
+  const navAvatarErrored = navAvatarErrorSrc === resolvedNavAvatarSrc;
   const mainClassName =
     contentMode === 'full'
       ? 'relative z-10 mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 pb-20 pt-24'
@@ -341,12 +349,13 @@ export default function SiteShell({ children, scopeRef, contentMode = 'contained
                   </span>
                 ) : (
                   <Image
-                    src={NAV_AVATAR_SRC}
+                    key={resolvedNavAvatarSrc}
+                    src={resolvedNavAvatarSrc}
                     alt="Navbar avatar"
                     fill
                     sizes="32px"
                     className="object-cover"
-                    onError={() => setNavAvatarErrored(true)}
+                    onError={() => setNavAvatarErrorSrc(resolvedNavAvatarSrc)}
                   />
                 )}
               </div>

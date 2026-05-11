@@ -1,9 +1,21 @@
+import Image from 'next/image';
 import Link from 'next/link';
-import { Award, Briefcase, FileText, LayoutGrid, Languages, Quote } from 'lucide-react';
+import {
+  Award,
+  Briefcase,
+  Camera,
+  FileText,
+  ImageIcon,
+  LayoutGrid,
+  Languages,
+  Quote,
+} from 'lucide-react';
 import { requireAdmin } from '@/lib/supabase/admin';
 import AdminAnalytics from '@/components/analytics/AdminAnalytics';
 import AdminToast from '@/components/admin/AdminToast';
 import AdminDashboardSummaryChart from '@/components/analytics/AdminDashboardSummaryChart';
+import AdminSubmitButton from '@/components/admin/AdminSubmitButton';
+import { updateProfilePicture } from './actions';
 
 interface BlogSummary {
   id: string;
@@ -14,6 +26,8 @@ interface BlogSummary {
   is_published: boolean | null;
   featured: boolean;
 }
+
+const profileImageFallback = '/image/profile.png';
 
 export default async function AdminPage({
   searchParams,
@@ -35,6 +49,7 @@ export default async function AdminPage({
   const [
     { data: recentBlogsData },
     { data: recentDraftsData },
+    { data: siteProfileData },
     blogsTotalRes,
     blogsDraftRes,
     blogsFeaturedRes,
@@ -60,6 +75,7 @@ export default async function AdminPage({
       .order('updated_at', { ascending: false, nullsFirst: false })
       .order('date', { ascending: false })
       .limit(5),
+    supabase.from('site_profile').select('profile_image_url').eq('id', 'default').maybeSingle(),
     supabase.from('blogs').select('id', { count: 'exact', head: true }),
     supabase.from('blogs').select('id', { count: 'exact', head: true }).eq('is_published', false),
     supabase.from('blogs').select('id', { count: 'exact', head: true }).eq('featured', true),
@@ -98,6 +114,10 @@ export default async function AdminPage({
 
   const recentBlogs = (recentBlogsData as BlogSummary[] | null) ?? [];
   const recentDrafts = (recentDraftsData as BlogSummary[] | null) ?? [];
+  const profileImageUrl =
+    typeof siteProfileData?.profile_image_url === 'string' && siteProfileData.profile_image_url.trim()
+      ? siteProfileData.profile_image_url.trim()
+      : profileImageFallback;
 
   const successMessage = safeDecode(searchParams?.success);
   const errorMessage = safeDecode(searchParams?.error);
@@ -128,42 +148,77 @@ export default async function AdminPage({
     { label: 'Languages', value: totalLanguages },
   ];
 
+  const quickActions = [
+    {
+      href: '/admin/blogs',
+      eyebrow: 'Manage',
+      title: 'Blogs',
+      body: 'Create, edit, and publish stories.',
+      icon: FileText,
+    },
+    {
+      href: '/admin/quotes',
+      eyebrow: 'Manage',
+      title: 'Quotes',
+      body: 'Curate daily inspiration snippets.',
+      icon: Quote,
+    },
+    {
+      href: '/admin/experiences',
+      eyebrow: 'Manage',
+      title: 'Experiences',
+      body: 'Update timelines and roles.',
+      icon: Briefcase,
+    },
+    {
+      href: '/admin/projects',
+      eyebrow: 'Manage',
+      title: 'Projects',
+      body: 'Showcase portfolio work.',
+      icon: LayoutGrid,
+    },
+    {
+      href: '/admin/certificates',
+      eyebrow: 'Manage',
+      title: 'Certificates',
+      body: 'Track achievements and proof.',
+      icon: Award,
+    },
+    {
+      href: '/admin/languages',
+      eyebrow: 'Manage',
+      title: 'Languages',
+      body: 'Set spoken language levels.',
+      icon: Languages,
+    },
+  ];
+
   return (
-    <div className="space-y-10">
-      <section
-        className="rounded-3xl border border-white/10 bg-[radial-gradient(circle_at_top_left,_rgba(59,130,246,0.16),_transparent_44%),linear-gradient(135deg,rgba(24,24,27,0.48),rgba(9,9,11,0.96))] p-6 shadow-[0_20px_60px_rgba(0,0,0,0.35)] sm:p-8"
-        data-gsap="reveal"
-      >
-        <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
+    <div className="space-y-6">
+      <section className="admin-panel admin-panel-accent p-5 sm:p-7" data-gsap="reveal">
+        <div className="flex flex-col gap-6 xl:flex-row xl:items-end xl:justify-between">
           <div className="max-w-2xl">
-            <p className="text-sm uppercase tracking-[0.3em] text-blue-200/80">Dashboard</p>
-            <h2 className="mt-2 text-3xl font-semibold tracking-tight text-white sm:text-4xl">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.38em] text-[var(--admin-accent)]">
+              Dashboard
+            </p>
+            <h2 className="mt-3 text-3xl font-semibold tracking-tight text-white sm:text-4xl">
               Portfolio Snapshot
             </h2>
-            <p className="mt-3 text-sm leading-relaxed text-white/60 sm:text-base">
-              Monitor content status and audience metrics without extra layers.
+            <p className="mt-3 max-w-xl text-sm leading-relaxed text-white/58 sm:text-base">
+              Monitor content, drafts, and profile assets from one clean workspace.
             </p>
           </div>
 
           <div className="flex flex-wrap gap-2">
-            <Link
-              href="/admin/blogs"
-              className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2 text-xs text-white/70 transition hover:border-white/30 hover:bg-white/10 hover:text-white"
-            >
+            <Link href="/admin/blogs" className="admin-button">
               <FileText className="h-4 w-4" />
               Blogs
             </Link>
-            <Link
-              href="/admin/quotes"
-              className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2 text-xs text-white/70 transition hover:border-white/30 hover:bg-white/10 hover:text-white"
-            >
+            <Link href="/admin/quotes" className="admin-button">
               <Quote className="h-4 w-4" />
               Quotes
             </Link>
-            <Link
-              href="/admin/projects"
-              className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2 text-xs text-white/70 transition hover:border-white/30 hover:bg-white/10 hover:text-white"
-            >
+            <Link href="/admin/projects" className="admin-button-primary">
               <LayoutGrid className="h-4 w-4" />
               Projects
             </Link>
@@ -173,42 +228,72 @@ export default async function AdminPage({
         {toast && <div className="mt-6">{<AdminToast message={toast.message} tone={toast.tone} />}</div>}
       </section>
 
-      <section className="rounded-3xl border border-white/10 bg-zinc-950/60 shadow-[0_20px_60px_rgba(0,0,0,0.35)]" data-gsap="reveal">
-        <div className="grid gap-0 sm:grid-cols-2 xl:grid-cols-4">
-          {contentMetrics.map((metric) => (
-            <div
-              key={metric.label}
-              className="border-b border-white/10 p-5 sm:border-b-0 sm:border-r sm:last:border-r-0 xl:border-b xl:border-r xl:last:border-r-0"
-            >
-              <p className="text-[11px] font-semibold uppercase tracking-[0.3em] text-white/40">
-                {metric.label}
-              </p>
-              <p className="mt-3 text-3xl font-semibold tracking-tight text-white">{metric.value}</p>
-              <p className="mt-2 text-xs text-white/40">{metric.meta}</p>
-            </div>
-          ))}
+      <section className="grid gap-4 xl:grid-cols-[1fr_360px]" data-gsap="reveal">
+        <div className="admin-panel overflow-hidden">
+          <div className="grid sm:grid-cols-2 xl:grid-cols-4">
+            {contentMetrics.map((metric) => (
+              <div key={metric.label} className="admin-stat-card p-5">
+                <p className="text-[11px] font-semibold uppercase tracking-[0.28em] text-white/42">
+                  {metric.label}
+                </p>
+                <p className="mt-3 text-3xl font-semibold tracking-tight text-white">{metric.value}</p>
+                <p className="mt-2 text-xs text-white/42">{metric.meta}</p>
+              </div>
+            ))}
+          </div>
         </div>
+
+        <form action={updateProfilePicture} className="admin-panel p-5">
+          <input type="hidden" name="redirect_to" value="/admin" />
+          <div className="flex items-start justify-between gap-4">
+            <div>
+              <p className="text-[11px] font-semibold uppercase tracking-[0.3em] text-white/42">
+                Profile
+              </p>
+              <h3 className="mt-2 text-lg font-semibold text-white">Main photo</h3>
+              <p className="mt-2 text-sm leading-relaxed text-white/52">
+                Used by the homepage hero and navbar avatar.
+              </p>
+            </div>
+            <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-full border border-[var(--admin-border-strong)] bg-[#111111]">
+              <Image src={profileImageUrl} alt="Current profile picture" fill sizes="64px" className="object-cover" />
+            </div>
+          </div>
+          <label className="admin-file-label mt-5 flex items-center gap-3">
+            <ImageIcon className="h-4 w-4 text-white/60" />
+            <input
+              name="image_file"
+              type="file"
+              accept="image/png,image/jpeg,image/webp"
+              className="admin-file-input"
+            />
+          </label>
+          <AdminSubmitButton pendingText="Uploading..." className="admin-button-primary mt-4 w-full justify-center">
+            <Camera className="h-4 w-4" />
+            Update photo
+          </AdminSubmitButton>
+        </form>
       </section>
 
       <section className="grid gap-4 lg:grid-cols-3" data-gsap="reveal">
-        <div className="rounded-2xl border border-white/10 bg-zinc-950/60 p-5 shadow-[0_20px_60px_rgba(0,0,0,0.35)] lg:col-span-2">
+        <div className="admin-panel p-5 lg:col-span-2">
           <div className="flex items-center justify-between gap-3">
             <div>
-              <p className="text-xs uppercase tracking-[0.3em] text-white/40">Summary</p>
+              <p className="text-xs font-semibold uppercase tracking-[0.3em] text-white/42">Summary</p>
               <h3 className="mt-2 text-lg font-semibold text-white">Content distribution</h3>
-              <p className="mt-2 text-sm text-white/50">Quick view of totals across sections.</p>
+              <p className="mt-2 text-sm text-white/52">Quick view of totals across sections.</p>
             </div>
-            <div className="text-xs text-white/40">Counts</div>
+            <div className="admin-muted-pill">Counts</div>
           </div>
           <div className="mt-5 h-56">
             <AdminDashboardSummaryChart metrics={chartMetrics} />
           </div>
         </div>
 
-        <div className="rounded-2xl border border-white/10 bg-zinc-950/60 p-5 shadow-[0_20px_60px_rgba(0,0,0,0.35)]">
-          <p className="text-xs uppercase tracking-[0.3em] text-white/40">Notes</p>
+        <div className="admin-panel p-5">
+          <p className="text-xs font-semibold uppercase tracking-[0.3em] text-white/42">Notes</p>
           <h3 className="mt-2 text-lg font-semibold text-white">At a glance</h3>
-          <div className="mt-4 space-y-3 text-sm text-white/60">
+          <div className="mt-4 space-y-3 text-sm text-white/62">
             <p>
               Draft blogs: <span className="font-semibold text-white">{draftBlogs}</span>
             </p>
@@ -227,175 +312,89 @@ export default async function AdminPage({
 
       <section className="space-y-4" data-gsap="reveal">
         <div className="flex flex-wrap items-center justify-between gap-3">
-          <h3 className="text-xl font-semibold text-white">Quick actions</h3>
-          <p className="text-sm text-white/50">Jump to content updates</p>
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-[0.3em] text-white/42">
+              Actions
+            </p>
+            <h3 className="mt-2 text-xl font-semibold text-white">Quick actions</h3>
+          </div>
+          <p className="text-sm text-white/52">Jump to content updates</p>
         </div>
         <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-          <Link
-            href="/admin/blogs"
-            className="group rounded-2xl border border-white/10 bg-white/5 p-5 shadow-[0_20px_60px_rgba(0,0,0,0.35)] transition hover:border-white/30 hover:bg-white/10"
-          >
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-xs uppercase tracking-[0.3em] text-white/40">
-                  Manage
-                </p>
-                <p className="mt-2 text-lg font-semibold text-white">Blogs</p>
-                <p className="mt-2 text-sm text-white/50">
-                  Create, edit, and publish stories.
-                </p>
-              </div>
-              <div className="flex h-12 w-12 items-center justify-center rounded-full border border-white/10 bg-white/5 text-white/70 transition group-hover:border-white/40 group-hover:text-white">
-                <FileText className="h-5 w-5" />
-              </div>
-            </div>
-          </Link>
-          <Link
-            href="/admin/quotes"
-            className="group rounded-2xl border border-white/10 bg-white/5 p-5 shadow-[0_20px_60px_rgba(0,0,0,0.35)] transition hover:border-white/30 hover:bg-white/10"
-          >
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-xs uppercase tracking-[0.3em] text-white/40">
-                  Manage
-                </p>
-                <p className="mt-2 text-lg font-semibold text-white">Quotes</p>
-                <p className="mt-2 text-sm text-white/50">
-                  Curate daily inspiration snippets.
-                </p>
-              </div>
-              <div className="flex h-12 w-12 items-center justify-center rounded-full border border-white/10 bg-white/5 text-white/70 transition group-hover:border-white/40 group-hover:text-white">
-                <Quote className="h-5 w-5" />
-              </div>
-            </div>
-          </Link>
-          <Link
-            href="/admin/experiences"
-            className="group rounded-2xl border border-white/10 bg-white/5 p-5 shadow-[0_20px_60px_rgba(0,0,0,0.35)] transition hover:border-white/30 hover:bg-white/10"
-          >
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-xs uppercase tracking-[0.3em] text-white/40">Manage</p>
-                <p className="mt-2 text-lg font-semibold text-white">Experiences</p>
-                <p className="mt-2 text-sm text-white/50">Update timelines and roles.</p>
-              </div>
-              <div className="flex h-12 w-12 items-center justify-center rounded-full border border-white/10 bg-white/5 text-white/70 transition group-hover:border-white/40 group-hover:text-white">
-                <Briefcase className="h-5 w-5" />
-              </div>
-            </div>
-          </Link>
-          <Link
-            href="/admin/projects"
-            className="group rounded-2xl border border-white/10 bg-white/5 p-5 shadow-[0_20px_60px_rgba(0,0,0,0.35)] transition hover:border-white/30 hover:bg-white/10"
-          >
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-xs uppercase tracking-[0.3em] text-white/40">Manage</p>
-                <p className="mt-2 text-lg font-semibold text-white">Projects</p>
-                <p className="mt-2 text-sm text-white/50">Showcase portfolio work.</p>
-              </div>
-              <div className="flex h-12 w-12 items-center justify-center rounded-full border border-white/10 bg-white/5 text-white/70 transition group-hover:border-white/40 group-hover:text-white">
-                <LayoutGrid className="h-5 w-5" />
-              </div>
-            </div>
-          </Link>
-          <Link
-            href="/admin/certificates"
-            className="group rounded-2xl border border-white/10 bg-white/5 p-5 shadow-[0_20px_60px_rgba(0,0,0,0.35)] transition hover:border-white/30 hover:bg-white/10"
-          >
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-xs uppercase tracking-[0.3em] text-white/40">Manage</p>
-                <p className="mt-2 text-lg font-semibold text-white">Certificates</p>
-                <p className="mt-2 text-sm text-white/50">Track achievements and proof.</p>
-              </div>
-              <div className="flex h-12 w-12 items-center justify-center rounded-full border border-white/10 bg-white/5 text-white/70 transition group-hover:border-white/40 group-hover:text-white">
-                <Award className="h-5 w-5" />
-              </div>
-            </div>
-          </Link>
-          <Link
-            href="/admin/languages"
-            className="group rounded-2xl border border-white/10 bg-white/5 p-5 shadow-[0_20px_60px_rgba(0,0,0,0.35)] transition hover:border-white/30 hover:bg-white/10"
-          >
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-xs uppercase tracking-[0.3em] text-white/40">Manage</p>
-                <p className="mt-2 text-lg font-semibold text-white">Languages</p>
-                <p className="mt-2 text-sm text-white/50">Set spoken language levels.</p>
-              </div>
-              <div className="flex h-12 w-12 items-center justify-center rounded-full border border-white/10 bg-white/5 text-white/70 transition group-hover:border-white/40 group-hover:text-white">
-                <Languages className="h-5 w-5" />
-              </div>
-            </div>
-          </Link>
+          {quickActions.map((item) => {
+            const Icon = item.icon;
+            return (
+              <Link key={item.href} href={item.href} className="admin-link-card group p-5">
+                <div className="flex items-center justify-between gap-5">
+                  <div>
+                    <p className="text-xs font-semibold uppercase tracking-[0.3em] text-white/42">{item.eyebrow}</p>
+                    <p className="mt-2 text-lg font-semibold text-white">{item.title}</p>
+                    <p className="mt-2 text-sm text-white/52">{item.body}</p>
+                  </div>
+                  <div className="admin-icon-box">
+                    <Icon className="h-5 w-5" />
+                  </div>
+                </div>
+              </Link>
+            );
+          })}
         </div>
       </section>
 
       <section className="grid gap-4 lg:grid-cols-2" data-gsap="reveal">
-        <div className="rounded-2xl border border-white/10 bg-white/5 p-5 shadow-[0_20px_60px_rgba(0,0,0,0.35)]">
+        <div className="admin-panel p-5">
           <div className="flex items-center justify-between gap-3">
             <div>
-              <p className="text-xs uppercase tracking-[0.3em] text-white/40">Queue</p>
+              <p className="text-xs font-semibold uppercase tracking-[0.3em] text-white/42">Queue</p>
               <h3 className="mt-2 text-lg font-semibold text-white">Drafts to review</h3>
             </div>
-            <Link
-              href="/admin/blogs"
-              className="text-xs text-white/50 hover:text-white transition"
-            >
+            <Link href="/admin/blogs" className="admin-text-link">
               Open
             </Link>
           </div>
           {recentDrafts.length === 0 ? (
-            <p className="mt-4 text-sm text-white/50">No drafts right now.</p>
+            <p className="mt-4 text-sm text-white/52">No drafts right now.</p>
           ) : (
             <div className="mt-4 space-y-3">
               {recentDrafts.map((blog) => (
                 <Link
                   key={blog.id}
                   href={`/admin/blogs?edit=${encodeURIComponent(blog.id)}`}
-                  className="group block rounded-xl border border-white/10 bg-white/5 px-4 py-3 transition hover:border-white/30 hover:bg-white/10"
+                  className="admin-row-link block px-4 py-3"
                 >
-                  <p className="text-xs text-white/40">/{blog.slug}</p>
-                  <p className="mt-2 text-sm font-semibold text-white line-clamp-1">
-                    {blog.title}
-                  </p>
+                  <p className="text-xs text-white/42">/{blog.slug}</p>
+                  <p className="mt-2 line-clamp-1 text-sm font-semibold text-white">{blog.title}</p>
                 </Link>
               ))}
             </div>
           )}
         </div>
 
-        <div className="rounded-2xl border border-white/10 bg-white/5 p-5 shadow-[0_20px_60px_rgba(0,0,0,0.35)]">
+        <div className="admin-panel p-5">
           <div className="flex items-center justify-between gap-3">
             <div>
-              <p className="text-xs uppercase tracking-[0.3em] text-white/40">Recent</p>
+              <p className="text-xs font-semibold uppercase tracking-[0.3em] text-white/42">Recent</p>
               <h3 className="mt-2 text-lg font-semibold text-white">Latest stories</h3>
             </div>
-            <Link
-              href="/admin/blogs"
-              className="text-xs text-white/50 hover:text-white transition"
-            >
+            <Link href="/admin/blogs" className="admin-text-link">
               Manage
             </Link>
           </div>
           {recentBlogs.length === 0 ? (
-            <p className="mt-4 text-sm text-white/50">No stories yet.</p>
+            <p className="mt-4 text-sm text-white/52">No stories yet.</p>
           ) : (
             <div className="mt-4 space-y-3">
               {recentBlogs.map((blog) => (
                 <Link
                   key={blog.id}
                   href={`/blog/${encodeURIComponent(blog.slug)}`}
-                  className="group flex items-start justify-between gap-3 rounded-xl border border-white/10 bg-white/5 px-4 py-3 transition hover:border-white/30 hover:bg-white/10"
+                  className="admin-row-link flex items-start justify-between gap-3 px-4 py-3"
                 >
                   <div className="min-w-0">
-                    <p className="text-xs text-white/40">{blog.is_published === false ? 'Draft' : 'Published'}</p>
-                    <p className="mt-1 text-sm font-semibold text-white line-clamp-1">
-                      {blog.title}
-                    </p>
+                    <p className="text-xs text-white/42">{blog.is_published === false ? 'Draft' : 'Published'}</p>
+                    <p className="mt-1 line-clamp-1 text-sm font-semibold text-white">{blog.title}</p>
                   </div>
-                  <span className="text-xs text-white/40 whitespace-nowrap">/{blog.slug}</span>
+                  <span className="whitespace-nowrap text-xs text-white/42">/{blog.slug}</span>
                 </Link>
               ))}
             </div>

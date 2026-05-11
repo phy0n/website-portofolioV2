@@ -19,36 +19,46 @@ export default function SpokenLanguagesCard({ className }: { className?: string 
   }, [spokenLanguages]);
 
   return (
-    <div className={['rounded-2xl border border-white/10 bg-black/30', className].filter(Boolean).join(' ')}>
-      <div className="js-reveal flex items-center gap-2 border-b border-white/10 px-5 py-4">
-        <Languages className="h-4 w-4 text-[var(--home-accent)]" />
-        <p className="text-[11px] uppercase tracking-[0.35em] text-[var(--home-muted)]">Languages</p>
+    <section className={className}>
+      <div className="flex items-center gap-2">
+        <Languages className="h-4 w-4 text-[var(--accent)]" />
+        <p className="text-[11px] uppercase tracking-[0.35em] text-[var(--muted)]">Languages</p>
       </div>
+
       {spokenLanguages === null ? (
-        <div className="js-reveal px-5 py-4 text-sm text-[var(--home-muted)]">Loading...</div>
+        <div className="mt-3 text-sm text-[var(--muted)]">Loading...</div>
       ) : sortedLanguages.length === 0 ? (
-        <div className="js-reveal px-5 py-4 text-sm text-[var(--home-muted)]">No languages yet.</div>
+        <div className="mt-3 text-sm text-[var(--muted)]">No languages yet.</div>
       ) : (
-        <div className="grid gap-3 p-5">
+        <div className="mt-3 space-y-3">
           {sortedLanguages.map((language) => {
             const level = Math.max(0, Math.min(language.level, 100));
             return (
-              <div key={language.id} className="js-reveal rounded-2xl border border-white/10 bg-black/30 p-4">
-                <div className="flex items-center justify-between gap-3 text-xs text-[var(--home-muted)]">
-                  <span className="truncate text-[var(--home-ink)]">{language.name}</span>
-                  <span className="shrink-0 tabular-nums">
-                    {language.label} • {level}%
-                  </span>
-                </div>
-                <div className="mt-2 h-1.5 w-full rounded-full bg-white/10">
-                  <div className="h-full rounded-full bg-[var(--home-accent)]" style={{ width: `${level}%` }} />
+              <div key={language.id} className="text-sm">
+                <div className="flex items-start justify-between gap-3 text-xs text-[var(--muted)]">
+                  <div className="min-w-0 flex-1">
+                    <span className="block truncate font-medium text-[var(--ui-foreground)]">{language.name}</span>
+                    <div
+                      className="mt-2 h-1.5 overflow-hidden rounded-full bg-white/10"
+                      role="progressbar"
+                      aria-label={`${language.name} proficiency`}
+                      aria-valuemin={0}
+                      aria-valuemax={100}
+                      aria-valuenow={level}
+                    >
+                      <div
+                        className="h-full rounded-full bg-[var(--accent)] shadow-[0_0_10px_rgba(209,74,74,0.35)]"
+                        style={{ width: `${level}%` }}
+                      />
+                    </div>
+                  </div>
+                  <span className="shrink-0 tabular-nums">{language.label} • {level}%</span>
                 </div>
               </div>
             );
           })}
         </div>
       )}
-    </div>
+    </section>
   );
 }
-

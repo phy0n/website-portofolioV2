@@ -69,7 +69,7 @@ export default function ProfileSidebar({ avatarUrl, discordStatus, skills }: Pro
       <div className="relative z-10">
         <div className="js-profile-item flex items-center gap-4">
           <div className="relative">
-            <div className="flex h-16 w-16 items-center justify-center overflow-hidden rounded-2xl border border-white/10 bg-[var(--home-soft)]">
+            <div className="flex h-16 w-16 items-center justify-center overflow-hidden rounded-full border border-white/10 bg-[var(--home-soft)]">
               {avatarUrl ? (
                 <Image src={avatarUrl} alt="Profile avatar" width={80} height={80} className="h-full w-full object-cover" />
               ) : (

@@ -17,6 +17,24 @@ const getSupabaseProjectRef = (url: string | undefined | null) => {
   }
 };
 
+const getAuthErrorMessage = (message: string | undefined, status?: number) => {
+  const normalized = String(message || '').toLowerCase();
+
+  if (normalized.includes('invalid login credentials')) {
+    return (
+      'Supabase Auth rejected this email/password. Make sure the email exists in Authentication > Users ' +
+      'for this Supabase project, then reset/set the password from Supabase Auth. A row in public.admin_users alone is not enough.'
+    );
+  }
+
+  if (normalized.includes('email not confirmed')) {
+    return 'This Auth user exists, but the email is not confirmed yet. Confirm the user in Supabase Auth or disable email confirmations for this project.';
+  }
+
+  const suffix = message ? `\n\nSupabase Auth says: ${message}${status ? ` (${status})` : ''}` : '';
+  return `Login failed at Supabase Auth.${suffix}`;
+};
+
 export async function login(_prevState: LoginState, formData: FormData): Promise<LoginState> {
   const email = String(formData.get('email') || '').trim();
   const password = String(formData.get('password') || '');
@@ -29,7 +47,7 @@ export async function login(_prevState: LoginState, formData: FormData): Promise
   const { data, error } = await supabase.auth.signInWithPassword({ email, password });
 
   if (error) {
-    return { error: 'Login failed. Check your credentials.' };
+    return { error: getAuthErrorMessage(error.message, error.status) };
   }
 
   const user = data.user;

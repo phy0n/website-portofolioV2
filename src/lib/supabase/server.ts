@@ -1,8 +1,13 @@
 import { cookies } from 'next/headers';
 import { createServerClient, type CookieOptions } from '@supabase/ssr';
 
-const supabaseUrl = process.env.SUPABASE_URL ?? process.env.NEXT_PUBLIC_SUPABASE_URL;
-const supabaseAnonKey = process.env.SUPABASE_ANON_KEY ?? process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+const privateSupabaseUrl = process.env.SUPABASE_URL;
+const privateSupabaseAnonKey = process.env.SUPABASE_ANON_KEY;
+const publicSupabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const publicSupabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+const supabaseUrl = publicSupabaseUrl ?? privateSupabaseUrl;
+const supabaseAnonKey = publicSupabaseAnonKey ?? privateSupabaseAnonKey;
 
 export const supabaseConfig = {
   url: supabaseUrl,
