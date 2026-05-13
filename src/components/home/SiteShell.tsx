@@ -9,7 +9,7 @@ import gsap from 'gsap';
 
 const NAV_LINKS = [
   { label: 'Home', href: '/' },
-  { label: 'Post', href: '/blog' },
+  { label: 'Blog', href: '/blog' },
   { label: 'Chat', href: '/chat' },
   { label: 'Connect', href: '/connect' },
 ];
@@ -339,10 +339,10 @@ export default function SiteShell({
           <div className="mx-auto flex w-full max-w-7xl items-center justify-between">
             <Link
               href="/"
-              className="inline-flex items-center gap-3 rounded-full border border-white/10 bg-black/70 px-4 py-2 text-white shadow-[0_18px_40px_rgba(0,0,0,0.45)] backdrop-blur transition hover:border-white/20"
+              className="inline-flex items-center gap-3 rounded-full border border-white/10 bg-[var(--home-bg)] px-4 py-2 text-white shadow-[0_18px_40px_rgba(0,0,0,0.45)] transition hover:border-white/20"
               aria-label="Go to home"
             >
-              <div className="relative hidden h-8 w-8 overflow-hidden rounded-full border border-white/15 bg-white/[0.06] sm:block">
+              <div className="relative hidden h-8 w-8 overflow-hidden rounded-full border border-white/15 bg-[var(--home-bg)] sm:block">
                 {navAvatarErrored ? (
                   <span className="flex h-full w-full items-center justify-center text-sm font-semibold text-white/90">
                     {NAV_AVATAR_FALLBACK}
@@ -367,9 +367,9 @@ export default function SiteShell({
               aria-label={navOpen ? 'Close menu' : 'Open menu'}
               aria-expanded={navOpen}
               onClick={toggleNav}
-              className="inline-flex h-12 w-12 items-center justify-center rounded-full border border-white/10 bg-black/70 text-white/80 shadow-[0_18px_40px_rgba(0,0,0,0.45)] backdrop-blur transition hover:border-white/20 hover:text-white"
+              className="inline-flex h-12 w-12 items-center justify-center rounded-full border border-white/10 bg-[var(--home-bg)] text-white/80 shadow-[0_18px_40px_rgba(0,0,0,0.45)] transition hover:border-white/20 hover:text-white"
             >
-              <span className="flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/[0.06]">
+              <span className="flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-[var(--home-bg)]">
                 {navOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
               </span>
             </button>
@@ -379,7 +379,7 @@ export default function SiteShell({
         <nav
           ref={navOverlayRef}
           aria-hidden={!navOpen}
-          className="fixed inset-0 z-50 flex items-center bg-black/95 backdrop-blur-sm opacity-0 pointer-events-none"
+          className="fixed inset-0 z-50 flex items-center bg-[var(--home-bg)] opacity-0 pointer-events-none"
           onPointerDown={(event) => {
             if (event.target === event.currentTarget) closeNav();
           }}
@@ -448,7 +448,7 @@ export default function SiteShell({
           <div ref={ctaRef} className="fixed bottom-6 right-6 z-40 hidden sm:block">
             <div
               className={[
-                'flex h-12 items-center overflow-hidden rounded-full border border-white/10 bg-black/70 text-white shadow-[0_18px_40px_rgba(0,0,0,0.45)] backdrop-blur transition-all duration-300 motion-reduce:transition-none',
+                'flex h-12 items-center overflow-hidden rounded-full border border-white/10 bg-[var(--home-bg)] text-white shadow-[0_18px_40px_rgba(0,0,0,0.45)] transition-all duration-300 motion-reduce:transition-none',
                 ctaOpen ? 'w-[min(92vw,440px)]' : 'w-12',
               ].join(' ')}
             >
@@ -459,7 +459,7 @@ export default function SiteShell({
                 onClick={toggleCta}
                 className="inline-flex h-12 w-12 shrink-0 items-center justify-center text-white/80 transition hover:text-white"
               >
-                <span className="flex h-9 w-9 items-center justify-center rounded-full border border-white/10 bg-white/[0.06]">
+                <span className="flex h-9 w-9 items-center justify-center rounded-full border border-white/10 bg-[var(--home-bg)]">
                   {ctaOpen ? <X className="h-5 w-5" /> : <Sparkles className="h-5 w-5" />}
                 </span>
               </button>
@@ -472,7 +472,7 @@ export default function SiteShell({
               >
                 <a
                   href="mailto:phymee@proton.me?subject=Hire%20me"
-                  className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.06] px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.28em] text-white/70 transition hover:border-white/20 hover:bg-white/[0.08] hover:text-white"
+                  className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-[var(--home-bg)] px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.28em] text-white/70 transition hover:border-white/20 hover:bg-[var(--home-bg)] hover:text-white"
                   aria-label="Hire me via email"
                 >
                   <Mail className="h-4 w-4 text-[var(--home-accent)]" />
@@ -481,7 +481,7 @@ export default function SiteShell({
                 <Link
                   href="/connect"
                   onClick={() => setCtaOpen(false)}
-                  className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.06] px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.28em] text-white/70 transition hover:border-white/20 hover:bg-white/[0.08] hover:text-white"
+                  className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-[var(--home-bg)] px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.28em] text-white/70 transition hover:border-white/20 hover:bg-[var(--home-bg)] hover:text-white"
                   aria-label="Open contact page"
                 >
                   <Sparkles className="h-4 w-4 text-[var(--home-accent)]" />
@@ -490,7 +490,7 @@ export default function SiteShell({
                 <Link
                   href="/chat"
                   onClick={() => setCtaOpen(false)}
-                  className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.06] px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.28em] text-white/70 transition hover:border-white/20 hover:bg-white/[0.08] hover:text-white"
+                  className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-[var(--home-bg)] px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.28em] text-white/70 transition hover:border-white/20 hover:bg-[var(--home-bg)] hover:text-white"
                   aria-label="Open chat page"
                 >
                   <MessageSquare className="h-4 w-4 text-[var(--home-accent)]" />

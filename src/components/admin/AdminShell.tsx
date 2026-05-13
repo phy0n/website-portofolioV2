@@ -200,7 +200,7 @@ export default function AdminShell({
       </div>
 
       <div
-        className={`fixed inset-0 z-40 cursor-pointer bg-black/80 backdrop-blur-sm transition-opacity lg:hidden ${
+        className={`fixed inset-0 z-40 cursor-pointer bg-[var(--admin-bg)] transition-opacity lg:hidden ${
           sidebarOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'
         }`}
         onClick={() => setSidebarOpen(false)}

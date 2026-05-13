@@ -170,8 +170,8 @@ export default function AdminLoginShell({ children }: { children: React.ReactNod
     >
       <style>{`
         .admin-login-root {
-          --admin-login-panel: rgba(10, 10, 12, 0.92);
-          --admin-login-line: rgba(255, 255, 255, 0.14);
+          --admin-login-panel: var(--home-bg);
+          --admin-login-line: #2a2b30;
           --admin-login-muted: rgba(255, 255, 255, 0.55);
           isolation: isolate;
         }
@@ -182,10 +182,8 @@ export default function AdminLoginShell({ children }: { children: React.ReactNod
           inset: 0;
           z-index: 0;
           pointer-events: none;
-          background:
-            linear-gradient(to bottom, rgba(255, 255, 255, 0.045), transparent 34%),
-            radial-gradient(circle at 50% 42%, rgba(255, 255, 255, 0.055), transparent 24%);
-          opacity: 0.8;
+          background: var(--home-bg);
+          opacity: 1;
         }
 
         .minimal-root .admin-login-root .admin-login-back {
@@ -194,7 +192,7 @@ export default function AdminLoginShell({ children }: { children: React.ReactNod
           gap: 0.5rem !important;
           padding: 0 !important;
           border: 0 !important;
-          background: transparent !important;
+          background: var(--home-bg) !important;
           color: rgba(255, 255, 255, 0.58) !important;
           text-decoration: none !important;
           transition: color 180ms ease, transform 180ms ease !important;
@@ -213,7 +211,8 @@ export default function AdminLoginShell({ children }: { children: React.ReactNod
           background: var(--admin-login-panel) !important;
           padding: 2rem !important;
           box-shadow: 0 28px 110px rgba(0, 0, 0, 0.72), inset 0 1px 0 rgba(255, 255, 255, 0.05) !important;
-          backdrop-filter: blur(16px);
+          -webkit-backdrop-filter: none !important;
+          backdrop-filter: none !important;
         }
 
         .admin-login-field {
@@ -235,7 +234,7 @@ export default function AdminLoginShell({ children }: { children: React.ReactNod
           min-height: 3rem !important;
           border: 1px solid rgba(255, 255, 255, 0.13) !important;
           border-radius: 8px !important;
-          background: rgba(255, 255, 255, 0.055) !important;
+          background: var(--home-bg) !important;
           padding: 0.8rem 1rem 0.8rem 2.75rem !important;
           color: #ffffff !important;
           font-size: 0.875rem !important;
@@ -249,7 +248,7 @@ export default function AdminLoginShell({ children }: { children: React.ReactNod
 
         .minimal-root .admin-login-root .admin-login-input:focus {
           border-color: rgba(209, 74, 74, 0.78) !important;
-          background: rgba(255, 255, 255, 0.075) !important;
+          background: var(--home-bg) !important;
           box-shadow: 0 0 0 3px rgba(209, 74, 74, 0.15) !important;
         }
 
@@ -258,7 +257,7 @@ export default function AdminLoginShell({ children }: { children: React.ReactNod
           gap: 0.7rem !important;
           border: 1px solid rgba(209, 74, 74, 0.28) !important;
           border-radius: 8px !important;
-          background: rgba(209, 74, 74, 0.1) !important;
+          background: #1a1010 !important;
           padding: 0.85rem 0.95rem !important;
           color: rgba(255, 255, 255, 0.8) !important;
           font-size: 0.76rem !important;
@@ -285,8 +284,8 @@ export default function AdminLoginShell({ children }: { children: React.ReactNod
         }
 
         .minimal-root .admin-login-root .admin-login-submit:hover:not(:disabled) {
-          background: rgba(255, 255, 255, 0.9) !important;
-          border-color: rgba(255, 255, 255, 0.9) !important;
+          background: #e6e6e6 !important;
+          border-color: #e6e6e6 !important;
           transform: translateY(-1px);
           text-decoration: none !important;
         }

@@ -75,7 +75,7 @@ body {
 .minimal-root .rounded-xl,
 .minimal-root .bg-black\/30,
 .minimal-root [class*="bg-black/"] {
-  background: transparent !important;
+  background: var(--home-bg, #000000) !important;
   border-radius: 0 !important;
   box-shadow: none !important;
 }
@@ -103,13 +103,10 @@ body {
   color: var(--muted);
 }
 
-/* Flatten control chrome */
+/* Keep control chrome solid instead of forcing transparent UI */
 .minimal-root a,
 .minimal-root button {
-  background: transparent !important;
-  border: none !important;
   color: var(--ui-foreground) !important;
-  padding: 0 !important;
 }
 
 .minimal-root a:hover,
@@ -117,9 +114,28 @@ body {
   text-decoration: underline !important;
 }
 
+.minimal-root .home-portfolio [class*="bg-black/"],
+.minimal-root .home-portfolio [class*="bg-white/"],
+.minimal-root .home-portfolio [class*="bg-white["],
+.minimal-root .home-portfolio [class*="bg-"][class*="/"],
+.minimal-root .home-portfolio .bg-transparent {
+  background: var(--home-bg) !important;
+}
+
+.minimal-root .home-portfolio [class*="backdrop-blur"] {
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+}
+
+.minimal-root .home-portfolio .js-nav a,
+.minimal-root .home-portfolio .js-nav button,
+.minimal-root .home-portfolio nav[class*="fixed"][class*="inset-0"] {
+  background: var(--home-bg) !important;
+}
+
 .admin-login-root {
-  --admin-login-panel: rgba(8, 8, 10, 0.84);
-  --admin-login-line: rgba(255, 255, 255, 0.11);
+  --admin-login-panel: var(--home-bg, #000000);
+  --admin-login-line: #2a2b30;
   --admin-login-muted: rgba(255, 255, 255, 0.54);
   isolation: isolate;
 }
@@ -130,13 +146,8 @@ body {
   inset: 0;
   z-index: 0;
   pointer-events: none;
-  opacity: 0.42;
-  background:
-    linear-gradient(to bottom, rgba(255, 255, 255, 0.06), transparent 240px),
-    linear-gradient(to right, rgba(255, 255, 255, 0.055) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
-  background-size: auto, 72px 72px, 72px 72px;
-  mask-image: linear-gradient(to bottom, black 0%, transparent 76%);
+  opacity: 1;
+  background: var(--home-bg, #000000);
 }
 
 .minimal-root .admin-login-root .admin-login-back {
@@ -145,7 +156,7 @@ body {
   gap: 0.5rem !important;
   padding: 0 !important;
   border: 0 !important;
-  background: transparent !important;
+  background: var(--home-bg, #000000) !important;
   color: rgba(255, 255, 255, 0.58) !important;
   text-decoration: none !important;
   transition: color 180ms ease, transform 180ms ease !important;
@@ -162,7 +173,8 @@ body {
   border-radius: 8px !important;
   background: var(--admin-login-panel) !important;
   box-shadow: 0 32px 120px rgba(0, 0, 0, 0.68), inset 0 1px 0 rgba(255, 255, 255, 0.04) !important;
-  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
 }
 
 .minimal-root .admin-login-root .admin-login-status {
@@ -172,7 +184,7 @@ body {
   min-height: 2rem !important;
   border: 1px solid rgba(255, 255, 255, 0.1) !important;
   border-radius: 999px !important;
-  background: rgba(255, 255, 255, 0.045) !important;
+  background: var(--home-bg, #000000) !important;
   padding: 0.45rem 0.7rem !important;
   color: rgba(255, 255, 255, 0.68) !important;
   font-size: 0.68rem !important;
@@ -200,7 +212,7 @@ body {
   min-height: 3rem !important;
   border: 1px solid rgba(255, 255, 255, 0.09) !important;
   border-radius: 8px !important;
-  background: rgba(255, 255, 255, 0.035) !important;
+  background: var(--home-bg, #000000) !important;
   padding: 0.8rem 1rem 0.8rem 2.75rem !important;
   color: #ffffff !important;
   font-size: 0.875rem !important;
@@ -214,7 +226,7 @@ body {
 
 .minimal-root .admin-login-root .admin-login-input:focus {
   border-color: rgba(209, 74, 74, 0.75) !important;
-  background: rgba(255, 255, 255, 0.055) !important;
+  background: var(--home-bg, #000000) !important;
   box-shadow: 0 0 0 3px rgba(209, 74, 74, 0.13) !important;
 }
 
@@ -223,7 +235,7 @@ body {
   gap: 0.7rem !important;
   border: 1px solid rgba(209, 74, 74, 0.24) !important;
   border-radius: 8px !important;
-  background: rgba(209, 74, 74, 0.08) !important;
+  background: #1a1010 !important;
   padding: 0.85rem 0.95rem !important;
   color: rgba(255, 255, 255, 0.78) !important;
   font-size: 0.76rem !important;
@@ -250,8 +262,8 @@ body {
 }
 
 .minimal-root .admin-login-root .admin-login-submit:hover:not(:disabled) {
-  background: rgba(255, 255, 255, 0.9) !important;
-  border-color: rgba(255, 255, 255, 0.9) !important;
+  background: #e6e6e6 !important;
+  border-color: #e6e6e6 !important;
   transform: translateY(-1px);
   text-decoration: none !important;
 }
@@ -264,11 +276,11 @@ body {
 .admin-console {
   --admin-accent: #d14a4a;
   --admin-accent-strong: #e05d5d;
-  --admin-bg: #050505;
-  --admin-panel: #0c0c0d;
-  --admin-panel-soft: #111214;
-  --admin-control: #111214;
-  --admin-control-hover: #17191b;
+  --admin-bg: #000000;
+  --admin-panel: var(--admin-bg);
+  --admin-panel-soft: var(--admin-bg);
+  --admin-control: var(--admin-bg);
+  --admin-control-hover: var(--admin-bg);
   --admin-border: #26282c;
   --admin-border-strong: #565b62;
   color-scheme: dark;
@@ -303,7 +315,7 @@ body {
 .minimal-root .admin-console .bg-black\/40,
 .minimal-root .admin-console .bg-black\/70,
 .minimal-root .admin-console .bg-black\/80 {
-  background: rgba(0, 0, 0, 0.86) !important;
+  background: var(--admin-bg) !important;
 }
 
 .minimal-root .admin-console .bg-\[\#13131b\] {
@@ -392,7 +404,7 @@ body {
 
 .minimal-root .admin-console .admin-button-primary:hover {
   border-color: #ffffff !important;
-  background: rgba(255, 255, 255, 0.9) !important;
+  background: #e6e6e6 !important;
   color: #050505 !important;
 }
 
@@ -438,9 +450,9 @@ body {
   align-items: center !important;
   gap: 0.75rem !important;
   min-height: 2.75rem !important;
-  border: 1px solid transparent !important;
+  border: 1px solid var(--admin-border) !important;
   border-radius: 8px !important;
-  background: transparent !important;
+  background: var(--admin-control) !important;
   padding: 0.65rem 0.75rem !important;
   color: rgba(255, 255, 255, 0.72) !important;
   font-size: 0.875rem !important;
@@ -536,9 +548,9 @@ body {
   align-items: center !important;
   justify-content: center !important;
   min-height: 1.8rem !important;
-  border: 1px solid transparent !important;
+  border: 1px solid var(--admin-border) !important;
   border-radius: 999px !important;
-  background: transparent !important;
+  background: var(--admin-control) !important;
   padding: 0.35rem 0.75rem !important;
   color: rgba(255, 255, 255, 0.62) !important;
   font-size: 0.625rem !important;
