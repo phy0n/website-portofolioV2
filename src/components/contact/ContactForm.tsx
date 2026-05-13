@@ -64,46 +64,41 @@ export default function ContactForm({ source }: { source?: 'home' | 'connect' | 
   };
 
   return (
-    <div className="space-y-4">
-      <div className="grid gap-4 sm:grid-cols-2">
-        <div className="space-y-1.5">
-          <p className="text-[10px] uppercase tracking-[0.3em] text-[var(--home-muted)]">Email</p>
-          <input
-            type="email"
-            inputMode="email"
-            autoComplete="email"
-            value={email}
-            onChange={(e) => {
-              setEmail(e.target.value);
-              if (status !== 'idle') setStatus('idle');
-            }}
-            placeholder="email@domain.com"
-            className="w-full rounded-2xl border border-white/10 bg-black/30 px-4 py-2.5 text-sm text-[var(--home-ink)] placeholder:text-white/30 outline-none focus:border-white/20"
-          />
-        </div>
+    <div className="overflow-hidden rounded-md border border-white/20 bg-black/20 shadow-[inset_0_1px_0_rgba(255,255,255,0.06)]">
+      <div className="px-4 py-3">
+        <p className="text-[10px] uppercase tracking-[0.3em] text-[var(--home-muted)]">Email</p>
+        <input
+          type="email"
+          inputMode="email"
+          autoComplete="email"
+          value={email}
+          onChange={(e) => {
+            setEmail(e.target.value);
+            if (status !== 'idle') setStatus('idle');
+          }}
+          placeholder="email@domain.com"
+          className="mt-2 w-full border-0 bg-transparent p-0 text-sm text-[var(--home-ink)] placeholder:text-white/35 outline-none"
+        />
+      </div>
 
-        <div className="space-y-1.5">
+      <div className="border-t border-white/15 px-4 py-3">
+        <div className="flex items-center justify-between gap-3">
           <p className="text-[10px] uppercase tracking-[0.3em] text-[var(--home-muted)]">Message</p>
-          <textarea
-            value={message}
-            onChange={(e) => {
-              setMessage(normalizeMessage(e.target.value));
-              if (status !== 'idle') setStatus('idle');
-            }}
-            placeholder={emailOk ? 'Write your message...' : 'Enter a valid email first'}
-            rows={3}
-            disabled={!emailOk}
-            className="w-full resize-none rounded-2xl border border-white/10 bg-black/30 px-4 py-2.5 text-sm text-[var(--home-ink)] placeholder:text-white/30 outline-none focus:border-white/20 disabled:cursor-not-allowed disabled:opacity-50"
-          />
-          <div className="flex items-center justify-between">
-            <p className="text-[10px] text-[var(--home-muted)]">
-              {emailOk ? 'Ready when you are.' : 'Enter a valid email first to type your message.'}
-            </p>
-            <p className="text-[10px] text-[var(--home-muted)]">
-              {message.length}/{MAX_MESSAGE_LENGTH}
-            </p>
-          </div>
+          <p className="text-[10px] text-[var(--home-muted)]">
+            {message.length}/{MAX_MESSAGE_LENGTH}
+          </p>
         </div>
+        <textarea
+          value={message}
+          onChange={(e) => {
+            setMessage(normalizeMessage(e.target.value));
+            if (status !== 'idle') setStatus('idle');
+          }}
+          placeholder="Write your message..."
+          wrap="soft"
+          rows={5}
+          className="mt-3 max-h-60 min-h-44 w-full resize-none overflow-y-auto border-0 bg-transparent p-0 text-sm leading-relaxed text-[var(--home-ink)] placeholder:text-white/35 outline-none [overflow-wrap:anywhere] [scrollbar-color:rgba(255,255,255,0.25)_transparent] [scrollbar-width:thin]"
+        />
       </div>
 
       <input
@@ -115,27 +110,32 @@ export default function ContactForm({ source }: { source?: 'home' | 'connect' | 
         autoComplete="off"
       />
 
-      {status === 'sent' ? (
-        <p className="text-xs text-emerald-300" role="status">
-          Sent! I&apos;ll reply to your email.
-        </p>
-      ) : null}
-
-      {status === 'error' && errorMessage ? (
-        <p className="text-xs text-red-300" role="status">
-          {errorMessage}
-        </p>
-      ) : null}
-
-      <button
-        type="button"
-        onClick={handleSend}
-        disabled={!canSend}
-        className="inline-flex items-center justify-center gap-2 rounded-2xl border border-white/10 bg-white/[0.06] px-4 py-2.5 text-sm font-semibold text-[var(--home-ink)] transition hover:border-white/20 hover:bg-white/[0.08] disabled:cursor-not-allowed disabled:opacity-50"
-      >
-        <Send className="h-4 w-4" />
-        {sending ? 'Sending...' : 'Send'}
-      </button>
+      <div className="flex flex-col gap-3 border-t border-white/15 bg-white/[0.035] px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
+        <div className="space-y-1">
+          <p className="text-xs leading-relaxed text-[var(--home-muted)]">
+            {emailOk ? 'Reply by email.' : 'Add email to send.'}
+          </p>
+          {status === 'sent' ? (
+            <p className="text-xs text-emerald-300" role="status">
+              Sent. I&apos;ll reply soon.
+            </p>
+          ) : null}
+          {status === 'error' && errorMessage ? (
+            <p className="text-xs text-red-300" role="status">
+              {errorMessage}
+            </p>
+          ) : null}
+        </div>
+        <button
+          type="button"
+          onClick={handleSend}
+          disabled={!canSend}
+          className="inline-flex min-h-11 items-center justify-center gap-2 rounded-md border border-white/15 bg-white/[0.07] px-4 py-2.5 text-sm font-semibold text-[var(--home-ink)] transition hover:border-white/25 hover:bg-white/[0.1] disabled:cursor-not-allowed disabled:opacity-50"
+        >
+          <Send className="h-4 w-4" />
+          {sending ? 'Sending...' : 'Send'}
+        </button>
+      </div>
     </div>
   );
 }

@@ -22,8 +22,8 @@ import { SOCIAL_MEDIA } from './data/social';
 import SkillsTab from './tabs/SkillsTab';
 
 const DISPLAY_NAME = 'Phion Rushandle';
-const HERO_DEGREE = 'Software Engineer Enthusiast | Data Analyst Enthusiast';
-const HERO_TAGLINE = 'Constantly learning, improving, and expanding my skills across different fields.';
+const HERO_DEGREE = 'Computer Science Enthusiast';
+const HERO_TAGLINE = 'Exploring how code, web apps, data, and operating systems work together.';
 const HERO_IMAGE_SRC = '/image/profile.png';
 const HERO_IMAGE_FALLBACK = 'P';
 

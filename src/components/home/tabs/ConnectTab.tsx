@@ -99,7 +99,7 @@ export default function ConnectTab() {
             rel="noopener noreferrer"
             className="group flex flex-wrap items-center justify-between gap-4 py-4">
             <div className="flex items-center gap-4">
-              <div className="flex h-12 w-12 items-center justify-center rounded-2xl border border-white/10 bg-black/30 text-[var(--home-ink)]">
+              <div className="flex h-12 w-12 items-center justify-center rounded-2xl border border-red-500/25 bg-red-500/10 text-red-500 transition group-hover:border-red-500/45 group-hover:bg-red-500/15">
                 {social.icon}
               </div>
               <div>
@@ -107,7 +107,7 @@ export default function ConnectTab() {
                 <p className="text-xs text-[var(--home-muted)]">Open link</p>
               </div>
             </div>
-            <span className="text-[11px] uppercase tracking-[0.35em] text-[var(--home-muted)] transition group-hover:text-[var(--home-accent)]">
+            <span className="text-[11px] uppercase tracking-[0.35em] text-[var(--home-muted)] transition group-hover:text-red-500">
               Open
             </span>
           </a>
@@ -122,7 +122,7 @@ export default function ConnectTab() {
         <div className="grid gap-4 sm:grid-cols-2">
           {CONTACT_INFO.map((contact, index) => (
             <div key={index} className="flex items-center gap-3 border-b border-white/10 pb-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-2xl border border-white/10 bg-black/30 text-[var(--home-ink)]">
+              <div className="flex h-10 w-10 items-center justify-center rounded-2xl border border-red-500/25 bg-red-500/10 text-red-500">
                 {contact.icon}
               </div>
               <div>
