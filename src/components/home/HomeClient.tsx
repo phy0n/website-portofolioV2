@@ -127,16 +127,35 @@ export default function HomeClient({ discordUserId, profileImageUrl }: HomeClien
 
         <div className="mt-20 grid gap-14 lg:grid-cols-[1fr_360px] lg:gap-14">
           <div className="space-y-20">
-            <div className="space-y-8">
-              <section id="about" className="js-section scroll-mt-24">
-                <AboutTab />
-              </section>
-              <div className="space-y-6 lg:hidden">
-                <ProfileFactsCard />
-                <SpokenLanguagesCard />
-                <EducationCard />
+            <section id="about" className="js-section scroll-mt-24">
+              <AboutTab />
+            </section>
+
+            <section id="profile" className="js-section scroll-mt-24 lg:hidden">
+              <div className="space-y-6">
+                <div className="space-y-3">
+                  <p className="js-reveal text-[11px] uppercase tracking-[0.35em] text-[var(--home-muted)]">At a Glance</p>
+                  <h2 className="js-reveal text-2xl font-sans font-semibold text-[var(--home-ink)] sm:text-3xl">
+                    Profile & Background
+                  </h2>
+                  <p className="js-reveal max-w-2xl text-sm text-[var(--home-muted)]">
+                    Quick facts, spoken languages, and educational background.
+                  </p>
+                </div>
+
+                <div className="js-reveal grid gap-6">
+                  <div className="rounded-3xl border border-white/10 bg-black/30 p-6">
+                    <ProfileFactsCard />
+                  </div>
+                  <div className="rounded-3xl border border-white/10 bg-black/30 p-6">
+                    <SpokenLanguagesCard />
+                  </div>
+                  <div className="rounded-3xl border border-white/10 bg-black/30 p-6">
+                    <EducationCard />
+                  </div>
+                </div>
               </div>
-            </div>
+            </section>
             <section id="skills" className="js-section scroll-mt-24">
               <SkillsTab />
             </section>
@@ -150,7 +169,21 @@ export default function HomeClient({ discordUserId, profileImageUrl }: HomeClien
               <ProjectsTab />
             </section>
             <section id="latest-posts" className="js-section scroll-mt-24 lg:hidden">
-              <LatestPostsCard />
+              <div className="space-y-6">
+                <div className="space-y-3">
+                  <p className="js-reveal text-[11px] uppercase tracking-[0.35em] text-[var(--home-muted)]">Blog</p>
+                  <h2 className="js-reveal text-2xl font-sans font-semibold text-[var(--home-ink)] sm:text-3xl">
+                    Latest Posts
+                  </h2>
+                  <p className="js-reveal max-w-2xl text-sm text-[var(--home-muted)]">
+                    Recent updates and short reads from the blog.
+                  </p>
+                </div>
+
+                <div className="js-reveal rounded-3xl border border-white/10 bg-black/30 p-6">
+                  <LatestPostsCard />
+                </div>
+              </div>
             </section>
             <section id="contact" className="js-section scroll-mt-24">
               <ContactTab />

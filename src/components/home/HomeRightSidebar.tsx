@@ -8,7 +8,7 @@ import LatestPostsCard from './LatestPostsCard';
 
 export default function HomeRightSidebar() {
   return (
-    <div className="space-y-6">
+    <div className="space-y-12">
       <ProfileFactsCard className="hidden lg:block" />
       <SpokenLanguagesCard className="hidden lg:block" />
       <EducationCard className="hidden lg:block" />
