@@ -26,7 +26,7 @@ const isSafeHref = (value: string) => {
 
 const renderInline = (value: string): React.ReactNode[] => {
   const nodes: React.ReactNode[] = [];
-  const pattern = /(\*\*[^*]+\*\*|`[^`]+`|\[[^\]]+\]\([^)]+\)|\*[^*]+\*|_[^_]+_)/;
+  const pattern = /(\*\*[^*]+\*\*|__[^_]+__|`[^`]+`|\[[^\]]+\]\([^)]+\)|\*[^*]+\*|_[^_]+_)/;
   let remaining = value;
   let key = 0;
 
@@ -45,6 +45,8 @@ const renderInline = (value: string): React.ReactNode[] => {
     const token = match[0];
     if (token.startsWith('**') && token.endsWith('**')) {
       nodes.push(<strong key={`b-${key++}`}>{token.slice(2, -2)}</strong>);
+    } else if (token.startsWith('__') && token.endsWith('__')) {
+      nodes.push(<u key={`u-${key++}`}>{token.slice(2, -2)}</u>);
     } else if (token.startsWith('`') && token.endsWith('`')) {
       nodes.push(
         <code

@@ -1,10 +1,10 @@
 'use client';
 
-import { useEffect, useMemo, useState, type ChangeEvent, type ReactNode } from 'react';
+import { useEffect, useMemo, useState, useRef, type ChangeEvent, type ReactNode } from 'react';
 import Image from 'next/image';
 import { useSearchParams } from 'next/navigation';
 import { useFormStatus } from 'react-dom';
-import { Pencil, Plus, Trash2, X, ChevronLeft, ChevronRight, BookOpen } from 'lucide-react';
+import { Pencil, Plus, Trash2, X, ChevronLeft, ChevronRight, BookOpen, Bold, Italic, Underline, Heading2, Heading3, List, Quote, Link as LinkIcon, Code } from 'lucide-react';
 import AdminSubmitButton from '@/components/admin/AdminSubmitButton';
 import AdminToast from '@/components/admin/AdminToast';
 
@@ -141,6 +141,135 @@ function StatusSelect({
       {pending && (
         <span className="pointer-events-none absolute right-3 top-1/2 h-3 w-3 -translate-y-1/2 animate-spin rounded-full border-2 border-white/60 border-t-transparent" />
       )}
+    </div>
+  );
+}
+
+function ChapterEditor({
+  value,
+  onChange,
+  index,
+  removeChapter,
+  canRemove
+}: {
+  value: string;
+  onChange: (value: string) => void;
+  index: number;
+  removeChapter: (index: number) => void;
+  canRemove: boolean;
+}) {
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  const insertFormatting = (prefix: string, suffix: string = '') => {
+    const textarea = textareaRef.current;
+    if (!textarea) return;
+
+    const start = textarea.selectionStart;
+    const end = textarea.selectionEnd;
+    const before = value.substring(0, start);
+    const selected = value.substring(start, end);
+    const after = value.substring(end, value.length);
+
+    const insertedText = prefix + selected + suffix;
+    const newText = before + insertedText + after;
+    
+    onChange(newText);
+    
+    setTimeout(() => {
+      textarea.focus();
+      const newCursorPos = start + prefix.length + selected.length;
+      textarea.setSelectionRange(newCursorPos, newCursorPos);
+    }, 0);
+  };
+
+  const insertLinePrefix = (prefix: string) => {
+    const textarea = textareaRef.current;
+    if (!textarea) return;
+
+    const start = textarea.selectionStart;
+    const before = value.substring(0, start);
+    
+    const lastNewlineIndex = before.lastIndexOf('\n');
+    const lineStart = lastNewlineIndex === -1 ? 0 : lastNewlineIndex + 1;
+    
+    const beforeLine = value.substring(0, lineStart);
+    const lineText = value.substring(lineStart, start);
+    
+    const newText = beforeLine + prefix + lineText + value.substring(start);
+    
+    onChange(newText);
+    setTimeout(() => {
+      textarea.focus();
+      const newCursorPos = start + prefix.length;
+      textarea.setSelectionRange(newCursorPos, newCursorPos);
+    }, 0);
+  };
+
+  const btnClass = "p-2 rounded-lg hover:bg-white/10 text-white/60 hover:text-white transition-colors focus:outline-none";
+
+  return (
+    <div className="bg-[#0b0b0f] border border-white/5 rounded-[2rem] p-6 md:p-12 shadow-2xl relative min-h-[75vh] flex flex-col group">
+      <div className="flex justify-between items-center mb-6 border-b border-white/5 pb-4">
+        <span className="text-xs font-mono text-[var(--home-accent)] uppercase tracking-widest">Page {index + 1}</span>
+        {canRemove && (
+          <button type="button" onClick={() => removeChapter(index)} className="text-xs font-mono tracking-wider text-red-400 hover:text-red-300 transition opacity-0 group-hover:opacity-100">
+            Remove Page
+          </button>
+        )}
+      </div>
+      
+      <div className="flex flex-wrap gap-1 border-b border-white/5 pb-4 mb-6">
+        <button type="button" onClick={() => insertFormatting('**', '**')} className={btnClass} title="Bold">
+          <Bold className="w-4 h-4" />
+        </button>
+        <button type="button" onClick={() => insertFormatting('*', '*')} className={btnClass} title="Italic">
+          <Italic className="w-4 h-4" />
+        </button>
+        <button type="button" onClick={() => insertFormatting('__', '__')} className={btnClass} title="Underline">
+          <Underline className="w-4 h-4" />
+        </button>
+        <div className="w-px h-6 bg-white/10 mx-1 self-center" />
+        <button type="button" onClick={() => insertLinePrefix('## ')} className={btnClass} title="Heading 2">
+          <Heading2 className="w-4 h-4" />
+        </button>
+        <button type="button" onClick={() => insertLinePrefix('### ')} className={btnClass} title="Heading 3">
+          <Heading3 className="w-4 h-4" />
+        </button>
+        <div className="w-px h-6 bg-white/10 mx-1 self-center" />
+        <button type="button" onClick={() => insertLinePrefix('- ')} className={btnClass} title="Bullet List">
+          <List className="w-4 h-4" />
+        </button>
+        <button type="button" onClick={() => insertLinePrefix('> ')} className={btnClass} title="Blockquote">
+          <Quote className="w-4 h-4" />
+        </button>
+        <div className="w-px h-6 bg-white/10 mx-1 self-center" />
+        <button type="button" onClick={() => insertFormatting('[', '](url)')} className={btnClass} title="Link">
+          <LinkIcon className="w-4 h-4" />
+        </button>
+        <button type="button" onClick={() => insertFormatting('```\n', '\n```')} className={btnClass} title="Code Block">
+          <Code className="w-4 h-4" />
+        </button>
+      </div>
+      
+      <textarea
+        ref={textareaRef}
+        required={index === 0}
+        maxLength={MAX_PAGE_CHARS}
+        value={value}
+        onChange={(e) => {
+          onChange(e.target.value);
+          e.target.style.height = 'auto';
+          e.target.style.height = `${e.target.scrollHeight}px`;
+        }}
+        style={{ minHeight: '500px' }}
+        className="w-full flex-1 bg-transparent font-serif text-lg md:text-xl leading-[1.8] text-white/90 placeholder-white/20 resize-none focus:outline-none overflow-hidden"
+        placeholder="Start writing your story here... Use formatting tools above or markdown."
+      />
+      
+      <div className="mt-6 flex justify-between items-center text-xs font-mono text-white/30 border-t border-white/5 pt-4">
+        <span>{value.length} / {MAX_PAGE_CHARS}</span>
+        { value.length >= MAX_PAGE_CHARS && <span className="text-[var(--home-accent)]">Page full! Add a new page to continue.</span> }
+      </div>
     </div>
   );
 }
@@ -351,37 +480,15 @@ export default function BlogManager({
              <div className="flex transition-transform duration-700 ease-[cubic-bezier(0.23,1,0.32,1)]" style={{ transform: `translateX(-${activeChapter * 100}%)` }}>
                {chapters.map((value, index) => (
                  <div key={index} className="w-full shrink-0 px-2 md:px-4">
-                   <div className="bg-[#0b0b0f] border border-white/5 rounded-[2rem] p-6 md:p-12 shadow-2xl relative min-h-[75vh] flex flex-col group">
-                     <div className="flex justify-between items-center mb-8 border-b border-white/5 pb-4">
-                       <span className="text-xs font-mono text-[var(--home-accent)] uppercase tracking-widest">Page {index + 1}</span>
-                       {chapters.length > 1 && (
-                         <button type="button" onClick={() => removeChapter(index)} className="text-xs font-mono tracking-wider text-red-400 hover:text-red-300 transition opacity-0 group-hover:opacity-100">
-                           Remove Page
-                         </button>
-                       )}
-                     </div>
-                     
-                     <textarea
-                       required={index === 0}
-                       maxLength={MAX_PAGE_CHARS}
-                       value={value ?? ''}
-                       onChange={(e) => {
-                         const nextValue = e.target.value;
-                         setChapters(prev => { const next = [...prev]; next[index] = nextValue; return next; });
-                         // Auto-expand textarea height as user types
-                         e.target.style.height = 'auto';
-                         e.target.style.height = `${e.target.scrollHeight}px`;
-                       }}
-                       style={{ minHeight: '600px' }}
-                       className="w-full bg-transparent font-serif text-lg md:text-xl leading-[1.8] text-white/90 placeholder-white/20 resize-none focus:outline-none overflow-hidden"
-                       placeholder="Start writing your story here..."
-                     />
-                     
-                     <div className="mt-6 flex justify-between items-center text-xs font-mono text-white/30 border-t border-white/5 pt-4">
-                       <span>{(value ?? '').length} / {MAX_PAGE_CHARS}</span>
-                       { (value ?? '').length >= MAX_PAGE_CHARS && <span className="text-[var(--home-accent)]">Page full! Add a new page to continue.</span> }
-                     </div>
-                   </div>
+                   <ChapterEditor
+                     value={value ?? ''}
+                     onChange={(nextValue) => {
+                       setChapters(prev => { const next = [...prev]; next[index] = nextValue; return next; });
+                     }}
+                     index={index}
+                     removeChapter={removeChapter}
+                     canRemove={chapters.length > 1}
+                   />
                  </div>
                ))}
              </div>
