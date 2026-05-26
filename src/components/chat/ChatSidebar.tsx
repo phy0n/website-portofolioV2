@@ -86,101 +86,67 @@ export function ChatPanel({
 
   const renderMessageCard = (item: ChatMessage) => {
     const role = getChatRoleForName(item.name);
-    const roleLabel = role === 'author' ? 'Author' : 'Viewers';
+    const isAuthor = role === 'author';
     const stamp = formatStamp(item.createdAt);
     const replyTarget = item.replyToId ? messageById.get(item.replyToId) : null;
-    const messageClassName = [
-      role === 'author' ? 'border-yellow-400/15 bg-yellow-500/[0.04]' : 'border-white/10 bg-black/20',
-      item.isPinned ? 'ring-1 ring-[var(--home-accent)]/25' : '',
-    ]
-      .filter(Boolean)
-      .join(' ');
+    
+    const Actions = () => (
+      <div className={`flex shrink-0 items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity ${isAuthor ? 'flex-row-reverse' : 'flex-row'} self-center mb-1 mx-2`}>
+        {onReplyToChange ? (
+          <button type="button" onClick={() => onReplyToChange(item)} className="rounded-full p-1.5 text-white/40 hover:bg-white/10 hover:text-white transition" title="Reply">
+            <CornerUpLeft className="h-3.5 w-3.5" />
+          </button>
+        ) : null}
+        {isAdmin && onTogglePinMessage ? (
+          <button type="button" onClick={() => onTogglePinMessage(item.id, !item.isPinned)} className={`rounded-full p-1.5 transition ${item.isPinned ? 'text-[var(--home-accent)] hover:bg-[var(--home-accent)]/10' : 'text-white/40 hover:bg-white/10 hover:text-white'}`} title={item.isPinned ? 'Unpin' : 'Pin'}>
+            <Pin className="h-3.5 w-3.5" />
+          </button>
+        ) : null}
+        {isAdmin ? (
+          <button type="button" onClick={() => onDeleteMessage?.(item.id)} className="rounded-full p-1.5 text-red-400/50 hover:bg-red-500/10 hover:text-red-400 transition" title="Delete">
+            <Trash2 className="h-3.5 w-3.5" />
+          </button>
+        ) : null}
+      </div>
+    );
 
     return (
-      <div key={item.id} className={['rounded-2xl border px-4 py-3', messageClassName].join(' ')}>
-        <div className="flex items-start justify-between gap-3">
-          <div className="min-w-0">
-            <div className="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1">
-              <p
-                className={[
-                  'truncate text-sm font-semibold',
-                  role === 'author' ? 'text-yellow-100' : 'text-white/90',
-                ].join(' ')}
-              >
-                {item.name}
-              </p>
-              <span
-                className={[
-                  'inline-flex items-center rounded-full border px-2 py-0.5 text-[10px] font-semibold tracking-[0.18em]',
-                  role === 'author'
-                    ? 'border-yellow-400/20 bg-yellow-500/[0.08] text-yellow-100'
-                    : 'border-white/10 bg-white/[0.04] text-white/50',
-                ].join(' ')}
-              >
-                {roleLabel}
-              </span>
-              {role === 'author' ? <Crown className="h-3.5 w-3.5 text-yellow-200/80" /> : null}
-              {item.isPinned ? <Pin className="h-3.5 w-3.5 text-[var(--home-accent)]" /> : null}
-              {stamp ? <span className="whitespace-nowrap text-[11px] text-white/40">{stamp}</span> : null}
-            </div>
+      <div key={item.id} className={`group flex w-full ${isAuthor ? 'justify-end' : 'justify-start'} mb-5`}>
+        {isAuthor && <Actions />}
+        <div className={`relative flex flex-col max-w-[85%] sm:max-w-[75%] ${isAuthor ? 'items-end' : 'items-start'}`}>
+          <div className={`flex items-center gap-2 mb-1.5 px-1 ${isAuthor ? 'flex-row-reverse' : 'flex-row'}`}>
+            <span className={`text-[11px] font-bold tracking-wide ${isAuthor ? 'text-[var(--home-accent)]' : 'text-white/80'}`}>
+              {item.name}
+            </span>
+            {isAuthor && <Crown className="h-3 w-3 text-[var(--home-accent)]" />}
+            {item.isPinned && <Pin className="h-3 w-3 text-[var(--home-accent)]" />}
+            <span className="text-[9px] text-white/30 uppercase tracking-widest">{stamp}</span>
+          </div>
 
+          <div className={`relative px-4 py-3 shadow-sm ${
+            isAuthor 
+              ? 'bg-[var(--home-accent)] text-white rounded-[20px] rounded-tr-[4px] shadow-[0_4px_20px_rgba(var(--home-accent-rgb),0.2)]' 
+              : 'bg-[#181820] border border-white/5 text-white/90 rounded-[20px] rounded-tl-[4px] shadow-[0_4px_20px_rgba(0,0,0,0.3)]'
+          }`}>
             {item.replyToId ? (
-              <div className="mt-2 border-l border-white/10 pl-3">
-                <p className="text-xs font-semibold text-white/60">{replyTarget?.name ?? 'Unknown'}</p>
-                <p className="mt-0.5 text-xs leading-relaxed text-white/50 line-clamp-2">
-                  {replyTarget?.message ?? 'Message not available.'}
-                </p>
+              <div className={`mb-3 pl-3 border-l-2 ${isAuthor ? 'border-white/40 text-white/90' : 'border-[var(--home-accent)]/50 text-white/70'} text-xs bg-black/10 p-2 rounded-r-lg`}>
+                <p className="font-semibold mb-0.5">{replyTarget?.name ?? 'Unknown'}</p>
+                <p className="line-clamp-2 opacity-80 leading-relaxed">{replyTarget?.message ?? 'Message not available.'}</p>
               </div>
             ) : null}
-
-            <p className="mt-2 whitespace-pre-wrap break-words text-sm leading-relaxed text-white/70">{item.message}</p>
-          </div>
-
-          <div className="flex shrink-0 items-center gap-1">
-            {onReplyToChange ? (
-              <button
-                type="button"
-                onClick={() => onReplyToChange(item)}
-                className="rounded-full p-2 text-white/50 transition hover:bg-white/[0.06] hover:text-white"
-                aria-label="Reply"
-                title="Reply"
-              >
-                <CornerUpLeft className="h-4 w-4" />
-              </button>
-            ) : null}
-
-            {isAdmin && onTogglePinMessage ? (
-              <button
-                type="button"
-                onClick={() => onTogglePinMessage(item.id, !item.isPinned)}
-                className="rounded-full p-2 text-white/50 transition hover:bg-white/[0.06] hover:text-white"
-                aria-label={item.isPinned ? 'Unpin message' : 'Pin message'}
-                title={item.isPinned ? 'Unpin message' : 'Pin message'}
-              >
-                <Pin className={['h-4 w-4', item.isPinned ? 'text-[var(--home-accent)]' : ''].join(' ')} />
-              </button>
-            ) : null}
-
-            {isAdmin ? (
-              <button
-                type="button"
-                onClick={() => onDeleteMessage?.(item.id)}
-                className="rounded-full p-2 text-white/50 transition hover:bg-white/[0.06] hover:text-white"
-                aria-label="Delete message"
-                title="Delete message"
-              >
-                <Trash2 className="h-4 w-4" />
-              </button>
-            ) : null}
+            <p className="whitespace-pre-wrap break-words text-[13px] sm:text-sm leading-relaxed">
+              {item.message}
+            </p>
           </div>
         </div>
+        {!isAuthor && <Actions />}
       </div>
     );
   };
 
   return (
     <div className="flex h-full flex-col">
-      <div className="flex items-center justify-between gap-3 border-b border-white/10 px-4 py-3">
+      <div className="flex items-center justify-between gap-3 border-b border-white/5 bg-[#0a0a0f] px-5 py-4 shrink-0">
         <div className="flex items-center gap-2">
           <MessageSquare className="h-4 w-4 text-[var(--home-accent)]" />
           <p className="text-sm font-semibold text-white">Chat</p>
@@ -210,7 +176,7 @@ export function ChatPanel({
         </div>
       ) : null}
 
-      <div ref={listRef} className="flex-1 space-y-3 overflow-y-auto px-4 py-3 hide-scrollbar">
+      <div ref={listRef} className="flex-1 overflow-y-auto px-4 py-6 hide-scrollbar bg-[#0f0f15]">
         {loading ? (
           <div className="space-y-3">
             {Array.from({ length: 6 }).map((_, index) => (
@@ -233,9 +199,9 @@ export function ChatPanel({
         ) : null}
       </div>
 
-      <div className="border-t border-white/10 px-4 py-3">
+      <div className="border-t border-white/5 bg-[#0a0a0f] px-4 py-4 shrink-0">
         {replyTo && onReplyToChange ? (
-          <div className="mb-3 flex items-start justify-between gap-3 rounded-2xl border border-white/10 bg-black/20 px-3 py-2">
+          <div className="mb-3 flex items-start justify-between gap-3 rounded-xl border border-white/10 bg-[#181820] px-4 py-3">
             <div className="min-w-0">
               <p className="text-[10px] uppercase tracking-[0.3em] text-white/40">Reply</p>
               <p className="mt-1 truncate text-xs text-white/70">
@@ -261,7 +227,7 @@ export function ChatPanel({
             placeholder={isAdmin ? CHAT_AUTHOR_NAME : 'Name'}
             maxLength={40}
             disabled={isAdmin}
-            className="w-full rounded-2xl border border-white/10 bg-black/40 px-4 py-2.5 text-sm text-white placeholder:text-white/30 outline-none focus:border-white/20 disabled:cursor-not-allowed disabled:opacity-70 sm:w-44"
+            className="w-full rounded-full border border-white/10 bg-white/5 px-5 py-3 text-sm text-white placeholder:text-white/30 outline-none focus:border-[var(--home-accent)] focus:bg-white/10 transition-colors disabled:cursor-not-allowed disabled:opacity-70 sm:w-44"
           />
 
           <div className="w-full flex-1">
@@ -271,7 +237,7 @@ export function ChatPanel({
               placeholder="Message…"
               maxLength={500}
               rows={1}
-              className="w-full resize-none rounded-2xl border border-white/10 bg-black/40 px-4 py-2.5 text-sm text-white placeholder:text-white/30 outline-none focus:border-white/20"
+              className="w-full resize-none rounded-full border border-white/10 bg-white/5 px-5 py-3 text-sm text-white placeholder:text-white/30 outline-none focus:border-[var(--home-accent)] focus:bg-white/10 transition-colors overflow-hidden leading-snug"
               onKeyDown={(event) => {
                 if (event.key === 'Enter' && !event.shiftKey) {
                   event.preventDefault();
@@ -285,7 +251,7 @@ export function ChatPanel({
             type="button"
             onClick={onSend}
             disabled={!canSend}
-            className="inline-flex w-full items-center justify-center gap-2 rounded-2xl border border-white/10 bg-white/[0.06] px-4 py-2.5 text-sm font-semibold text-white transition hover:border-white/20 hover:bg-white/[0.08] disabled:cursor-not-allowed disabled:opacity-50 sm:w-28"
+            className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-[var(--home-accent)] px-6 py-3 text-sm font-bold text-white transition hover:brightness-110 shadow-[0_0_15px_rgba(var(--home-accent-rgb),0.3)] disabled:cursor-not-allowed disabled:opacity-50 sm:w-28"
           >
             <Send className="h-4 w-4" />
             {sending ? '...' : 'Send'}

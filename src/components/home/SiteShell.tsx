@@ -335,8 +335,8 @@ export default function SiteShell({
   return (
     <div ref={scopeRef} className="home-portfolio min-h-screen bg-[var(--home-bg)] text-[var(--home-ink)] font-nunito">
       <div className="relative isolate">
-        <header className="js-nav fixed left-0 right-0 top-0 z-40 px-4 pt-5 animate-slide-down">
-          <div className="mx-auto flex w-full max-w-7xl items-center justify-between">
+        <header className="js-nav fixed left-0 right-0 top-0 z-40 px-4 sm:px-8 xl:px-12 pt-5 animate-slide-down pointer-events-none">
+          <div className="mx-auto flex w-full max-w-[1600px] items-center justify-between pointer-events-auto">
             <Link
               href="/"
               className="inline-flex items-center gap-3 rounded-full border border-white/10 bg-[var(--home-bg)] px-4 py-2 text-white shadow-[0_18px_40px_rgba(0,0,0,0.45)] transition hover:border-white/20"
