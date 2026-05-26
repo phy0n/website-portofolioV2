@@ -5,6 +5,7 @@ import { ArrowLeft, ArrowUpRight, BookOpen, Github } from 'lucide-react';
 import BlogMarkdown from '@/components/blog/BlogMarkdown';
 import SiteShell from '@/components/home/SiteShell';
 import { createSupabaseServerClient, supabaseConfig } from '@/lib/supabase/server';
+import { getSiteProfile } from '@/lib/site-profile';
 
 export const dynamic = 'force-dynamic';
 
@@ -99,10 +100,11 @@ export default async function CaseStudyPage({
   const slug = safeDecode(String(rawSlug ?? '')).trim();
 
   const caseStudy = slug ? await getCaseStudy(slug) : null;
+  const { profileImageUrl } = await getSiteProfile();
 
   if (!caseStudy || !caseStudy.project) {
     return (
-      <SiteShell contentMode="full">
+      <SiteShell contentMode="full" navAvatarSrc={profileImageUrl}>
         <div className="w-full pt-10">
           <div className="rounded-3xl border border-white/10 bg-black/30 p-8">
             <p className="text-[11px] uppercase tracking-[0.35em] text-white/50">Case Study</p>
@@ -130,7 +132,7 @@ export default async function CaseStudyPage({
   );
 
   return (
-    <SiteShell contentMode="full">
+    <SiteShell contentMode="full" navAvatarSrc={profileImageUrl}>
       <div className="w-full pt-10 pb-20">
         <div className="flex flex-wrap items-center justify-between gap-3" data-gsap="reveal">
           <Link

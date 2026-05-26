@@ -3,6 +3,7 @@ import SiteShell from '@/components/home/SiteShell';
 import { createSupabaseServerClient, supabaseConfig } from '@/lib/supabase/server';
 import { createQuote, deleteQuote } from './quoteActions';
 import BlogSidebarList, { type BlogSidebarItem } from './BlogSidebarList';
+import { getSiteProfile } from '@/lib/site-profile';
 
 export const dynamic = 'force-dynamic';
 
@@ -61,9 +62,11 @@ export default async function BlogPage({
 }: {
   searchParams?: { success?: string; error?: string; edit?: string };
 }) {
+  const { profileImageUrl } = await getSiteProfile();
+
   if (!supabaseConfig.url || !supabaseConfig.anonKey) {
     return (
-      <SiteShell contentMode="full">
+      <SiteShell contentMode="full" navAvatarSrc={profileImageUrl}>
         <div className="w-full pt-8 pb-20">
           <div className="grid gap-8 lg:grid-cols-12">
             <section className="space-y-6 lg:col-span-7">
@@ -155,7 +158,7 @@ export default async function BlogPage({
   });
 
   return (
-    <SiteShell contentMode="full">
+    <SiteShell contentMode="full" navAvatarSrc={profileImageUrl}>
       <div className="w-full pt-8 pb-20">
         {toast ? (
           <div
