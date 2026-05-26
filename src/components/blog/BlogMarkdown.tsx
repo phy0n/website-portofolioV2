@@ -215,8 +215,33 @@ export default function BlogMarkdown({
   content: string;
   enableCodeCopy?: boolean;
 }) {
-  const blocks = useMemo(() => parseBlocks(content), [content]);
+  const isHtml = /<[a-z][\s\S]*>/i.test(content);
+  const blocks = useMemo(() => isHtml ? [] : parseBlocks(content), [content, isHtml]);
   const [copiedIndex, setCopiedIndex] = useState<number | null>(null);
+
+  if (isHtml) {
+    return (
+      <>
+        <style dangerouslySetInnerHTML={{__html: `
+          .wysiwyg-content b, .wysiwyg-content strong { font-weight: bold; }
+          .wysiwyg-content i, .wysiwyg-content em { font-style: italic; }
+          .wysiwyg-content u { text-decoration: underline; }
+          .wysiwyg-content h2 { font-size: 1.75rem; font-weight: bold; margin-top: 2rem; margin-bottom: 1rem; color: white; }
+          .wysiwyg-content h3 { font-size: 1.35rem; font-weight: bold; margin-top: 1.5rem; margin-bottom: 1rem; color: white; }
+          .wysiwyg-content ul { list-style-type: disc; padding-left: 1.5rem; margin-bottom: 1rem; }
+          .wysiwyg-content blockquote { border-left: 2px solid var(--home-accent); padding-left: 1rem; margin-bottom: 1rem; border-radius: 0.5rem; }
+          .wysiwyg-content a { color: var(--home-accent); text-decoration: underline; text-underline-offset: 4px; }
+          .wysiwyg-content p { margin-bottom: 1.25rem; }
+          .wysiwyg-content pre { background: #07070b; padding: 1rem; border-radius: 1rem; overflow-x: auto; font-family: monospace; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 20px 60px rgba(0,0,0,0.35); }
+        `}} />
+        <div 
+          className="wysiwyg-content text-xs xs:text-sm sm:text-base md:text-lg text-gray-300 leading-relaxed" 
+          dangerouslySetInnerHTML={{ __html: content }} 
+        />
+      </>
+    );
+  }
+
 
   return (
     <div className="space-y-5">

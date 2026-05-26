@@ -158,57 +158,41 @@ function ChapterEditor({
   removeChapter: (index: number) => void;
   canRemove: boolean;
 }) {
-  const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const editorRef = useRef<HTMLDivElement>(null);
 
-  const insertFormatting = (prefix: string, suffix: string = '') => {
-    const textarea = textareaRef.current;
-    if (!textarea) return;
+  useEffect(() => {
+    if (editorRef.current && !editorRef.current.innerHTML && value) {
+      let initialHtml = value;
+      if (!/<[a-z][\s\S]*>/i.test(value)) {
+         initialHtml = value.replace(/\n/g, '<br>');
+      }
+      editorRef.current.innerHTML = initialHtml;
+    }
+  }, [value]);
 
-    const start = textarea.selectionStart;
-    const end = textarea.selectionEnd;
-    const before = value.substring(0, start);
-    const selected = value.substring(start, end);
-    const after = value.substring(end, value.length);
-
-    const insertedText = prefix + selected + suffix;
-    const newText = before + insertedText + after;
-    
-    onChange(newText);
-    
-    setTimeout(() => {
-      textarea.focus();
-      const newCursorPos = start + prefix.length + selected.length;
-      textarea.setSelectionRange(newCursorPos, newCursorPos);
-    }, 0);
-  };
-
-  const insertLinePrefix = (prefix: string) => {
-    const textarea = textareaRef.current;
-    if (!textarea) return;
-
-    const start = textarea.selectionStart;
-    const before = value.substring(0, start);
-    
-    const lastNewlineIndex = before.lastIndexOf('\n');
-    const lineStart = lastNewlineIndex === -1 ? 0 : lastNewlineIndex + 1;
-    
-    const beforeLine = value.substring(0, lineStart);
-    const lineText = value.substring(lineStart, start);
-    
-    const newText = beforeLine + prefix + lineText + value.substring(start);
-    
-    onChange(newText);
-    setTimeout(() => {
-      textarea.focus();
-      const newCursorPos = start + prefix.length;
-      textarea.setSelectionRange(newCursorPos, newCursorPos);
-    }, 0);
+  const exec = (command: string, arg?: string) => {
+    document.execCommand(command, false, arg);
+    editorRef.current?.focus();
+    if (editorRef.current) {
+      onChange(editorRef.current.innerHTML);
+    }
   };
 
   const btnClass = "p-2 rounded-lg hover:bg-white/10 text-white/60 hover:text-white transition-colors focus:outline-none";
 
   return (
     <div className="bg-[#0b0b0f] border border-white/5 rounded-[2rem] p-6 md:p-12 shadow-2xl relative min-h-[75vh] flex flex-col group">
+      <style dangerouslySetInnerHTML={{__html: `
+        .wysiwyg-content b, .wysiwyg-content strong { font-weight: bold; }
+        .wysiwyg-content i, .wysiwyg-content em { font-style: italic; }
+        .wysiwyg-content u { text-decoration: underline; }
+        .wysiwyg-content h2 { font-size: 1.75rem; font-weight: bold; margin-top: 1rem; margin-bottom: 1rem; color: white; }
+        .wysiwyg-content h3 { font-size: 1.35rem; font-weight: bold; margin-top: 1rem; margin-bottom: 1rem; color: white; }
+        .wysiwyg-content ul { list-style-type: disc; padding-left: 1.5rem; margin-bottom: 1rem; }
+        .wysiwyg-content blockquote { border-left: 2px solid var(--home-accent); padding-left: 1rem; margin-bottom: 1rem; border-radius: 0.5rem; }
+        .wysiwyg-content a { color: var(--home-accent); text-decoration: underline; text-underline-offset: 4px; }
+        .wysiwyg-content pre { background: #07070b; padding: 1rem; border-radius: 1rem; overflow-x: auto; font-family: monospace; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 20px 60px rgba(0,0,0,0.35); }
+      `}} />
       <div className="flex justify-between items-center mb-6 border-b border-white/5 pb-4">
         <span className="text-xs font-mono text-[var(--home-accent)] uppercase tracking-widest">Page {index + 1}</span>
         {canRemove && (
@@ -219,56 +203,53 @@ function ChapterEditor({
       </div>
       
       <div className="flex flex-wrap gap-1 border-b border-white/5 pb-4 mb-6">
-        <button type="button" onClick={() => insertFormatting('**', '**')} className={btnClass} title="Bold">
+        <button type="button" onClick={() => exec('bold')} className={btnClass} title="Bold">
           <Bold className="w-4 h-4" />
         </button>
-        <button type="button" onClick={() => insertFormatting('*', '*')} className={btnClass} title="Italic">
+        <button type="button" onClick={() => exec('italic')} className={btnClass} title="Italic">
           <Italic className="w-4 h-4" />
         </button>
-        <button type="button" onClick={() => insertFormatting('__', '__')} className={btnClass} title="Underline">
+        <button type="button" onClick={() => exec('underline')} className={btnClass} title="Underline">
           <Underline className="w-4 h-4" />
         </button>
         <div className="w-px h-6 bg-white/10 mx-1 self-center" />
-        <button type="button" onClick={() => insertLinePrefix('## ')} className={btnClass} title="Heading 2">
+        <button type="button" onClick={() => exec('formatBlock', 'H2')} className={btnClass} title="Heading 2">
           <Heading2 className="w-4 h-4" />
         </button>
-        <button type="button" onClick={() => insertLinePrefix('### ')} className={btnClass} title="Heading 3">
+        <button type="button" onClick={() => exec('formatBlock', 'H3')} className={btnClass} title="Heading 3">
           <Heading3 className="w-4 h-4" />
         </button>
         <div className="w-px h-6 bg-white/10 mx-1 self-center" />
-        <button type="button" onClick={() => insertLinePrefix('- ')} className={btnClass} title="Bullet List">
+        <button type="button" onClick={() => exec('insertUnorderedList')} className={btnClass} title="Bullet List">
           <List className="w-4 h-4" />
         </button>
-        <button type="button" onClick={() => insertLinePrefix('> ')} className={btnClass} title="Blockquote">
+        <button type="button" onClick={() => exec('formatBlock', 'BLOCKQUOTE')} className={btnClass} title="Blockquote">
           <Quote className="w-4 h-4" />
         </button>
         <div className="w-px h-6 bg-white/10 mx-1 self-center" />
-        <button type="button" onClick={() => insertFormatting('[', '](url)')} className={btnClass} title="Link">
+        <button type="button" onClick={() => {
+          const url = prompt('Enter link URL:');
+          if (url) exec('createLink', url);
+        }} className={btnClass} title="Link">
           <LinkIcon className="w-4 h-4" />
         </button>
-        <button type="button" onClick={() => insertFormatting('```\n', '\n```')} className={btnClass} title="Code Block">
+        <button type="button" onClick={() => exec('formatBlock', 'PRE')} className={btnClass} title="Code Block">
           <Code className="w-4 h-4" />
         </button>
       </div>
       
-      <textarea
-        ref={textareaRef}
-        required={index === 0}
-        maxLength={MAX_PAGE_CHARS}
-        value={value}
-        onChange={(e) => {
-          onChange(e.target.value);
-          e.target.style.height = 'auto';
-          e.target.style.height = `${e.target.scrollHeight}px`;
-        }}
+      <div
+        ref={editorRef}
+        contentEditable
+        onInput={(e) => onChange(e.currentTarget.innerHTML)}
+        onBlur={(e) => onChange(e.currentTarget.innerHTML)}
         style={{ minHeight: '500px' }}
-        className="w-full flex-1 bg-transparent font-serif text-lg md:text-xl leading-[1.8] text-white/90 placeholder-white/20 resize-none focus:outline-none overflow-hidden"
-        placeholder="Start writing your story here... Use formatting tools above or markdown."
+        className="w-full flex-1 bg-transparent font-serif text-lg md:text-xl leading-[1.8] text-white/90 focus:outline-none overflow-y-auto wysiwyg-content"
       />
       
       <div className="mt-6 flex justify-between items-center text-xs font-mono text-white/30 border-t border-white/5 pt-4">
-        <span>{value.length} / {MAX_PAGE_CHARS}</span>
-        { value.length >= MAX_PAGE_CHARS && <span className="text-[var(--home-accent)]">Page full! Add a new page to continue.</span> }
+        <span>{value.replace(/<[^>]*>?/gm, '').length} / {MAX_PAGE_CHARS}</span>
+        { value.replace(/<[^>]*>?/gm, '').length >= MAX_PAGE_CHARS && <span className="text-[var(--home-accent)]">Page full! Add a new page to continue.</span> }
       </div>
     </div>
   );
