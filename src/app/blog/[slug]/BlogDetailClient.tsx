@@ -6,6 +6,7 @@ import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import {
   Eye,
   ArrowLeft,
+  ArrowRight,
   ArrowUp,
   Bookmark,
   BookmarkCheck,
@@ -15,6 +16,7 @@ import {
   Tags,
   User,
   Users,
+  BookOpen,
 } from 'lucide-react';
 import gsap from 'gsap';
 import BlogMarkdown from '@/components/blog/BlogMarkdown';
@@ -145,7 +147,7 @@ export default function BlogDetailClient({
   const chapters = useMemo(() => {
     const raw = (blog as any)?.chapters;
     if (Array.isArray(raw) && raw.length > 0) {
-      return raw.map((value) => (typeof value === 'string' ? value : '')).filter((value) => value.trim().length > 0);
+      return raw.map((value: any) => (typeof value === 'string' ? value : '')).filter((value: string) => value.trim().length > 0);
     }
     const fallback = String(blog?.content ?? '').trim();
     return fallback ? [fallback] : [''];
@@ -165,6 +167,8 @@ export default function BlogDetailClient({
   const resolvedUniqueVisitors = Math.max(uniqueCount ?? 0, fetchedCounts?.unique ?? 0);
   const showUniqueCounts = uniqueCount !== undefined || fetchedCounts?.source === 'counters';
   const coverImageSrc = resolveBlogImageSrc(blog?.image);
+
+  const prevChapterIndex = useRef(activeChapterIndex);
 
   useEffect(() => {
     return () => {
@@ -357,16 +361,23 @@ export default function BlogDetailClient({
   useLayoutEffect(() => {
     const el = chapterContentRef.current;
     if (!el) return;
+    const isNext = activeChapterIndex > prevChapterIndex.current;
+    prevChapterIndex.current = activeChapterIndex;
+    
     const prefersReducedMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches;
+    const xOffset = prefersReducedMotion ? 0 : (isNext ? 40 : -40);
+
     gsap.killTweensOf(el);
     gsap.fromTo(
       el,
-      { autoAlpha: 0, x: prefersReducedMotion ? 0 : 22, filter: prefersReducedMotion ? 'none' : 'blur(10px)' },
-      { autoAlpha: 1, x: 0, filter: 'blur(0px)', duration: prefersReducedMotion ? 0.25 : 0.45, ease: 'power3.out' }
+      { autoAlpha: 0, x: xOffset, filter: prefersReducedMotion ? 'none' : 'blur(10px)' },
+      { autoAlpha: 1, x: 0, filter: 'blur(0px)', duration: prefersReducedMotion ? 0.25 : 0.6, ease: 'power3.out' }
     );
-    return () => {
-      gsap.killTweensOf(el);
-    };
+    
+    // Auto scroll to top when chapter changes (after first load)
+    if (activeChapterIndex !== 0 || isNext) {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
   }, [activeChapterIndex]);
 
   useEffect(() => {
@@ -391,36 +402,6 @@ export default function BlogDetailClient({
       window.removeEventListener('scroll', handleScroll);
     };
   }, []);
-
-  useEffect(() => {
-    const root = articleRef.current;
-    if (!root || toc.length === 0) return;
-
-    const headings = Array.from(root.querySelectorAll<HTMLElement>('h2[id], h3[id]'));
-    if (headings.length === 0) return;
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const visible = entries
-          .filter((entry) => entry.isIntersecting)
-          .map((entry) => entry.target)
-          .filter((node): node is HTMLElement => node instanceof HTMLElement)
-          .sort((a, b) => a.offsetTop - b.offsetTop);
-
-        if (visible[0]?.id) {
-          setActiveHeadingId(visible[0].id);
-        }
-      },
-      {
-        root: null,
-        rootMargin: '0px 0px -70% 0px',
-        threshold: 0,
-      }
-    );
-
-    headings.forEach((heading) => observer.observe(heading));
-    return () => observer.disconnect();
-  }, [toc.length, blog?.slug]);
 
   const showToast = (message: string) => {
     setToast(message);
@@ -499,10 +480,10 @@ export default function BlogDetailClient({
   return (
     <div
       ref={pageRef}
-      className="home-portfolio min-h-screen bg-[var(--home-bg)] text-[var(--home-ink)] font-nunito relative"
+      className="home-portfolio min-h-screen bg-[var(--home-bg)] text-[var(--home-ink)] font-nunito relative selection:bg-[var(--home-accent)] selection:text-white pb-24"
       data-page-content
     >
-      <div className="fixed top-0 left-0 right-0 z-50 h-1 bg-white/10">
+      <div className="fixed top-0 left-0 right-0 z-50 h-1 bg-white/5">
         <div
           className="h-full bg-gradient-to-r from-[var(--home-accent)] to-[var(--home-accent-2)] transition-all duration-150"
           style={{ width: `${readingProgress}%` }}
@@ -519,316 +500,164 @@ export default function BlogDetailClient({
         <button
           type="button"
           onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-          className="fixed bottom-6 right-6 z-40 inline-flex h-11 w-11 items-center justify-center rounded-full border border-white/10 bg-black/70 text-white/80 backdrop-blur-xl transition hover:border-white/30 hover:text-white"
+          className="fixed bottom-6 right-6 z-40 inline-flex h-11 w-11 items-center justify-center rounded-full border border-white/10 bg-black/70 text-white/80 backdrop-blur-xl transition hover:border-white/30 hover:text-white shadow-xl"
           aria-label="Back to top"
         >
           <ArrowUp className="h-5 w-5" />
         </button>
       )}
 
-      <div className="relative mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 py-10 xs:py-12">
-        <div className="mb-8 flex flex-wrap items-center justify-between gap-3" data-gsap="reveal">
+      {/* Book Container */}
+      <div className="relative mx-auto w-full max-w-4xl px-4 sm:px-6 py-12 md:py-20">
+        
+        {/* Top Minimalist Nav */}
+        <div className="mb-16 flex items-center justify-between" data-gsap="reveal">
           <Link
             href="/blog"
-            className="inline-flex items-center gap-2 text-[var(--home-muted)] hover:text-white transition-colors group"
+            className="group flex items-center gap-3 text-xs uppercase tracking-widest text-white/40 hover:text-white transition-colors"
           >
             <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
-            <span className="text-sm">Back to Journal</span>
+            <span>Close Book</span>
           </Link>
+          
           <div className="flex items-center gap-2">
             <button
-              type="button"
               onClick={onToggleSaved}
-              className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2 text-xs text-white/70 transition hover:border-white/30 hover:text-white"
-              aria-pressed={saved}
-              aria-label={saved ? 'Remove from reading list' : 'Save to reading list'}
+              className="p-2 text-white/40 hover:text-white hover:bg-white/5 rounded-full transition-colors"
+              title={saved ? "Remove from reading list" : "Save to reading list"}
             >
-              {saved ? (
-                <BookmarkCheck className="h-4 w-4 text-[var(--home-accent)]" />
-              ) : (
-                <Bookmark className="h-4 w-4" />
-              )}
-              {saved ? 'Saved' : 'Save'}
+              {saved ? <BookmarkCheck className="w-4 h-4 text-[var(--home-accent)]" /> : <Bookmark className="w-4 h-4" />}
             </button>
             <button
-              type="button"
               onClick={onCopyLink}
-              className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2 text-xs text-white/70 transition hover:border-white/30 hover:text-white"
-              aria-label="Copy link"
+              className="p-2 text-white/40 hover:text-white hover:bg-white/5 rounded-full transition-colors"
+              title="Copy link"
             >
-              <Link2 className="h-4 w-4" />
-              Copy
+              <Link2 className="w-4 h-4" />
             </button>
             <button
-              type="button"
               onClick={onShare}
-              className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2 text-xs text-white/70 transition hover:border-white/30 hover:text-white"
-              aria-label="Share"
+              className="p-2 text-white/40 hover:text-white hover:bg-white/5 rounded-full transition-colors"
+              title="Share"
             >
-              <Share2 className="h-4 w-4" />
-              Share
+              <Share2 className="w-4 h-4" />
             </button>
           </div>
         </div>
 
-        <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_300px]">
-          <article ref={articleRef} className="min-w-0">
-            <header className="mb-10 xs:mb-12" data-gsap="reveal">
-              <div className="flex flex-wrap items-center gap-2 text-[10px] uppercase tracking-[0.35em] text-white/40">
-                <span className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2">
-                  {blog.category || 'Story'}
-                </span>
-              </div>
+        {/* Header / Title */}
+        <header className="mb-16 text-center" data-gsap="reveal">
+          <div className="mb-6 flex justify-center">
+            <span className="inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.3em] text-white/60 border border-white/10 rounded-full px-4 py-1.5">
+              <BookOpen className="w-3 h-3" />
+              {blog.category || 'Story'}
+            </span>
+          </div>
 
-              <h1 className="mt-5 text-2xl xs:text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-tight">
-                {blog.title}
-              </h1>
+          <h1 className="text-3xl sm:text-5xl md:text-6xl font-serif font-medium text-white leading-tight mb-8 max-w-3xl mx-auto">
+            {blog.title}
+          </h1>
 
-              <div className="mt-4 flex flex-wrap items-center justify-between gap-3 text-xs text-white/50">
-                <span className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-black/40 px-3 py-1.5">
-                  <Users className="h-4 w-4" />
-                  /{blog.slug}
-                </span>
-                {chapterCount > 1 ? (
-                  <div className="flex items-center gap-2">
-                    <button
-                      type="button"
-                      onClick={() => setChapter(activeChapterIndex - 1)}
-                      disabled={activeChapterIndex === 0}
-                      className={
-                        activeChapterIndex === 0
-                          ? 'inline-flex items-center justify-center rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs text-white/40 opacity-60 cursor-not-allowed'
-                          : 'inline-flex items-center justify-center rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs text-white/70 transition hover:border-white/30 hover:text-white'
-                      }
-                      aria-label="Previous chapter"
-                      title="Previous chapter"
-                    >
-                      Prev
-                    </button>
-                    <span className="text-[10px] uppercase tracking-[0.35em] text-white/40">
-                      Chapter {activeChapterIndex + 1}/{chapterCount}
-                    </span>
-                    <button
-                      type="button"
-                      onClick={() => setChapter(activeChapterIndex + 1)}
-                      disabled={activeChapterIndex >= chapterCount - 1}
-                      className={
-                        activeChapterIndex >= chapterCount - 1
-                          ? 'inline-flex items-center justify-center rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs text-white/40 opacity-60 cursor-not-allowed'
-                          : 'inline-flex items-center justify-center rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs text-white/70 transition hover:border-white/30 hover:text-white'
-                      }
-                      aria-label="Next chapter"
-                      title="Next chapter"
-                    >
-                      Next
-                    </button>
-                  </div>
-                ) : null}
-              </div>
-
-              <div className="mt-6 rounded-2xl border border-white/10 bg-white/[0.03] p-5 xs:p-6 shadow-[0_20px_60px_rgba(0,0,0,0.25)]">
-                <div className="relative pl-4 border-l-2 border-[var(--home-accent)]">
-                  <p className="text-sm xs:text-base sm:text-lg text-white/75 leading-relaxed">
-                    {blog.excerpt}
-                  </p>
-                </div>
-                <div className="mt-5 flex flex-wrap items-center gap-2 text-xs text-white/50">
-                  <span className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-black/40 px-3 py-1.5">
-                    <Calendar className="h-4 w-4" />
-                    {formatBlogDate(blog.date)}
-                  </span>
-                  {showUniqueCounts ? (
-                    <span className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-black/40 px-3 py-1.5">
-                      <Eye className="h-4 w-4" />
-                      {resolvedUniqueVisitors.toLocaleString()}
-                    </span>
-                  ) : null}
-                  <span className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-black/40 px-3 py-1.5">
-                    <User className="h-4 w-4" />
-                    {blog.author || 'Phion'}
-                  </span>
-                </div>
-
-                {blog.tags && blog.tags.length > 0 && (
-                  <div className="mt-4 flex flex-wrap items-center gap-2 text-xs text-white/50">
-                    <span className="inline-flex items-center gap-2">
-                      <Tags className="h-4 w-4" />
-                      Tags:
-                    </span>
-                    {blog.tags.map((tag) => (
-                      <span
-                        key={tag}
-                        className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-white/70"
-                      >
-                        {tag}
-                      </span>
-                    ))}
-                  </div>
-                )}
-              </div>
-            </header>
-
-            {coverImageSrc && (
-              <div
-                className="relative w-full h-56 xs:h-64 sm:h-72 md:h-[420px] overflow-hidden mb-10 xs:mb-12 rounded-2xl border border-white/10 bg-gradient-to-br from-white/5 via-black/30 to-black shadow-[0_30px_120px_rgba(0,0,0,0.55)]"
-                data-gsap="reveal">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={coverImageSrc}
-                  alt={blog.title}
-                  fetchPriority="high"
-                  loading="eager"
-                  decoding="async"
-                  className="absolute inset-0 h-full w-full object-cover"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/45 via-black/10 to-transparent" />
-              </div>
+          <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-3 text-xs font-mono text-white/40 uppercase tracking-wider">
+            <span className="flex items-center gap-2"><User className="w-3 h-3"/> {blog.author || 'Phion'}</span>
+            <span className="flex items-center gap-2"><Calendar className="w-3 h-3"/> {formatBlogDate(blog.date)}</span>
+            {showUniqueCounts && (
+              <span className="flex items-center gap-2"><Eye className="w-3 h-3"/> {resolvedUniqueVisitors.toLocaleString()}</span>
             )}
+          </div>
+        </header>
 
-            <div data-gsap="reveal" ref={chapterContentRef}>
-              <BlogMarkdown content={content} enableCodeCopy />
-            </div>
+        {/* Cover Image */}
+        {coverImageSrc && (
+          <div className="w-full aspect-[21/9] md:aspect-[2.35/1] overflow-hidden mb-16 rounded-2xl border border-white/5 bg-white/5 shadow-2xl" data-gsap="reveal">
+             <img src={coverImageSrc} className="w-full h-full object-cover opacity-80 hover:opacity-100 transition-opacity duration-700" alt={blog.title} loading="eager" />
+          </div>
+        )}
 
-            <div className="mt-12 pt-6 border-t border-white/10" data-gsap="reveal">
-              {relatedBlogs.length > 0 && (
-                <section className="mb-10">
-                  <div className="flex items-center justify-between gap-3">
-                    <h2 className="text-lg font-semibold text-white">Related stories</h2>
-                    <span className="text-xs text-white/40">{relatedBlogs.length} picks</span>
-                  </div>
-                  <div className="mt-5 grid gap-4 sm:grid-cols-2">
-                    {relatedBlogs.map((item) => {
-                      const relatedImageSrc = resolveBlogImageSrc(item.image);
+        {/* Content (The Book Pages) */}
+        <article className="relative mx-auto max-w-2xl text-lg sm:text-xl leading-[1.8] sm:leading-[1.9] text-white/80 font-serif" ref={articleRef}>
+          <div ref={chapterContentRef} className="book-page-content">
+            
+            {/* Excerpt acts as prologue on the first page */}
+            {activeChapterIndex === 0 && blog.excerpt && (
+              <p className="text-xl md:text-2xl italic text-white/60 mb-12 text-center leading-relaxed border-b border-white/10 pb-12">
+                "{blog.excerpt}"
+              </p>
+            )}
+            
+            <BlogMarkdown content={content} enableCodeCopy />
+          </div>
+        </article>
 
-                      return (
-                        <Link
-                          key={item.id}
-                          href={`/blog/${encodeURIComponent(item.slug)}`}
-                          className="group rounded-2xl border border-white/10 bg-white/[0.03] overflow-hidden shadow-[0_20px_60px_rgba(0,0,0,0.25)] transition hover:border-white/25 hover:bg-white/[0.05]"
-                        >
-                          <div className="grid grid-cols-[110px_minmax(0,1fr)] gap-4 p-4">
-                            <div className="relative h-20 w-full overflow-hidden rounded-xl border border-white/10 bg-black/40">
-                              {relatedImageSrc ? (
-                                <>
-                                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                                  <img
-                                    src={relatedImageSrc}
-                                    alt={item.title}
-                                    loading="lazy"
-                                    decoding="async"
-                                    className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
-                                  />
-                                </>
-                              ) : null}
-                            </div>
-                            <div className="min-w-0">
-                              <p className="text-xs text-white/50">{formatBlogDate(item.date)}</p>
-                              <p className="mt-1 font-semibold text-white line-clamp-2">{item.title}</p>
-                              <p className="mt-2 text-xs text-white/60 line-clamp-2">{item.excerpt}</p>
-                            </div>
-                          </div>
-                        </Link>
-                      );
-                    })}
-                  </div>
-                </section>
-              )}
+        {/* Tags */}
+        {blog.tags && blog.tags.length > 0 && (
+           <div className="mt-16 pt-8 max-w-2xl mx-auto flex flex-wrap gap-2 justify-center border-t border-white/10" data-gsap="reveal">
+             {blog.tags.map(tag => (
+                <span key={tag} className="text-xs font-mono text-white/30 border border-white/5 px-4 py-1.5 rounded-full">
+                  #{tag}
+                </span>
+             ))}
+           </div>
+        )}
 
-              <div className="flex items-center justify-between">
-                <Link
-                  href="/blog"
-                  className="inline-flex items-center gap-2 text-[var(--home-muted)] hover:text-white transition-colors group">
-                  <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
-                  <span className="text-sm">Back to Journal</span>
-                </Link>
-              </div>
-              <div className="mt-6 text-center">
-                <p className="text-xs xs:text-sm text-[var(--home-muted)] italic">
-                  &ldquo;Every story is part of life&apos;s journey&rdquo;
-                </p>
-              </div>
-            </div>
-          </article>
-
-          <aside className="hidden lg:block" data-gsap="reveal">
-            <div className="sticky top-24 space-y-4">
-              {/* <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-5 shadow-[0_20px_60px_rgba(0,0,0,0.25)]">
-                <div className="flex items-center justify-between">
-                  <p className="text-sm font-semibold text-white">On this page</p>
-                  <span className="text-[10px] uppercase tracking-[0.3em] text-white/40">
-                    {toc.length ? `${toc.length} sections` : '—'}
+        {/* Chapter Navigation / Pagination */}
+        {chapterCount > 1 && (
+          <div className="mt-20 max-w-3xl mx-auto" data-gsap="reveal">
+             <div className="flex items-center justify-between gap-4 bg-white/[0.02] border border-white/5 p-4 sm:p-8 rounded-3xl">
+               {/* Prev Button */}
+               <button 
+                  onClick={() => setChapter(activeChapterIndex - 1)} 
+                  disabled={activeChapterIndex === 0}
+                  className={`group flex-1 flex flex-col items-start transition-opacity ${activeChapterIndex === 0 ? 'opacity-30 cursor-not-allowed' : 'hover:opacity-100 opacity-70'}`}
+               >
+                  <span className="text-[10px] sm:text-xs font-mono uppercase tracking-widest text-white/40 mb-2 block">Previous Page</span>
+                  <span className="text-base sm:text-xl font-serif text-white flex items-center gap-3">
+                     <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" /> Chapter {activeChapterIndex}
                   </span>
-                </div>
-                {toc.length === 0 ? (
-                  <p className="mt-3 text-sm text-white/50">
-                    Add headings like <code className="text-white/80">## Title</code> to generate a table of contents.
-                  </p>
-                ) : (
-                  <nav className="mt-4 space-y-2 text-sm">
-                    {toc.map((item) => {
-                      const isActive = item.id === activeHeadingId;
-                      return (
-                        <a
-                          key={item.id}
-                          href={`#${item.id}`}
-                          onClick={(event) => {
-                            event.preventDefault();
-                            const target = document.getElementById(item.id);
-                            if (!target) return;
-                            target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                            window.history.replaceState(null, '', `#${item.id}`);
-                          }}
-                          className={`block rounded-lg px-2 py-1.5 transition ${
-                            item.level === 3 ? 'pl-6 text-white/60 hover:text-white' : 'text-white/70 hover:text-white'
-                          } ${
-                            isActive ? 'bg-white/10 text-white' : 'bg-transparent'
-                          }`}>
-                          {item.text}
-                        </a>
-                      );
-                    })}
-                  </nav>
-                )}
-              </div> */}
+               </button>
 
-              <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-5 shadow-[0_20px_60px_rgba(0,0,0,0.25)]">
-                <p className="text-sm font-semibold text-white">Story details</p>
-                <div className="mt-4 space-y-3 text-sm text-white/60">
-                  <div className="flex items-center justify-between gap-3">
-                    <span className="inline-flex items-center gap-2">
-                      <Calendar className="h-4 w-4" />
-                      Date
-                    </span>
-                    <span className="text-white/80">{formatBlogDate(blog.date)}</span>
-                  </div>
-                  {showUniqueCounts ? (
-                    <div className="flex items-center justify-between gap-3">
-                      <span className="inline-flex items-center gap-2">
-                        <Eye className="h-4 w-4" />
-                        Views
-                      </span>
-                      <span className="text-white/80">{resolvedUniqueVisitors.toLocaleString()}</span>
+               {/* Indicator */}
+               <div className="px-4 text-center">
+                 <span className="text-[10px] sm:text-xs font-mono uppercase tracking-widest text-[var(--home-accent)]">
+                   {activeChapterIndex + 1} / {chapterCount}
+                 </span>
+               </div>
+
+               {/* Next Button */}
+               <button 
+                  onClick={() => setChapter(activeChapterIndex + 1)} 
+                  disabled={activeChapterIndex === chapterCount - 1}
+                  className={`group flex-1 flex flex-col items-end transition-opacity ${activeChapterIndex === chapterCount - 1 ? 'opacity-30 cursor-not-allowed' : 'hover:opacity-100 opacity-70'}`}
+               >
+                  <span className="text-[10px] sm:text-xs font-mono uppercase tracking-widest text-white/40 mb-2 block">Next Page</span>
+                  <span className="text-base sm:text-xl font-serif text-white flex items-center gap-3">
+                     Chapter {activeChapterIndex + 2} <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                  </span>
+               </button>
+             </div>
+          </div>
+        )}
+
+        {/* Related Stories - Book End */}
+        {relatedBlogs.length > 0 && (
+          <div className="mt-24 max-w-4xl mx-auto" data-gsap="reveal">
+            <h3 className="text-center text-sm font-mono uppercase tracking-widest text-white/40 mb-10">Further Reading</h3>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+              {relatedBlogs.map(item => {
+                const img = resolveBlogImageSrc(item.image);
+                return (
+                  <Link key={item.id} href={`/blog/${encodeURIComponent(item.slug)}`} className="group block">
+                    <div className="aspect-[3/4] rounded-2xl overflow-hidden bg-white/5 border border-white/10 mb-4 relative">
+                      {img && <img src={img} alt={item.title} className="w-full h-full object-cover opacity-60 group-hover:opacity-100 transition-opacity duration-500 group-hover:scale-105" loading="lazy" />}
                     </div>
-                  ) : null}
-                  <div className="flex items-center justify-between gap-3">
-                    <span className="inline-flex items-center gap-2">
-                      <User className="h-4 w-4" />
-                      Author
-                    </span>
-                    <span className="text-white/80">{blog.author || 'Phion'}</span>
-                  </div>
-                  <div className="flex items-center justify-between gap-3">
-                    <span className="inline-flex items-center gap-2">
-                      <Tags className="h-4 w-4" />
-                      Category
-                    </span>
-                    <span className="text-white/80">{blog.category || '-'}</span>
-                  </div>
-                </div>
-              </div>
+                    <p className="text-[10px] font-mono text-[var(--home-accent)] uppercase tracking-widest mb-2">{formatBlogDate(item.date)}</p>
+                    <h4 className="text-sm font-serif text-white/90 group-hover:text-white leading-snug line-clamp-2">{item.title}</h4>
+                  </Link>
+                )
+              })}
             </div>
-          </aside>
-        </div>
+          </div>
+        )}
       </div>
     </div>
   );

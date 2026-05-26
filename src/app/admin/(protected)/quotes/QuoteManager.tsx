@@ -141,7 +141,7 @@ export default function QuoteManager({
               setEditId(null);
               setCreateOpen(true);
             }}
-            className="cursor-pointer inline-flex items-center gap-2 rounded-xl border border-white bg-white px-4 py-2 text-sm font-semibold text-black shadow-sm transition hover:bg-white/90"
+            className="px-8 py-3 rounded-xl bg-[var(--home-accent)] text-white font-bold text-xs uppercase tracking-widest hover:bg-[var(--home-accent-2)] transition-colors shadow-[0_0_20px_rgba(var(--home-accent-rgb),0.3)] hover:shadow-[0_0_30px_rgba(var(--home-accent-rgb),0.5)]"
           >
             <Plus className="h-4 w-4" />
             Add quote
@@ -232,7 +232,7 @@ export default function QuoteManager({
                             setCreateOpen(false);
                             setEditId(quote.id);
                           }}
-                          className="cursor-pointer inline-flex items-center gap-2 rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white/70 transition hover:border-white/40 hover:text-white hover:bg-white/10"
+                          className="cursor-pointer inline-flex items-center gap-2 rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white/70 transition hover:border-[var(--home-accent)] hover:text-[var(--home-accent)] hover:bg-[var(--home-accent)]/10"
                         >
                           <Pencil className="h-4 w-4" />
                           Edit
@@ -250,7 +250,7 @@ export default function QuoteManager({
                         <input type="hidden" name="id" value={quote.id} />
                         <AdminSubmitButton
                           pendingText="Deleting..."
-                          className="inline-flex items-center gap-2 rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white/70 transition hover:border-white/40 hover:text-white hover:bg-white/10"
+                          className="inline-flex items-center gap-2 rounded-lg border border-red-500/30 bg-red-500/10 px-3 py-2 text-sm text-red-400 transition hover:border-red-500/60 hover:text-red-300 hover:bg-red-500/20"
                         >
                           <Trash2 className="h-4 w-4" />
                           Delete
@@ -275,19 +275,19 @@ export default function QuoteManager({
         <form action={createQuote} className="grid gap-4">
           <input type="hidden" name="redirect_to" value="/admin/quotes" />
           <div>
-            <label className="text-sm text-white/60">Date</label>
+            <label className="text-xs font-mono uppercase tracking-widest text-white/40">Date</label>
             <input name="date" type="date" required className={inputClassName} />
           </div>
           <div>
-            <label className="text-sm text-white/60">Quote</label>
+            <label className="text-xs font-mono uppercase tracking-widest text-white/40">Quote</label>
             <textarea name="text" required rows={3} className={textareaClassName} />
           </div>
           <div>
-            <label className="text-sm text-white/60">Author</label>
+            <label className="text-xs font-mono uppercase tracking-widest text-white/40">Author</label>
             <input name="author" className={inputClassName} placeholder="Phion" />
           </div>
           <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
-            <p className="text-sm font-semibold text-white">Post to</p>
+            <p className="text-xs font-mono uppercase tracking-widest text-white/40">Post to</p>
             <p className="mt-1 text-xs text-white/40">
               Select destinations (leave empty to hide on both sites).
             </p>
@@ -298,7 +298,7 @@ export default function QuoteManager({
                   name="show_on_main"
                   value="true"
                   defaultChecked
-                  className="h-4 w-4 accent-white"
+                  className="h-4 w-4 accent-[var(--home-accent)]"
                 />
                 MainPortofolio
               </label>
@@ -308,7 +308,7 @@ export default function QuoteManager({
                   name="show_on_phion"
                   value="true"
                   defaultChecked
-                  className="h-4 w-4 accent-white"
+                  className="h-4 w-4 accent-[var(--home-accent)]"
                 />
                 PhionPortofolio
               </label>
@@ -316,7 +316,7 @@ export default function QuoteManager({
           </div>
           <AdminSubmitButton
             pendingText="Saving..."
-            className="inline-flex w-full items-center justify-center rounded-xl border border-white bg-white px-4 py-2 text-sm font-semibold text-black shadow-sm transition hover:bg-white/90"
+            className="w-full sm:w-auto px-8 py-3 rounded-xl bg-[var(--home-accent)] text-white font-bold text-xs uppercase tracking-widest hover:bg-[var(--home-accent-2)] transition-colors shadow-[0_0_20px_rgba(var(--home-accent-rgb),0.3)] hover:shadow-[0_0_30px_rgba(var(--home-accent-rgb),0.5)]"
           >
             Submit
           </AdminSubmitButton>
@@ -335,7 +335,7 @@ export default function QuoteManager({
             <input type="hidden" name="redirect_to" value="/admin/quotes" />
             <input type="hidden" name="id" value={editingQuote.id} />
             <div>
-              <label className="text-sm text-white/60">Date</label>
+              <label className="text-xs font-mono uppercase tracking-widest text-white/40">Date</label>
               <input
                 name="date"
                 type="date"
@@ -345,7 +345,7 @@ export default function QuoteManager({
               />
             </div>
             <div>
-              <label className="text-sm text-white/60">Quote</label>
+              <label className="text-xs font-mono uppercase tracking-widest text-white/40">Quote</label>
               <textarea
                 name="text"
                 required
@@ -355,7 +355,7 @@ export default function QuoteManager({
               />
             </div>
             <div>
-              <label className="text-sm text-white/60">Author</label>
+              <label className="text-xs font-mono uppercase tracking-widest text-white/40">Author</label>
               <input
                 name="author"
                 defaultValue={editingQuote.author ?? ''}
@@ -363,7 +363,7 @@ export default function QuoteManager({
               />
             </div>
             <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
-              <p className="text-sm font-semibold text-white">Post to</p>
+              <p className="text-xs font-mono uppercase tracking-widest text-white/40">Post to</p>
               <p className="mt-1 text-xs text-white/40">
                 Select destinations (leave empty to hide on both sites).
               </p>
@@ -374,7 +374,7 @@ export default function QuoteManager({
                     name="show_on_main"
                     value="true"
                     defaultChecked={resolveTargetValue(editingQuote.show_on_main)}
-                    className="h-4 w-4 accent-white"
+                    className="h-4 w-4 accent-[var(--home-accent)]"
                   />
                   MainPortofolio
                 </label>
@@ -384,7 +384,7 @@ export default function QuoteManager({
                     name="show_on_phion"
                     value="true"
                     defaultChecked={resolveTargetValue(editingQuote.show_on_phion)}
-                    className="h-4 w-4 accent-white"
+                    className="h-4 w-4 accent-[var(--home-accent)]"
                   />
                   PhionPortofolio
                 </label>
@@ -392,7 +392,7 @@ export default function QuoteManager({
             </div>
             <AdminSubmitButton
               pendingText="Saving..."
-              className="inline-flex w-full items-center justify-center rounded-xl border border-white bg-white px-4 py-2 text-sm font-semibold text-black shadow-sm transition hover:bg-white/90"
+              className="w-full sm:w-auto px-8 py-3 rounded-xl bg-[var(--home-accent)] text-white font-bold text-xs uppercase tracking-widest hover:bg-[var(--home-accent-2)] transition-colors shadow-[0_0_20px_rgba(var(--home-accent-rgb),0.3)] hover:shadow-[0_0_30px_rgba(var(--home-accent-rgb),0.5)]"
             >
               Submit
             </AdminSubmitButton>

@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState, type ChangeEvent, type ReactNode } from '
 import Image from 'next/image';
 import { useSearchParams } from 'next/navigation';
 import { useFormStatus } from 'react-dom';
-import { Pencil, Plus, Trash2, X } from 'lucide-react';
+import { Pencil, Plus, Trash2, X, ChevronLeft, ChevronRight, BookOpen } from 'lucide-react';
 import AdminSubmitButton from '@/components/admin/AdminSubmitButton';
 import AdminToast from '@/components/admin/AdminToast';
 
@@ -28,19 +28,21 @@ type Blog = {
   show_on_phion: boolean | null;
 };
 
+const MAX_PAGE_CHARS = 2500;
+
 const formatDateInput = (value?: string | null) => {
   if (!value) return '';
   return value.split('T')[0];
 };
 
 const inputClassName =
-  'mt-2 w-full rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm text-white placeholder-white/40 shadow-[0_0_0_1px_rgba(255,255,255,0.02)] focus:border-white/40 focus:outline-none';
+  'mt-2 w-full rounded-xl border border-white/5 bg-white/[0.02] px-4 py-3 text-sm text-white placeholder-white/20 focus:border-[var(--home-accent)] focus:bg-white/5 transition-colors focus:outline-none';
 const textareaClassName =
-  'mt-2 w-full rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm text-white placeholder-white/40 shadow-[0_0_0_1px_rgba(255,255,255,0.02)] focus:border-white/40 focus:outline-none';
+  'mt-2 w-full rounded-xl border border-white/5 bg-white/[0.02] px-4 py-3 text-sm text-white placeholder-white/20 focus:border-[var(--home-accent)] focus:bg-white/5 transition-colors focus:outline-none';
 const selectClassName =
-  'mt-2 w-full rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm text-white shadow-[0_0_0_1px_rgba(255,255,255,0.02)] focus:border-white/40 focus:outline-none admin-select';
+  'mt-2 w-full rounded-xl border border-white/5 bg-[#0f0f15] px-4 py-3 text-sm text-white focus:border-[var(--home-accent)] transition-colors focus:outline-none admin-select';
 const tableSelectClassName =
-  'w-full rounded-lg border border-white/10 bg-white/5 px-3 py-1.5 text-xs text-white shadow-[0_0_0_1px_rgba(255,255,255,0.02)] focus:border-white/40 focus:outline-none admin-select';
+  'w-full rounded-lg border border-white/10 bg-[#0f0f15] px-3 py-1.5 text-xs text-white focus:border-[var(--home-accent)] transition-colors focus:outline-none admin-select';
 
 const resolveTargetValue = (value: boolean | null | undefined) => value !== false;
 
@@ -67,7 +69,7 @@ function useLockBody(open: boolean) {
   }, [open]);
 }
 
-function Modal({
+function FullScreenModal({
   open,
   title,
   onClose,
@@ -92,21 +94,24 @@ function Modal({
   if (!open) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-6">
-      <div className="absolute inset-0 cursor-pointer" onClick={onClose} />
-      <div className="relative w-full max-w-5xl rounded-2xl border border-white/10 bg-[#13131b] p-6 text-white shadow-[0_30px_120px_rgba(0,0,0,0.6)]">
-        <div className="mb-6 flex items-center justify-between">
-          <h3 className="text-xl font-semibold">{title}</h3>
-          <button
-            type="button"
-            onClick={onClose}
-            aria-label="Close"
-            className="cursor-pointer inline-flex h-9 w-9 items-center justify-center rounded-full border border-white/10 text-white/60 hover:text-white hover:border-white/30"
-          >
-            <X className="h-4 w-4" />
-          </button>
+    <div className="fixed inset-0 z-50 flex flex-col bg-[#050505] text-white font-nunito animate-fade-in">
+      <div className="flex items-center justify-between px-6 py-4 border-b border-white/5 bg-transparent">
+        <h3 className="text-xs font-mono uppercase tracking-widest text-white flex items-center gap-2">
+          <BookOpen className="w-4 h-4" /> {title}
+        </h3>
+        <button
+          type="button"
+          onClick={onClose}
+          aria-label="Close"
+          className="p-2 rounded-full hover:bg-white/10 transition-colors text-white"
+        >
+          <X className="h-5 w-5" />
+        </button>
+      </div>
+      <div className="flex-1 overflow-y-auto overflow-x-hidden hide-scrollbar">
+        <div className="max-w-7xl w-full mx-auto p-6 md:p-8">
+          {children}
         </div>
-        <div className="max-h-[70vh] overflow-y-auto pr-2 hide-scrollbar">{children}</div>
       </div>
     </div>
   );
@@ -327,6 +332,96 @@ export default function BlogManager({
     setEditImagePreview(URL.createObjectURL(file));
   };
 
+  const renderBookPages = (
+    chapters: string[],
+    activeChapter: number,
+    setChapters: React.Dispatch<React.SetStateAction<string[]>>,
+    setActiveChapter: React.Dispatch<React.SetStateAction<number>>,
+    addChapter: () => void,
+    removeChapter: (index: number) => void
+  ) => {
+    return (
+      <div className="mt-12">
+        <div className="flex items-center justify-between mb-6">
+          <p className="text-sm font-mono uppercase tracking-widest text-white/40">Story Pages</p>
+        </div>
+        
+        <div className="relative mx-auto w-full">
+           <div className="overflow-hidden">
+             <div className="flex transition-transform duration-700 ease-[cubic-bezier(0.23,1,0.32,1)]" style={{ transform: `translateX(-${activeChapter * 100}%)` }}>
+               {chapters.map((value, index) => (
+                 <div key={index} className="w-full shrink-0 px-2 md:px-4">
+                   <div className="bg-[#0b0b0f] border border-white/5 rounded-[2rem] p-6 md:p-12 shadow-2xl relative min-h-[75vh] flex flex-col group">
+                     <div className="flex justify-between items-center mb-8 border-b border-white/5 pb-4">
+                       <span className="text-xs font-mono text-[var(--home-accent)] uppercase tracking-widest">Page {index + 1}</span>
+                       {chapters.length > 1 && (
+                         <button type="button" onClick={() => removeChapter(index)} className="text-xs font-mono tracking-wider text-red-400 hover:text-red-300 transition opacity-0 group-hover:opacity-100">
+                           Remove Page
+                         </button>
+                       )}
+                     </div>
+                     
+                     <textarea
+                       required={index === 0}
+                       maxLength={MAX_PAGE_CHARS}
+                       value={value ?? ''}
+                       onChange={(e) => {
+                         const nextValue = e.target.value;
+                         setChapters(prev => { const next = [...prev]; next[index] = nextValue; return next; });
+                         // Auto-expand textarea height as user types
+                         e.target.style.height = 'auto';
+                         e.target.style.height = `${e.target.scrollHeight}px`;
+                       }}
+                       style={{ minHeight: '600px' }}
+                       className="w-full bg-transparent font-serif text-lg md:text-xl leading-[1.8] text-white/90 placeholder-white/20 resize-none focus:outline-none overflow-hidden"
+                       placeholder="Start writing your story here..."
+                     />
+                     
+                     <div className="mt-6 flex justify-between items-center text-xs font-mono text-white/30 border-t border-white/5 pt-4">
+                       <span>{(value ?? '').length} / {MAX_PAGE_CHARS}</span>
+                       { (value ?? '').length >= MAX_PAGE_CHARS && <span className="text-[var(--home-accent)]">Page full! Add a new page to continue.</span> }
+                     </div>
+                   </div>
+                 </div>
+               ))}
+             </div>
+           </div>
+           
+           <div className="mt-8 flex items-center justify-between max-w-lg mx-auto bg-white/[0.02] border border-white/5 rounded-full p-2">
+             <button
+               type="button"
+               onClick={() => setActiveChapter(prev => Math.max(0, prev - 1))}
+               disabled={activeChapter === 0}
+               className="flex items-center gap-2 px-6 py-3 rounded-full transition-colors disabled:opacity-30 disabled:cursor-not-allowed hover:bg-white/5"
+             >
+               <ChevronLeft className="w-4 h-4"/> <span className="text-xs font-mono uppercase tracking-widest">Prev</span>
+             </button>
+             
+             <span className="text-xs font-mono text-[var(--home-accent)] px-4">{activeChapter + 1} / {chapters.length}</span>
+             
+             {activeChapter === chapters.length - 1 ? (
+               <button
+                 type="button"
+                 onClick={addChapter}
+                 className="flex items-center gap-2 px-6 py-3 rounded-full transition-colors text-[var(--home-accent)] hover:bg-[var(--home-accent)]/10"
+               >
+                 <span className="text-xs font-mono uppercase tracking-widest">Add Page</span> <Plus className="w-4 h-4"/>
+               </button>
+             ) : (
+               <button
+                 type="button"
+                 onClick={() => setActiveChapter(prev => Math.min(chapters.length - 1, prev + 1))}
+                 className="flex items-center gap-2 px-6 py-3 rounded-full transition-colors hover:bg-white/5"
+               >
+                 <span className="text-xs font-mono uppercase tracking-widest">Next</span> <ChevronRight className="w-4 h-4"/>
+               </button>
+             )}
+           </div>
+        </div>
+      </div>
+    );
+  };
+
   return (
     <div className="space-y-8">
       <div className="flex flex-wrap items-center justify-between gap-4" data-gsap="reveal">
@@ -338,16 +433,16 @@ export default function BlogManager({
           <span className="text-sm text-white/50">Total: {blogs.length}</span>
           <button
             type="button"
-            title="Add blog"
-            aria-label="Add blog"
+            title="Write story"
+            aria-label="Write story"
             onClick={() => {
               setEditId(null);
               setCreateOpen(true);
             }}
-            className="cursor-pointer inline-flex items-center gap-2 rounded-xl border border-white bg-white px-4 py-2 text-sm font-semibold text-black shadow-sm transition hover:bg-white/90"
+            className="cursor-pointer inline-flex items-center gap-2 rounded-xl border border-[var(--home-accent)] bg-[var(--home-accent)]/10 px-5 py-2.5 text-sm font-semibold text-[var(--home-accent)] shadow-sm transition hover:bg-[var(--home-accent)] hover:text-white"
           >
-            <Plus className="h-4 w-4" />
-            Add blog
+            <BookOpen className="h-4 w-4" />
+            Write story
           </button>
         </div>
       </div>
@@ -470,8 +565,8 @@ export default function BlogManager({
                     <div className="flex items-center gap-2">
                       <button
                         type="button"
-                        title="Edit blog"
-                        aria-label="Edit blog"
+                        title="Edit story"
+                        aria-label="Edit story"
                         onClick={() => {
                           setEditTitleValue(null);
                           setEditImagePreview(null);
@@ -485,7 +580,7 @@ export default function BlogManager({
                           setEditActiveChapter(0);
                           setEditId(blog.id);
                         }}
-                        className="cursor-pointer inline-flex items-center gap-2 rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white/70 transition hover:border-white/40 hover:text-white hover:bg-white/10"
+                        className="cursor-pointer inline-flex items-center gap-2 rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white/70 transition hover:border-[var(--home-accent)] hover:text-[var(--home-accent)] hover:bg-[var(--home-accent)]/10"
                       >
                         <Pencil className="h-4 w-4" />
                         Edit
@@ -512,7 +607,7 @@ export default function BlogManager({
                         <input type="hidden" name="slug" value={blog.slug} />
                         <AdminSubmitButton
                           pendingText="Deleting..."
-                          className="inline-flex items-center gap-2 rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white/70 transition hover:border-white/40 hover:text-white hover:bg-white/10"
+                          className="inline-flex items-center gap-2 rounded-lg border border-red-500/30 bg-red-500/10 px-3 py-2 text-sm text-red-400 transition hover:border-red-500/60 hover:text-red-300 hover:bg-red-500/20"
                         >
                           <Trash2 className="h-4 w-4" />
                           Delete
@@ -527,9 +622,10 @@ export default function BlogManager({
         </div>
       </section>
 
-      <Modal
+      {/* CREATE NEW BLOG FULL SCREEN MODAL */}
+      <FullScreenModal
         open={createOpen}
-        title="Create new blog"
+        title="Write a new story"
         onClose={() => {
           setCreateImagePreview(null);
           setCreateImageError(null);
@@ -541,290 +637,140 @@ export default function BlogManager({
           setCreateOpen(false);
         }}
       >
-        <form action={createBlog} className="grid gap-6">
+        <form action={createBlog} className="flex flex-col gap-12">
           <input type="hidden" name="redirect_to" value="/admin/blogs" />
           <input type="hidden" name="slug" value={createSlug} />
           <input type="hidden" name="chapters" value={JSON.stringify(createChapters)} />
+          <input type="hidden" name="content" value={createChapters[0] ?? ''} />
 
-          <div className="grid gap-6 lg:grid-cols-12">
-            <section className="space-y-4 lg:col-span-8">
-              <div className="grid gap-4 md:grid-cols-2">
-                <div>
-                  <label className="text-sm text-white/60">Title</label>
-                  <input
-                    name="title"
-                    required
-                    value={createTitleValue}
-                    onChange={(event) => setCreateTitleValue(event.target.value)}
-                    className={inputClassName}
-                    placeholder="Story title"
-                  />
-                </div>
-                <div>
-                  <label className="text-sm text-white/60">Slug</label>
-                  <div className="mt-2 rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm text-white/70">
-                    {createSlug ? `/${createSlug}` : 'Auto from title'}
-                  </div>
-                </div>
-              </div>
-
+          <div className="grid gap-8 lg:grid-cols-12">
+            <div className="lg:col-span-8 space-y-6">
               <div>
-                <label className="text-sm text-white/60">Excerpt</label>
-                <textarea name="excerpt" required rows={2} className={textareaClassName} />
+                <input
+                  name="title"
+                  required
+                  value={createTitleValue}
+                  onChange={(event) => setCreateTitleValue(event.target.value)}
+                  className="w-full bg-transparent font-serif text-4xl md:text-6xl text-white placeholder-white/20 focus:outline-none transition-colors border-b border-transparent focus:border-[var(--home-accent)]/30 pb-4"
+                  placeholder="Story Title"
+                />
               </div>
+              <div>
+                <textarea 
+                  name="excerpt" 
+                  required 
+                  rows={2} 
+                  className="w-full bg-transparent font-serif text-xl md:text-2xl text-white/60 placeholder-white/20 italic focus:outline-none resize-none" 
+                  placeholder="A short excerpt or prologue..."
+                />
+              </div>
+              
+              {renderBookPages(createChapters, createActiveChapter, setCreateChapters, setCreateActiveChapter, addCreateChapter, removeCreateChapter)}
+            </div>
 
-              <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
-                <div className="flex items-center justify-between gap-3">
-                  <div>
-                    <p className="text-sm font-semibold text-white">Chapters</p>
-                    <p className="mt-1 text-xs text-white/40">Add unlimited chapters. Chapter 1 is the default.</p>
-                  </div>
-                  <button
-                    type="button"
-                    onClick={addCreateChapter}
-                    className="inline-flex items-center gap-2 rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white/70 hover:border-white/30 hover:bg-white/10 hover:text-white"
-                  >
-                    <Plus className="h-4 w-4" />
-                    Add
-                  </button>
+            <aside className="lg:col-span-4">
+              <div className="sticky top-6 space-y-8 bg-[#0b0b0f] border border-white/5 p-6 rounded-3xl">
+                <div className="flex items-center justify-between mb-2">
+                  <p className="text-sm font-mono uppercase tracking-widest text-white/40">Story Details</p>
                 </div>
-
-                <div className="mt-3 flex flex-wrap gap-2">
-                  {createChapters.map((_, index) => (
-                    <button
-                      key={`create-chapter-${index}`}
-                      type="button"
-                      onClick={() => setCreateActiveChapter(index)}
-                      className={
-                        index === createActiveChapter
-                          ? 'inline-flex items-center gap-2 rounded-full border border-white/40 bg-white/10 px-3 py-1.5 text-xs font-semibold text-white'
-                          : 'inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs text-white/70 hover:border-white/30 hover:text-white'
-                      }
+                
+                <div className="space-y-4">
+                  <div>
+                    <label className="text-xs font-mono uppercase tracking-widest text-white/40">Author</label>
+                    <input name="author" required className={inputClassName} placeholder="Phion" />
+                  </div>
+                  <div>
+                    <label className="text-xs font-mono uppercase tracking-widest text-white/40">Date</label>
+                    <input name="date" type="date" required className={inputClassName} />
+                  </div>
+                  <div>
+                    <label className="text-xs font-mono uppercase tracking-widest text-white/40">Category</label>
+                    <select
+                      name="category"
+                      value={createCategoryValue}
+                      onChange={(event) => setCreateCategoryValue(event.target.value)}
+                      required
+                      className={selectClassName}
                     >
-                      Chapter {index + 1}
-                      {createChapters.length > 1 ? (
-                        <span
-                          role="presentation"
-                          onClick={(event) => {
-                            event.stopPropagation();
-                            removeCreateChapter(index);
-                          }}
-                          className="inline-flex h-4 w-4 items-center justify-center rounded-full border border-white/10 text-[10px] leading-none text-white/60 hover:text-white"
-                          title="Remove"
-                        >
-                          ×
-                        </span>
-                      ) : null}
-                    </button>
-                  ))}
-                </div>
-
-                <div className="mt-4">
-                  <div className="flex items-center justify-between gap-3">
-                    <label className="text-sm text-white/60">Content</label>
-                    <p className="text-xs text-white/40">Chapter {createActiveChapter + 1} of {createChapters.length}</p>
+                      {categoryOptions.map((category) => (
+                        <option key={category} value={category}>{category}</option>
+                      ))}
+                    </select>
                   </div>
-
-                  <div className="mt-2 overflow-hidden rounded-2xl border border-white/10 bg-[#0b0b10]">
-                    <div className="p-3">
-                      <div className="overflow-hidden">
-                        <div
-                          className="flex transition-transform duration-500 ease-out will-change-transform"
-                          style={{ transform: `translateX(-${createActiveChapter * 100}%)` }}
-                        >
-                          {createChapters.map((value, index) => (
-                            <div key={`create-chapter-panel-${index}`} className="w-full shrink-0 px-1">
-                              <div className="rounded-xl border border-white/10 bg-white/5 p-3">
-                                <div className="flex items-center justify-between gap-2">
-                                  <p className="text-xs uppercase tracking-[0.3em] text-white/40">Chapter {index + 1}</p>
-                                  {createChapters.length > 1 ? (
-                                    <button
-                                      type="button"
-                                      onClick={() => removeCreateChapter(index)}
-                                      className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs text-white/60 transition hover:border-white/30 hover:text-white"
-                                    >
-                                      Remove
-                                    </button>
-                                  ) : null}
-                                </div>
-                                <textarea
-                                  required={index === 0}
-                                  rows={10}
-                                  value={value ?? ''}
-                                  onChange={(event) => {
-                                    const nextValue = event.target.value;
-                                    setCreateChapters((prev) => {
-                                      const next = [...prev];
-                                      next[index] = nextValue;
-                                      return next;
-                                    });
-                                  }}
-                                  className={textareaClassName}
-                                  placeholder="Write chapter content..."
-                                />
-                              </div>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-
-                      <div className="mt-3 flex items-center justify-between">
-                        <div className="inline-flex items-center gap-2">
-                          <button
-                            type="button"
-                            onClick={() => setCreateActiveChapter((prev) => Math.max(0, prev - 1))}
-                            disabled={createActiveChapter === 0}
-                            className="rounded-full border border-white/10 bg-white/5 px-4 py-2 text-xs text-white/70 transition enabled:hover:border-white/30 enabled:hover:bg-white/10 disabled:opacity-40"
-                          >
-                            Prev
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => setCreateActiveChapter((prev) => Math.min(createChapters.length - 1, prev + 1))}
-                            disabled={createActiveChapter >= createChapters.length - 1}
-                            className="rounded-full border border-white/10 bg-white/5 px-4 py-2 text-xs text-white/70 transition enabled:hover:border-white/30 enabled:hover:bg-white/10 disabled:opacity-40"
-                          >
-                            Next
-                          </button>
-                        </div>
-
-                        <button
-                          type="button"
-                          onClick={addCreateChapter}
-                          className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2 text-xs text-white/70 transition hover:border-white/30 hover:bg-white/10 hover:text-white"
-                        >
-                          <Plus className="h-4 w-4" />
-                          Add chapter
-                        </button>
-                      </div>
+                  
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="text-xs font-mono uppercase tracking-widest text-white/40">Status</label>
+                      <select name="is_published" defaultValue="published" className={selectClassName}>
+                        <option value="published">Published</option>
+                        <option value="draft">Draft</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label className="text-xs font-mono uppercase tracking-widest text-white/40">Featured</label>
+                      <select name="featured" defaultValue="standard" className={selectClassName}>
+                        <option value="standard">Standard</option>
+                        <option value="featured">Featured</option>
+                      </select>
                     </div>
                   </div>
+
+                  <div className="pt-4 border-t border-white/5">
+                    <label className="text-xs font-mono uppercase tracking-widest text-white/40 mb-2 block">Post Destinations</label>
+                    <div className="grid gap-3">
+                      <label className="flex items-center gap-3 p-3 rounded-xl border border-white/5 bg-white/[0.02] cursor-pointer hover:bg-white/5 transition-colors">
+                        <input type="checkbox" name="show_on_main" value="true" defaultChecked className="h-4 w-4 accent-[var(--home-accent)]" />
+                        <span className="text-sm text-white/80">MainPortofolio</span>
+                      </label>
+                      <label className="flex items-center gap-3 p-3 rounded-xl border border-white/5 bg-white/[0.02] cursor-pointer hover:bg-white/5 transition-colors">
+                        <input type="checkbox" name="show_on_phion" value="true" defaultChecked className="h-4 w-4 accent-[var(--home-accent)]" />
+                        <span className="text-sm text-white/80">PhionPortofolio</span>
+                      </label>
+                    </div>
+                  </div>
+
+                  <div className="pt-4 border-t border-white/5">
+                    <label className="text-xs font-mono uppercase tracking-widest text-white/40 mb-2 block">Tags</label>
+                    <input name="tags" className={inputClassName} placeholder="life, love, daily" />
+                  </div>
+
+                  <div className="pt-4 border-t border-white/5">
+                    <label className="text-xs font-mono uppercase tracking-widest text-white/40 mb-2 block">Cover Image</label>
+                    <input
+                      key={createFileKey}
+                      name="image_file"
+                      type="file"
+                      accept="image/png,image/jpeg,image/webp"
+                      onChange={handleCreateImageChange}
+                      className="w-full text-xs text-white/60 file:mr-4 file:rounded-full file:border-0 file:bg-white/10 file:px-4 file:py-2 file:text-xs file:font-semibold file:text-white hover:file:bg-white/20 transition-colors cursor-pointer"
+                    />
+                    {createImageError && <p className="mt-2 text-xs text-red-400">{createImageError}</p>}
+                    {createImagePreview && (
+                      <div className="relative mt-4 aspect-video w-full overflow-hidden rounded-xl border border-white/5 bg-white/5 shadow-inner">
+                        <Image src={createImagePreview} alt="Preview" fill sizes="100vw" className="object-cover" unoptimized />
+                      </div>
+                    )}
+                  </div>
                 </div>
 
-                <input type="hidden" name="content" value={createChapters[0] ?? ''} />
-              </div>
-            </section>
-
-            <aside className="space-y-4 lg:col-span-4">
-              <div className="grid gap-4">
-                <div>
-                  <label className="text-sm text-white/60">Author</label>
-                  <input name="author" required className={inputClassName} placeholder="Phion" />
-                </div>
-                <div>
-                  <label className="text-sm text-white/60">Date</label>
-                  <input name="date" type="date" required className={inputClassName} />
-                </div>
-                <div>
-                  <label className="text-sm text-white/60">Category</label>
-                  <select
-                    name="category"
-                    value={createCategoryValue}
-                    onChange={(event) => setCreateCategoryValue(event.target.value)}
-                    required
-                    className={selectClassName}
+                <div className="pt-6 mt-6 border-t border-white/5">
+                  <AdminSubmitButton
+                    pendingText="Publishing..."
+                    className="w-full py-4 rounded-xl bg-[var(--home-accent)] text-white font-bold text-sm uppercase tracking-widest hover:bg-[var(--home-accent-2)] transition-colors shadow-[0_0_20px_rgba(var(--home-accent-rgb),0.3)] hover:shadow-[0_0_30px_rgba(var(--home-accent-rgb),0.5)]"
                   >
-                    {categoryOptions.map((category) => (
-                      <option key={category} value={category}>
-                        {category}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-1">
-                  <div>
-                    <label className="text-sm text-white/60">Status</label>
-                    <select name="is_published" defaultValue="published" className={selectClassName}>
-                      <option value="published">Published</option>
-                      <option value="draft">Draft</option>
-                    </select>
-                  </div>
-                  <div>
-                    <label className="text-sm text-white/60">Featured</label>
-                    <select name="featured" defaultValue="standard" className={selectClassName}>
-                      <option value="standard">Standard</option>
-                      <option value="featured">Featured</option>
-                    </select>
-                  </div>
-                </div>
-
-                <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
-                  <p className="text-sm font-semibold text-white">Post to</p>
-                  <p className="mt-1 text-xs text-white/40">
-                    Select destinations (leave empty to hide on both sites).
-                  </p>
-                  <div className="mt-3 grid gap-2 sm:grid-cols-2 lg:grid-cols-1">
-                    <label className="inline-flex items-center gap-2 text-sm text-white/70">
-                      <input
-                        type="checkbox"
-                        name="show_on_main"
-                        value="true"
-                        defaultChecked
-                        className="h-4 w-4 accent-white"
-                      />
-                      MainPortofolio
-                    </label>
-                    <label className="inline-flex items-center gap-2 text-sm text-white/70">
-                      <input
-                        type="checkbox"
-                        name="show_on_phion"
-                        value="true"
-                        defaultChecked
-                        className="h-4 w-4 accent-white"
-                      />
-                      PhionPortofolio
-                    </label>
-                  </div>
-                </div>
-
-                <div>
-                  <label className="text-sm text-white/60">Tags</label>
-                  <input name="tags" className={inputClassName} placeholder="life, love, daily" />
-                  <p className="mt-2 text-xs text-white/40">Comma separated (optional).</p>
-                </div>
-
-                <div>
-                  <label className="text-sm text-white/60">Local Image</label>
-                  <input
-                    key={createFileKey}
-                    name="image_file"
-                    type="file"
-                    accept="image/png,image/jpeg,image/webp"
-                    onChange={handleCreateImageChange}
-                    className="mt-2 block w-full text-sm text-white/70 file:mr-4 file:rounded-full file:border-0 file:bg-white/10 file:px-4 file:py-2 file:text-xs file:font-semibold file:text-white hover:file:bg-white/20"
-                  />
-                  <p className="mt-2 text-xs text-white/40">PNG/JPG/WebP, max 5MB.</p>
-                  {createImageError && <p className="mt-2 text-xs text-red-300">{createImageError}</p>}
-                  {createImagePreview && (
-                    <div className="relative mt-3 h-32 w-full overflow-hidden rounded-xl border border-white/10 bg-white/5">
-                      <Image
-                        src={createImagePreview}
-                        alt="Preview"
-                        fill
-                        sizes="100vw"
-                        className="object-cover"
-                        unoptimized
-                      />
-                    </div>
-                  )}
+                    Publish Story
+                  </AdminSubmitButton>
                 </div>
               </div>
             </aside>
           </div>
-
-          <AdminSubmitButton
-            pendingText="Saving..."
-            className="inline-flex w-full items-center justify-center rounded-xl border border-white bg-white px-4 py-2 text-sm font-semibold text-black shadow-sm transition hover:bg-white/90"
-          >
-            Submit
-          </AdminSubmitButton>
         </form>
-      </Modal>
+      </FullScreenModal>
 
-      <Modal
+      {/* EDIT BLOG FULL SCREEN MODAL */}
+      <FullScreenModal
         open={Boolean(editingBlog)}
-        title="Edit blog"
+        title="Edit story"
         onClose={() => {
           setEditTitleValue(null);
           setEditImagePreview(null);
@@ -836,331 +782,140 @@ export default function BlogManager({
         }}
       >
         {editingBlog && (
-          <form
-            action={updateBlog}
-            className="grid gap-6"
-            key={editingBlog.id}
-          >
+          <form action={updateBlog} className="flex flex-col gap-12" key={editingBlog.id}>
             <input type="hidden" name="redirect_to" value="/admin/blogs" />
             <input type="hidden" name="id" value={editingBlog.id} />
             <input type="hidden" name="current_image" value={editingBlog.image ?? ''} />
             <input type="hidden" name="slug" value={editSlug} />
             <input type="hidden" name="chapters" value={JSON.stringify(editChapters)} />
+            <input type="hidden" name="content" value={editChapters[0] ?? ''} />
 
-            <div className="grid gap-6 lg:grid-cols-12">
-              <section className="space-y-4 lg:col-span-8">
-                <div className="grid gap-4 md:grid-cols-2">
-                  <div>
-                    <label className="text-sm text-white/60">Title</label>
-                    <input
-                      name="title"
-                      required
-                      defaultValue={editingBlog.title}
-                      onChange={(event) => setEditTitleValue(event.target.value)}
-                      className={inputClassName}
-                    />
-                  </div>
-                  <div>
-                    <label className="text-sm text-white/60">Slug</label>
-                    <div className="mt-2 rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm text-white/70">
-                      {editSlug ? `/${editSlug}` : 'Auto from title'}
-                    </div>
-                  </div>
-                </div>
-
+            <div className="grid gap-8 lg:grid-cols-12">
+              <div className="lg:col-span-8 space-y-6">
                 <div>
-                  <label className="text-sm text-white/60">Excerpt</label>
-                  <textarea
-                    name="excerpt"
+                  <input
+                    name="title"
                     required
-                    rows={2}
-                    defaultValue={editingBlog.excerpt}
-                    className={textareaClassName}
+                    defaultValue={editingBlog.title}
+                    onChange={(event) => setEditTitleValue(event.target.value)}
+                    className="w-full bg-transparent font-serif text-4xl md:text-6xl text-white placeholder-white/20 focus:outline-none transition-colors border-b border-transparent focus:border-[var(--home-accent)]/30 pb-4"
+                    placeholder="Story Title"
                   />
                 </div>
+                <div>
+                  <textarea 
+                    name="excerpt" 
+                    required 
+                    rows={2} 
+                    defaultValue={editingBlog.excerpt}
+                    className="w-full bg-transparent font-serif text-xl md:text-2xl text-white/60 placeholder-white/20 italic focus:outline-none resize-none" 
+                    placeholder="A short excerpt or prologue..."
+                  />
+                </div>
+                
+                {renderBookPages(editChapters, editActiveChapter, setEditChapters, setEditActiveChapter, addEditChapter, removeEditChapter)}
+              </div>
 
-                <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
-                  <div className="flex items-center justify-between gap-3">
+              <aside className="lg:col-span-4">
+                <div className="sticky top-6 space-y-8 bg-[#0b0b0f] border border-white/5 p-6 rounded-3xl">
+                  <div className="flex items-center justify-between mb-2">
+                    <p className="text-sm font-mono uppercase tracking-widest text-white/40">Story Details</p>
+                  </div>
+                  
+                  <div className="space-y-4">
                     <div>
-                      <p className="text-sm font-semibold text-white">Chapters</p>
-                      <p className="mt-1 text-xs text-white/40">Unlimited chapters. Use chapters for longer posts.</p>
+                      <label className="text-xs font-mono uppercase tracking-widest text-white/40">Author</label>
+                      <input name="author" required defaultValue={editingBlog.author} className={inputClassName} placeholder="Phion" />
                     </div>
-                    <button
-                      type="button"
-                      onClick={addEditChapter}
-                      className="inline-flex items-center gap-2 rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white/70 hover:border-white/30 hover:bg-white/10 hover:text-white"
-                    >
-                      <Plus className="h-4 w-4" />
-                      Add
-                    </button>
-                  </div>
-
-                  <div className="mt-3 flex flex-wrap gap-2">
-                    {editChapters.map((_, index) => (
-                      <button
-                        key={`edit-chapter-${index}`}
-                        type="button"
-                        onClick={() => setEditActiveChapter(index)}
-                        className={
-                          index === editActiveChapter
-                            ? 'inline-flex items-center gap-2 rounded-full border border-white/40 bg-white/10 px-3 py-1.5 text-xs font-semibold text-white'
-                            : 'inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs text-white/70 hover:border-white/30 hover:text-white'
-                        }
-                      >
-                        Chapter {index + 1}
-                        {editChapters.length > 1 ? (
-                          <span
-                            role="presentation"
-                            onClick={(event) => {
-                              event.stopPropagation();
-                              removeEditChapter(index);
-                            }}
-                            className="inline-flex h-4 w-4 items-center justify-center rounded-full border border-white/10 text-[10px] leading-none text-white/60 hover:text-white"
-                            title="Remove"
-                          >
-                            ×
-                          </span>
-                        ) : null}
-                      </button>
-                    ))}
-                  </div>
-
-                  <div className="mt-4">
-                    <div className="flex items-center justify-between gap-3">
-                      <label className="text-sm text-white/60">Content</label>
-                      <p className="text-xs text-white/40">Chapter {editActiveChapter + 1} of {editChapters.length}</p>
+                    <div>
+                      <label className="text-xs font-mono uppercase tracking-widest text-white/40">Date</label>
+                      <input name="date" type="date" required defaultValue={formatDateInput(editingBlog.date)} className={inputClassName} />
                     </div>
-
-                    <div className="mt-2 overflow-hidden rounded-2xl border border-white/10 bg-[#0b0b10]">
-                      <div className="p-3">
-                        <div className="overflow-hidden">
-                          <div
-                            className="flex transition-transform duration-500 ease-out will-change-transform"
-                            style={{ transform: `translateX(-${editActiveChapter * 100}%)` }}
-                          >
-                            {editChapters.map((value, index) => (
-                              <div key={`edit-chapter-panel-${index}`} className="w-full shrink-0 px-1">
-                                <div className="rounded-xl border border-white/10 bg-white/5 p-3">
-                                  <div className="flex items-center justify-between gap-2">
-                                    <p className="text-xs uppercase tracking-[0.3em] text-white/40">Chapter {index + 1}</p>
-                                    {editChapters.length > 1 ? (
-                                      <button
-                                        type="button"
-                                        onClick={() => removeEditChapter(index)}
-                                        className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs text-white/60 transition hover:border-white/30 hover:text-white"
-                                      >
-                                        Remove
-                                      </button>
-                                    ) : null}
-                                  </div>
-                                  <textarea
-                                    required={index === 0}
-                                    rows={10}
-                                    value={value ?? ''}
-                                    onChange={(event) => {
-                                      const nextValue = event.target.value;
-                                      setEditChapters((prev) => {
-                                        const next = [...prev];
-                                        next[index] = nextValue;
-                                        return next;
-                                      });
-                                    }}
-                                    className={textareaClassName}
-                                    placeholder="Write chapter content..."
-                                  />
-                                </div>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-
-                        <div className="mt-3 flex items-center justify-between">
-                          <div className="inline-flex items-center gap-2">
-                            <button
-                              type="button"
-                              onClick={() => setEditActiveChapter((prev) => Math.max(0, prev - 1))}
-                              disabled={editActiveChapter === 0}
-                              className="rounded-full border border-white/10 bg-white/5 px-4 py-2 text-xs text-white/70 transition enabled:hover:border-white/30 enabled:hover:bg-white/10 disabled:opacity-40"
-                            >
-                              Prev
-                            </button>
-                            <button
-                              type="button"
-                              onClick={() => setEditActiveChapter((prev) => Math.min(editChapters.length - 1, prev + 1))}
-                              disabled={editActiveChapter >= editChapters.length - 1}
-                              className="rounded-full border border-white/10 bg-white/5 px-4 py-2 text-xs text-white/70 transition enabled:hover:border-white/30 enabled:hover:bg-white/10 disabled:opacity-40"
-                            >
-                              Next
-                            </button>
-                          </div>
-
-                          <button
-                            type="button"
-                            onClick={addEditChapter}
-                            className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2 text-xs text-white/70 transition hover:border-white/30 hover:bg-white/10 hover:text-white"
-                          >
-                            <Plus className="h-4 w-4" />
-                            Add chapter
-                          </button>
-                        </div>
+                    <div>
+                      <label className="text-xs font-mono uppercase tracking-widest text-white/40">Category</label>
+                      <select name="category" defaultValue={editingBlog.category} required className={selectClassName}>
+                        {editCategoryOptions.map((category) => (
+                          <option key={category} value={category}>{category}</option>
+                        ))}
+                      </select>
+                    </div>
+                    
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <label className="text-xs font-mono uppercase tracking-widest text-white/40">Status</label>
+                        <select name="is_published" defaultValue={editingBlog.is_published === false ? 'draft' : 'published'} className={selectClassName}>
+                          <option value="published">Published</option>
+                          <option value="draft">Draft</option>
+                        </select>
+                      </div>
+                      <div>
+                        <label className="text-xs font-mono uppercase tracking-widest text-white/40">Featured</label>
+                        <select name="featured" defaultValue={editingBlog.featured ? 'featured' : 'standard'} className={selectClassName}>
+                          <option value="standard">Standard</option>
+                          <option value="featured">Featured</option>
+                        </select>
                       </div>
                     </div>
+
+                    <div className="pt-4 border-t border-white/5">
+                      <label className="text-xs font-mono uppercase tracking-widest text-white/40 mb-2 block">Post Destinations</label>
+                      <div className="grid gap-3">
+                        <label className="flex items-center gap-3 p-3 rounded-xl border border-white/5 bg-white/[0.02] cursor-pointer hover:bg-white/5 transition-colors">
+                          <input type="checkbox" name="show_on_main" value="true" defaultChecked={resolveTargetValue(editingBlog.show_on_main)} className="h-4 w-4 accent-[var(--home-accent)]" />
+                          <span className="text-sm text-white/80">MainPortofolio</span>
+                        </label>
+                        <label className="flex items-center gap-3 p-3 rounded-xl border border-white/5 bg-white/[0.02] cursor-pointer hover:bg-white/5 transition-colors">
+                          <input type="checkbox" name="show_on_phion" value="true" defaultChecked={resolveTargetValue(editingBlog.show_on_phion)} className="h-4 w-4 accent-[var(--home-accent)]" />
+                          <span className="text-sm text-white/80">PhionPortofolio</span>
+                        </label>
+                      </div>
+                    </div>
+
+                    <div className="pt-4 border-t border-white/5">
+                      <label className="text-xs font-mono uppercase tracking-widest text-white/40 mb-2 block">Tags</label>
+                      <input name="tags" defaultValue={(editingBlog.tags ?? []).join(', ')} className={inputClassName} placeholder="life, love, daily" />
+                    </div>
+
+                    <div className="pt-4 border-t border-white/5">
+                      <label className="text-xs font-mono uppercase tracking-widest text-white/40 mb-2 block">Cover Image</label>
+                      <input
+                        key={`${editingBlog.id}-${editFileKey}`}
+                        name="image_file"
+                        type="file"
+                        accept="image/png,image/jpeg,image/webp"
+                        onChange={handleEditImageChange}
+                        className="w-full text-xs text-white/60 file:mr-4 file:rounded-full file:border-0 file:bg-white/10 file:px-4 file:py-2 file:text-xs file:font-semibold file:text-white hover:file:bg-white/20 transition-colors cursor-pointer"
+                      />
+                      {editImageError && <p className="mt-2 text-xs text-red-400">{editImageError}</p>}
+                      {(editImagePreview || editingBlog.image) && (
+                        <div className="relative mt-4 aspect-video w-full overflow-hidden rounded-xl border border-white/5 bg-white/5 shadow-inner">
+                          <Image src={editImagePreview ?? editingBlog.image ?? ''} alt="Preview" fill sizes="100vw" className="object-cover" unoptimized />
+                        </div>
+                      )}
+                      {editingBlog.image && (
+                        <div className="mt-2 flex justify-end">
+                          <a href={editingBlog.image} target="_blank" rel="noreferrer" className="text-[10px] uppercase tracking-widest text-[var(--home-accent)] hover:underline">
+                            View Original
+                          </a>
+                        </div>
+                      )}
+                    </div>
                   </div>
 
-                  <input type="hidden" name="content" value={editChapters[0] ?? ''} />
-                </div>
-              </section>
-
-              <aside className="space-y-4 lg:col-span-4">
-                <div className="grid gap-4">
-                  <div>
-                    <label className="text-sm text-white/60">Author</label>
-                    <input
-                      name="author"
-                      required
-                      defaultValue={editingBlog.author}
-                      className={inputClassName}
-                    />
-                  </div>
-                  <div>
-                    <label className="text-sm text-white/60">Date</label>
-                    <input
-                      name="date"
-                      type="date"
-                      required
-                      defaultValue={formatDateInput(editingBlog.date)}
-                      className={inputClassName}
-                    />
-                  </div>
-                  <div>
-                    <label className="text-sm text-white/60">Category</label>
-                    <select
-                      name="category"
-                      defaultValue={editingBlog.category}
-                      required
-                      className={selectClassName}
+                  <div className="pt-6 mt-6 border-t border-white/5">
+                    <AdminSubmitButton
+                      pendingText="Saving..."
+                      className="w-full py-4 rounded-xl bg-[var(--home-accent)] text-white font-bold text-sm uppercase tracking-widest hover:bg-[var(--home-accent-2)] transition-colors shadow-[0_0_20px_rgba(var(--home-accent-rgb),0.3)] hover:shadow-[0_0_30px_rgba(var(--home-accent-rgb),0.5)]"
                     >
-                      {editCategoryOptions.map((category) => (
-                        <option key={category} value={category}>
-                          {category}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-
-                  <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-1">
-                    <div>
-                      <label className="text-sm text-white/60">Status</label>
-                      <select
-                        name="is_published"
-                        defaultValue={editingBlog.is_published === false ? 'draft' : 'published'}
-                        className={selectClassName}
-                      >
-                        <option value="published">Published</option>
-                        <option value="draft">Draft</option>
-                      </select>
-                    </div>
-                    <div>
-                      <label className="text-sm text-white/60">Featured</label>
-                      <select
-                        name="featured"
-                        defaultValue={editingBlog.featured ? 'featured' : 'standard'}
-                        className={selectClassName}
-                      >
-                        <option value="standard">Standard</option>
-                        <option value="featured">Featured</option>
-                      </select>
-                    </div>
-                  </div>
-
-                  <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
-                    <p className="text-sm font-semibold text-white">Post to</p>
-                    <p className="mt-1 text-xs text-white/40">
-                      Select destinations (leave empty to hide on both sites).
-                    </p>
-                    <div className="mt-3 grid gap-2 sm:grid-cols-2 lg:grid-cols-1">
-                      <label className="inline-flex items-center gap-2 text-sm text-white/70">
-                        <input
-                          type="checkbox"
-                          name="show_on_main"
-                          value="true"
-                          defaultChecked={resolveTargetValue(editingBlog.show_on_main)}
-                          className="h-4 w-4 accent-white"
-                        />
-                        MainPortofolio
-                      </label>
-                      <label className="inline-flex items-center gap-2 text-sm text-white/70">
-                        <input
-                          type="checkbox"
-                          name="show_on_phion"
-                          value="true"
-                          defaultChecked={resolveTargetValue(editingBlog.show_on_phion)}
-                          className="h-4 w-4 accent-white"
-                        />
-                        PhionPortofolio
-                      </label>
-                    </div>
+                      Save Changes
+                    </AdminSubmitButton>
                   </div>
                 </div>
               </aside>
             </div>
-            <div>
-              <label className="text-sm text-white/60">Tags</label>
-              <input
-                name="tags"
-                defaultValue={(editingBlog.tags ?? []).join(', ')}
-                className={inputClassName}
-                placeholder="life, love, daily"
-              />
-              <p className="mt-2 text-xs text-white/40">Comma separated (optional).</p>
-            </div>
-            <div>
-              <label className="text-sm text-white/60">Local Image</label>
-              <input
-                key={`${editingBlog.id}-${editFileKey}`}
-                name="image_file"
-                type="file"
-                accept="image/png,image/jpeg,image/webp"
-                onChange={handleEditImageChange}
-                className="mt-2 block w-full text-sm text-white/70 file:mr-4 file:rounded-full file:border-0 file:bg-white/10 file:px-4 file:py-2 file:text-xs file:font-semibold file:text-white hover:file:bg-white/20"
-              />
-              <p className="mt-2 text-xs text-white/40">PNG/JPG/WebP, max 5MB.</p>
-              {editImageError && <p className="mt-2 text-xs text-red-300">{editImageError}</p>}
-              {(editImagePreview || editingBlog.image) && (
-                <div className="relative mt-3 h-32 w-full overflow-hidden rounded-xl border border-white/10 bg-white/5">
-                  <Image
-                    src={editImagePreview ?? editingBlog.image ?? ''}
-                    alt="Preview"
-                    fill
-                    sizes="100vw"
-                    className="object-cover"
-                    unoptimized
-                  />
-                </div>
-              )}
-              {editingBlog.image && (
-                <div className="mt-2 flex items-center justify-between gap-3 rounded-xl border border-white/10 bg-white/5 px-3 py-2">
-                  <p className="min-w-0 truncate text-xs text-white/50">{editingBlog.image}</p>
-                  <a
-                    href={editingBlog.image}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="shrink-0 text-xs text-[var(--home-accent)] hover:text-[var(--home-accent)]"
-                  >
-                    Open
-                  </a>
-                </div>
-              )}
-            </div>
-            <AdminSubmitButton
-              pendingText="Saving..."
-              className="inline-flex w-full items-center justify-center rounded-xl border border-white bg-white px-4 py-2 text-sm font-semibold text-black shadow-sm transition hover:bg-white/90"
-            >
-              Submit
-            </AdminSubmitButton>
           </form>
         )}
-      </Modal>
+      </FullScreenModal>
     </div>
   );
 }
