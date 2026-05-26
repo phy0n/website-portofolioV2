@@ -129,9 +129,17 @@ export function ChatPanel({
               : 'bg-[#181820] border border-white/5 text-white/90 rounded-[20px] rounded-tl-[4px] shadow-[0_4px_20px_rgba(0,0,0,0.3)]'
           }`}>
             {item.replyToId ? (
-              <div className={`mb-3 pl-3 border-l-2 ${isAuthor ? 'border-white/40 text-white/90' : 'border-[var(--home-accent)]/50 text-white/70'} text-xs bg-black/10 p-2 rounded-r-lg`}>
-                <p className="font-semibold mb-0.5">{replyTarget?.name ?? 'Unknown'}</p>
-                <p className="line-clamp-2 opacity-80 leading-relaxed">{replyTarget?.message ?? 'Message not available.'}</p>
+              <div className={`mb-2 px-3 py-2 border-l-[3px] text-xs rounded-r-md transition-colors ${
+                isAuthor 
+                  ? 'bg-white/20 border-white text-white' 
+                  : 'bg-white/5 border-[var(--home-accent)] text-white/80'
+              }`}>
+                <p className={`font-bold mb-0.5 tracking-wide ${isAuthor ? 'text-white' : 'text-[var(--home-accent)]'}`}>
+                  {replyTarget?.name ?? 'Unknown'}
+                </p>
+                <p className="line-clamp-2 opacity-90 leading-relaxed">
+                  {replyTarget?.message ?? 'Message not available.'}
+                </p>
               </div>
             ) : null}
             <p className="whitespace-pre-wrap break-words text-[13px] sm:text-sm leading-relaxed">
@@ -201,11 +209,11 @@ export function ChatPanel({
 
       <div className="border-t border-white/5 bg-[#0a0a0f] px-4 py-4 shrink-0">
         {replyTo && onReplyToChange ? (
-          <div className="mb-3 flex items-start justify-between gap-3 rounded-xl border border-white/10 bg-[#181820] px-4 py-3">
+          <div className="mb-3 flex items-start justify-between gap-3 rounded-xl border border-white/10 bg-[#181820] px-4 py-3 border-l-4 border-l-[var(--home-accent)]">
             <div className="min-w-0">
-              <p className="text-[10px] uppercase tracking-[0.3em] text-white/40">Reply</p>
-              <p className="mt-1 truncate text-xs text-white/70">
-                {replyTo.name}: {replyTo.message}
+              <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-[var(--home-accent)]">Replying to</p>
+              <p className="mt-1 truncate text-xs text-white/80">
+                <span className="font-semibold text-white">{replyTo.name}</span>: {replyTo.message}
               </p>
             </div>
             <button
