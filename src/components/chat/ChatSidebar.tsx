@@ -90,7 +90,7 @@ export function ChatPanel({
     const stamp = formatStamp(item.createdAt);
     const replyTarget = item.replyToId ? messageById.get(item.replyToId) : null;
     
-    const Actions = () => (
+    const actionsNode = (
       <div className={`flex shrink-0 items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity ${isAuthor ? 'flex-row-reverse' : 'flex-row'} self-center mb-1 mx-2`}>
         {onReplyToChange ? (
           <button type="button" onClick={() => onReplyToChange(item)} className="rounded-full p-1.5 text-white/40 hover:bg-white/10 hover:text-white transition" title="Reply">
@@ -112,7 +112,7 @@ export function ChatPanel({
 
     return (
       <div key={item.id} className={`group flex w-full ${isAuthor ? 'justify-end' : 'justify-start'} mb-5`}>
-        {isAuthor && <Actions />}
+        {isAuthor && actionsNode}
         <div className={`relative flex flex-col max-w-[85%] sm:max-w-[75%] ${isAuthor ? 'items-end' : 'items-start'}`}>
           <div className={`flex items-center gap-2 mb-1.5 px-1 ${isAuthor ? 'flex-row-reverse' : 'flex-row'}`}>
             <span className={`text-[11px] font-bold tracking-wide ${isAuthor ? 'text-[var(--home-accent)]' : 'text-white/80'}`}>
@@ -147,7 +147,7 @@ export function ChatPanel({
             </p>
           </div>
         </div>
-        {!isAuthor && <Actions />}
+        {!isAuthor && actionsNode}
       </div>
     );
   };

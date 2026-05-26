@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { ArrowUpRight, Award, BarChart3, Briefcase, FileText, LayoutGrid, LogOut, Quote, Languages, X } from 'lucide-react';
+import { ArrowUpRight, Award, BarChart3, Briefcase, FileText, LayoutGrid, LogOut, Quote, Languages, X, GraduationCap } from 'lucide-react';
 import AdminSubmitButton from './AdminSubmitButton';
 
 type AdminAction = (formData?: FormData) => void | Promise<void>;
@@ -12,6 +12,7 @@ const navItems = [
   { href: '/admin/blogs', label: 'Blogs', icon: FileText },
   { href: '/admin/quotes', label: 'Quotes', icon: Quote },
   { href: '/admin/experiences', label: 'Experiences', icon: Briefcase },
+  { href: '/admin/education', label: 'Education', icon: GraduationCap },
   { href: '/admin/projects', label: 'Projects', icon: LayoutGrid },
   { href: '/admin/certificates', label: 'Certificates', icon: Award },
   { href: '/admin/languages', label: 'Languages', icon: Languages },

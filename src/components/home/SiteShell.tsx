@@ -71,12 +71,9 @@ export default function SiteShell({
   const [navOpenFor, setNavOpenFor] = useState<string | null>(null);
   const [navAvatarErrorSrc, setNavAvatarErrorSrc] = useState<string | null>(null);
   const [isAdminSession, setIsAdminSession] = useState(false);
-  const [ctaOpen, setCtaOpen] = useState(false);
-  const ctaRef = useRef<HTMLDivElement | null>(null);
   const navOpen = navOpenFor === pathname;
   const closeNav = () => setNavOpenFor(null);
   const toggleNav = () => setNavOpenFor((current) => (current === pathname ? null : pathname));
-  const toggleCta = () => setCtaOpen((current) => !current);
   const resolvedNavAvatarSrc = navAvatarSrc || NAV_AVATAR_SRC;
   const navAvatarErrored = navAvatarErrorSrc === resolvedNavAvatarSrc;
   const mainClassName =
@@ -89,7 +86,6 @@ export default function SiteShell({
       if (isEditableTarget(event.target)) return;
       if (event.key === 'Escape') {
         setNavOpenFor(null);
-        setCtaOpen(false);
       }
     };
     window.addEventListener('keydown', handleKeyDown);
@@ -316,21 +312,7 @@ export default function SiteShell({
     };
   }, [pathname]);
 
-  useEffect(() => {
-    if (!ctaOpen) return;
 
-    const handlePointerDown = (event: PointerEvent) => {
-      const node = event.target instanceof Node ? event.target : null;
-      if (!node) return;
-      if (ctaRef.current && ctaRef.current.contains(node)) return;
-      setCtaOpen(false);
-    };
-
-    window.addEventListener('pointerdown', handlePointerDown);
-    return () => window.removeEventListener('pointerdown', handlePointerDown);
-  }, [ctaOpen]);
-
-  const showStickyCta = Boolean(pathname && !pathname.startsWith('/admin'));
 
   return (
     <div ref={scopeRef} className="home-portfolio min-h-screen bg-[var(--home-bg)] text-[var(--home-ink)] font-nunito">
@@ -444,62 +426,7 @@ export default function SiteShell({
           </footer>
         </div>
 
-        {showStickyCta ? (
-          <div ref={ctaRef} className="fixed bottom-6 right-6 z-40 hidden sm:block">
-            <div
-              className={[
-                'flex h-12 items-center overflow-hidden rounded-full border border-white/10 bg-[var(--home-bg)] text-white shadow-[0_18px_40px_rgba(0,0,0,0.45)] transition-all duration-300 motion-reduce:transition-none',
-                ctaOpen ? 'w-[min(92vw,440px)]' : 'w-12',
-              ].join(' ')}
-            >
-              <button
-                type="button"
-                aria-label={ctaOpen ? 'Close quick actions' : 'Open quick actions'}
-                aria-expanded={ctaOpen}
-                onClick={toggleCta}
-                className="inline-flex h-12 w-12 shrink-0 items-center justify-center text-white/80 transition hover:text-white"
-              >
-                <span className="flex h-9 w-9 items-center justify-center rounded-full border border-white/10 bg-[var(--home-bg)]">
-                  {ctaOpen ? <X className="h-5 w-5" /> : <Sparkles className="h-5 w-5" />}
-                </span>
-              </button>
 
-              <div
-                className={[
-                  'flex min-w-0 flex-1 items-center justify-center gap-2 px-2 transition-opacity duration-200 motion-reduce:transition-none',
-                  ctaOpen ? 'opacity-100' : 'pointer-events-none opacity-0',
-                ].join(' ')}
-              >
-                <a
-                  href="mailto:phymee@proton.me?subject=Hire%20me"
-                  className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-[var(--home-bg)] px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.28em] text-white/70 transition hover:border-white/20 hover:bg-[var(--home-bg)] hover:text-white"
-                  aria-label="Hire me via email"
-                >
-                  <Mail className="h-4 w-4 text-[var(--home-accent)]" />
-                  Hire
-                </a>
-                <Link
-                  href="/connect"
-                  onClick={() => setCtaOpen(false)}
-                  className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-[var(--home-bg)] px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.28em] text-white/70 transition hover:border-white/20 hover:bg-[var(--home-bg)] hover:text-white"
-                  aria-label="Open contact page"
-                >
-                  <Sparkles className="h-4 w-4 text-[var(--home-accent)]" />
-                  Contact
-                </Link>
-                <Link
-                  href="/chat"
-                  onClick={() => setCtaOpen(false)}
-                  className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-[var(--home-bg)] px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.28em] text-white/70 transition hover:border-white/20 hover:bg-[var(--home-bg)] hover:text-white"
-                  aria-label="Open chat page"
-                >
-                  <MessageSquare className="h-4 w-4 text-[var(--home-accent)]" />
-                  Chat
-                </Link>
-              </div>
-            </div>
-          </div>
-        ) : null}
       </div>
     </div>
   );

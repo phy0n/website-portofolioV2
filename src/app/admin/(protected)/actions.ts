@@ -13,6 +13,7 @@ const allowedRedirects = new Set([
   '/admin/projects',
   '/admin/certificates',
   '/admin/languages',
+  '/admin/education',
 ]);
 
 const resolveRedirectPath = (formData: FormData) => {
@@ -1057,6 +1058,129 @@ export async function deleteLanguage(formData: FormData) {
   revalidatePath('/admin');
   revalidatePath('/admin/languages');
   redirectWithSuccess(redirectTo, 'Language deleted.');
+}
+
+export async function createEducation(formData: FormData) {
+  const redirectTo = resolveRedirectPath(formData);
+  const institution = String(formData.get('institution') || '').trim();
+  const degree = String(formData.get('degree') || '').trim();
+  const field = String(formData.get('field') || '').trim();
+  const period = String(formData.get('period') || '').trim();
+  const location = String(formData.get('location') || '').trim();
+  const description = String(formData.get('description') || '').trim();
+  const highlightsValue = String(formData.get('highlights') || '');
+  const sortOrder = parseSortOrder(formData.get('sort_order'));
+  const statusValue = String(formData.get('is_published') || 'published').trim();
+  const showOnMain = String(formData.get('show_on_main') || '').trim() === 'true';
+  const showOnPhion = String(formData.get('show_on_phion') || '').trim() === 'true';
+
+  if (!institution || !degree || !period) {
+    redirectWithError(redirectTo, 'Institution, degree, and period are required.');
+  }
+
+  if (statusValue !== 'published' && statusValue !== 'draft') {
+    redirectWithError(redirectTo, 'Invalid publish status value.');
+  }
+
+  const isPublished = statusValue === 'published';
+  const highlights = normalizeTags(highlightsValue);
+
+  const { supabase } = await requireAdmin();
+  const { error } = await supabase.from('education').insert({
+    institution,
+    degree,
+    field: field || null,
+    period,
+    location: location || null,
+    description: description || null,
+    highlights,
+    sort_order: sortOrder,
+    is_published: isPublished,
+    show_on_main: showOnMain,
+    show_on_phion: showOnPhion,
+  });
+
+  if (error) {
+    redirectWithError(redirectTo, `Create education failed: ${error.message}`);
+  }
+
+  revalidatePath('/');
+  revalidatePath('/admin/education');
+  redirectWithSuccess(redirectTo, 'Education created.');
+}
+
+export async function updateEducation(formData: FormData) {
+  const redirectTo = resolveRedirectPath(formData);
+  const id = String(formData.get('id') || '').trim();
+  const institution = String(formData.get('institution') || '').trim();
+  const degree = String(formData.get('degree') || '').trim();
+  const field = String(formData.get('field') || '').trim();
+  const period = String(formData.get('period') || '').trim();
+  const location = String(formData.get('location') || '').trim();
+  const description = String(formData.get('description') || '').trim();
+  const highlightsValue = String(formData.get('highlights') || '');
+  const sortOrder = parseSortOrder(formData.get('sort_order'));
+  const statusValue = String(formData.get('is_published') || 'published').trim();
+  const showOnMain = String(formData.get('show_on_main') || '').trim() === 'true';
+  const showOnPhion = String(formData.get('show_on_phion') || '').trim() === 'true';
+
+  if (!id || !institution || !degree || !period) {
+    redirectWithError(redirectTo, 'Missing required education fields.');
+  }
+
+  if (statusValue !== 'published' && statusValue !== 'draft') {
+    redirectWithError(redirectTo, 'Invalid publish status value.');
+  }
+
+  const isPublished = statusValue === 'published';
+  const highlights = normalizeTags(highlightsValue);
+
+  const { supabase } = await requireAdmin();
+  const { error } = await supabase
+    .from('education')
+    .update({
+      institution,
+      degree,
+      field: field || null,
+      period,
+      location: location || null,
+      description: description || null,
+      highlights,
+      sort_order: sortOrder,
+      is_published: isPublished,
+      show_on_main: showOnMain,
+      show_on_phion: showOnPhion,
+      updated_at: new Date().toISOString(),
+    })
+    .eq('id', id);
+
+  if (error) {
+    redirectWithError(redirectTo, `Update education failed: ${error.message}`);
+  }
+
+  revalidatePath('/');
+  revalidatePath('/admin/education');
+  redirectWithSuccess(redirectTo, 'Education updated.');
+}
+
+export async function deleteEducation(formData: FormData) {
+  const redirectTo = resolveRedirectPath(formData);
+  const id = String(formData.get('id') || '').trim();
+
+  if (!id) {
+    redirectWithError(redirectTo, 'Missing education id.');
+  }
+
+  const { supabase } = await requireAdmin();
+  const { error } = await supabase.from('education').delete().eq('id', id);
+
+  if (error) {
+    redirectWithError(redirectTo, `Delete education failed: ${error.message}`);
+  }
+
+  revalidatePath('/');
+  revalidatePath('/admin/education');
+  redirectWithSuccess(redirectTo, 'Education deleted.');
 }
 
 export async function signOut() {
