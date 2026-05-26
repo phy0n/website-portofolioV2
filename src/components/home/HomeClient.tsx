@@ -143,16 +143,10 @@ export default function HomeClient({ discordUserId, profileImageUrl }: HomeClien
                   </p>
                 </div>
 
-                <div className="js-reveal grid gap-6">
-                  <div className="rounded-3xl border border-white/10 bg-black/30 p-6">
-                    <ProfileFactsCard />
-                  </div>
-                  <div className="rounded-3xl border border-white/10 bg-black/30 p-6">
-                    <SpokenLanguagesCard />
-                  </div>
-                  <div className="rounded-3xl border border-white/10 bg-black/30 p-6">
-                    <EducationCard />
-                  </div>
+                <div className="js-reveal space-y-12 pt-4">
+                  <ProfileFactsCard />
+                  <SpokenLanguagesCard />
+                  <EducationCard />
                 </div>
               </div>
             </section>
@@ -180,7 +174,7 @@ export default function HomeClient({ discordUserId, profileImageUrl }: HomeClien
                   </p>
                 </div>
 
-                <div className="js-reveal rounded-3xl border border-white/10 bg-black/30 p-6">
+                <div className="js-reveal pt-4">
                   <LatestPostsCard />
                 </div>
               </div>
