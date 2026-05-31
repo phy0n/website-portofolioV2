@@ -146,11 +146,9 @@ export default function SkillsTab() {
               {group.items.map((skill, index) => (
                 <div
                   key={skill.name}
-                  className="group flex cursor-default items-center gap-3 rounded-xl border border-[var(--home-border)] bg-[var(--home-card)] p-3 transition-all duration-300 hover:-translate-y-0.5 hover:border-[var(--home-ink)] hover:bg-[var(--home-soft)]"
-                >
+                  className="group flex cursor-default items-center gap-3 rounded-xl border border-[var(--home-border)] bg-[var(--home-card)] p-3 transition-all duration-300 hover:-translate-y-0.5 hover:border-[var(--home-ink)] hover:bg-[var(--home-soft)]">
                   <span
-                    className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[var(--home-soft)] transition-transform duration-300 group-hover:scale-110 ${group.tones[index % group.tones.length]}`}
-                  >
+                    className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[var(--home-soft)] transition-transform duration-300 group-hover:scale-110 ${group.tones[index % group.tones.length]}`}>
                     {skill.icon}
                   </span>
                   <span className="text-sm font-medium text-[var(--home-ink)]">
