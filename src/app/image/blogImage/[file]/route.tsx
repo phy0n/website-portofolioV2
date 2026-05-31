@@ -53,7 +53,7 @@ export async function GET(_request: NextRequest, context: { params: Promise<{ fi
 
   try {
     const bytes = await readFile(filePath);
-    return new NextResponse(bytes, {
+    return new NextResponse(bytes as unknown as BodyInit, {
       headers: {
         'Content-Type': contentType,
         'Cache-Control': 'public, max-age=86400, stale-while-revalidate=604800',

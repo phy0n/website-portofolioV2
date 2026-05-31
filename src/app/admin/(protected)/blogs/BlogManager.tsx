@@ -103,8 +103,7 @@ function FullScreenModal({
           type="button"
           onClick={onClose}
           aria-label="Close"
-          className="p-2 rounded-full hover:bg-white/10 transition-colors text-white"
-        >
+          className="p-2 rounded-full hover:bg-white/10 transition-colors text-white">
           <X className="h-5 w-5" />
         </button>
       </div>
@@ -133,8 +132,7 @@ function StatusSelect({
         defaultValue={defaultValue}
         onChange={onChange}
         disabled={pending}
-        className={`${tableSelectClassName} ${pending ? 'cursor-not-allowed opacity-60' : ''}`}
-      >
+        className={`${tableSelectClassName} ${pending ? 'cursor-not-allowed opacity-60' : ''}`}>
         <option value="published">Published</option>
         <option value="draft">Draft</option>
       </select>
@@ -244,8 +242,7 @@ function ChapterEditor({
         onInput={(e) => onChange(e.currentTarget.innerHTML)}
         onBlur={(e) => onChange(e.currentTarget.innerHTML)}
         style={{ minHeight: '500px' }}
-        className="w-full flex-1 bg-transparent font-serif text-lg md:text-xl leading-[1.8] text-white/90 focus:outline-none overflow-y-auto wysiwyg-content"
-      />
+        className="w-full flex-1 bg-transparent font-serif text-lg md:text-xl leading-[1.8] text-white/90 focus:outline-none overflow-y-auto wysiwyg-content"/>
       
       <div className="mt-6 flex justify-between items-center text-xs font-mono text-white/30 border-t border-white/5 pt-4">
         <span>{value.replace(/<[^>]*>?/gm, '').length} / {MAX_PAGE_CHARS}</span>
@@ -480,8 +477,7 @@ export default function BlogManager({
                type="button"
                onClick={() => setActiveChapter(prev => Math.max(0, prev - 1))}
                disabled={activeChapter === 0}
-               className="flex items-center gap-2 px-6 py-3 rounded-full transition-colors disabled:opacity-30 disabled:cursor-not-allowed hover:bg-white/5"
-             >
+               className="flex items-center gap-2 px-6 py-3 rounded-full transition-colors disabled:opacity-30 disabled:cursor-not-allowed hover:bg-white/5">
                <ChevronLeft className="w-4 h-4"/> <span className="text-xs font-mono uppercase tracking-widest">Prev</span>
              </button>
              
@@ -491,16 +487,14 @@ export default function BlogManager({
                <button
                  type="button"
                  onClick={addChapter}
-                 className="flex items-center gap-2 px-6 py-3 rounded-full transition-colors text-[var(--home-accent)] hover:bg-[var(--home-accent)]/10"
-               >
+                 className="flex items-center gap-2 px-6 py-3 rounded-full transition-colors text-[var(--home-accent)] hover:bg-[var(--home-accent)]/10">
                  <span className="text-xs font-mono uppercase tracking-widest">Add Page</span> <Plus className="w-4 h-4"/>
                </button>
              ) : (
                <button
                  type="button"
                  onClick={() => setActiveChapter(prev => Math.min(chapters.length - 1, prev + 1))}
-                 className="flex items-center gap-2 px-6 py-3 rounded-full transition-colors hover:bg-white/5"
-               >
+                 className="flex items-center gap-2 px-6 py-3 rounded-full transition-colors hover:bg-white/5">
                  <span className="text-xs font-mono uppercase tracking-widest">Next</span> <ChevronRight className="w-4 h-4"/>
                </button>
              )}
@@ -527,8 +521,7 @@ export default function BlogManager({
               setEditId(null);
               setCreateOpen(true);
             }}
-            className="cursor-pointer inline-flex items-center gap-2 rounded-xl border border-[var(--home-accent)] bg-[var(--home-accent)]/10 px-5 py-2.5 text-sm font-semibold text-[var(--home-accent)] shadow-sm transition hover:bg-[var(--home-accent)] hover:text-white"
-          >
+            className="cursor-pointer inline-flex items-center gap-2 rounded-xl border border-[var(--home-accent)] bg-[var(--home-accent)]/10 px-5 py-2.5 text-sm font-semibold text-[var(--home-accent)] shadow-sm transition hover:bg-[var(--home-accent)] hover:text-white">
             <BookOpen className="h-4 w-4" />
             Write story
           </button>
@@ -544,14 +537,12 @@ export default function BlogManager({
             value={listQuery}
             onChange={(event) => setListQuery(event.target.value)}
             placeholder="Search title or /slug..."
-            className="flex-1 min-w-[220px] rounded-xl border border-white/10 bg-[#13131b] px-3 py-2 text-sm text-white placeholder-white/40 shadow-[0_0_0_1px_rgba(255,255,255,0.02)] focus:border-white/40 focus:outline-none"
-          />
+            className="flex-1 min-w-[220px] rounded-xl border border-white/10 bg-[#13131b] px-3 py-2 text-sm text-white placeholder-white/40 shadow-[0_0_0_1px_rgba(255,255,255,0.02)] focus:border-white/40 focus:outline-none"/>
           <select
             value={statusFilter}
             onChange={(event) => setStatusFilter(event.target.value as typeof statusFilter)}
             className={`${tableSelectClassName} min-w-[150px]`}
-            aria-label="Filter by status"
-          >
+            aria-label="Filter by status">
             <option value="all">All status</option>
             <option value="published">Published</option>
             <option value="draft">Draft</option>
@@ -561,8 +552,7 @@ export default function BlogManager({
               type="checkbox"
               checked={featuredOnly}
               onChange={(event) => setFeaturedOnly(event.target.checked)}
-              className="h-4 w-4 accent-white"
-            />
+              className="h-4 w-4 accent-white"/>
             Featured only
           </label>
           <span className="ml-auto text-sm text-white/50">
@@ -645,8 +635,7 @@ export default function BlogManager({
                       <input type="hidden" name="slug" value={blog.slug} />
                       <StatusSelect
                         defaultValue={blog.is_published ? 'published' : 'draft'}
-                        onChange={(event) => event.currentTarget.form?.requestSubmit()}
-                      />
+                        onChange={(event) => event.currentTarget.form?.requestSubmit()}/>
                     </form>
                   </td>
                   <td className="px-4 py-4">
@@ -668,8 +657,7 @@ export default function BlogManager({
                           setEditActiveChapter(0);
                           setEditId(blog.id);
                         }}
-                        className="cursor-pointer inline-flex items-center gap-2 rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white/70 transition hover:border-[var(--home-accent)] hover:text-[var(--home-accent)] hover:bg-[var(--home-accent)]/10"
-                      >
+                        className="cursor-pointer inline-flex items-center gap-2 rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white/70 transition hover:border-[var(--home-accent)] hover:text-[var(--home-accent)] hover:bg-[var(--home-accent)]/10">
                         <Pencil className="h-4 w-4" />
                         Edit
                       </button>
@@ -677,8 +665,7 @@ export default function BlogManager({
                         href={`/blog/${encodeURIComponent(blog.slug)}`}
                         target="_blank"
                         rel="noreferrer"
-                        className="cursor-pointer inline-flex items-center gap-2 rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white/70 transition hover:border-white/40 hover:text-white hover:bg-white/10"
-                      >
+                        className="cursor-pointer inline-flex items-center gap-2 rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white/70 transition hover:border-white/40 hover:text-white hover:bg-white/10">
                         View
                       </a>
                       <form
@@ -688,15 +675,13 @@ export default function BlogManager({
                           if (!confirm(`Delete "${blog.title}"? This cannot be undone.`)) {
                             event.preventDefault();
                           }
-                        }}
-                      >
+                        }}>
                         <input type="hidden" name="redirect_to" value="/admin/blogs" />
                         <input type="hidden" name="id" value={blog.id} />
                         <input type="hidden" name="slug" value={blog.slug} />
                         <AdminSubmitButton
                           pendingText="Deleting..."
-                          className="inline-flex items-center gap-2 rounded-lg border border-red-500/30 bg-red-500/10 px-3 py-2 text-sm text-red-400 transition hover:border-red-500/60 hover:text-red-300 hover:bg-red-500/20"
-                        >
+                          className="inline-flex items-center gap-2 rounded-lg border border-red-500/30 bg-red-500/10 px-3 py-2 text-sm text-red-400 transition hover:border-red-500/60 hover:text-red-300 hover:bg-red-500/20">
                           <Trash2 className="h-4 w-4" />
                           Delete
                         </AdminSubmitButton>
@@ -710,7 +695,6 @@ export default function BlogManager({
         </div>
       </section>
 
-      {/* CREATE NEW BLOG FULL SCREEN MODAL */}
       <FullScreenModal
         open={createOpen}
         title="Write a new story"
@@ -723,8 +707,7 @@ export default function BlogManager({
           setCreateChapters(['']);
           setCreateActiveChapter(0);
           setCreateOpen(false);
-        }}
-      >
+        }}>
         <form action={createBlog} className="flex flex-col gap-12">
           <input type="hidden" name="redirect_to" value="/admin/blogs" />
           <input type="hidden" name="slug" value={createSlug} />
@@ -740,8 +723,7 @@ export default function BlogManager({
                   value={createTitleValue}
                   onChange={(event) => setCreateTitleValue(event.target.value)}
                   className="w-full bg-transparent font-serif text-4xl md:text-6xl text-white placeholder-white/20 focus:outline-none transition-colors border-b border-transparent focus:border-[var(--home-accent)]/30 pb-4"
-                  placeholder="Story Title"
-                />
+                  placeholder="Story Title"/>
               </div>
               <div>
                 <textarea 
@@ -749,8 +731,7 @@ export default function BlogManager({
                   required 
                   rows={2} 
                   className="w-full bg-transparent font-serif text-xl md:text-2xl text-white/60 placeholder-white/20 italic focus:outline-none resize-none" 
-                  placeholder="A short excerpt or prologue..."
-                />
+                  placeholder="A short excerpt or prologue..."/>
               </div>
               
               {renderBookPages(createChapters, createActiveChapter, setCreateChapters, setCreateActiveChapter, addCreateChapter, removeCreateChapter)}
@@ -778,8 +759,7 @@ export default function BlogManager({
                       value={createCategoryValue}
                       onChange={(event) => setCreateCategoryValue(event.target.value)}
                       required
-                      className={selectClassName}
-                    >
+                      className={selectClassName}>
                       {categoryOptions.map((category) => (
                         <option key={category} value={category}>{category}</option>
                       ))}
@@ -830,8 +810,7 @@ export default function BlogManager({
                       type="file"
                       accept="image/png,image/jpeg,image/webp"
                       onChange={handleCreateImageChange}
-                      className="w-full text-xs text-white/60 file:mr-4 file:rounded-full file:border-0 file:bg-white/10 file:px-4 file:py-2 file:text-xs file:font-semibold file:text-white hover:file:bg-white/20 transition-colors cursor-pointer"
-                    />
+                      className="w-full text-xs text-white/60 file:mr-4 file:rounded-full file:border-0 file:bg-white/10 file:px-4 file:py-2 file:text-xs file:font-semibold file:text-white hover:file:bg-white/20 transition-colors cursor-pointer"/>
                     {createImageError && <p className="mt-2 text-xs text-red-400">{createImageError}</p>}
                     {createImagePreview && (
                       <div className="relative mt-4 aspect-video w-full overflow-hidden rounded-xl border border-white/5 bg-white/5 shadow-inner">
@@ -844,8 +823,7 @@ export default function BlogManager({
                 <div className="pt-6 mt-6 border-t border-white/5">
                   <AdminSubmitButton
                     pendingText="Publishing..."
-                    className="w-full py-4 rounded-xl bg-[var(--home-accent)] text-white font-bold text-sm uppercase tracking-widest hover:bg-[var(--home-accent-2)] transition-colors shadow-[0_0_20px_rgba(var(--home-accent-rgb),0.3)] hover:shadow-[0_0_30px_rgba(var(--home-accent-rgb),0.5)]"
-                  >
+                    className="w-full py-4 rounded-xl bg-[var(--home-accent)] text-white font-bold text-sm uppercase tracking-widest hover:bg-[var(--home-accent-2)] transition-colors shadow-[0_0_20px_rgba(var(--home-accent-rgb),0.3)] hover:shadow-[0_0_30px_rgba(var(--home-accent-rgb),0.5)]">
                     Publish Story
                   </AdminSubmitButton>
                 </div>
@@ -855,7 +833,6 @@ export default function BlogManager({
         </form>
       </FullScreenModal>
 
-      {/* EDIT BLOG FULL SCREEN MODAL */}
       <FullScreenModal
         open={Boolean(editingBlog)}
         title="Edit story"
@@ -867,8 +844,7 @@ export default function BlogManager({
           setEditChapters(['']);
           setEditActiveChapter(0);
           setEditId(null);
-        }}
-      >
+        }}>
         {editingBlog && (
           <form action={updateBlog} className="flex flex-col gap-12" key={editingBlog.id}>
             <input type="hidden" name="redirect_to" value="/admin/blogs" />
@@ -887,8 +863,7 @@ export default function BlogManager({
                     defaultValue={editingBlog.title}
                     onChange={(event) => setEditTitleValue(event.target.value)}
                     className="w-full bg-transparent font-serif text-4xl md:text-6xl text-white placeholder-white/20 focus:outline-none transition-colors border-b border-transparent focus:border-[var(--home-accent)]/30 pb-4"
-                    placeholder="Story Title"
-                  />
+                    placeholder="Story Title"/>
                 </div>
                 <div>
                   <textarea 
@@ -897,8 +872,7 @@ export default function BlogManager({
                     rows={2} 
                     defaultValue={editingBlog.excerpt}
                     className="w-full bg-transparent font-serif text-xl md:text-2xl text-white/60 placeholder-white/20 italic focus:outline-none resize-none" 
-                    placeholder="A short excerpt or prologue..."
-                  />
+                    placeholder="A short excerpt or prologue..."/>
                 </div>
                 
                 {renderBookPages(editChapters, editActiveChapter, setEditChapters, setEditActiveChapter, addEditChapter, removeEditChapter)}
@@ -972,8 +946,7 @@ export default function BlogManager({
                         type="file"
                         accept="image/png,image/jpeg,image/webp"
                         onChange={handleEditImageChange}
-                        className="w-full text-xs text-white/60 file:mr-4 file:rounded-full file:border-0 file:bg-white/10 file:px-4 file:py-2 file:text-xs file:font-semibold file:text-white hover:file:bg-white/20 transition-colors cursor-pointer"
-                      />
+                        className="w-full text-xs text-white/60 file:mr-4 file:rounded-full file:border-0 file:bg-white/10 file:px-4 file:py-2 file:text-xs file:font-semibold file:text-white hover:file:bg-white/20 transition-colors cursor-pointer"/>
                       {editImageError && <p className="mt-2 text-xs text-red-400">{editImageError}</p>}
                       {(editImagePreview || editingBlog.image) && (
                         <div className="relative mt-4 aspect-video w-full overflow-hidden rounded-xl border border-white/5 bg-white/5 shadow-inner">
@@ -993,8 +966,7 @@ export default function BlogManager({
                   <div className="pt-6 mt-6 border-t border-white/5">
                     <AdminSubmitButton
                       pendingText="Saving..."
-                      className="w-full py-4 rounded-xl bg-[var(--home-accent)] text-white font-bold text-sm uppercase tracking-widest hover:bg-[var(--home-accent-2)] transition-colors shadow-[0_0_20px_rgba(var(--home-accent-rgb),0.3)] hover:shadow-[0_0_30px_rgba(var(--home-accent-rgb),0.5)]"
-                    >
+                      className="w-full py-4 rounded-xl bg-[var(--home-accent)] text-white font-bold text-sm uppercase tracking-widest hover:bg-[var(--home-accent-2)] transition-colors shadow-[0_0_20px_rgba(var(--home-accent-rgb),0.3)] hover:shadow-[0_0_30px_rgba(var(--home-accent-rgb),0.5)]">
                       Save Changes
                     </AdminSubmitButton>
                   </div>

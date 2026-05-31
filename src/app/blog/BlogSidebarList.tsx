@@ -146,21 +146,17 @@ export default function BlogSidebarList({ blogs }: { blogs: BlogSidebarItem[] })
           <Link
             key={blog.id}
             href={`/blog/${encodeURIComponent(normalizedSlug)}`}
-            className="block rounded-2xl border border-white/10 bg-black/30 px-4 py-3 hover:border-white/20"
-          >
+            className="block rounded-2xl border border-white/10 bg-black/30 px-4 py-3 hover:border-white/20">
             <div className="flex items-start gap-3">
               <div className="relative mt-0.5 h-12 w-12 shrink-0 overflow-hidden rounded-2xl border border-white/10 bg-[var(--home-soft)]">
                 {showImage && imageSrc ? (
-                  // Use a plain img tag to avoid Next Image optimizer failures / remotePatterns surprises.
-                  /* eslint-disable-next-line @next/next/no-img-element */
                   <img
                     src={imageSrc}
                     alt={blog.title}
                     loading="lazy"
                     decoding="async"
                     className="h-full w-full object-cover"
-                    onError={() => markBroken(blog.id)}
-                  />
+                    onError={() => markBroken(blog.id)}/>
                 ) : (
                   <div className="flex h-full w-full items-center justify-center text-[10px] font-semibold text-white/40">
                     BLOG

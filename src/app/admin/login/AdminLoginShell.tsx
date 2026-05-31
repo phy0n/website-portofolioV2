@@ -166,8 +166,7 @@ export default function AdminLoginShell({ children }: { children: React.ReactNod
     <div
       ref={pageRef}
       className="admin-login-root home-portfolio relative min-h-screen overflow-hidden bg-[var(--home-bg)] text-[var(--home-ink)] font-nunito"
-      data-page-content
-    >
+      data-page-content>
       <style>{`
         .admin-login-root {
           --admin-login-panel: var(--home-bg);

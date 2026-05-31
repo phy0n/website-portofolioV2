@@ -79,8 +79,7 @@ function Modal({
             type="button"
             onClick={onClose}
             aria-label="Close"
-            className="cursor-pointer inline-flex h-9 w-9 items-center justify-center rounded-full border border-white/10 text-white/60 hover:text-white hover:border-white/30"
-          >
+            className="cursor-pointer inline-flex h-9 w-9 items-center justify-center rounded-full border border-white/10 text-white/60 hover:text-white hover:border-white/30">
             <X className="h-4 w-4" />
           </button>
         </div>
@@ -146,8 +145,7 @@ export default function EducationManager({
             setEditId(null);
             setCreateOpen(true);
           }}
-          className="cursor-pointer inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-5 py-2.5 text-sm text-white/80 transition hover:border-white/30 hover:bg-white/10 hover:text-white"
-        >
+          className="cursor-pointer inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-5 py-2.5 text-sm text-white/80 transition hover:border-white/30 hover:bg-white/10 hover:text-white">
           <Plus className="h-4 w-4" />
           New education
         </button>
@@ -165,8 +163,7 @@ export default function EducationManager({
             value={listQuery}
             onChange={(event) => setListQuery(event.target.value)}
             placeholder="Search institution, degree, period..."
-            className="flex-1 min-w-[220px] rounded-xl border border-white/10 bg-[#13131b] px-3 py-2 text-sm text-white placeholder-white/40 shadow-[0_0_0_1px_rgba(255,255,255,0.02)] focus:border-white/40 focus:outline-none"
-          />
+            className="flex-1 min-w-[220px] rounded-xl border border-white/10 bg-[#13131b] px-3 py-2 text-sm text-white placeholder-white/40 shadow-[0_0_0_1px_rgba(255,255,255,0.02)] focus:border-white/40 focus:outline-none"/>
           <span className="ml-auto text-sm text-white/50">
             Showing {filteredEducation.length} / {education.length}
           </span>
@@ -217,8 +214,7 @@ export default function EducationManager({
                           isPublished
                             ? 'border-emerald-400/30 bg-emerald-500/10 text-emerald-200'
                             : 'border-amber-400/30 bg-amber-500/10 text-amber-200'
-                        }`}
-                      >
+                        }`}>
                         {isPublished ? 'Published' : 'Draft'}
                       </span>
                     </td>
@@ -251,8 +247,7 @@ export default function EducationManager({
                             setCreateOpen(false);
                             setEditId(edu.id);
                           }}
-                          className="cursor-pointer inline-flex items-center gap-2 rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white/70 transition hover:border-[var(--home-accent)] hover:text-[var(--home-accent)] hover:bg-[var(--home-accent)]/10"
-                        >
+                          className="cursor-pointer inline-flex items-center gap-2 rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white/70 transition hover:border-[var(--home-accent)] hover:text-[var(--home-accent)] hover:bg-[var(--home-accent)]/10">
                           <Pencil className="h-4 w-4" />
                           Edit
                         </button>
@@ -263,14 +258,12 @@ export default function EducationManager({
                             if (!confirm('Delete this education? This cannot be undone.')) {
                               event.preventDefault();
                             }
-                          }}
-                        >
+                          }}>
                           <input type="hidden" name="id" value={edu.id} />
                           <input type="hidden" name="redirect_to" value="/admin/education" />
                           <AdminSubmitButton
                             pendingText="Deleting..."
-                            className="inline-flex items-center gap-2 rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white/70 transition hover:border-red-400/40 hover:text-red-100 hover:bg-red-500/10"
-                          >
+                            className="inline-flex items-center gap-2 rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white/70 transition hover:border-red-400/40 hover:text-red-100 hover:bg-red-500/10">
                             <Trash2 className="h-4 w-4" />
                             Delete
                           </AdminSubmitButton>
@@ -288,8 +281,7 @@ export default function EducationManager({
       <Modal
         open={createOpen}
         title="Create education"
-        onClose={() => setCreateOpen(false)}
-      >
+        onClose={() => setCreateOpen(false)}>
         <form action={createEducation} className="space-y-5">
           <input type="hidden" name="redirect_to" value="/admin/education" />
 
@@ -368,14 +360,12 @@ export default function EducationManager({
             <button
               type="button"
               onClick={() => setCreateOpen(false)}
-              className="px-6 py-3 rounded-xl border border-white/10 bg-transparent text-white/60 font-mono text-xs uppercase tracking-widest hover:bg-white/5 hover:text-white transition-colors"
-            >
+              className="px-6 py-3 rounded-xl border border-white/10 bg-transparent text-white/60 font-mono text-xs uppercase tracking-widest hover:bg-white/5 hover:text-white transition-colors">
               Cancel
             </button>
             <AdminSubmitButton
               pendingText="Creating..."
-              className="px-8 py-3 rounded-xl bg-[var(--home-accent)] text-white font-bold text-xs uppercase tracking-widest hover:bg-[var(--home-accent-2)] transition-colors shadow-[0_0_20px_rgba(var(--home-accent-rgb),0.3)] hover:shadow-[0_0_30px_rgba(var(--home-accent-rgb),0.5)]"
-            >
+              className="px-8 py-3 rounded-xl bg-[var(--home-accent)] text-white font-bold text-xs uppercase tracking-widest hover:bg-[var(--home-accent-2)] transition-colors shadow-[0_0_20px_rgba(var(--home-accent-rgb),0.3)] hover:shadow-[0_0_30px_rgba(var(--home-accent-rgb),0.5)]">
               Create
             </AdminSubmitButton>
           </div>
@@ -385,8 +375,7 @@ export default function EducationManager({
       <Modal
         open={Boolean(editingEducation)}
         title="Edit education"
-        onClose={() => setEditId(null)}
-      >
+        onClose={() => setEditId(null)}>
         {editingEducation && (
           <form action={updateEducation} className="space-y-5">
             <input type="hidden" name="redirect_to" value="/admin/education" />
@@ -425,8 +414,7 @@ export default function EducationManager({
                   name="sort_order"
                   type="number"
                   defaultValue={formatSortOrder(editingEducation.sort_order)}
-                  className={inputClassName}
-                />
+                  className={inputClassName}/>
               </div>
             </div>
 
@@ -441,8 +429,7 @@ export default function EducationManager({
                 name="description"
                 rows={4}
                 defaultValue={editingEducation.description || ''}
-                className={textareaClassName}
-              />
+                className={textareaClassName}/>
             </div>
 
             <div className="space-y-3">
@@ -453,8 +440,7 @@ export default function EducationManager({
                     type="radio"
                     name="is_published"
                     value="published"
-                    defaultChecked={resolvePublishValue(editingEducation.is_published)}
-                  />
+                    defaultChecked={resolvePublishValue(editingEducation.is_published)}/>
                   Published
                 </label>
                 <label className="inline-flex items-center gap-2">
@@ -462,8 +448,7 @@ export default function EducationManager({
                     type="radio"
                     name="is_published"
                     value="draft"
-                    defaultChecked={!resolvePublishValue(editingEducation.is_published)}
-                  />
+                    defaultChecked={!resolvePublishValue(editingEducation.is_published)}/>
                   Draft
                 </label>
               </div>
@@ -477,8 +462,7 @@ export default function EducationManager({
                     type="checkbox"
                     name="show_on_main"
                     value="true"
-                    defaultChecked={resolveTargetValue(editingEducation.show_on_main)}
-                  />
+                    defaultChecked={resolveTargetValue(editingEducation.show_on_main)}/>
                   Main
                 </label>
                 <label className="inline-flex items-center gap-2">
@@ -486,8 +470,7 @@ export default function EducationManager({
                     type="checkbox"
                     name="show_on_phion"
                     value="true"
-                    defaultChecked={resolveTargetValue(editingEducation.show_on_phion)}
-                  />
+                    defaultChecked={resolveTargetValue(editingEducation.show_on_phion)}/>
                   Phion
                 </label>
               </div>
@@ -497,14 +480,12 @@ export default function EducationManager({
               <button
                 type="button"
                 onClick={() => setEditId(null)}
-                className="px-6 py-3 rounded-xl border border-white/10 bg-transparent text-white/60 font-mono text-xs uppercase tracking-widest hover:bg-white/5 hover:text-white transition-colors"
-              >
+                className="px-6 py-3 rounded-xl border border-white/10 bg-transparent text-white/60 font-mono text-xs uppercase tracking-widest hover:bg-white/5 hover:text-white transition-colors">
                 Cancel
               </button>
               <AdminSubmitButton
                 pendingText="Saving..."
-                className="px-8 py-3 rounded-xl bg-[var(--home-accent)] text-white font-bold text-xs uppercase tracking-widest hover:bg-[var(--home-accent-2)] transition-colors shadow-[0_0_20px_rgba(var(--home-accent-rgb),0.3)] hover:shadow-[0_0_30px_rgba(var(--home-accent-rgb),0.5)]"
-              >
+                className="px-8 py-3 rounded-xl bg-[var(--home-accent)] text-white font-bold text-xs uppercase tracking-widest hover:bg-[var(--home-accent-2)] transition-colors shadow-[0_0_20px_rgba(var(--home-accent-rgb),0.3)] hover:shadow-[0_0_30px_rgba(var(--home-accent-rgb),0.5)]">
                 Save
               </AdminSubmitButton>
             </div>

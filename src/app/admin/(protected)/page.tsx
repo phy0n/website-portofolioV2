@@ -265,8 +265,7 @@ export default async function AdminPage({
               name="image_file"
               type="file"
               accept="image/png,image/jpeg,image/webp"
-              className="admin-file-input"
-            />
+              className="admin-file-input"/>
           </label>
           <AdminSubmitButton pendingText="Uploading..." className="admin-button-primary mt-4 w-full justify-center">
             <Camera className="h-4 w-4" />
@@ -360,8 +359,7 @@ export default async function AdminPage({
                 <Link
                   key={blog.id}
                   href={`/admin/blogs?edit=${encodeURIComponent(blog.id)}`}
-                  className="admin-row-link block px-4 py-3"
-                >
+                  className="admin-row-link block px-4 py-3">
                   <p className="text-xs text-white/42">/{blog.slug}</p>
                   <p className="mt-2 line-clamp-1 text-sm font-semibold text-white">{blog.title}</p>
                 </Link>
@@ -388,8 +386,7 @@ export default async function AdminPage({
                 <Link
                   key={blog.id}
                   href={`/blog/${encodeURIComponent(blog.slug)}`}
-                  className="admin-row-link flex items-start justify-between gap-3 px-4 py-3"
-                >
+                  className="admin-row-link flex items-start justify-between gap-3 px-4 py-3">
                   <div className="min-w-0">
                     <p className="text-xs text-white/42">{blog.is_published === false ? 'Draft' : 'Published'}</p>
                     <p className="mt-1 line-clamp-1 text-sm font-semibold text-white">{blog.title}</p>

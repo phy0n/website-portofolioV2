@@ -80,8 +80,7 @@ export default function ExperienceTab() {
             return (
               <div
                 key={exp.id}
-                className="js-reveal grid grid-cols-[auto_1fr] gap-x-4 gap-y-0 md:grid-cols-[auto_14px_1fr]"
-              >
+                className="js-reveal grid grid-cols-[auto_1fr] gap-x-4 gap-y-0 md:grid-cols-[auto_14px_1fr]">
                 <div className="row-span-3 pt-1 text-xs uppercase tracking-[0.35em] text-[var(--home-muted)]">
                   {number}
                 </div>

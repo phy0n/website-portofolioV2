@@ -103,8 +103,7 @@ export default function HomeClient({ discordUserId, profileImageUrl }: HomeClien
                     rel="noopener noreferrer"
                     aria-label={social.name}
                     title={social.name}
-                    className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-white/10 bg-black/30 text-white/70 shadow-[0_18px_40px_rgba(0,0,0,0.25)] transition hover:border-white/20 hover:bg-white/[0.06] hover:text-white"
-                  >
+                    className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-white/10 bg-black/30 text-white/70 shadow-[0_18px_40px_rgba(0,0,0,0.25)] transition hover:border-white/20 hover:bg-white/[0.06] hover:text-white">
                     {social.icon}
                   </a>
                 ))}

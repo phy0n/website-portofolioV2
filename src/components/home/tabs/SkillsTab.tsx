@@ -126,16 +126,14 @@ function SkillIcon({
           'group flex h-12 w-12 cursor-pointer items-center justify-center rounded-full border border-white/10 bg-black/30 text-[var(--home-ink)] transition',
           'hover:border-white/20 hover:bg-black/40',
           'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--home-accent)]/40',
-        ].join(' ')}
-      >
+        ].join(' ')}>
         <span className={`flex h-10 w-10 items-center justify-center rounded-full bg-white/5 ${tone}`}>{icon}</span>
       </button>
 
       {isActive ? (
         <div
           role="tooltip"
-          className="absolute left-full top-1/2 z-20 ml-3 w-max -translate-y-1/2 rounded-2xl border border-white/10 bg-black/80 px-3 py-2 shadow-[0_18px_40px_rgba(0,0,0,0.45)] backdrop-blur"
-        >
+          className="absolute left-full top-1/2 z-20 ml-3 w-max -translate-y-1/2 rounded-2xl border border-white/10 bg-black/80 px-3 py-2 shadow-[0_18px_40px_rgba(0,0,0,0.45)] backdrop-blur">
           <p className="text-xs font-semibold text-white">{name}</p>
           <p className="mt-0.5 text-[10px] uppercase tracking-[0.28em] text-white/60">{groupTitle}</p>
         </div>
@@ -200,8 +198,7 @@ export default function SkillsTab() {
                   tone={group.tones[index % group.tones.length]}
                   groupTitle={group.title}
                   isActive={activeSkill === skill.name}
-                  onToggle={() => setActiveSkill((current) => (current === skill.name ? null : skill.name))}
-                />
+                  onToggle={() => setActiveSkill((current) => (current === skill.name ? null : skill.name))}/>
               ))}
             </div>
           </div>

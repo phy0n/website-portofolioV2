@@ -41,8 +41,7 @@ export default function AdminSidebar({
             type="button"
             onClick={onClose}
             className="admin-sidebar-icon-button lg:hidden cursor-pointer"
-            aria-label="Close navigation"
-          >
+            aria-label="Close navigation">
             <X className="h-4 w-4" />
           </button>
         )}
@@ -58,8 +57,7 @@ export default function AdminSidebar({
               prefetch
               aria-current={isActive ? 'page' : undefined}
               onClick={() => onClose?.()}
-              className={`admin-sidebar-link ${isActive ? 'is-active' : ''}`}
-            >
+              className={`admin-sidebar-link ${isActive ? 'is-active' : ''}`}>
               <Icon className="h-4 w-4" />
               {item.label}
             </Link>
@@ -72,28 +70,17 @@ export default function AdminSidebar({
           <p className="mt-2 text-sm text-white/80">{email}</p>
         </div>
         <div className="grid gap-2">
-          <a
-            href="https://phymoneytracker.vercel.app/app"
-            target="_blank"
-            rel="noreferrer"
-            className="admin-sidebar-link admin-sidebar-secondary group justify-between"
-          >
-            <span>Open money tracker</span>
-            <ArrowUpRight className="h-4 w-4 text-white/60 transition group-hover:text-white" />
-          </a>
           <Link
             href="/"
             onClick={() => onClose?.()}
-            className="admin-sidebar-link admin-sidebar-secondary group justify-between"
-          >
+            className="admin-sidebar-link admin-sidebar-secondary group justify-between">
             <span>Back to portfolio</span>
             <ArrowUpRight className="h-4 w-4 text-white/60 transition group-hover:text-white" />
           </Link>
           <form action={signOutAction}>
             <AdminSubmitButton
               pendingText="Signing out..."
-              className="admin-sidebar-link admin-sidebar-secondary group w-full justify-between"
-            >
+              className="admin-sidebar-link admin-sidebar-secondary group w-full justify-between">
               <span className="inline-flex items-center gap-2">
                 <LogOut className="h-4 w-4" />
                 Sign out

@@ -1,4 +1,3 @@
-// Legacy copy (renamed from route.ts to route.old.tsx)
 import { ImageResponse } from 'next/og';
 
 export const runtime = 'edge';
@@ -55,8 +54,7 @@ export async function GET(_request: Request, { params }: { params: { file: strin
           background: `linear-gradient(135deg, ${bg1}, ${bg2})`,
           color: 'white',
           position: 'relative',
-        }}
-      >
+        }}>
         <div
           style={{
             position: 'absolute',
@@ -89,8 +87,7 @@ export async function GET(_request: Request, { params }: { params: { file: strin
               lineHeight: 1.1,
               maxWidth: 980,
               textShadow: '0 30px 80px rgba(0,0,0,0.55)',
-            }}
-          >
+            }}>
             {title}
           </div>
 

@@ -114,8 +114,7 @@ export default function PostLikeButton({ postId }: { postId: string }) {
       onClick={handleLike}
       disabled={liked || loading}
       aria-pressed={liked}
-      className={buttonClassName}
-    >
+      className={buttonClassName}>
       <Heart className="h-4 w-4" fill={liked ? 'currentColor' : 'none'} />
       <span className="tabular-nums">{likes.toLocaleString()}</span>
       <span className="sr-only">{liked ? 'Liked' : 'Like'}</span>

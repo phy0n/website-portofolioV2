@@ -362,8 +362,7 @@ export default function BlogClient({
                   placeholder="Search stories, author, tags..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full bg-white/[0.02] border border-white/10 focus:border-[var(--home-accent)] px-4 xs:px-5 py-3 xs:py-3.5 text-xs xs:text-sm text-white placeholder-[var(--home-muted)] focus:outline-none transition-colors"
-                />
+                  className="w-full bg-white/[0.02] border border-white/10 focus:border-[var(--home-accent)] px-4 xs:px-5 py-3 xs:py-3.5 text-xs xs:text-sm text-white placeholder-[var(--home-muted)] focus:outline-none transition-colors"/>
                 <BookOpen className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--home-muted)]" />
               </div>
               <div className="md:col-span-3">
@@ -371,8 +370,7 @@ export default function BlogClient({
                   value={sortMode}
                   onChange={(event) => setSortMode(event.target.value as SortMode)}
                   className="w-full bg-white/[0.02] border border-white/10 focus:border-[var(--home-accent)] px-4 xs:px-5 py-3 xs:py-3.5 text-[10px] xs:text-xs text-white/80 focus:outline-none transition-colors admin-select"
-                  aria-label="Sort stories"
-                >
+                  aria-label="Sort stories">
                   <option value="newest">Newest</option>
                   <option value="oldest">Oldest</option>
                   <option value="featured">Featured</option>
@@ -387,8 +385,7 @@ export default function BlogClient({
                       ? 'border-[var(--home-accent)] bg-[var(--home-accent)]/10 text-[var(--home-accent)]'
                       : 'border-white/10 bg-white/[0.02] text-[var(--home-muted)] hover:border-white/20 hover:text-white'
                   }`}
-                  aria-pressed={savedOnly}
-                >
+                  aria-pressed={savedOnly}>
                   <span className="inline-flex items-center gap-2">
                     {savedOnly ? (
                       <BookmarkCheck className="h-4 w-4" />
@@ -415,8 +412,7 @@ export default function BlogClient({
                     !selectedTag
                       ? 'border-[var(--home-accent)] bg-[var(--home-accent)]/10 text-[var(--home-accent)]'
                       : 'border-white/10 text-[var(--home-muted)] hover:border-white/10 hover:text-[var(--home-muted)]'
-                  }`}
-                >
+                  }`}>
                   All
                 </button>
                 {tags.slice(0, 10).map((tag) => (
@@ -428,8 +424,7 @@ export default function BlogClient({
                       selectedTag === tag
                         ? 'border-[var(--home-accent)] bg-[var(--home-accent)]/10 text-[var(--home-accent)]'
                         : 'border-white/10 text-[var(--home-muted)] hover:border-white/10 hover:text-[var(--home-muted)]'
-                    }`}
-                  >
+                    }`}>
                     {tag}
                   </button>
                 ))}
@@ -453,8 +448,7 @@ export default function BlogClient({
                 setSavedOnly(false);
                 setSortMode('newest');
               }}
-              className="text-xs xs:text-sm text-[var(--home-accent)] hover:text-[var(--home-accent)] transition-colors"
-            >
+              className="text-xs xs:text-sm text-[var(--home-accent)] hover:text-[var(--home-accent)] transition-colors">
               Reset Filter
             </button>
           )}
@@ -478,20 +472,17 @@ export default function BlogClient({
                     <Link
                       key={featured.id}
                       href={`/blog/${encodeURIComponent(featured.slug)}`}
-                      className={`group block ${featuredIndex === 0 ? 'sm:col-span-2' : ''}`}
-                    >
+                      className={`group block ${featuredIndex === 0 ? 'sm:col-span-2' : ''}`}>
                       <article className="overflow-hidden border border-white/10 bg-white/[0.02] hover:border-white/25 transition-all duration-300">
                         <div className="relative h-44 overflow-hidden bg-gradient-to-br from-white/5 via-black/30 to-black">
                           {resolveBlogImageSrc(featured.image) ? (
                             <>
-                              {/* eslint-disable-next-line @next/next/no-img-element */}
                               <img
                                 src={resolveBlogImageSrc(featured.image) ?? ''}
                                 alt={featured.title}
                                 loading="lazy"
                                 decoding="async"
-                                className="absolute inset-0 h-full w-full object-cover group-hover:scale-105 transition-transform duration-700"
-                              />
+                                className="absolute inset-0 h-full w-full object-cover group-hover:scale-105 transition-transform duration-700"/>
                             </>
                           ) : null}
                           <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
@@ -531,8 +522,7 @@ export default function BlogClient({
                       <Link
                         key={blog.id}
                         href={`/blog/${encodeURIComponent(blog.slug)}`}
-                        className="group block"
-                      >
+                        className="group block">
                         <article className="relative bg-white/[0.02] border border-white/10 hover:border-white/25 transition-all duration-300 overflow-hidden rounded-2xl">
                           <div className="grid md:grid-cols-5 gap-0">
                             <div className="md:col-span-2 relative h-48 xs:h-56 sm:h-64 md:h-auto overflow-hidden bg-gradient-to-br from-white/5 via-black/30 to-black">
@@ -544,8 +534,7 @@ export default function BlogClient({
                                     alt={blog.title}
                                     loading="lazy"
                                     decoding="async"
-                                    className="absolute inset-0 h-full w-full object-cover group-hover:scale-105 transition-transform duration-700"
-                                  />
+                                    className="absolute inset-0 h-full w-full object-cover group-hover:scale-105 transition-transform duration-700"/>
                                 </>
                               ) : null}
                               <div className="absolute inset-0 bg-gradient-to-r from-transparent via-black/30 to-black/60 md:to-black"></div>
@@ -573,8 +562,7 @@ export default function BlogClient({
                                   ? 'Remove from reading list'
                                   : 'Save to reading list'
                               }
-                              aria-pressed={readingList.has(blog.slug)}
-                            >
+                              aria-pressed={readingList.has(blog.slug)}>
                               {readingList.has(blog.slug) ? (
                                 <BookmarkCheck className="w-4 h-4 text-[var(--home-accent)]" />
                               ) : (
@@ -616,8 +604,7 @@ export default function BlogClient({
                                       event.stopPropagation();
                                       setSelectedTag(tag);
                                     }}
-                                    className="text-[10px] xs:text-xs border border-white/10 bg-white/[0.02] px-2.5 py-1 text-white/60 hover:text-white hover:border-white/20 transition-colors"
-                                  >
+                                    className="text-[10px] xs:text-xs border border-white/10 bg-white/[0.02] px-2.5 py-1 text-white/60 hover:text-white hover:border-white/20 transition-colors">
                                     #{tag}
                                   </button>
                                 ))}
@@ -629,8 +616,7 @@ export default function BlogClient({
                                 className="w-3 h-3 xs:w-4 xs:h-4 transform group-hover:translate-x-1 transition-transform"
                                 fill="none"
                                 stroke="currentColor"
-                                viewBox="0 0 24 24"
-                              >
+                                viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                               </svg>
                             </div>
@@ -667,8 +653,7 @@ export default function BlogClient({
                         <Link
                           key={savedBlog.id}
                           href={`/blog/${encodeURIComponent(savedBlog.slug)}`}
-                          className="block rounded-xl border border-white/10 bg-white/[0.02] px-4 py-3 transition hover:border-white/25 hover:bg-white/[0.04]"
-                        >
+                          className="block rounded-xl border border-white/10 bg-white/[0.02] px-4 py-3 transition hover:border-white/25 hover:bg-white/[0.04]">
                           <p className="text-[10px] text-[var(--home-muted)]">
                             {formatBlogDate(savedBlog.date)}
                           </p>
@@ -681,8 +666,7 @@ export default function BlogClient({
                         <button
                           type="button"
                           onClick={() => setSavedOnly(true)}
-                          className="w-full rounded-xl border border-white/10 bg-white/[0.02] px-4 py-3 text-xs text-white/70 transition hover:border-white/25 hover:text-white"
-                        >
+                          className="w-full rounded-xl border border-white/10 bg-white/[0.02] px-4 py-3 text-xs text-white/70 transition hover:border-white/25 hover:text-white">
                           Show saved only
                         </button>
                       )}
@@ -732,8 +716,7 @@ export default function BlogClient({
         type="button"
         onClick={() => setIsQuotesOpen(true)}
         className="lg:hidden fixed top-20 right-4 z-40 bg-black/80 backdrop-blur-sm border border-white/10 rounded-full px-3 py-3 flex items-center gap-2 text-[var(--home-muted)] hover:text-white hover:border-white/20 transition-colors"
-        aria-label="Open daily quotes"
-      >
+        aria-label="Open daily quotes">
         <Quote className="w-4 h-4 text-[var(--home-accent)]" />
         <span className="text-xs font-medium">Quotes</span>
       </button>
@@ -751,8 +734,7 @@ export default function BlogClient({
           aria-label="Daily quotes"
           className={`absolute top-0 right-0 h-full w-[min(360px,100vw)] bg-black border-l border-white/10 shadow-2xl transition-transform duration-300 ${
             isQuotesOpen ? 'translate-x-0' : 'translate-x-full'
-          }`}
-        >
+          }`}>
           <div className="h-full flex flex-col">
             <div className="flex items-center justify-between px-4 py-4 border-b border-white/10">
               <div className="flex items-center gap-2">
@@ -763,8 +745,7 @@ export default function BlogClient({
                 type="button"
                 onClick={() => setIsQuotesOpen(false)}
                 className="p-2 text-[var(--home-muted)] hover:text-white transition-colors"
-                aria-label="Close daily quotes"
-              >
+                aria-label="Close daily quotes">
                 <X className="w-5 h-5" />
               </button>
             </div>
@@ -775,8 +756,7 @@ export default function BlogClient({
                   {sortedQuotes.map((quote, index) => (
                     <div
                       key={`${quote.id}-${quote.date}-${index}`}
-                      className="relative bg-white/[0.02] backdrop-blur-sm border border-white/10 p-4 overflow-hidden"
-                    >
+                      className="relative bg-white/[0.02] backdrop-blur-sm border border-white/10 p-4 overflow-hidden">
                       <div className="absolute inset-0 bg-black/10 transition-all duration-300 backdrop-blur-sm"></div>
                       <div className="relative z-10">
                         <p className="text-xs text-[var(--home-muted)] mb-3">{formatQuoteDate(quote.date)}</p>

@@ -75,8 +75,7 @@ export default function PostCard({
                     ? `/blog#post-${encodeURIComponent(post.id)}`
                     : `/blog?edit=${encodeURIComponent(post.id)}#post-${encodeURIComponent(post.id)}`
                 }
-                className="inline-flex items-center justify-center rounded-full border border-white/10 bg-white/[0.06] px-3 py-1.5 text-[11px] font-semibold text-white/70 hover:border-white/20 hover:text-white"
-              >
+                className="inline-flex items-center justify-center rounded-full border border-white/10 bg-white/[0.06] px-3 py-1.5 text-[11px] font-semibold text-white/70 hover:border-white/20 hover:text-white">
                 {isEditing ? 'Close' : 'Edit'}
               </Link>
             ) : null}
@@ -86,8 +85,7 @@ export default function PostCard({
                 <input type="hidden" name="id" value={post.id} />
                 <button
                   type="submit"
-                  className="inline-flex items-center justify-center rounded-full border border-white/10 bg-white/[0.06] px-3 py-1.5 text-[11px] font-semibold text-white/70 hover:border-white/20 hover:text-white"
-                >
+                  className="inline-flex items-center justify-center rounded-full border border-white/10 bg-white/[0.06] px-3 py-1.5 text-[11px] font-semibold text-white/70 hover:border-white/20 hover:text-white">
                   Delete
                 </button>
               </form>
@@ -106,8 +104,7 @@ export default function PostCard({
               rows={4}
               className="w-full resize-none rounded-2xl border border-white/10 bg-black/40 px-4 py-3 text-sm text-white placeholder:text-white/30 outline-none focus:border-white/20"
               placeholder="Edit post content…"
-              maxLength={2000}
-            />
+              maxLength={2000}/>
 
             <div className="space-y-2">
               <p className="text-[10px] uppercase tracking-[0.3em] text-white/40">Replace image (optional)</p>
@@ -115,8 +112,7 @@ export default function PostCard({
                 type="file"
                 name="image_file"
                 accept="image/png,image/jpeg,image/webp"
-                className="block w-full rounded-2xl border border-white/10 bg-black/40 px-4 py-3 text-sm text-white file:mr-4 file:rounded-full file:border-0 file:bg-white/10 file:px-4 file:py-2 file:text-xs file:font-semibold file:text-white"
-              />
+                className="block w-full rounded-2xl border border-white/10 bg-black/40 px-4 py-3 text-sm text-white file:mr-4 file:rounded-full file:border-0 file:bg-white/10 file:px-4 file:py-2 file:text-xs file:font-semibold file:text-white"/>
             </div>
 
             {post.image ? (
@@ -129,14 +125,12 @@ export default function PostCard({
             <div className="flex flex-wrap items-center gap-2">
               <button
                 type="submit"
-                className="inline-flex items-center justify-center rounded-full border border-white/10 bg-white/[0.06] px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.28em] text-white hover:border-white/20 hover:bg-white/[0.08]"
-              >
+                className="inline-flex items-center justify-center rounded-full border border-white/10 bg-white/[0.06] px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.28em] text-white hover:border-white/20 hover:bg-white/[0.08]">
                 Save
               </button>
               <Link
                 href={`/blog#post-${encodeURIComponent(post.id)}`}
-                className="inline-flex items-center justify-center rounded-full border border-white/10 bg-black/40 px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.28em] text-white/70 hover:border-white/20 hover:text-white"
-              >
+                className="inline-flex items-center justify-center rounded-full border border-white/10 bg-black/40 px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.28em] text-white/70 hover:border-white/20 hover:text-white">
                 Cancel
               </Link>
             </div>
@@ -157,8 +151,7 @@ export default function PostCard({
               fill
               sizes="(max-width: 1024px) 100vw, 640px"
               className="object-cover"
-              priority={false}
-            />
+              priority={false}/>
           </div>
         ) : null}
       </div>

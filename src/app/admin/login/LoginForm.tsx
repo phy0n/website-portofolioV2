@@ -16,8 +16,7 @@ function SubmitButton() {
     <button
       type="submit"
       disabled={pending}
-      className="admin-login-submit"
-    >
+      className="admin-login-submit">
       {pending ? (
         <LoaderCircle className="h-4 w-4 animate-spin" aria-hidden="true" />
       ) : (

@@ -322,8 +322,7 @@ export default function SiteShell({
             <Link
               href="/"
               className="inline-flex items-center gap-3 rounded-full border border-white/10 bg-[var(--home-bg)] px-4 py-2 text-white shadow-[0_18px_40px_rgba(0,0,0,0.45)] transition hover:border-white/20"
-              aria-label="Go to home"
-            >
+              aria-label="Go to home">
               <div className="relative hidden h-8 w-8 overflow-hidden rounded-full border border-white/15 bg-[var(--home-bg)] sm:block">
                 {navAvatarErrored ? (
                   <span className="flex h-full w-full items-center justify-center text-sm font-semibold text-white/90">
@@ -349,8 +348,7 @@ export default function SiteShell({
               aria-label={navOpen ? 'Close menu' : 'Open menu'}
               aria-expanded={navOpen}
               onClick={toggleNav}
-              className="inline-flex h-12 w-12 items-center justify-center rounded-full border border-white/10 bg-[var(--home-bg)] text-white/80 shadow-[0_18px_40px_rgba(0,0,0,0.45)] transition hover:border-white/20 hover:text-white"
-            >
+              className="inline-flex h-12 w-12 items-center justify-center rounded-full border border-white/10 bg-[var(--home-bg)] text-white/80 shadow-[0_18px_40px_rgba(0,0,0,0.45)] transition hover:border-white/20 hover:text-white">
               <span className="flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-[var(--home-bg)]">
                 {navOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
               </span>
@@ -364,15 +362,13 @@ export default function SiteShell({
           className="fixed inset-0 z-50 flex items-center bg-[var(--home-bg)] opacity-0 pointer-events-none"
           onPointerDown={(event) => {
             if (event.target === event.currentTarget) closeNav();
-          }}
-        >
+          }}>
           <ul
             ref={navListRef}
             role="dialog"
             aria-modal="true"
             aria-label="Navigation menu"
-            className="mx-auto flex w-full max-w-7xl flex-col gap-5 px-6 sm:gap-6 sm:px-10"
-          >
+            className="mx-auto flex w-full max-w-7xl flex-col gap-5 px-6 sm:gap-6 sm:px-10">
             {NAV_LINKS.map((item) => {
               const isActive = item.href === '/' ? pathname === '/' : pathname?.startsWith(item.href);
 
@@ -385,8 +381,7 @@ export default function SiteShell({
                       'block w-fit font-sans font-semibold leading-[0.95] tracking-tight transition',
                       'text-[clamp(2.75rem,8vw,6rem)]',
                       isActive ? 'text-white' : 'text-white/55 hover:text-white',
-                    ].join(' ')}
-                  >
+                    ].join(' ')}>
                     {item.label}
                   </Link>
                 </li>
@@ -402,8 +397,7 @@ export default function SiteShell({
                     'block w-fit font-sans font-semibold leading-[0.95] tracking-tight transition',
                     'text-[clamp(1.85rem,5vw,3.25rem)]',
                     pathname?.startsWith('/admin') ? 'text-white' : 'text-white/55 hover:text-white',
-                  ].join(' ')}
-                >
+                  ].join(' ')}>
                   Admin
                 </Link>
               </li>

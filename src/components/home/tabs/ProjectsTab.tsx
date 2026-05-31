@@ -183,8 +183,7 @@ export default function ProjectsTab() {
               return (
                 <div
                   key={project.id}
-                  className="group overflow-hidden rounded-3xl border border-white/10 bg-black/30 shadow-[0_18px_40px_rgba(0,0,0,0.45)]"
-                >
+                  className="group overflow-hidden rounded-3xl border border-white/10 bg-black/30 shadow-[0_18px_40px_rgba(0,0,0,0.45)]">
                   <div className="relative h-36 w-full border-b border-white/10 bg-[var(--home-soft)]">
                     {imageOk ? (
                       <Image
@@ -192,8 +191,7 @@ export default function ProjectsTab() {
                         alt={`${project.title} preview`}
                         fill
                         sizes="(max-width: 768px) 100vw, 50vw"
-                        className="object-cover transition duration-300 group-hover:scale-[1.02]"
-                      />
+                        className="object-cover transition duration-300 group-hover:scale-[1.02]"/>
                     ) : (
                       <div className="absolute inset-0 grid place-items-center text-white/40">
                         {renderProjectIcon(project.icon)}
@@ -221,8 +219,7 @@ export default function ProjectsTab() {
                         {chips.slice(0, 5).map((chip) => (
                           <span
                             key={chip}
-                            className="rounded-full border border-white/10 bg-black/30 px-3 py-1 text-[11px] text-[var(--home-muted)]"
-                          >
+                            className="rounded-full border border-white/10 bg-black/30 px-3 py-1 text-[11px] text-[var(--home-muted)]">
                             {chip}
                           </span>
                         ))}
@@ -235,8 +232,7 @@ export default function ProjectsTab() {
                         target="_blank"
                         rel="noopener noreferrer"
                         className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.28em] text-white/70 transition hover:border-white/20 hover:bg-white/[0.06] hover:text-white"
-                        aria-label={`Open ${project.title}`}
-                      >
+                        aria-label={`Open ${project.title}`}>
                         Live
                         <ArrowUpRight className="h-4 w-4" />
                       </a>
@@ -247,8 +243,7 @@ export default function ProjectsTab() {
                           target="_blank"
                           rel="noopener noreferrer"
                           className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.28em] text-white/70 transition hover:border-white/20 hover:bg-white/[0.06] hover:text-white"
-                          aria-label={`Open ${project.title} repository`}
-                        >
+                          aria-label={`Open ${project.title} repository`}>
                           <Github className="h-4 w-4" />
                           Repo
                         </a>
@@ -258,8 +253,7 @@ export default function ProjectsTab() {
                         <Link
                           href={`/projects/${encodeURIComponent(caseSlug)}`}
                           className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.28em] text-white/70 transition hover:border-white/20 hover:bg-white/[0.06] hover:text-white"
-                          aria-label={`Open case study for ${project.title}`}
-                        >
+                          aria-label={`Open case study for ${project.title}`}>
                           <BookOpen className="h-4 w-4" />
                           Case
                         </Link>
@@ -315,8 +309,7 @@ export default function ProjectsTab() {
                       {chips.slice(0, 6).map((chip) => (
                         <span
                           key={chip}
-                          className="rounded-full border border-white/10 bg-black/30 px-3 py-1 text-xs text-[var(--home-muted)]"
-                        >
+                          className="rounded-full border border-white/10 bg-black/30 px-3 py-1 text-xs text-[var(--home-muted)]">
                           {chip}
                         </span>
                       ))}
@@ -329,8 +322,7 @@ export default function ProjectsTab() {
                       target="_blank"
                       rel="noopener noreferrer"
                       className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.28em] text-white/70 transition hover:border-white/20 hover:bg-white/[0.06] hover:text-white"
-                      aria-label={`Open ${project.title}`}
-                    >
+                      aria-label={`Open ${project.title}`}>
                       Live
                       <ArrowUpRight className="h-4 w-4" />
                     </a>
@@ -341,8 +333,7 @@ export default function ProjectsTab() {
                         target="_blank"
                         rel="noopener noreferrer"
                         className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.28em] text-white/70 transition hover:border-white/20 hover:bg-white/[0.06] hover:text-white"
-                        aria-label={`Open ${project.title} repository`}
-                      >
+                        aria-label={`Open ${project.title} repository`}>
                         <Github className="h-4 w-4" />
                         Repo
                       </a>
@@ -352,8 +343,7 @@ export default function ProjectsTab() {
                       <Link
                         href={`/projects/${encodeURIComponent(caseSlug)}`}
                         className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.28em] text-white/70 transition hover:border-white/20 hover:bg-white/[0.06] hover:text-white"
-                        aria-label={`Open case study for ${project.title}`}
-                      >
+                        aria-label={`Open case study for ${project.title}`}>
                         <BookOpen className="h-4 w-4" />
                         Case
                       </Link>

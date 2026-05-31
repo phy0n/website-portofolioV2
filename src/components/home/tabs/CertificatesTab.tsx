@@ -105,8 +105,7 @@ export default function CertificatesTab() {
             return (
               <div
                 key={cert.id}
-                className="js-reveal grid gap-x-4 gap-y-3 border-b border-white/10 py-6 md:grid-cols-[auto_1fr]"
-              >
+                className="js-reveal grid gap-x-4 gap-y-3 border-b border-white/10 py-6 md:grid-cols-[auto_1fr]">
                 <div className="md:hidden pt-1 text-xs uppercase tracking-[0.35em] text-[var(--home-muted)]">
                   {number}
                 </div>

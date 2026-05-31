@@ -112,8 +112,7 @@ export default async function CaseStudyPage({
             <p className="mt-2 text-sm text-white/50">This case study is not available.</p>
             <Link
               href="/#projects"
-              className="mt-6 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-5 py-2 text-[11px] font-semibold uppercase tracking-[0.28em] text-white/70 transition hover:border-white/20 hover:bg-white/[0.06] hover:text-white"
-            >
+              className="mt-6 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-5 py-2 text-[11px] font-semibold uppercase tracking-[0.28em] text-white/70 transition hover:border-white/20 hover:bg-white/[0.06] hover:text-white">
               <ArrowLeft className="h-4 w-4" />
               Back
             </Link>
@@ -137,8 +136,7 @@ export default async function CaseStudyPage({
         <div className="flex flex-wrap items-center justify-between gap-3" data-gsap="reveal">
           <Link
             href="/#projects"
-            className="inline-flex items-center gap-2 text-[var(--home-muted)] transition hover:text-white"
-          >
+            className="inline-flex items-center gap-2 text-[var(--home-muted)] transition hover:text-white">
             <ArrowLeft className="h-4 w-4" />
             <span className="text-sm">Back to projects</span>
           </Link>
@@ -149,8 +147,7 @@ export default async function CaseStudyPage({
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.28em] text-white/70 transition hover:border-white/20 hover:bg-white/[0.06] hover:text-white"
-              aria-label={`Open ${project.title}`}
-            >
+              aria-label={`Open ${project.title}`}>
               Live
               <ArrowUpRight className="h-4 w-4" />
             </a>
@@ -160,8 +157,7 @@ export default async function CaseStudyPage({
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.28em] text-white/70 transition hover:border-white/20 hover:bg-white/[0.06] hover:text-white"
-                aria-label={`Open ${project.title} repository`}
-              >
+                aria-label={`Open ${project.title} repository`}>
                 <Github className="h-4 w-4" />
                 Repo
               </a>
@@ -181,8 +177,7 @@ export default async function CaseStudyPage({
               {chips.slice(0, 8).map((chip) => (
                 <span
                   key={chip}
-                  className="rounded-full border border-white/10 bg-black/30 px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.22em] text-white/50"
-                >
+                  className="rounded-full border border-white/10 bg-black/30 px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.22em] text-white/50">
                   {chip}
                 </span>
               ))}
@@ -240,8 +235,7 @@ export default async function CaseStudyPage({
                   chips.map((chip) => (
                     <span
                       key={chip}
-                      className="rounded-full border border-white/10 bg-white/[0.04] px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.22em] text-white/60"
-                    >
+                      className="rounded-full border border-white/10 bg-white/[0.04] px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.22em] text-white/60">
                       {chip}
                     </span>
                   ))
@@ -258,8 +252,7 @@ export default async function CaseStudyPage({
                   {screenshotSrcs.slice(0, 6).map((src, idx) => (
                     <div
                       key={`${src}-${idx}`}
-                      className="relative aspect-video overflow-hidden rounded-3xl border border-white/10 bg-[var(--home-soft)]"
-                    >
+                      className="relative aspect-video overflow-hidden rounded-3xl border border-white/10 bg-[var(--home-soft)]">
                       <Image
                         src={src}
                         alt={`${project.title} screenshot ${idx + 1}`}

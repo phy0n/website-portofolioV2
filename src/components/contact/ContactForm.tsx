@@ -130,8 +130,7 @@ export default function ContactForm({ source }: { source?: 'home' | 'connect' | 
           type="button"
           onClick={handleSend}
           disabled={!canSend}
-          className="inline-flex min-h-11 items-center justify-center gap-2 rounded-md border border-white/15 bg-white/[0.07] px-4 py-2.5 text-sm font-semibold text-[var(--home-ink)] transition hover:border-white/25 hover:bg-white/[0.1] disabled:cursor-not-allowed disabled:opacity-50"
-        >
+          className="inline-flex min-h-11 items-center justify-center gap-2 rounded-md border border-white/15 bg-white/[0.07] px-4 py-2.5 text-sm font-semibold text-[var(--home-ink)] transition hover:border-white/25 hover:bg-white/[0.1] disabled:cursor-not-allowed disabled:opacity-50">
           <Send className="h-4 w-4" />
           {sending ? 'Sending...' : 'Send'}
         </button>

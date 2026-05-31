@@ -3,7 +3,6 @@ import { NextResponse } from 'next/server';
 export const revalidate = 15;
 
 export async function GET() {
-  // Use the same Discord User ID from environment variable
   const userId = process.env.DISCORD_USER_ID;
 
   if (!userId) {
@@ -36,8 +35,6 @@ export async function GET() {
   };
 
   try {
-    // Using Lanyard API to get Discord presence
-    // Note: User must join https://discord.gg/lanyard for this to work
     const response = await fetch(`https://api.lanyard.rest/v1/users/${userId}`, {
       next: { revalidate: 15 },
       headers: {
@@ -48,8 +45,6 @@ export async function GET() {
     if (!response.ok) {
       const errorText = await response.text();
       console.error('Lanyard API error:', response.status, errorText);
-      
-      // Return offline status instead of throwing error
       return NextResponse.json({ 
         online: false, 
         status: 'offline',
@@ -66,11 +61,7 @@ export async function GET() {
     }
 
     const presence = data.data;
-    
-    // Extract activity information
     const activities = presence.activities || [];
-    
-    // Type 4 = Custom Status
     const primaryActivity = activities.find((act: any) => act.type !== 4 && act.name !== 'Spotify');
     const customStatus = activities.find((act: any) => act.type === 4); // Custom Status
 
@@ -114,7 +105,7 @@ export async function GET() {
     
     const status = {
       online: presence.discord_status !== 'offline',
-      status: presence.discord_status, // online, idle, dnd, offline
+      status: presence.discord_status, 
       activity: normalizedActivity,
       customStatus: customStatus?.state || null,
       spotify: presence.spotify ? {
@@ -140,7 +131,6 @@ export async function GET() {
       });
   } catch (error) {
     console.error('Error fetching Discord status:', error);
-    // Return offline status instead of error
     return NextResponse.json(
       {
       online: false, 

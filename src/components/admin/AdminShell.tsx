@@ -190,8 +190,7 @@ export default function AdminShell({
       <div
         className={`fixed inset-y-0 left-0 z-50 w-72 transition-transform duration-300 lg:translate-x-0 ${
           sidebarOpen ? 'translate-x-0' : '-translate-x-full'
-        }`}
-      >
+        }`}>
         <AdminSidebar
           email={email}
           signOutAction={signOutAction}
@@ -210,22 +209,19 @@ export default function AdminShell({
       <main
         ref={contentRef}
         data-page-content
-        className="min-h-screen px-4 py-10 sm:px-6 lg:pl-80 lg:pr-12"
-      >
+        className="min-h-screen px-4 py-10 sm:px-6 lg:pl-80 lg:pr-12">
         <div className="lg:hidden mb-6 flex items-center justify-between gap-3">
           <button
             type="button"
             onClick={() => setSidebarOpen(true)}
             className="admin-button cursor-pointer"
-            aria-label="Open admin navigation"
-          >
+            aria-label="Open admin navigation">
             <Menu className="h-4 w-4" />
             Menu
           </button>
           <Link
             href="/"
-            className="admin-text-link"
-          >
+            className="admin-text-link">
             Back to portfolio
           </Link>
         </div>

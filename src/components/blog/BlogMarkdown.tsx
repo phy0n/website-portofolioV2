@@ -51,8 +51,7 @@ const renderInline = (value: string): React.ReactNode[] => {
       nodes.push(
         <code
           key={`c-${key++}`}
-          className="rounded-md border border-white/10 bg-white/5 px-1.5 py-0.5 text-[0.95em] text-white"
-        >
+          className="rounded-md border border-white/10 bg-white/5 px-1.5 py-0.5 text-[0.95em] text-white">
           {token.slice(1, -1)}
         </code>
       );
@@ -69,8 +68,7 @@ const renderInline = (value: string): React.ReactNode[] => {
               href={href}
               target={external ? '_blank' : undefined}
               rel={external ? 'noreferrer noopener' : undefined}
-              className="font-medium text-[var(--home-accent)] underline decoration-white/20 underline-offset-4 hover:decoration-white/60"
-            >
+              className="font-medium text-[var(--home-accent)] underline decoration-white/20 underline-offset-4 hover:decoration-white/60">
               {label}
             </a>
           );
@@ -256,8 +254,7 @@ export default function BlogMarkdown({
             <HeadingTag
               key={`${block.type}-${block.id}-${index}`}
               id={block.id}
-              className={`${base} scroll-mt-24`}
-            >
+              className={`${base} scroll-mt-24`}>
               {block.text}
             </HeadingTag>
           );
@@ -267,8 +264,7 @@ export default function BlogMarkdown({
           return (
             <p
               key={`${block.type}-${index}`}
-              className="text-xs xs:text-sm sm:text-base md:text-lg text-gray-300 leading-relaxed"
-            >
+              className="text-xs xs:text-sm sm:text-base md:text-lg text-gray-300 leading-relaxed">
               {renderInline(block.text)}
             </p>
           );
@@ -278,8 +274,7 @@ export default function BlogMarkdown({
           return (
             <blockquote
               key={`${block.type}-${index}`}
-              className="rounded-2xl border border-white/10 bg-white/[0.03] p-4 xs:p-5 text-sm xs:text-base text-white/80 shadow-[0_20px_60px_rgba(0,0,0,0.25)]"
-            >
+              className="rounded-2xl border border-white/10 bg-white/[0.03] p-4 xs:p-5 text-sm xs:text-base text-white/80 shadow-[0_20px_60px_rgba(0,0,0,0.25)]">
               <div className="border-l-2 border-[var(--home-accent)] pl-4 leading-relaxed">
                 {renderInline(block.text)}
               </div>
@@ -291,8 +286,7 @@ export default function BlogMarkdown({
           return (
             <ul
               key={`${block.type}-${index}`}
-              className="space-y-2 pl-5 text-xs xs:text-sm sm:text-base text-gray-300"
-            >
+              className="space-y-2 pl-5 text-xs xs:text-sm sm:text-base text-gray-300">
               {block.items.map((item, itemIndex) => (
                 <li key={`${block.type}-item-${index}-${itemIndex}`} className="list-disc">
                   {renderInline(item)}
@@ -306,8 +300,7 @@ export default function BlogMarkdown({
           return (
             <hr
               key={`${block.type}-${index}`}
-              className="border-0 h-px bg-gradient-to-r from-transparent via-white/15 to-transparent my-8"
-            />
+              className="border-0 h-px bg-gradient-to-r from-transparent via-white/15 to-transparent my-8"/>
           );
         }
 
@@ -317,8 +310,7 @@ export default function BlogMarkdown({
           return (
             <div
               key={`${block.type}-${index}`}
-              className="relative overflow-hidden rounded-2xl border border-white/10 bg-[#07070b] shadow-[0_20px_60px_rgba(0,0,0,0.35)]"
-            >
+              className="relative overflow-hidden rounded-2xl border border-white/10 bg-[#07070b] shadow-[0_20px_60px_rgba(0,0,0,0.35)]">
               <div className="flex items-center justify-between gap-3 border-b border-white/10 bg-white/[0.02] px-4 py-2">
                 <div className="text-[10px] uppercase tracking-[0.3em] text-white/40">
                   {block.language || 'code'}
@@ -336,8 +328,7 @@ export default function BlogMarkdown({
                       }
                     }}
                     className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs text-white/70 transition hover:border-white/30 hover:text-white"
-                    aria-label="Copy code"
-                  >
+                    aria-label="Copy code">
                     {showCopied ? (
                       <>
                         <CopyCheck className="h-4 w-4" />

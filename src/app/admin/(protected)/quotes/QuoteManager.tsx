@@ -75,8 +75,7 @@ function Modal({
             type="button"
             onClick={onClose}
             aria-label="Close"
-            className="cursor-pointer inline-flex h-9 w-9 items-center justify-center rounded-full border border-white/10 text-white/60 hover:text-white hover:border-white/30"
-          >
+            className="cursor-pointer inline-flex h-9 w-9 items-center justify-center rounded-full border border-white/10 text-white/60 hover:text-white hover:border-white/30">
             <X className="h-4 w-4" />
           </button>
         </div>
@@ -141,8 +140,7 @@ export default function QuoteManager({
               setEditId(null);
               setCreateOpen(true);
             }}
-            className="px-8 py-3 rounded-xl bg-[var(--home-accent)] text-white font-bold text-xs uppercase tracking-widest hover:bg-[var(--home-accent-2)] transition-colors shadow-[0_0_20px_rgba(var(--home-accent-rgb),0.3)] hover:shadow-[0_0_30px_rgba(var(--home-accent-rgb),0.5)]"
-          >
+            className="px-8 py-3 rounded-xl bg-[var(--home-accent)] text-white font-bold text-xs uppercase tracking-widest hover:bg-[var(--home-accent-2)] transition-colors shadow-[0_0_20px_rgba(var(--home-accent-rgb),0.3)] hover:shadow-[0_0_30px_rgba(var(--home-accent-rgb),0.5)]">
             <Plus className="h-4 w-4" />
             Add quote
           </button>
@@ -158,8 +156,7 @@ export default function QuoteManager({
             value={listQuery}
             onChange={(event) => setListQuery(event.target.value)}
             placeholder="Search quote text, author, or date..."
-            className="flex-1 min-w-[220px] rounded-xl border border-white/10 bg-[#13131b] px-3 py-2 text-sm text-white placeholder-white/40 shadow-[0_0_0_1px_rgba(255,255,255,0.02)] focus:border-white/40 focus:outline-none"
-          />
+            className="flex-1 min-w-[220px] rounded-xl border border-white/10 bg-[#13131b] px-3 py-2 text-sm text-white placeholder-white/40 shadow-[0_0_0_1px_rgba(255,255,255,0.02)] focus:border-white/40 focus:outline-none"/>
           <span className="ml-auto text-sm text-white/50">
             Showing {filteredQuotes.length} / {quotes.length}
           </span>
@@ -232,8 +229,7 @@ export default function QuoteManager({
                             setCreateOpen(false);
                             setEditId(quote.id);
                           }}
-                          className="cursor-pointer inline-flex items-center gap-2 rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white/70 transition hover:border-[var(--home-accent)] hover:text-[var(--home-accent)] hover:bg-[var(--home-accent)]/10"
-                        >
+                          className="cursor-pointer inline-flex items-center gap-2 rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white/70 transition hover:border-[var(--home-accent)] hover:text-[var(--home-accent)] hover:bg-[var(--home-accent)]/10">
                           <Pencil className="h-4 w-4" />
                           Edit
                       </button>
@@ -244,14 +240,12 @@ export default function QuoteManager({
                           if (!confirm('Delete this quote? This cannot be undone.')) {
                             event.preventDefault();
                           }
-                        }}
-                      >
+                        }}>
                         <input type="hidden" name="redirect_to" value="/admin/quotes" />
                         <input type="hidden" name="id" value={quote.id} />
                         <AdminSubmitButton
                           pendingText="Deleting..."
-                          className="inline-flex items-center gap-2 rounded-lg border border-red-500/30 bg-red-500/10 px-3 py-2 text-sm text-red-400 transition hover:border-red-500/60 hover:text-red-300 hover:bg-red-500/20"
-                        >
+                          className="inline-flex items-center gap-2 rounded-lg border border-red-500/30 bg-red-500/10 px-3 py-2 text-sm text-red-400 transition hover:border-red-500/60 hover:text-red-300 hover:bg-red-500/20">
                           <Trash2 className="h-4 w-4" />
                           Delete
                         </AdminSubmitButton>
@@ -270,8 +264,7 @@ export default function QuoteManager({
         title="Add new quote"
         onClose={() => {
           setCreateOpen(false);
-        }}
-      >
+        }}>
         <form action={createQuote} className="grid gap-4">
           <input type="hidden" name="redirect_to" value="/admin/quotes" />
           <div>
@@ -316,8 +309,7 @@ export default function QuoteManager({
           </div>
           <AdminSubmitButton
             pendingText="Saving..."
-            className="w-full sm:w-auto px-8 py-3 rounded-xl bg-[var(--home-accent)] text-white font-bold text-xs uppercase tracking-widest hover:bg-[var(--home-accent-2)] transition-colors shadow-[0_0_20px_rgba(var(--home-accent-rgb),0.3)] hover:shadow-[0_0_30px_rgba(var(--home-accent-rgb),0.5)]"
-          >
+            className="w-full sm:w-auto px-8 py-3 rounded-xl bg-[var(--home-accent)] text-white font-bold text-xs uppercase tracking-widest hover:bg-[var(--home-accent-2)] transition-colors shadow-[0_0_20px_rgba(var(--home-accent-rgb),0.3)] hover:shadow-[0_0_30px_rgba(var(--home-accent-rgb),0.5)]">
             Submit
           </AdminSubmitButton>
         </form>
@@ -328,8 +320,7 @@ export default function QuoteManager({
         title="Edit quote"
         onClose={() => {
           setEditId(null);
-        }}
-      >
+        }}>
         {editingQuote && (
           <form action={updateQuote} className="grid gap-4" key={editingQuote.id}>
             <input type="hidden" name="redirect_to" value="/admin/quotes" />
@@ -341,8 +332,7 @@ export default function QuoteManager({
                 type="date"
                 required
                 defaultValue={formatDateInput(editingQuote.date)}
-                className={inputClassName}
-              />
+                className={inputClassName}/>
             </div>
             <div>
               <label className="text-xs font-mono uppercase tracking-widest text-white/40">Quote</label>
@@ -351,16 +341,14 @@ export default function QuoteManager({
                 required
                 rows={3}
                 defaultValue={editingQuote.text}
-                className={textareaClassName}
-              />
+                className={textareaClassName}/>
             </div>
             <div>
               <label className="text-xs font-mono uppercase tracking-widest text-white/40">Author</label>
               <input
                 name="author"
                 defaultValue={editingQuote.author ?? ''}
-                className={inputClassName}
-              />
+                className={inputClassName}/>
             </div>
             <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
               <p className="text-xs font-mono uppercase tracking-widest text-white/40">Post to</p>
@@ -374,8 +362,7 @@ export default function QuoteManager({
                     name="show_on_main"
                     value="true"
                     defaultChecked={resolveTargetValue(editingQuote.show_on_main)}
-                    className="h-4 w-4 accent-[var(--home-accent)]"
-                  />
+                    className="h-4 w-4 accent-[var(--home-accent)]"/>
                   MainPortofolio
                 </label>
                 <label className="inline-flex items-center gap-2 text-sm text-white/70">
@@ -384,16 +371,14 @@ export default function QuoteManager({
                     name="show_on_phion"
                     value="true"
                     defaultChecked={resolveTargetValue(editingQuote.show_on_phion)}
-                    className="h-4 w-4 accent-[var(--home-accent)]"
-                  />
+                    className="h-4 w-4 accent-[var(--home-accent)]"/>
                   PhionPortofolio
                 </label>
               </div>
             </div>
             <AdminSubmitButton
               pendingText="Saving..."
-              className="w-full sm:w-auto px-8 py-3 rounded-xl bg-[var(--home-accent)] text-white font-bold text-xs uppercase tracking-widest hover:bg-[var(--home-accent-2)] transition-colors shadow-[0_0_20px_rgba(var(--home-accent-rgb),0.3)] hover:shadow-[0_0_30px_rgba(var(--home-accent-rgb),0.5)]"
-            >
+              className="w-full sm:w-auto px-8 py-3 rounded-xl bg-[var(--home-accent)] text-white font-bold text-xs uppercase tracking-widest hover:bg-[var(--home-accent-2)] transition-colors shadow-[0_0_20px_rgba(var(--home-accent-rgb),0.3)] hover:shadow-[0_0_30px_rgba(var(--home-accent-rgb),0.5)]">
               Submit
             </AdminSubmitButton>
           </form>

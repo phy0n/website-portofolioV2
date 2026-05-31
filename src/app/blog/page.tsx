@@ -209,8 +209,7 @@ export default async function BlogPage({
                   <summary
                     className="list-none inline-flex h-9 w-9 cursor-pointer select-none self-end items-center justify-center rounded-full border border-white/10 bg-white/[0.06] text-lg font-semibold leading-none text-white/70 transition hover:border-white/20 hover:bg-white/[0.08] hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-white/30 [&::-webkit-details-marker]:hidden"
                     aria-label="Add quote"
-                    title="Add quote"
-                  >
+                    title="Add quote">
                     +
                   </summary>
                   <form action={createQuote} className="mt-4 w-full space-y-3">
@@ -221,8 +220,7 @@ export default async function BlogPage({
                           type="date"
                           name="date"
                           defaultValue={today}
-                          className="block w-full rounded-2xl border border-white/10 bg-black/40 px-3 py-2 text-xs text-white/80 outline-none focus:border-white/20"
-                        />
+                          className="block w-full rounded-2xl border border-white/10 bg-black/40 px-3 py-2 text-xs text-white/80 outline-none focus:border-white/20"/>
                       </div>
                       <div className="space-y-1">
                         <label className="text-[10px] uppercase tracking-[0.3em] text-white/40">
@@ -233,8 +231,7 @@ export default async function BlogPage({
                           name="author"
                           placeholder="Anonymous"
                           className="block w-full rounded-2xl border border-white/10 bg-black/40 px-3 py-2 text-xs text-white/80 placeholder:text-white/30 outline-none focus:border-white/20"
-                          maxLength={80}
-                        />
+                          maxLength={80}/>
                       </div>
                     </div>
 
@@ -243,8 +240,7 @@ export default async function BlogPage({
                       placeholder="Write a quote…"
                       rows={3}
                       maxLength={400}
-                      className="w-full resize-none rounded-2xl border border-white/10 bg-black/40 px-3 py-2 text-xs text-white/80 placeholder:text-white/30 outline-none focus:border-white/20"
-                    />
+                      className="w-full resize-none rounded-2xl border border-white/10 bg-black/40 px-3 py-2 text-xs text-white/80 placeholder:text-white/30 outline-none focus:border-white/20"/>
 
                     <div className="flex flex-wrap items-center gap-4">
                       <label className="inline-flex items-center gap-2 text-xs text-white/70">
@@ -253,8 +249,7 @@ export default async function BlogPage({
                           name="show_on_main"
                           value="true"
                           defaultChecked
-                          className="h-4 w-4 rounded border-white/20 bg-black/40"
-                        />
+                          className="h-4 w-4 rounded border-white/20 bg-black/40"/>
                         Show on Main
                       </label>
                       <label className="inline-flex items-center gap-2 text-xs text-white/70">
@@ -263,16 +258,14 @@ export default async function BlogPage({
                           name="show_on_phion"
                           value="true"
                           defaultChecked
-                          className="h-4 w-4 rounded border-white/20 bg-black/40"
-                        />
+                          className="h-4 w-4 rounded border-white/20 bg-black/40"/>
                         Show on Phion
                       </label>
                     </div>
 
                     <button
                       type="submit"
-                      className="inline-flex w-full items-center justify-center rounded-2xl border border-white/10 bg-white/[0.06] px-4 py-2.5 text-xs font-semibold text-white hover:border-white/20 hover:bg-white/[0.08]"
-                    >
+                      className="inline-flex w-full items-center justify-center rounded-2xl border border-white/10 bg-white/[0.06] px-4 py-2.5 text-xs font-semibold text-white hover:border-white/20 hover:bg-white/[0.08]">
                       Add Quote
                     </button>
                   </form>
@@ -293,8 +286,7 @@ export default async function BlogPage({
                             <input type="hidden" name="id" value={quote.id} />
                             <button
                               type="submit"
-                              className="inline-flex items-center justify-center rounded-full border border-white/10 bg-white/[0.06] px-3 py-1.5 text-[11px] font-semibold text-white/70 hover:border-white/20 hover:text-white"
-                            >
+                              className="inline-flex items-center justify-center rounded-full border border-white/10 bg-white/[0.06] px-3 py-1.5 text-[11px] font-semibold text-white/70 hover:border-white/20 hover:text-white">
                               Delete
                             </button>
                           </form>

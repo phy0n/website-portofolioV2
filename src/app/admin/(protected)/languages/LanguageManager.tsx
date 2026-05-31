@@ -86,8 +86,7 @@ function Modal({
             type="button"
             onClick={onClose}
             aria-label="Close"
-            className="cursor-pointer inline-flex h-9 w-9 items-center justify-center rounded-full border border-white/10 text-white/60 hover:text-white hover:border-white/30"
-          >
+            className="cursor-pointer inline-flex h-9 w-9 items-center justify-center rounded-full border border-white/10 text-white/60 hover:text-white hover:border-white/30">
             <X className="h-4 w-4" />
           </button>
         </div>
@@ -155,8 +154,7 @@ export default function LanguageManager({
         <button
           type="button"
           onClick={() => setCreateOpen(true)}
-          className="cursor-pointer inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-5 py-2.5 text-sm text-white/80 transition hover:border-white/30 hover:bg-white/10 hover:text-white"
-        >
+          className="cursor-pointer inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-5 py-2.5 text-sm text-white/80 transition hover:border-white/30 hover:bg-white/10 hover:text-white">
           <Plus className="h-4 w-4" />
           New language
         </button>
@@ -174,8 +172,7 @@ export default function LanguageManager({
             value={listQuery}
             onChange={(event) => setListQuery(event.target.value)}
             placeholder="Search language name or label..."
-            className="flex-1 min-w-[220px] rounded-xl border border-white/10 bg-[#13131b] px-3 py-2 text-sm text-white placeholder-white/40 shadow-[0_0_0_1px_rgba(255,255,255,0.02)] focus:border-white/40 focus:outline-none"
-          />
+            className="flex-1 min-w-[220px] rounded-xl border border-white/10 bg-[#13131b] px-3 py-2 text-sm text-white placeholder-white/40 shadow-[0_0_0_1px_rgba(255,255,255,0.02)] focus:border-white/40 focus:outline-none"/>
           <span className="ml-auto text-sm text-white/50">
             Showing {filteredLanguages.length} / {languages.length}
           </span>
@@ -258,8 +255,7 @@ export default function LanguageManager({
                         <button
                           type="button"
                           onClick={() => setEditId(language.id)}
-                          className="cursor-pointer inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-xs text-white/70 transition hover:border-white/30 hover:bg-white/10 hover:text-white"
-                        >
+                          className="cursor-pointer inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-xs text-white/70 transition hover:border-white/30 hover:bg-white/10 hover:text-white">
                           <Pencil className="h-3.5 w-3.5" />
                           Edit
                         </button>
@@ -268,8 +264,7 @@ export default function LanguageManager({
                           <input type="hidden" name="id" value={language.id} />
                           <AdminSubmitButton
                             pendingText="Deleting..."
-                            className="group inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-xs text-white/70 transition hover:border-white/30 hover:bg-white/10 hover:text-white"
-                          >
+                            className="group inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-xs text-white/70 transition hover:border-white/30 hover:bg-white/10 hover:text-white">
                             <Trash2 className="h-3.5 w-3.5 text-rose-300" />
                             Delete
                           </AdminSubmitButton>
@@ -300,8 +295,7 @@ export default function LanguageManager({
                 required
                 defaultValue="Intermediate"
                 className={inputClassName}
-                style={selectControlStyle}
-              >
+                style={selectControlStyle}>
                 {languageLabelOptions.map((option) => (
                   <option key={option} value={option} className="bg-[#13131b] text-white">
                     {option}
@@ -320,8 +314,7 @@ export default function LanguageManager({
                 min={0}
                 max={100}
                 defaultValue={50}
-                className={inputClassName}
-              />
+                className={inputClassName}/>
             </div>
             <div>
               <label className="text-xs uppercase tracking-[0.3em] text-white/50">Sort order</label>
@@ -336,8 +329,7 @@ export default function LanguageManager({
                   name="is_published"
                   defaultValue="published"
                   className={inputClassName}
-                  style={selectControlStyle}
-                >
+                  style={selectControlStyle}>
                   <option value="published" className="bg-[#13131b] text-white">
                     Published
                   </option>
@@ -362,14 +354,12 @@ export default function LanguageManager({
             <button
               type="button"
               onClick={() => setCreateOpen(false)}
-              className="cursor-pointer inline-flex items-center justify-center rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-sm text-white/70 transition hover:border-white/30 hover:bg-white/10 hover:text-white"
-            >
+              className="cursor-pointer inline-flex items-center justify-center rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-sm text-white/70 transition hover:border-white/30 hover:bg-white/10 hover:text-white">
               Cancel
             </button>
             <AdminSubmitButton
               pendingText="Creating..."
-              className="px-8 py-3 rounded-xl bg-[var(--home-accent)] text-white font-bold text-xs uppercase tracking-widest hover:bg-[var(--home-accent-2)] transition-colors shadow-[0_0_20px_rgba(var(--home-accent-rgb),0.3)] hover:shadow-[0_0_30px_rgba(var(--home-accent-rgb),0.5)]"
-            >
+              className="px-8 py-3 rounded-xl bg-[var(--home-accent)] text-white font-bold text-xs uppercase tracking-widest hover:bg-[var(--home-accent-2)] transition-colors shadow-[0_0_20px_rgba(var(--home-accent-rgb),0.3)] hover:shadow-[0_0_30px_rgba(var(--home-accent-rgb),0.5)]">
               Create
             </AdminSubmitButton>
           </div>
@@ -379,8 +369,7 @@ export default function LanguageManager({
       <Modal
         open={Boolean(editingLanguage)}
         title={editingLanguage ? `Edit: ${editingLanguage.name}` : 'Edit language'}
-        onClose={() => setEditId(null)}
-      >
+        onClose={() => setEditId(null)}>
         {editingLanguage ? (
           <form action={updateLanguage} className="space-y-5">
             <input type="hidden" name="redirect_to" value="/admin/languages" />
@@ -394,8 +383,7 @@ export default function LanguageManager({
                   required
                   defaultValue={editingLanguage.name}
                   className={inputClassName}
-                  maxLength={80}
-                />
+                  maxLength={80}/>
               </div>
               <div>
                 <label className="text-xs uppercase tracking-[0.3em] text-white/50">Label</label>
@@ -404,8 +392,7 @@ export default function LanguageManager({
                   required
                   defaultValue={editingLanguage.label}
                   className={inputClassName}
-                  style={selectControlStyle}
-                >
+                  style={selectControlStyle}>
                   {resolveLabelOptions(editingLanguage.label).map((option) => (
                     <option key={option} value={option} className="bg-[#13131b] text-white">
                       {option}
@@ -424,8 +411,7 @@ export default function LanguageManager({
                   min={0}
                   max={100}
                   defaultValue={formatLevel(editingLanguage.level)}
-                  className={inputClassName}
-                />
+                  className={inputClassName}/>
               </div>
               <div>
                 <label className="text-xs uppercase tracking-[0.3em] text-white/50">Sort order</label>
@@ -433,8 +419,7 @@ export default function LanguageManager({
                   name="sort_order"
                   type="number"
                   defaultValue={formatSortOrder(editingLanguage.sort_order)}
-                  className={inputClassName}
-                />
+                  className={inputClassName}/>
               </div>
             </div>
 
@@ -445,8 +430,7 @@ export default function LanguageManager({
                   name="is_published"
                   defaultValue={resolvePublishValue(editingLanguage.is_published) ? 'published' : 'draft'}
                   className={inputClassName}
-                  style={selectControlStyle}
-                >
+                  style={selectControlStyle}>
                   <option value="published" className="bg-[#13131b] text-white">
                     Published
                   </option>
@@ -462,8 +446,7 @@ export default function LanguageManager({
                     name="show_on_main"
                     value="true"
                     defaultChecked={resolveTargetValue(editingLanguage.show_on_main)}
-                    className="h-4 w-4 rounded border-white/20 bg-black/40"
-                  />
+                    className="h-4 w-4 rounded border-white/20 bg-black/40"/>
                   Show on Main
                 </label>
                 <label className="inline-flex items-center gap-2 text-sm text-white/70">
@@ -472,8 +455,7 @@ export default function LanguageManager({
                     name="show_on_phion"
                     value="true"
                     defaultChecked={resolveTargetValue(editingLanguage.show_on_phion)}
-                    className="h-4 w-4 rounded border-white/20 bg-black/40"
-                  />
+                    className="h-4 w-4 rounded border-white/20 bg-black/40"/>
                   Show on Phion
                 </label>
               </div>
@@ -483,14 +465,12 @@ export default function LanguageManager({
               <button
                 type="button"
                 onClick={() => setEditId(null)}
-                className="cursor-pointer inline-flex items-center justify-center rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-sm text-white/70 transition hover:border-white/30 hover:bg-white/10 hover:text-white"
-              >
+                className="cursor-pointer inline-flex items-center justify-center rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-sm text-white/70 transition hover:border-white/30 hover:bg-white/10 hover:text-white">
                 Cancel
               </button>
               <AdminSubmitButton
                 pendingText="Saving..."
-                className="px-8 py-3 rounded-xl bg-[var(--home-accent)] text-white font-bold text-xs uppercase tracking-widest hover:bg-[var(--home-accent-2)] transition-colors shadow-[0_0_20px_rgba(var(--home-accent-rgb),0.3)] hover:shadow-[0_0_30px_rgba(var(--home-accent-rgb),0.5)]"
-              >
+                className="px-8 py-3 rounded-xl bg-[var(--home-accent)] text-white font-bold text-xs uppercase tracking-widest hover:bg-[var(--home-accent-2)] transition-colors shadow-[0_0_20px_rgba(var(--home-accent-rgb),0.3)] hover:shadow-[0_0_30px_rgba(var(--home-accent-rgb),0.5)]">
                 Save changes
               </AdminSubmitButton>
             </div>

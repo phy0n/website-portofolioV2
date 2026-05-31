@@ -92,8 +92,7 @@ const SpotifyCard = ({
             href={spotify.songUrl}
             target="_blank"
             rel="noreferrer"
-            className="text-[11px] uppercase tracking-[0.35em] text-[var(--home-muted)] transition hover:text-[#1DB954]"
-          >
+            className="text-[11px] uppercase tracking-[0.35em] text-[var(--home-muted)] transition hover:text-[#1DB954]">
             Open
           </a>
         ) : null}
@@ -107,8 +106,7 @@ const SpotifyCard = ({
               alt={`Album art for ${spotify.song}`}
               fill
               sizes="56px"
-              className="object-cover"
-            />
+              className="object-cover"/>
           ) : (
             <div className="flex h-full w-full items-center justify-center text-[#1DB954]">
               <FaSpotify className="h-6 w-6" />
@@ -123,8 +121,7 @@ const SpotifyCard = ({
               target="_blank"
               rel="noreferrer"
               className="block truncate text-sm font-semibold text-[var(--home-ink)] transition hover:text-white"
-              title={spotify.song}
-            >
+              title={spotify.song}>
               {spotify.song}
             </a>
           ) : (
@@ -181,8 +178,7 @@ const ActivityCard = ({ activity, now }: { activity: DiscordActivity; now: numbe
               alt={activity.assets?.largeText ?? `Activity artwork for ${activity.name}`}
               fill
               sizes="56px"
-              className="object-cover"
-            />
+              className="object-cover"/>
           ) : (
             <div className="flex h-full w-full items-center justify-center text-[var(--home-muted)]">
               <Icon className="h-6 w-6" />

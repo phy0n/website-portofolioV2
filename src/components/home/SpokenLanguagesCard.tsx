@@ -44,8 +44,7 @@ export default function SpokenLanguagesCard({ className }: { className?: string 
                       aria-label={`${language.name} proficiency`}
                       aria-valuemin={0}
                       aria-valuemax={100}
-                      aria-valuenow={level}
-                    >
+                      aria-valuenow={level}>
                       <div
                         className="h-full rounded-full bg-[var(--accent)] shadow-[0_0_10px_rgba(209,74,74,0.35)]"
                         style={{ width: `${level}%` }}

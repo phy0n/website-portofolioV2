@@ -99,8 +99,7 @@ function Modal({
             type="button"
             onClick={onClose}
             aria-label="Close"
-            className="cursor-pointer inline-flex h-9 w-9 items-center justify-center rounded-full border border-white/10 text-white/60 hover:text-white hover:border-white/30"
-          >
+            className="cursor-pointer inline-flex h-9 w-9 items-center justify-center rounded-full border border-white/10 text-white/60 hover:text-white hover:border-white/30">
             <X className="h-4 w-4" />
           </button>
         </div>
@@ -162,8 +161,7 @@ export default function ProjectManager({
             setEditId(null);
             setCreateOpen(true);
           }}
-          className="cursor-pointer inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-5 py-2.5 text-sm text-white/80 transition hover:border-white/30 hover:bg-white/10 hover:text-white"
-        >
+          className="cursor-pointer inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-5 py-2.5 text-sm text-white/80 transition hover:border-white/30 hover:bg-white/10 hover:text-white">
           <Plus className="h-4 w-4" />
           New project
         </button>
@@ -181,8 +179,7 @@ export default function ProjectManager({
             value={listQuery}
             onChange={(event) => setListQuery(event.target.value)}
             placeholder="Search title, tags, status..."
-            className="flex-1 min-w-[220px] rounded-xl border border-white/10 bg-[#13131b] px-3 py-2 text-sm text-white placeholder-white/40 shadow-[0_0_0_1px_rgba(255,255,255,0.02)] focus:border-white/40 focus:outline-none"
-          />
+            className="flex-1 min-w-[220px] rounded-xl border border-white/10 bg-[#13131b] px-3 py-2 text-sm text-white placeholder-white/40 shadow-[0_0_0_1px_rgba(255,255,255,0.02)] focus:border-white/40 focus:outline-none"/>
           <span className="ml-auto text-sm text-white/50">
             Showing {filteredProjects.length} / {projects.length}
           </span>
@@ -229,8 +226,7 @@ export default function ProjectManager({
                         href={project.link}
                         target="_blank"
                         rel="noreferrer"
-                        className="text-white/70 hover:text-white underline underline-offset-4"
-                      >
+                        className="text-white/70 hover:text-white underline underline-offset-4">
                         {project.link}
                       </a>
                     </td>
@@ -242,8 +238,7 @@ export default function ProjectManager({
                           isPublished
                             ? 'border-emerald-400/30 bg-emerald-500/10 text-emerald-200'
                             : 'border-amber-400/30 bg-amber-500/10 text-amber-200'
-                        }`}
-                      >
+                        }`}>
                         {isPublished ? 'Published' : 'Draft'}
                       </span>
                     </td>
@@ -276,8 +271,7 @@ export default function ProjectManager({
                             setCreateOpen(false);
                             setEditId(project.id);
                           }}
-                          className="cursor-pointer inline-flex items-center gap-2 rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white/70 transition hover:border-[var(--home-accent)] hover:text-[var(--home-accent)] hover:bg-[var(--home-accent)]/10"
-                        >
+                          className="cursor-pointer inline-flex items-center gap-2 rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white/70 transition hover:border-[var(--home-accent)] hover:text-[var(--home-accent)] hover:bg-[var(--home-accent)]/10">
                           <Pencil className="h-4 w-4" />
                           Edit
                         </button>
@@ -288,14 +282,12 @@ export default function ProjectManager({
                             if (!confirm('Delete this project? This cannot be undone.')) {
                               event.preventDefault();
                             }
-                          }}
-                        >
+                          }}>
                           <input type="hidden" name="id" value={project.id} />
                           <input type="hidden" name="redirect_to" value="/admin/projects" />
                           <AdminSubmitButton
                             pendingText="Deleting..."
-                            className="inline-flex items-center gap-2 rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white/70 transition hover:border-red-400/40 hover:text-red-100 hover:bg-red-500/10"
-                          >
+                            className="inline-flex items-center gap-2 rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white/70 transition hover:border-red-400/40 hover:text-red-100 hover:bg-red-500/10">
                             <Trash2 className="h-4 w-4" />
                             Delete
                           </AdminSubmitButton>
@@ -389,14 +381,12 @@ export default function ProjectManager({
             <button
               type="button"
               onClick={() => setCreateOpen(false)}
-              className="px-6 py-3 rounded-xl border border-white/10 bg-transparent text-white/60 font-mono text-xs uppercase tracking-widest hover:bg-white/5 hover:text-white transition-colors"
-            >
+              className="px-6 py-3 rounded-xl border border-white/10 bg-transparent text-white/60 font-mono text-xs uppercase tracking-widest hover:bg-white/5 hover:text-white transition-colors">
               Cancel
             </button>
             <AdminSubmitButton
               pendingText="Creating..."
-              className="px-8 py-3 rounded-xl bg-[var(--home-accent)] text-white font-bold text-xs uppercase tracking-widest hover:bg-[var(--home-accent-2)] transition-colors shadow-[0_0_20px_rgba(var(--home-accent-rgb),0.3)] hover:shadow-[0_0_30px_rgba(var(--home-accent-rgb),0.5)]"
-            >
+              className="px-8 py-3 rounded-xl bg-[var(--home-accent)] text-white font-bold text-xs uppercase tracking-widest hover:bg-[var(--home-accent-2)] transition-colors shadow-[0_0_20px_rgba(var(--home-accent-rgb),0.3)] hover:shadow-[0_0_30px_rgba(var(--home-accent-rgb),0.5)]">
               Create
             </AdminSubmitButton>
           </div>
@@ -406,8 +396,7 @@ export default function ProjectManager({
       <Modal
         open={Boolean(editingProject)}
         title="Edit project"
-        onClose={() => setEditId(null)}
-      >
+        onClose={() => setEditId(null)}>
         {editingProject && (
           <form action={updateProject} className="space-y-5">
             <input type="hidden" name="redirect_to" value="/admin/projects" />
@@ -440,8 +429,7 @@ export default function ProjectManager({
                   name="sort_order"
                   type="number"
                   defaultValue={formatSortOrder(editingProject.sort_order)}
-                  className={inputClassName}
-                />
+                  className={inputClassName}/>
               </div>
             </div>
 
@@ -452,8 +440,7 @@ export default function ProjectManager({
                 rows={4}
                 defaultValue={editingProject.description}
                 className={textareaClassName}
-                required
-              />
+                required/>
             </div>
 
             <details className="rounded-2xl border border-white/10 bg-white/5 p-4">
@@ -463,8 +450,7 @@ export default function ProjectManager({
                 <IconPicker
                   name="icon"
                   options={PROJECT_ICON_OPTIONS}
-                  defaultValue={editingProject.icon ?? 'Monitor'}
-                />
+                  defaultValue={editingProject.icon ?? 'Monitor'}/>
               </div>
             </details>
 
@@ -476,8 +462,7 @@ export default function ProjectManager({
                     type="radio"
                     name="is_published"
                     value="published"
-                    defaultChecked={resolvePublishValue(editingProject.is_published)}
-                  />
+                    defaultChecked={resolvePublishValue(editingProject.is_published)}/>
                   Published
                 </label>
                 <label className="inline-flex items-center gap-2">
@@ -485,8 +470,7 @@ export default function ProjectManager({
                     type="radio"
                     name="is_published"
                     value="draft"
-                    defaultChecked={!resolvePublishValue(editingProject.is_published)}
-                  />
+                    defaultChecked={!resolvePublishValue(editingProject.is_published)}/>
                   Draft
                 </label>
               </div>
@@ -500,8 +484,7 @@ export default function ProjectManager({
                     type="checkbox"
                     name="show_on_main"
                     value="true"
-                    defaultChecked={resolveTargetValue(editingProject.show_on_main)}
-                  />
+                    defaultChecked={resolveTargetValue(editingProject.show_on_main)}/>
                   Main
                 </label>
                 <label className="inline-flex items-center gap-2">
@@ -509,8 +492,7 @@ export default function ProjectManager({
                     type="checkbox"
                     name="show_on_phion"
                     value="true"
-                    defaultChecked={resolveTargetValue(editingProject.show_on_phion)}
-                  />
+                    defaultChecked={resolveTargetValue(editingProject.show_on_phion)}/>
                   Phion
                 </label>
               </div>
@@ -520,14 +502,12 @@ export default function ProjectManager({
               <button
                 type="button"
                 onClick={() => setEditId(null)}
-                className="px-6 py-3 rounded-xl border border-white/10 bg-transparent text-white/60 font-mono text-xs uppercase tracking-widest hover:bg-white/5 hover:text-white transition-colors"
-              >
+                className="px-6 py-3 rounded-xl border border-white/10 bg-transparent text-white/60 font-mono text-xs uppercase tracking-widest hover:bg-white/5 hover:text-white transition-colors">
                 Cancel
               </button>
               <AdminSubmitButton
                 pendingText="Saving..."
-                className="px-8 py-3 rounded-xl bg-[var(--home-accent)] text-white font-bold text-xs uppercase tracking-widest hover:bg-[var(--home-accent-2)] transition-colors shadow-[0_0_20px_rgba(var(--home-accent-rgb),0.3)] hover:shadow-[0_0_30px_rgba(var(--home-accent-rgb),0.5)]"
-              >
+                className="px-8 py-3 rounded-xl bg-[var(--home-accent)] text-white font-bold text-xs uppercase tracking-widest hover:bg-[var(--home-accent-2)] transition-colors shadow-[0_0_20px_rgba(var(--home-accent-rgb),0.3)] hover:shadow-[0_0_30px_rgba(var(--home-accent-rgb),0.5)]">
                 Save
               </AdminSubmitButton>
             </div>

@@ -10,8 +10,7 @@ export default function Loading() {
         {Array.from({ length: 5 }).map((_, index) => (
           <div
             key={`metric-${index}`}
-            className="rounded-2xl border border-white/10 bg-white/5 p-5 shadow-[0_20px_60px_rgba(0,0,0,0.35)]"
-          >
+            className="rounded-2xl border border-white/10 bg-white/5 p-5 shadow-[0_20px_60px_rgba(0,0,0,0.35)]">
             <div className="h-3 w-20 rounded-full bg-white/10 animate-pulse" />
             <div className="mt-4 h-7 w-16 rounded-full bg-white/10 animate-pulse" />
           </div>

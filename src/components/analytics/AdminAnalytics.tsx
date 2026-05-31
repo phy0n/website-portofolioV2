@@ -171,8 +171,7 @@ export default function AdminAnalytics({
               type="button"
               onClick={() => setRange(option)}
               className={`admin-analytics-range-button cursor-pointer ${range === option ? 'is-active' : ''}`}
-              aria-pressed={range === option}
-            >
+              aria-pressed={range === option}>
               {option}
             </button>
           ))}
@@ -190,8 +189,7 @@ export default function AdminAnalytics({
             {Array.from({ length: 3 }).map((_, index) => (
               <div
                 key={`metric-skeleton-${index}`}
-                className="rounded-2xl border border-white/10 bg-white/5 p-5 shadow-[0_20px_60px_rgba(0,0,0,0.35)]"
-              >
+                className="rounded-2xl border border-white/10 bg-white/5 p-5 shadow-[0_20px_60px_rgba(0,0,0,0.35)]">
                 <div className="h-3 w-32 rounded-full bg-white/10 animate-pulse" />
                 <div className="mt-4 h-7 w-16 rounded-full bg-white/10 animate-pulse" />
                 <div className="mt-3 h-3 w-24 rounded-full bg-white/10 animate-pulse" />
@@ -242,8 +240,7 @@ export default function AdminAnalytics({
             ].map((metricItem) => (
               <div
                 key={metricItem.label}
-                className="rounded-2xl border border-white/10 bg-white/5 p-5 shadow-[0_20px_60px_rgba(0,0,0,0.35)]"
-              >
+                className="rounded-2xl border border-white/10 bg-white/5 p-5 shadow-[0_20px_60px_rgba(0,0,0,0.35)]">
                 <p className="text-xs uppercase tracking-[0.3em] text-white/40">
                   {metricItem.label}
                 </p>
@@ -296,15 +293,13 @@ export default function AdminAnalytics({
             </div>
             <div
               className="mt-3 grid text-[10px] text-white/40"
-              style={{ gridTemplateColumns: `repeat(${labels.length || 1}, minmax(0, 1fr))` }}
-            >
+              style={{ gridTemplateColumns: `repeat(${labels.length || 1}, minmax(0, 1fr))` }}>
               {labels.map((label, index) => (
                 <span
                   key={`${label}-${index}`}
                   className={`text-center ${
                     index % labelStep === 0 ? 'opacity-100' : 'opacity-0'
-                  }`}
-                >
+                  }`}>
                   {label}
                 </span>
               ))}

@@ -373,8 +373,7 @@ export default function BlogDetailClient({
       { autoAlpha: 0, x: xOffset, filter: prefersReducedMotion ? 'none' : 'blur(10px)' },
       { autoAlpha: 1, x: 0, filter: 'blur(0px)', duration: prefersReducedMotion ? 0.25 : 0.6, ease: 'power3.out' }
     );
-    
-    // Auto scroll to top when chapter changes (after first load)
+
     if (activeChapterIndex !== 0 || isNext) {
         window.scrollTo({ top: 0, behavior: 'smooth' });
     }
@@ -433,7 +432,7 @@ export default function BlogDetailClient({
         return;
       }
     } catch {
-      // ignore share errors; fallback to copy
+      // ignore 
     }
     await onCopyLink();
   };
@@ -467,8 +466,7 @@ export default function BlogDetailClient({
           <p className="text-[var(--home-muted)]">The story you&apos;re looking for doesn&apos;t exist.</p>
           <Link
             href="/blog"
-            className="inline-flex items-center gap-2 px-6 py-3 border border-white/10 hover:border-[var(--home-accent)] transition-colors text-white"
-          >
+            className="inline-flex items-center gap-2 px-6 py-3 border border-white/10 hover:border-[var(--home-accent)] transition-colors text-white">
             <ArrowLeft className="w-4 h-4" />
             Back to Journal
           </Link>
@@ -481,13 +479,11 @@ export default function BlogDetailClient({
     <div
       ref={pageRef}
       className="home-portfolio min-h-screen bg-[var(--home-bg)] text-[var(--home-ink)] font-nunito relative selection:bg-[var(--home-accent)] selection:text-white pb-24"
-      data-page-content
-    >
+      data-page-content>
       <div className="fixed top-0 left-0 right-0 z-50 h-1 bg-white/5">
         <div
           className="h-full bg-gradient-to-r from-[var(--home-accent)] to-[var(--home-accent-2)] transition-all duration-150"
-          style={{ width: `${readingProgress}%` }}
-        />
+          style={{ width: `${readingProgress}%` }}/>
       </div>
 
       {toast && (
@@ -501,21 +497,16 @@ export default function BlogDetailClient({
           type="button"
           onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
           className="fixed bottom-6 right-6 z-40 inline-flex h-11 w-11 items-center justify-center rounded-full border border-white/10 bg-black/70 text-white/80 backdrop-blur-xl transition hover:border-white/30 hover:text-white shadow-xl"
-          aria-label="Back to top"
-        >
+          aria-label="Back to top">
           <ArrowUp className="h-5 w-5" />
         </button>
       )}
 
-      {/* Book Container */}
       <div className="relative mx-auto w-full max-w-4xl px-4 sm:px-6 py-12 md:py-20">
-        
-        {/* Top Minimalist Nav */}
         <div className="mb-16 flex items-center justify-between" data-gsap="reveal">
           <Link
             href="/blog"
-            className="group flex items-center gap-3 text-xs uppercase tracking-widest text-white/40 hover:text-white transition-colors"
-          >
+            className="group flex items-center gap-3 text-xs uppercase tracking-widest text-white/40 hover:text-white transition-colors">
             <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
             <span>Close Book</span>
           </Link>
@@ -524,28 +515,24 @@ export default function BlogDetailClient({
             <button
               onClick={onToggleSaved}
               className="p-2 text-white/40 hover:text-white hover:bg-white/5 rounded-full transition-colors"
-              title={saved ? "Remove from reading list" : "Save to reading list"}
-            >
+              title={saved ? "Remove from reading list" : "Save to reading list"}>
               {saved ? <BookmarkCheck className="w-4 h-4 text-[var(--home-accent)]" /> : <Bookmark className="w-4 h-4" />}
             </button>
             <button
               onClick={onCopyLink}
               className="p-2 text-white/40 hover:text-white hover:bg-white/5 rounded-full transition-colors"
-              title="Copy link"
-            >
+              title="Copy link">
               <Link2 className="w-4 h-4" />
             </button>
             <button
               onClick={onShare}
               className="p-2 text-white/40 hover:text-white hover:bg-white/5 rounded-full transition-colors"
-              title="Share"
-            >
+              title="Share">
               <Share2 className="w-4 h-4" />
             </button>
           </div>
         </div>
 
-        {/* Header / Title */}
         <header className="mb-16 text-center" data-gsap="reveal">
           <div className="mb-6 flex justify-center">
             <span className="inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.3em] text-white/60 border border-white/10 rounded-full px-4 py-1.5">
@@ -567,18 +554,14 @@ export default function BlogDetailClient({
           </div>
         </header>
 
-        {/* Cover Image */}
         {coverImageSrc && (
           <div className="w-full aspect-[21/9] md:aspect-[2.35/1] overflow-hidden mb-16 rounded-2xl border border-white/5 bg-white/5 shadow-2xl" data-gsap="reveal">
              <img src={coverImageSrc} className="w-full h-full object-cover opacity-80 hover:opacity-100 transition-opacity duration-700" alt={blog.title} loading="eager" />
           </div>
         )}
 
-        {/* Content (The Book Pages) */}
         <article className="relative mx-auto max-w-2xl text-lg sm:text-xl leading-[1.8] sm:leading-[1.9] text-white/80 font-serif" ref={articleRef}>
           <div ref={chapterContentRef} className="book-page-content">
-            
-            {/* Excerpt acts as prologue on the first page */}
             {activeChapterIndex === 0 && blog.excerpt && (
               <p className="text-xl md:text-2xl italic text-white/60 mb-12 text-center leading-relaxed border-b border-white/10 pb-12">
                 "{blog.excerpt}"
@@ -588,8 +571,6 @@ export default function BlogDetailClient({
             <BlogMarkdown content={content} enableCodeCopy />
           </div>
         </article>
-
-        {/* Tags */}
         {blog.tags && blog.tags.length > 0 && (
            <div className="mt-16 pt-8 max-w-2xl mx-auto flex flex-wrap gap-2 justify-center border-t border-white/10" data-gsap="reveal">
              {blog.tags.map(tag => (
@@ -599,36 +580,27 @@ export default function BlogDetailClient({
              ))}
            </div>
         )}
-
-        {/* Chapter Navigation / Pagination */}
         {chapterCount > 1 && (
           <div className="mt-20 max-w-3xl mx-auto" data-gsap="reveal">
              <div className="flex items-center justify-between gap-4 bg-white/[0.02] border border-white/5 p-4 sm:p-8 rounded-3xl">
-               {/* Prev Button */}
                <button 
                   onClick={() => setChapter(activeChapterIndex - 1)} 
                   disabled={activeChapterIndex === 0}
-                  className={`group flex-1 flex flex-col items-start transition-opacity ${activeChapterIndex === 0 ? 'opacity-30 cursor-not-allowed' : 'hover:opacity-100 opacity-70'}`}
-               >
+                  className={`group flex-1 flex flex-col items-start transition-opacity ${activeChapterIndex === 0 ? 'opacity-30 cursor-not-allowed' : 'hover:opacity-100 opacity-70'}`}>
                   <span className="text-[10px] sm:text-xs font-mono uppercase tracking-widest text-white/40 mb-2 block">Previous Page</span>
                   <span className="text-base sm:text-xl font-serif text-white flex items-center gap-3">
                      <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" /> Chapter {activeChapterIndex}
                   </span>
                </button>
-
-               {/* Indicator */}
                <div className="px-4 text-center">
                  <span className="text-[10px] sm:text-xs font-mono uppercase tracking-widest text-[var(--home-accent)]">
                    {activeChapterIndex + 1} / {chapterCount}
                  </span>
                </div>
-
-               {/* Next Button */}
                <button 
                   onClick={() => setChapter(activeChapterIndex + 1)} 
                   disabled={activeChapterIndex === chapterCount - 1}
-                  className={`group flex-1 flex flex-col items-end transition-opacity ${activeChapterIndex === chapterCount - 1 ? 'opacity-30 cursor-not-allowed' : 'hover:opacity-100 opacity-70'}`}
-               >
+                  className={`group flex-1 flex flex-col items-end transition-opacity ${activeChapterIndex === chapterCount - 1 ? 'opacity-30 cursor-not-allowed' : 'hover:opacity-100 opacity-70'}`}>
                   <span className="text-[10px] sm:text-xs font-mono uppercase tracking-widest text-white/40 mb-2 block">Next Page</span>
                   <span className="text-base sm:text-xl font-serif text-white flex items-center gap-3">
                      Chapter {activeChapterIndex + 2} <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
@@ -638,7 +610,6 @@ export default function BlogDetailClient({
           </div>
         )}
 
-        {/* Related Stories - Book End */}
         {relatedBlogs.length > 0 && (
           <div className="mt-24 max-w-4xl mx-auto" data-gsap="reveal">
             <h3 className="text-center text-sm font-mono uppercase tracking-widest text-white/40 mb-10">Further Reading</h3>

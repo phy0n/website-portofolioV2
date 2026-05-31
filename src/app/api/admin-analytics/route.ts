@@ -176,9 +176,6 @@ export async function GET(request: Request) {
     response.headers.set('Cache-Control', 'no-store');
     return response;
   }
-
-  // If RPC exists but doesn't return expected keys, prefer fallback so UI still works.
-  // (Common when an older/truncated admin_analytics_report SQL was applied.)
   const rpcPayloadIncomplete = !reportError && reportData && !isValidRpcReport(rpcCandidate);
 
   const [pageViewsResult, directResult, referralResult] = await Promise.all([

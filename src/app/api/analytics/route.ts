@@ -154,10 +154,10 @@ const isPublicIpv4 = (ip: string) => {
   if (a === 169 && b === 254) return false;
   if (a === 172 && b >= 16 && b <= 31) return false;
   if (a === 192 && b === 168) return false;
-  if (a === 100 && b >= 64 && b <= 127) return false; // CGNAT 100.64.0.0/10
-  if (a === 192 && b === 0) return false; // 192.0.0.0/24 (incl. 192.0.2.0/24)
-  if (a === 198 && (b === 18 || b === 19)) return false; // 198.18.0.0/15
-  if (a >= 224) return false; // multicast + reserved
+  if (a === 100 && b >= 64 && b <= 127) return false; 
+  if (a === 192 && b === 0) return false; 
+  if (a === 198 && (b === 18 || b === 19)) return false; 
+  if (a >= 224) return false; 
 
   return true;
 };
@@ -167,11 +167,7 @@ const isPublicIpv6 = (ip: string) => {
   if (!normalized) return false;
   if (normalized === '::') return false;
   if (normalized === '::1') return false;
-
-  // Unique local addresses fc00::/7 (fc.. or fd..)
   if (normalized.startsWith('fc') || normalized.startsWith('fd')) return false;
-
-  // Link-local fe80::/10 (fe8.. to feb..)
   if (
     normalized.startsWith('fe8') ||
     normalized.startsWith('fe9') ||
@@ -180,8 +176,7 @@ const isPublicIpv6 = (ip: string) => {
   ) {
     return false;
   }
-
-  // Documentation 2001:db8::/32
+  
   if (normalized.startsWith('2001:db8') || normalized.startsWith('2001:0db8')) return false;
 
   return true;

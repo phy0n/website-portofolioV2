@@ -48,7 +48,6 @@ export default function AdminAnalyticsLineChart({
     const canvas = canvasRef.current;
     if (!canvas) return;
 
-    // Always recreate to avoid stale datasets/options when range changes.
     if (chartRef.current) {
       chartRef.current.destroy();
       chartRef.current = null;

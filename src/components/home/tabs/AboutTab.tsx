@@ -132,8 +132,7 @@ export default function AboutTab() {
           {LEARNING_ROADMAP.map((item, index) => (
             <div
               key={item.title}
-              className="js-reveal flex min-h-24 items-start gap-3 rounded-md border border-white/10 bg-white/[0.02] px-4 py-3"
-            >
+              className="js-reveal flex min-h-24 items-start gap-3 rounded-md border border-white/10 bg-white/[0.02] px-4 py-3">
               <span className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[var(--home-bg)] text-[var(--home-accent)] ring-1 ring-white/10">
                 {item.icon}
               </span>

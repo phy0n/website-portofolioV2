@@ -167,8 +167,7 @@ export function ChatPanel({
             type="button"
             onClick={onClose}
             className="rounded-full border border-white/10 p-2 text-white/70 transition hover:border-white/20 hover:text-white"
-            aria-label="Close chat"
-          >
+            aria-label="Close chat">
             <X className="h-4 w-4" />
           </button>
         ) : null}
@@ -221,8 +220,7 @@ export function ChatPanel({
               onClick={() => onReplyToChange(null)}
               className="rounded-full p-2 text-white/50 transition hover:bg-white/[0.06] hover:text-white"
               aria-label="Cancel reply"
-              title="Cancel reply"
-            >
+              title="Cancel reply">
               <X className="h-4 w-4" />
             </button>
           </div>
@@ -259,8 +257,7 @@ export function ChatPanel({
             type="button"
             onClick={onSend}
             disabled={!canSend}
-            className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-[var(--home-accent)] px-6 py-3 text-sm font-bold text-white transition hover:brightness-110 shadow-[0_0_15px_rgba(var(--home-accent-rgb),0.3)] disabled:cursor-not-allowed disabled:opacity-50 sm:w-28"
-          >
+            className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-[var(--home-accent)] px-6 py-3 text-sm font-bold text-white transition hover:brightness-110 shadow-[0_0_15px_rgba(var(--home-accent-rgb),0.3)] disabled:cursor-not-allowed disabled:opacity-50 sm:w-28">
             <Send className="h-4 w-4" />
             {sending ? '...' : 'Send'}
           </button>
@@ -475,8 +472,7 @@ export default function ChatSidebar() {
         type="button"
         onClick={() => setOpen(true)}
         className="lg:hidden fixed bottom-4 right-4 z-40 inline-flex items-center gap-2 rounded-full border border-white/10 bg-black/80 px-4 py-3 text-xs font-semibold uppercase tracking-[0.28em] text-white backdrop-blur transition hover:border-white/20"
-        aria-label="Open chat"
-      >
+        aria-label="Open chat">
         <MessageSquare className="h-4 w-4 text-[var(--home-accent)]" />
         Chat
       </button>
@@ -492,8 +488,7 @@ export default function ChatSidebar() {
           aria-label="Chat"
           className={`absolute bottom-0 left-0 right-0 h-[min(560px,85vh)] bg-black border-t border-white/10 shadow-2xl transition-transform duration-300 ${
             open ? 'translate-y-0' : 'translate-y-full'
-          }`}
-        >
+          }`}>
           <ChatPanel
             titleTag="Phion"
             messages={messages}

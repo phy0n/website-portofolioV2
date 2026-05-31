@@ -51,8 +51,7 @@ export default async function AdminProjectsPage({
       updateProject={updateProject}
       deleteProject={deleteProject}
       successMessage={successMessage}
-      errorMessage={errorMessage}
-    />
+      errorMessage={errorMessage}/>
   );
 }
 

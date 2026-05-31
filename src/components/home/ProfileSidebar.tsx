@@ -89,8 +89,7 @@ export default function ProfileSidebar({ avatarUrl, discordStatus, skills }: Pro
           {skills.map((skill) => (
             <span
               key={skill}
-              className="js-profile-item rounded-full border border-white/10 bg-black/30 px-3 py-1 text-xs text-[var(--home-muted)]"
-            >
+              className="js-profile-item rounded-full border border-white/10 bg-black/30 px-3 py-1 text-xs text-[var(--home-muted)]">
               {skill}
             </span>
           ))}

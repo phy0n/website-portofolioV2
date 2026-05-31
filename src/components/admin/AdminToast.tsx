@@ -45,8 +45,7 @@ export default function AdminToast({ message, tone = 'success' }: AdminToastProp
         isError
           ? 'border-red-500/30 bg-red-500/10 text-red-100'
           : 'border-emerald-500/30 bg-emerald-500/10 text-emerald-50'
-      }`}
-    >
+      }`}>
       <span className="inline-flex items-center gap-2">
         {isError ? (
           <AlertTriangle className="h-4 w-4" />
@@ -61,8 +60,7 @@ export default function AdminToast({ message, tone = 'success' }: AdminToastProp
           clearQuery();
         }}
         aria-label="Dismiss"
-        className="cursor-pointer inline-flex h-7 w-7 items-center justify-center rounded-full border border-white/20 text-white/70 transition hover:border-white/40 hover:text-white"
-      >
+        className="cursor-pointer inline-flex h-7 w-7 items-center justify-center rounded-full border border-white/20 text-white/70 transition hover:border-white/40 hover:text-white">
         <X className="h-3.5 w-3.5" />
       </button>
     </div>
