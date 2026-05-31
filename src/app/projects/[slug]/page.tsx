@@ -106,13 +106,13 @@ export default async function CaseStudyPage({
     return (
       <SiteShell contentMode="full" navAvatarSrc={profileImageUrl}>
         <div className="w-full pt-10">
-          <div className="rounded-3xl border border-white/10 bg-black/30 p-8">
-            <p className="text-[11px] uppercase tracking-[0.35em] text-white/50">Case Study</p>
-            <h1 className="mt-3 text-2xl font-sans font-semibold text-white">Not found</h1>
-            <p className="mt-2 text-sm text-white/50">This case study is not available.</p>
+          <div className="rounded-3xl border border-[var(--home-border)] bg-[var(--home-card)] p-8">
+            <p className="text-[11px] uppercase tracking-[0.35em] text-[var(--home-muted)] opacity-50">Case Study</p>
+            <h1 className="mt-3 text-2xl font-sans font-semibold text-[var(--home-ink)]">Not found</h1>
+            <p className="mt-2 text-sm text-[var(--home-muted)] opacity-50">This case study is not available.</p>
             <Link
               href="/#projects"
-              className="mt-6 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-5 py-2 text-[11px] font-semibold uppercase tracking-[0.28em] text-white/70 transition hover:border-white/20 hover:bg-white/[0.06] hover:text-white">
+              className="mt-6 inline-flex items-center gap-2 rounded-full border border-[var(--home-border)] bg-[var(--home-soft)] px-5 py-2 text-[11px] font-semibold uppercase tracking-[0.28em] text-[var(--home-ink)] opacity-70 transition hover:border-[var(--home-border)] hover:bg-[var(--home-soft)] hover:text-[var(--home-ink)]">
               <ArrowLeft className="h-4 w-4" />
               Back
             </Link>
@@ -136,7 +136,7 @@ export default async function CaseStudyPage({
         <div className="flex flex-wrap items-center justify-between gap-3" data-gsap="reveal">
           <Link
             href="/#projects"
-            className="inline-flex items-center gap-2 text-[var(--home-muted)] transition hover:text-white">
+            className="inline-flex items-center gap-2 text-[var(--home-muted)] transition hover:text-[var(--home-ink)]">
             <ArrowLeft className="h-4 w-4" />
             <span className="text-sm">Back to projects</span>
           </Link>
@@ -146,7 +146,7 @@ export default async function CaseStudyPage({
               href={project.link}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.28em] text-white/70 transition hover:border-white/20 hover:bg-white/[0.06] hover:text-white"
+              className="inline-flex items-center gap-2 rounded-full border border-[var(--home-border)] bg-[var(--home-soft)] px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.28em] text-[var(--home-ink)] opacity-70 transition hover:border-[var(--home-border)] hover:bg-[var(--home-soft)] hover:text-[var(--home-ink)]"
               aria-label={`Open ${project.title}`}>
               Live
               <ArrowUpRight className="h-4 w-4" />
@@ -156,7 +156,7 @@ export default async function CaseStudyPage({
                 href={project.github_url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.28em] text-white/70 transition hover:border-white/20 hover:bg-white/[0.06] hover:text-white"
+                className="inline-flex items-center gap-2 rounded-full border border-[var(--home-border)] bg-[var(--home-soft)] px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.28em] text-[var(--home-ink)] opacity-70 transition hover:border-[var(--home-border)] hover:bg-[var(--home-soft)] hover:text-[var(--home-ink)]"
                 aria-label={`Open ${project.title} repository`}>
                 <Github className="h-4 w-4" />
                 Repo
@@ -167,33 +167,33 @@ export default async function CaseStudyPage({
 
         <header className="mt-8 grid gap-8 lg:grid-cols-[1.2fr_0.8fr]" data-gsap="reveal">
           <div className="space-y-4">
-            <p className="text-[11px] uppercase tracking-[0.35em] text-white/50">Case Study</p>
-            <h1 className="text-3xl font-sans font-semibold leading-tight text-white sm:text-4xl">{project.title}</h1>
+            <p className="text-[11px] uppercase tracking-[0.35em] text-[var(--home-muted)] opacity-50">Case Study</p>
+            <h1 className="text-3xl font-sans font-semibold leading-tight text-[var(--home-ink)] sm:text-4xl">{project.title}</h1>
             <p className="max-w-2xl text-sm leading-relaxed text-[var(--home-muted)]">{caseStudy.overview}</p>
             <div className="flex flex-wrap items-center gap-2">
-              <span className="rounded-full border border-white/10 bg-white/[0.04] px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.28em] text-white/70">
+              <span className="rounded-full border border-[var(--home-border)] bg-[var(--home-soft)] px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.28em] text-[var(--home-ink)] opacity-70">
                 {project.status}
               </span>
               {chips.slice(0, 8).map((chip) => (
                 <span
                   key={chip}
-                  className="rounded-full border border-white/10 bg-black/30 px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.22em] text-white/50">
+                  className="rounded-full border border-[var(--home-border)] bg-[var(--home-card)] px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.22em] text-[var(--home-muted)] opacity-50">
                   {chip}
                 </span>
               ))}
             </div>
           </div>
 
-          <div className="rounded-3xl border border-white/10 bg-black/30 p-6">
-            <div className="flex items-center gap-2 text-white/80">
+          <div className="rounded-3xl border border-[var(--home-border)] bg-[var(--home-card)] p-6">
+            <div className="flex items-center gap-2 text-[var(--home-ink)] opacity-80">
               <BookOpen className="h-4 w-4 text-[var(--home-accent)]" />
               <p className="text-sm font-semibold">Summary</p>
             </div>
-            <p className="mt-3 text-sm text-white/60 leading-relaxed">{project.description}</p>
+            <p className="mt-3 text-sm text-[var(--home-muted)] opacity-60 leading-relaxed">{project.description}</p>
             {caseStudy.results ? (
-              <div className="mt-4 rounded-2xl border border-white/10 bg-white/[0.03] p-4">
-                <p className="text-[11px] uppercase tracking-[0.35em] text-white/50">Outcome</p>
-                <p className="mt-2 text-sm text-white/70 leading-relaxed">{caseStudy.results}</p>
+              <div className="mt-4 rounded-2xl border border-[var(--home-border)] bg-[var(--home-soft)] p-4">
+                <p className="text-[11px] uppercase tracking-[0.35em] text-[var(--home-muted)] opacity-50">Outcome</p>
+                <p className="mt-2 text-sm text-[var(--home-ink)] opacity-70 leading-relaxed">{caseStudy.results}</p>
               </div>
             ) : null}
           </div>
@@ -202,22 +202,22 @@ export default async function CaseStudyPage({
         <div className="mt-10 grid gap-8 lg:grid-cols-[1fr_0.9fr]">
           <div className="space-y-8">
             {caseStudy.problem ? (
-              <section className="rounded-3xl border border-white/10 bg-black/30 p-6" data-gsap="reveal">
-                <p className="text-[11px] uppercase tracking-[0.35em] text-white/50">Problem</p>
-                <p className="mt-3 text-sm leading-relaxed text-white/70">{caseStudy.problem}</p>
+              <section className="rounded-3xl border border-[var(--home-border)] bg-[var(--home-card)] p-6" data-gsap="reveal">
+                <p className="text-[11px] uppercase tracking-[0.35em] text-[var(--home-muted)] opacity-50">Problem</p>
+                <p className="mt-3 text-sm leading-relaxed text-[var(--home-ink)] opacity-70">{caseStudy.problem}</p>
               </section>
             ) : null}
 
             {caseStudy.solution ? (
-              <section className="rounded-3xl border border-white/10 bg-black/30 p-6" data-gsap="reveal">
-                <p className="text-[11px] uppercase tracking-[0.35em] text-white/50">Solution</p>
-                <p className="mt-3 text-sm leading-relaxed text-white/70">{caseStudy.solution}</p>
+              <section className="rounded-3xl border border-[var(--home-border)] bg-[var(--home-card)] p-6" data-gsap="reveal">
+                <p className="text-[11px] uppercase tracking-[0.35em] text-[var(--home-muted)] opacity-50">Solution</p>
+                <p className="mt-3 text-sm leading-relaxed text-[var(--home-ink)] opacity-70">{caseStudy.solution}</p>
               </section>
             ) : null}
 
             {caseStudy.content_md ? (
-              <section className="rounded-3xl border border-white/10 bg-black/30 p-6" data-gsap="reveal">
-                <p className="text-[11px] uppercase tracking-[0.35em] text-white/50">Details</p>
+              <section className="rounded-3xl border border-[var(--home-border)] bg-[var(--home-card)] p-6" data-gsap="reveal">
+                <p className="text-[11px] uppercase tracking-[0.35em] text-[var(--home-muted)] opacity-50">Details</p>
                 <div className="mt-4">
                   <BlogMarkdown content={caseStudy.content_md} />
                 </div>
@@ -226,16 +226,16 @@ export default async function CaseStudyPage({
           </div>
 
           <aside className="space-y-6" data-gsap="reveal">
-            <div className="rounded-3xl border border-white/10 bg-black/30 p-6">
-              <p className="text-[11px] uppercase tracking-[0.35em] text-white/50">Stack</p>
+            <div className="rounded-3xl border border-[var(--home-border)] bg-[var(--home-card)] p-6">
+              <p className="text-[11px] uppercase tracking-[0.35em] text-[var(--home-muted)] opacity-50">Stack</p>
               <div className="mt-4 flex flex-wrap gap-2">
                 {chips.length === 0 ? (
-                  <p className="text-sm text-white/50">No stack data yet.</p>
+                  <p className="text-sm text-[var(--home-muted)] opacity-50">No stack data yet.</p>
                 ) : (
                   chips.map((chip) => (
                     <span
                       key={chip}
-                      className="rounded-full border border-white/10 bg-white/[0.04] px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.22em] text-white/60">
+                      className="rounded-full border border-[var(--home-border)] bg-[var(--home-soft)] px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.22em] text-[var(--home-muted)] opacity-60">
                       {chip}
                     </span>
                   ))
@@ -243,16 +243,16 @@ export default async function CaseStudyPage({
               </div>
             </div>
 
-            <div className="rounded-3xl border border-white/10 bg-black/30 p-6">
-              <p className="text-[11px] uppercase tracking-[0.35em] text-white/50">Screenshots</p>
+            <div className="rounded-3xl border border-[var(--home-border)] bg-[var(--home-card)] p-6">
+              <p className="text-[11px] uppercase tracking-[0.35em] text-[var(--home-muted)] opacity-50">Screenshots</p>
               {screenshotSrcs.length === 0 ? (
-                <p className="mt-3 text-sm text-white/50">Add local screenshot paths in Supabase to show previews.</p>
+                <p className="mt-3 text-sm text-[var(--home-muted)] opacity-50">Add local screenshot paths in Supabase to show previews.</p>
               ) : (
                 <div className="mt-4 grid gap-4">
                   {screenshotSrcs.slice(0, 6).map((src, idx) => (
                     <div
                       key={`${src}-${idx}`}
-                      className="relative aspect-video overflow-hidden rounded-3xl border border-white/10 bg-[var(--home-soft)]">
+                      className="relative aspect-video overflow-hidden rounded-3xl border border-[var(--home-border)] bg-[var(--home-soft)]">
                       <Image
                         src={src}
                         alt={`${project.title} screenshot ${idx + 1}`}

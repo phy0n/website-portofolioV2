@@ -462,11 +462,11 @@ export default function BlogDetailClient({
     return (
       <div className="home-portfolio min-h-screen bg-[var(--home-bg)] text-[var(--home-ink)] flex items-center justify-center">
         <div className="text-center space-y-6">
-          <h2 className="text-4xl font-bold text-white">Story Not Found</h2>
+          <h2 className="text-4xl font-bold text-[var(--home-ink)]">Story Not Found</h2>
           <p className="text-[var(--home-muted)]">The story you&apos;re looking for doesn&apos;t exist.</p>
           <Link
             href="/blog"
-            className="inline-flex items-center gap-2 px-6 py-3 border border-white/10 hover:border-[var(--home-accent)] transition-colors text-white">
+            className="inline-flex items-center gap-2 px-6 py-3 border border-[var(--home-border)] hover:border-[var(--home-accent)] transition-colors text-[var(--home-ink)]">
             <ArrowLeft className="w-4 h-4" />
             Back to Journal
           </Link>
@@ -478,16 +478,16 @@ export default function BlogDetailClient({
   return (
     <div
       ref={pageRef}
-      className="home-portfolio min-h-screen bg-[var(--home-bg)] text-[var(--home-ink)] font-nunito relative selection:bg-[var(--home-accent)] selection:text-white pb-24"
+      className="home-portfolio min-h-screen bg-[var(--home-bg)] text-[var(--home-ink)] font-nunito relative selection:bg-[var(--home-accent)] selection:text-[var(--home-ink)] pb-24"
       data-page-content>
-      <div className="fixed top-0 left-0 right-0 z-50 h-1 bg-white/5">
+      <div className="fixed top-0 left-0 right-0 z-50 h-1 bg-[var(--home-soft)]">
         <div
           className="h-full bg-gradient-to-r from-[var(--home-accent)] to-[var(--home-accent-2)] transition-all duration-150"
           style={{ width: `${readingProgress}%` }}/>
       </div>
 
       {toast && (
-        <div className="fixed bottom-6 left-1/2 z-50 -translate-x-1/2 rounded-full border border-white/10 bg-black/80 px-4 py-2 text-xs text-white/80 backdrop-blur-xl shadow-[0_20px_60px_rgba(0,0,0,0.55)]">
+        <div className="fixed bottom-6 left-1/2 z-50 -translate-x-1/2 rounded-full border border-[var(--home-border)] bg-[var(--home-card)] px-4 py-2 text-xs text-[var(--home-ink)] opacity-80 backdrop-blur-xl shadow-[0_20px_60px_rgba(0,0,0,0.55)]">
           {toast}
         </div>
       )}
@@ -496,7 +496,7 @@ export default function BlogDetailClient({
         <button
           type="button"
           onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-          className="fixed bottom-6 right-6 z-40 inline-flex h-11 w-11 items-center justify-center rounded-full border border-white/10 bg-black/70 text-white/80 backdrop-blur-xl transition hover:border-white/30 hover:text-white shadow-xl"
+          className="fixed bottom-6 right-6 z-40 inline-flex h-11 w-11 items-center justify-center rounded-full border border-[var(--home-border)] bg-[var(--home-card)] text-[var(--home-ink)] opacity-80 backdrop-blur-xl transition hover:border-[var(--home-border)] hover:text-[var(--home-ink)] shadow-xl"
           aria-label="Back to top">
           <ArrowUp className="h-5 w-5" />
         </button>
@@ -506,7 +506,7 @@ export default function BlogDetailClient({
         <div className="mb-16 flex items-center justify-between" data-gsap="reveal">
           <Link
             href="/blog"
-            className="group flex items-center gap-3 text-xs uppercase tracking-widest text-white/40 hover:text-white transition-colors">
+            className="group flex items-center gap-3 text-xs uppercase tracking-widest text-[var(--home-muted)] opacity-40 hover:text-[var(--home-ink)] transition-colors">
             <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
             <span>Close Book</span>
           </Link>
@@ -514,19 +514,19 @@ export default function BlogDetailClient({
           <div className="flex items-center gap-2">
             <button
               onClick={onToggleSaved}
-              className="p-2 text-white/40 hover:text-white hover:bg-white/5 rounded-full transition-colors"
+              className="p-2 text-[var(--home-muted)] opacity-40 hover:text-[var(--home-ink)] hover:bg-[var(--home-soft)] rounded-full transition-colors"
               title={saved ? "Remove from reading list" : "Save to reading list"}>
               {saved ? <BookmarkCheck className="w-4 h-4 text-[var(--home-accent)]" /> : <Bookmark className="w-4 h-4" />}
             </button>
             <button
               onClick={onCopyLink}
-              className="p-2 text-white/40 hover:text-white hover:bg-white/5 rounded-full transition-colors"
+              className="p-2 text-[var(--home-muted)] opacity-40 hover:text-[var(--home-ink)] hover:bg-[var(--home-soft)] rounded-full transition-colors"
               title="Copy link">
               <Link2 className="w-4 h-4" />
             </button>
             <button
               onClick={onShare}
-              className="p-2 text-white/40 hover:text-white hover:bg-white/5 rounded-full transition-colors"
+              className="p-2 text-[var(--home-muted)] opacity-40 hover:text-[var(--home-ink)] hover:bg-[var(--home-soft)] rounded-full transition-colors"
               title="Share">
               <Share2 className="w-4 h-4" />
             </button>
@@ -535,17 +535,17 @@ export default function BlogDetailClient({
 
         <header className="mb-16 text-center" data-gsap="reveal">
           <div className="mb-6 flex justify-center">
-            <span className="inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.3em] text-white/60 border border-white/10 rounded-full px-4 py-1.5">
+            <span className="inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.3em] text-[var(--home-muted)] opacity-60 border border-[var(--home-border)] rounded-full px-4 py-1.5">
               <BookOpen className="w-3 h-3" />
               {blog.category || 'Story'}
             </span>
           </div>
 
-          <h1 className="text-3xl sm:text-5xl md:text-6xl font-serif font-medium text-white leading-tight mb-8 max-w-3xl mx-auto">
+          <h1 className="text-3xl sm:text-5xl md:text-6xl font-serif font-medium text-[var(--home-ink)] leading-tight mb-8 max-w-3xl mx-auto">
             {blog.title}
           </h1>
 
-          <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-3 text-xs font-mono text-white/40 uppercase tracking-wider">
+          <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-3 text-xs font-mono text-[var(--home-muted)] opacity-40 uppercase tracking-wider">
             <span className="flex items-center gap-2"><User className="w-3 h-3"/> {blog.author || 'Phion'}</span>
             <span className="flex items-center gap-2"><Calendar className="w-3 h-3"/> {formatBlogDate(blog.date)}</span>
             {showUniqueCounts && (
@@ -555,15 +555,15 @@ export default function BlogDetailClient({
         </header>
 
         {coverImageSrc && (
-          <div className="w-full aspect-[21/9] md:aspect-[2.35/1] overflow-hidden mb-16 rounded-2xl border border-white/5 bg-white/5 shadow-2xl" data-gsap="reveal">
+          <div className="w-full aspect-[21/9] md:aspect-[2.35/1] overflow-hidden mb-16 rounded-2xl border border-[var(--home-border)] bg-[var(--home-soft)] shadow-2xl" data-gsap="reveal">
              <img src={coverImageSrc} className="w-full h-full object-cover opacity-80 hover:opacity-100 transition-opacity duration-700" alt={blog.title} loading="eager" />
           </div>
         )}
 
-        <article className="relative mx-auto max-w-2xl text-lg sm:text-xl leading-[1.8] sm:leading-[1.9] text-white/80 font-serif" ref={articleRef}>
+        <article className="relative mx-auto max-w-2xl text-lg sm:text-xl leading-[1.8] sm:leading-[1.9] text-[var(--home-ink)] opacity-80 font-serif" ref={articleRef}>
           <div ref={chapterContentRef} className="book-page-content">
             {activeChapterIndex === 0 && blog.excerpt && (
-              <p className="text-xl md:text-2xl italic text-white/60 mb-12 text-center leading-relaxed border-b border-white/10 pb-12">
+              <p className="text-xl md:text-2xl italic text-[var(--home-muted)] opacity-60 mb-12 text-center leading-relaxed border-b border-[var(--home-border)] pb-12">
                 "{blog.excerpt}"
               </p>
             )}
@@ -572,9 +572,9 @@ export default function BlogDetailClient({
           </div>
         </article>
         {blog.tags && blog.tags.length > 0 && (
-           <div className="mt-16 pt-8 max-w-2xl mx-auto flex flex-wrap gap-2 justify-center border-t border-white/10" data-gsap="reveal">
+           <div className="mt-16 pt-8 max-w-2xl mx-auto flex flex-wrap gap-2 justify-center border-t border-[var(--home-border)]" data-gsap="reveal">
              {blog.tags.map(tag => (
-                <span key={tag} className="text-xs font-mono text-white/30 border border-white/5 px-4 py-1.5 rounded-full">
+                <span key={tag} className="text-xs font-mono text-[var(--home-muted)] opacity-30 border border-[var(--home-border)] px-4 py-1.5 rounded-full">
                   #{tag}
                 </span>
              ))}
@@ -582,13 +582,13 @@ export default function BlogDetailClient({
         )}
         {chapterCount > 1 && (
           <div className="mt-20 max-w-3xl mx-auto" data-gsap="reveal">
-             <div className="flex items-center justify-between gap-4 bg-white/[0.02] border border-white/5 p-4 sm:p-8 rounded-3xl">
+             <div className="flex items-center justify-between gap-4 bg-[var(--home-soft)] border border-[var(--home-border)] p-4 sm:p-8 rounded-3xl">
                <button 
                   onClick={() => setChapter(activeChapterIndex - 1)} 
                   disabled={activeChapterIndex === 0}
                   className={`group flex-1 flex flex-col items-start transition-opacity ${activeChapterIndex === 0 ? 'opacity-30 cursor-not-allowed' : 'hover:opacity-100 opacity-70'}`}>
-                  <span className="text-[10px] sm:text-xs font-mono uppercase tracking-widest text-white/40 mb-2 block">Previous Page</span>
-                  <span className="text-base sm:text-xl font-serif text-white flex items-center gap-3">
+                  <span className="text-[10px] sm:text-xs font-mono uppercase tracking-widest text-[var(--home-muted)] opacity-40 mb-2 block">Previous Page</span>
+                  <span className="text-base sm:text-xl font-serif text-[var(--home-ink)] flex items-center gap-3">
                      <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" /> Chapter {activeChapterIndex}
                   </span>
                </button>
@@ -601,8 +601,8 @@ export default function BlogDetailClient({
                   onClick={() => setChapter(activeChapterIndex + 1)} 
                   disabled={activeChapterIndex === chapterCount - 1}
                   className={`group flex-1 flex flex-col items-end transition-opacity ${activeChapterIndex === chapterCount - 1 ? 'opacity-30 cursor-not-allowed' : 'hover:opacity-100 opacity-70'}`}>
-                  <span className="text-[10px] sm:text-xs font-mono uppercase tracking-widest text-white/40 mb-2 block">Next Page</span>
-                  <span className="text-base sm:text-xl font-serif text-white flex items-center gap-3">
+                  <span className="text-[10px] sm:text-xs font-mono uppercase tracking-widest text-[var(--home-muted)] opacity-40 mb-2 block">Next Page</span>
+                  <span className="text-base sm:text-xl font-serif text-[var(--home-ink)] flex items-center gap-3">
                      Chapter {activeChapterIndex + 2} <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                   </span>
                </button>
@@ -612,17 +612,17 @@ export default function BlogDetailClient({
 
         {relatedBlogs.length > 0 && (
           <div className="mt-24 max-w-4xl mx-auto" data-gsap="reveal">
-            <h3 className="text-center text-sm font-mono uppercase tracking-widest text-white/40 mb-10">Further Reading</h3>
+            <h3 className="text-center text-sm font-mono uppercase tracking-widest text-[var(--home-muted)] opacity-40 mb-10">Further Reading</h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
               {relatedBlogs.map(item => {
                 const img = resolveBlogImageSrc(item.image);
                 return (
                   <Link key={item.id} href={`/blog/${encodeURIComponent(item.slug)}`} className="group block">
-                    <div className="aspect-[3/4] rounded-2xl overflow-hidden bg-white/5 border border-white/10 mb-4 relative">
+                    <div className="aspect-[3/4] rounded-2xl overflow-hidden bg-[var(--home-soft)] border border-[var(--home-border)] mb-4 relative">
                       {img && <img src={img} alt={item.title} className="w-full h-full object-cover opacity-60 group-hover:opacity-100 transition-opacity duration-500 group-hover:scale-105" loading="lazy" />}
                     </div>
                     <p className="text-[10px] font-mono text-[var(--home-accent)] uppercase tracking-widest mb-2">{formatBlogDate(item.date)}</p>
-                    <h4 className="text-sm font-serif text-white/90 group-hover:text-white leading-snug line-clamp-2">{item.title}</h4>
+                    <h4 className="text-sm font-serif text-[var(--home-ink)] opacity-90 group-hover:text-[var(--home-ink)] leading-snug line-clamp-2">{item.title}</h4>
                   </Link>
                 )
               })}

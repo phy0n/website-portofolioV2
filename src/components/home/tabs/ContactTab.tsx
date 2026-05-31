@@ -1,22 +1,30 @@
 'use client';
 
 import React from 'react';
-import { Mail, MapPin } from 'lucide-react';
+import { Mail, Instagram, ArrowUpRight } from 'lucide-react';
+import { FaDiscord } from 'react-icons/fa';
 
-import type { ContactInfo } from '../types';
-
-const CONTACT_INFO: ContactInfo[] = [
+const CONTACT_INFO = [
   {
     type: 'Email',
     value: 'phymee@proton.me',
-    icon: <Mail className="h-5 w-5" />,
-    color: '',
+    label: 'Direct inbox',
+    icon: <Mail className="h-6 w-6" />,
+    url: 'mailto:phymee@proton.me'
   },
   {
-    type: 'Location',
-    value: 'Surabaya, Indonesia',
-    icon: <MapPin className="h-5 w-5" />,
-    color: '',
+    type: 'Discord',
+    value: 'phy0n',
+    label: 'Add friend',
+    icon: <FaDiscord className="h-6 w-6" />,
+    url: ''
+  },
+  {
+    type: 'Instagram',
+    value: '@rushandle',
+    label: 'Follow me',
+    icon: <Instagram className="h-6 w-6" />,
+    url: 'https://instagram.com/rushandle'
   },
 ];
 
@@ -33,52 +41,40 @@ export default function ContactTab() {
         </p>
       </div>
 
-      <div className="overflow-hidden rounded-md border border-white/15 bg-white/[0.015]">
-        <div className="grid md:grid-cols-2">
-          {CONTACT_INFO.map((contact, index) => {
-            const cardContent = (
-              <>
-                <div className="flex items-center gap-4">
-                  <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full border border-red-500/30 bg-red-500/10 text-red-500">
-                    {contact.icon}
-                  </div>
-                  <div className="min-w-0">
-                    <p className="text-[11px] uppercase tracking-[0.35em] text-[var(--home-muted)]">{contact.type}</p>
-                    <p className="mt-1 text-xs text-[var(--home-muted)]">
-                      {contact.type === 'Email' ? 'Direct inbox' : 'Current base'}
-                    </p>
-                  </div>
+      <div className="grid gap-5 sm:grid-cols-2 md:grid-cols-3">
+        {CONTACT_INFO.map((contact) => {
+          const isLink = Boolean(contact.url);
+          const Wrapper = isLink ? 'a' : 'div';
+          
+          return (
+            <Wrapper 
+              key={contact.type} 
+              {...(isLink ? { href: contact.url, target: contact.url.startsWith('http') ? '_blank' : undefined, rel: contact.url.startsWith('http') ? 'noreferrer' : undefined } : {})}
+              className="group relative flex min-h-[220px] flex-col justify-between overflow-hidden rounded-[2rem] border border-[var(--home-border)] bg-[var(--home-card)] p-6 transition-colors duration-300"
+            >
+              <div className="flex items-start justify-between">
+                <div className="flex shrink-0 items-center justify-center text-[var(--home-accent)] transition-colors duration-300">
+                  {contact.icon}
                 </div>
-
-                <div className="space-y-4">
-                  <p className="max-w-full break-words text-xl font-sans font-semibold leading-snug text-[var(--home-ink)] sm:text-2xl">
-                    {contact.value}
-                  </p>
-                  <div className="h-px w-full bg-white/15" />
-                  <div className="grid grid-cols-[1fr_48px_1fr] gap-3">
-                    <span className="h-px bg-white/10" />
-                    <span className="h-px bg-red-500/80" />
-                    <span className="h-px bg-white/10" />
-                  </div>
-                </div>
-              </>
-            );
-
-            const className = `group flex min-h-44 flex-col justify-between gap-8 p-6 transition hover:bg-white/[0.025] ${
-              index === 0 ? 'border-b border-white/15 md:border-b-0 md:border-r' : ''
-            }`;
-
-            return contact.type === 'Email' ? (
-              <a key={contact.type} href={`mailto:${contact.value}`} className={className}>
-                {cardContent}
-              </a>
-            ) : (
-              <div key={contact.type} className={className}>
-                {cardContent}
+                {isLink && (
+                  <ArrowUpRight className="h-5 w-5 text-[var(--home-muted)] opacity-30 transition-colors duration-300 group-hover:text-[var(--home-accent)] group-hover:opacity-100" />
+                )}
               </div>
-            );
-          })}
-        </div>
+
+              <div className="mt-8">
+                <p className="text-[10px] font-bold uppercase tracking-[0.35em] text-[var(--home-muted)] opacity-60">
+                  {contact.type}
+                </p>
+                <p className="mt-2 text-lg sm:text-xl font-sans font-semibold text-[var(--home-ink)] truncate group-hover:underline underline-offset-4 decoration-[var(--home-accent)] transition-colors duration-300">
+                  {contact.value}
+                </p>
+                <p className="mt-1 text-xs text-[var(--home-muted)] opacity-70">
+                  {contact.label}
+                </p>
+              </div>
+            </Wrapper>
+          );
+        })}
       </div>
     </div>
   );

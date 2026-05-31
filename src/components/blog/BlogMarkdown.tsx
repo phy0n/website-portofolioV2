@@ -51,7 +51,7 @@ const renderInline = (value: string): React.ReactNode[] => {
       nodes.push(
         <code
           key={`c-${key++}`}
-          className="rounded-md border border-white/10 bg-white/5 px-1.5 py-0.5 text-[0.95em] text-white">
+          className="rounded-md border border-[var(--home-border)] bg-[var(--home-soft)] px-1.5 py-0.5 text-[0.95em] text-[var(--home-ink)]">
           {token.slice(1, -1)}
         </code>
       );
@@ -224,8 +224,8 @@ export default function BlogMarkdown({
           .wysiwyg-content b, .wysiwyg-content strong { font-weight: bold; }
           .wysiwyg-content i, .wysiwyg-content em { font-style: italic; }
           .wysiwyg-content u { text-decoration: underline; }
-          .wysiwyg-content h2 { font-size: 1.75rem; font-weight: bold; margin-top: 2rem; margin-bottom: 1rem; color: white; }
-          .wysiwyg-content h3 { font-size: 1.35rem; font-weight: bold; margin-top: 1.5rem; margin-bottom: 1rem; color: white; }
+          .wysiwyg-content h2 { font-size: 1.75rem; font-weight: bold; margin-top: 2rem; margin-bottom: 1rem; color: var(--home-ink); }
+          .wysiwyg-content h3 { font-size: 1.35rem; font-weight: bold; margin-top: 1.5rem; margin-bottom: 1rem; color: var(--home-ink); }
           .wysiwyg-content ul { list-style-type: disc; padding-left: 1.5rem; margin-bottom: 1rem; }
           .wysiwyg-content blockquote { border-left: 2px solid var(--home-accent); padding-left: 1rem; margin-bottom: 1rem; border-radius: 0.5rem; }
           .wysiwyg-content a { color: var(--home-accent); text-decoration: underline; text-underline-offset: 4px; }
@@ -233,7 +233,7 @@ export default function BlogMarkdown({
           .wysiwyg-content pre { background: #07070b; padding: 1rem; border-radius: 1rem; overflow-x: auto; font-family: monospace; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 20px 60px rgba(0,0,0,0.35); }
         `}} />
         <div 
-          className="wysiwyg-content text-xs xs:text-sm sm:text-base md:text-lg text-gray-300 leading-relaxed" 
+          className="wysiwyg-content text-xs xs:text-sm sm:text-base md:text-lg text-[var(--home-muted)] leading-relaxed" 
           dangerouslySetInnerHTML={{ __html: content }} 
         />
       </>
@@ -247,8 +247,8 @@ export default function BlogMarkdown({
         if (block.type === 'heading') {
           const base =
             block.level === 2
-              ? 'text-xl xs:text-2xl sm:text-3xl md:text-4xl font-bold mt-10 xs:mt-12 sm:mt-14 text-white'
-              : 'text-lg xs:text-xl sm:text-2xl font-bold mt-8 xs:mt-10 text-white';
+              ? 'text-xl xs:text-2xl sm:text-3xl md:text-4xl font-bold mt-10 xs:mt-12 sm:mt-14 text-[var(--home-ink)]'
+              : 'text-lg xs:text-xl sm:text-2xl font-bold mt-8 xs:mt-10 text-[var(--home-ink)]';
           const HeadingTag = block.level === 2 ? 'h2' : 'h3';
           return (
             <HeadingTag
@@ -264,7 +264,7 @@ export default function BlogMarkdown({
           return (
             <p
               key={`${block.type}-${index}`}
-              className="text-xs xs:text-sm sm:text-base md:text-lg text-gray-300 leading-relaxed">
+              className="text-xs xs:text-sm sm:text-base md:text-lg text-[var(--home-muted)] leading-relaxed">
               {renderInline(block.text)}
             </p>
           );
@@ -274,7 +274,7 @@ export default function BlogMarkdown({
           return (
             <blockquote
               key={`${block.type}-${index}`}
-              className="rounded-2xl border border-white/10 bg-white/[0.03] p-4 xs:p-5 text-sm xs:text-base text-white/80 shadow-[0_20px_60px_rgba(0,0,0,0.25)]">
+              className="rounded-2xl border border-[var(--home-border)] bg-[var(--home-soft)] p-4 xs:p-5 text-sm xs:text-base text-[var(--home-ink)] opacity-80 shadow-[0_20px_60px_rgba(0,0,0,0.25)]">
               <div className="border-l-2 border-[var(--home-accent)] pl-4 leading-relaxed">
                 {renderInline(block.text)}
               </div>
@@ -286,7 +286,7 @@ export default function BlogMarkdown({
           return (
             <ul
               key={`${block.type}-${index}`}
-              className="space-y-2 pl-5 text-xs xs:text-sm sm:text-base text-gray-300">
+              className="space-y-2 pl-5 text-xs xs:text-sm sm:text-base text-[var(--home-muted)]">
               {block.items.map((item, itemIndex) => (
                 <li key={`${block.type}-item-${index}-${itemIndex}`} className="list-disc">
                   {renderInline(item)}
@@ -310,9 +310,9 @@ export default function BlogMarkdown({
           return (
             <div
               key={`${block.type}-${index}`}
-              className="relative overflow-hidden rounded-2xl border border-white/10 bg-[#07070b] shadow-[0_20px_60px_rgba(0,0,0,0.35)]">
-              <div className="flex items-center justify-between gap-3 border-b border-white/10 bg-white/[0.02] px-4 py-2">
-                <div className="text-[10px] uppercase tracking-[0.3em] text-white/40">
+              className="relative overflow-hidden rounded-2xl border border-[var(--home-border)] bg-[#07070b] shadow-[0_20px_60px_rgba(0,0,0,0.35)]">
+              <div className="flex items-center justify-between gap-3 border-b border-[var(--home-border)] bg-[var(--home-soft)] px-4 py-2">
+                <div className="text-[10px] uppercase tracking-[0.3em] text-[var(--home-muted)] opacity-40">
                   {block.language || 'code'}
                 </div>
                 {copyable && (
@@ -327,7 +327,7 @@ export default function BlogMarkdown({
                         setCopiedIndex(null);
                       }
                     }}
-                    className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs text-white/70 transition hover:border-white/30 hover:text-white"
+                    className="inline-flex items-center gap-2 rounded-full border border-[var(--home-border)] bg-[var(--home-soft)] px-3 py-1.5 text-xs text-[var(--home-ink)] opacity-70 transition hover:border-[var(--home-border)] hover:text-[var(--home-ink)]"
                     aria-label="Copy code">
                     {showCopied ? (
                       <>

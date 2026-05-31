@@ -102,7 +102,7 @@ export default function PostLikeButton({ postId }: { postId: string }) {
     'inline-flex items-center gap-2 rounded-full border px-3 py-1.5 text-[11px] font-semibold transition',
     liked
       ? 'border-[var(--home-accent)]/30 bg-[var(--home-accent)]/10 text-[var(--home-accent)]'
-      : 'border-white/10 bg-white/[0.06] text-white/70 hover:border-white/20 hover:text-white',
+      : 'border-[var(--home-border)] bg-[var(--home-soft)] text-[var(--home-ink)] opacity-70 hover:border-[var(--home-border)] hover:text-[var(--home-ink)]',
     loading ? 'opacity-60' : '',
   ]
     .filter(Boolean)

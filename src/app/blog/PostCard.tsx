@@ -48,21 +48,21 @@ export default function PostCard({
   const isEditing = Boolean(canEdit && editPostId && editPostId === post.id);
 
   return (
-    <article id={`post-${post.id}`} className="rounded-3xl border border-white/10 bg-black/30">
-      <header className="flex items-center justify-between gap-4 border-b border-white/10 px-5 py-4">
+    <article id={`post-${post.id}`} className="rounded-3xl border border-[var(--home-border)] bg-[var(--home-card)]">
+      <header className="flex items-center justify-between gap-4 border-b border-[var(--home-border)] px-5 py-4">
         <div className="flex min-w-0 items-center gap-3">
-          <div className="relative h-10 w-10 shrink-0 overflow-hidden rounded-full border border-white/10 bg-[var(--home-soft)]">
+          <div className="relative h-10 w-10 shrink-0 overflow-hidden rounded-full border border-[var(--home-border)] bg-[var(--home-soft)]">
             {avatarUrl ? (
               <Image src={avatarUrl} alt={authorLabel} fill sizes="40px" className="object-cover" />
             ) : (
-              <div className="flex h-full w-full items-center justify-center text-sm font-semibold text-white">
+              <div className="flex h-full w-full items-center justify-center text-sm font-semibold text-[var(--home-ink)]">
                 {avatarFallback}
               </div>
             )}
           </div>
           <div className="min-w-0">
-            <p className="truncate text-sm font-semibold text-white">{authorLabel}</p>
-            {timestamp ? <p className="truncate text-xs text-white/40">{timestamp}</p> : null}
+            <p className="truncate text-sm font-semibold text-[var(--home-ink)]">{authorLabel}</p>
+            {timestamp ? <p className="truncate text-xs text-[var(--home-muted)] opacity-40">{timestamp}</p> : null}
           </div>
         </div>
 
@@ -75,7 +75,7 @@ export default function PostCard({
                     ? `/blog#post-${encodeURIComponent(post.id)}`
                     : `/blog?edit=${encodeURIComponent(post.id)}#post-${encodeURIComponent(post.id)}`
                 }
-                className="inline-flex items-center justify-center rounded-full border border-white/10 bg-white/[0.06] px-3 py-1.5 text-[11px] font-semibold text-white/70 hover:border-white/20 hover:text-white">
+                className="inline-flex items-center justify-center rounded-full border border-[var(--home-border)] bg-[var(--home-soft)] px-3 py-1.5 text-[11px] font-semibold text-[var(--home-ink)] opacity-70 hover:border-[var(--home-border)] hover:text-[var(--home-ink)]">
                 {isEditing ? 'Close' : 'Edit'}
               </Link>
             ) : null}
@@ -85,7 +85,7 @@ export default function PostCard({
                 <input type="hidden" name="id" value={post.id} />
                 <button
                   type="submit"
-                  className="inline-flex items-center justify-center rounded-full border border-white/10 bg-white/[0.06] px-3 py-1.5 text-[11px] font-semibold text-white/70 hover:border-white/20 hover:text-white">
+                  className="inline-flex items-center justify-center rounded-full border border-[var(--home-border)] bg-[var(--home-soft)] px-3 py-1.5 text-[11px] font-semibold text-[var(--home-ink)] opacity-70 hover:border-[var(--home-border)] hover:text-[var(--home-ink)]">
                   Delete
                 </button>
               </form>
@@ -95,29 +95,29 @@ export default function PostCard({
       </header>
 
       {isEditing ? (
-        <div className="border-b border-white/10 px-5 py-4">
+        <div className="border-b border-[var(--home-border)] px-5 py-4">
           <form action={updatePost} className="space-y-4">
             <input type="hidden" name="id" value={post.id} />
             <textarea
               name="content"
               defaultValue={post.content ?? ''}
               rows={4}
-              className="w-full resize-none rounded-2xl border border-white/10 bg-black/40 px-4 py-3 text-sm text-white placeholder:text-white/30 outline-none focus:border-white/20"
+              className="w-full resize-none rounded-2xl border border-[var(--home-border)] bg-[var(--home-card)] px-4 py-3 text-sm text-[var(--home-ink)] placeholder:text-[var(--home-muted)] opacity-30 outline-none focus:border-[var(--home-border)]"
               placeholder="Edit post content…"
               maxLength={2000}/>
 
             <div className="space-y-2">
-              <p className="text-[10px] uppercase tracking-[0.3em] text-white/40">Replace image (optional)</p>
+              <p className="text-[10px] uppercase tracking-[0.3em] text-[var(--home-muted)] opacity-40">Replace image (optional)</p>
               <input
                 type="file"
                 name="image_file"
                 accept="image/png,image/jpeg,image/webp"
-                className="block w-full rounded-2xl border border-white/10 bg-black/40 px-4 py-3 text-sm text-white file:mr-4 file:rounded-full file:border-0 file:bg-white/10 file:px-4 file:py-2 file:text-xs file:font-semibold file:text-white"/>
+                className="block w-full rounded-2xl border border-[var(--home-border)] bg-[var(--home-card)] px-4 py-3 text-sm text-[var(--home-ink)] file:mr-4 file:rounded-full file:border-0 file:bg-[var(--home-soft)] file:px-4 file:py-2 file:text-xs file:font-semibold file:text-[var(--home-ink)]"/>
             </div>
 
             {post.image ? (
-              <label className="inline-flex items-center gap-2 text-xs text-white/70">
-                <input type="checkbox" name="remove_image" value="true" className="h-4 w-4 rounded border-white/20 bg-black/40" />
+              <label className="inline-flex items-center gap-2 text-xs text-[var(--home-ink)] opacity-70">
+                <input type="checkbox" name="remove_image" value="true" className="h-4 w-4 rounded border-[var(--home-border)] bg-[var(--home-card)]" />
                 Remove current image
               </label>
             ) : null}
@@ -125,12 +125,12 @@ export default function PostCard({
             <div className="flex flex-wrap items-center gap-2">
               <button
                 type="submit"
-                className="inline-flex items-center justify-center rounded-full border border-white/10 bg-white/[0.06] px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.28em] text-white hover:border-white/20 hover:bg-white/[0.08]">
+                className="inline-flex items-center justify-center rounded-full border border-[var(--home-border)] bg-[var(--home-soft)] px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.28em] text-[var(--home-ink)] hover:border-[var(--home-border)] hover:bg-[var(--home-soft)]">
                 Save
               </button>
               <Link
                 href={`/blog#post-${encodeURIComponent(post.id)}`}
-                className="inline-flex items-center justify-center rounded-full border border-white/10 bg-black/40 px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.28em] text-white/70 hover:border-white/20 hover:text-white">
+                className="inline-flex items-center justify-center rounded-full border border-[var(--home-border)] bg-[var(--home-card)] px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.28em] text-[var(--home-ink)] opacity-70 hover:border-[var(--home-border)] hover:text-[var(--home-ink)]">
                 Cancel
               </Link>
             </div>
@@ -140,11 +140,11 @@ export default function PostCard({
 
       <div className="space-y-4 px-5 py-4">
         {post.content ? (
-          <p className="whitespace-pre-wrap break-words text-sm text-white/75">{post.content}</p>
+          <p className="whitespace-pre-wrap break-words text-sm text-[var(--home-muted)] opacity-75">{post.content}</p>
         ) : null}
 
         {post.image ? (
-          <div className="relative aspect-[4/3] w-full overflow-hidden rounded-2xl border border-white/10 bg-black">
+          <div className="relative aspect-[4/3] w-full overflow-hidden rounded-2xl border border-[var(--home-border)] bg-black">
             <Image
               src={post.image}
               alt="Post image"
@@ -156,7 +156,7 @@ export default function PostCard({
         ) : null}
       </div>
 
-      <footer className="flex items-center justify-between gap-4 border-t border-white/10 px-5 py-3">
+      <footer className="flex items-center justify-between gap-4 border-t border-[var(--home-border)] px-5 py-3">
         <PostLikeButton postId={post.id} />
       </footer>
     </article>

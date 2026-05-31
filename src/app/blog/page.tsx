@@ -71,20 +71,20 @@ export default async function BlogPage({
           <div className="grid gap-8 lg:grid-cols-12">
             <section className="space-y-6 lg:col-span-7">
               <div className="space-y-1">
-                <h1 className="text-lg font-semibold text-white">Blog</h1>
-                <p className="text-xs text-white/50">Latest posts and short reads.</p>
+                <h1 className="text-lg font-semibold text-[var(--home-ink)]">Blog</h1>
+                <p className="text-xs text-[var(--home-muted)] opacity-50">Latest posts and short reads.</p>
               </div>
 
-              <div className="rounded-3xl border border-white/10 bg-black/30 p-6">
-                <h2 className="text-sm font-semibold text-white">Posts</h2>
-                <p className="mt-3 text-sm text-white/50">No blog posts yet.</p>
+              <div className="rounded-3xl border border-[var(--home-border)] bg-[var(--home-soft)] p-6">
+                <h2 className="text-sm font-semibold text-[var(--home-ink)]">Posts</h2>
+                <p className="mt-3 text-sm text-[var(--home-muted)] opacity-50">No blog posts yet.</p>
               </div>
             </section>
 
             <aside className="space-y-6 lg:col-span-5 lg:sticky lg:top-24 lg:self-start lg:max-h-[calc(100vh-6rem)] lg:overflow-auto hide-scrollbar">
-              <div className="rounded-3xl border border-white/10 bg-black/30 p-6">
-                <h2 className="text-sm font-semibold text-white">Quotes</h2>
-                <p className="mt-3 text-sm text-white/50">No quotes yet.</p>
+              <div className="rounded-3xl border border-[var(--home-border)] bg-[var(--home-soft)] p-6">
+                <h2 className="text-sm font-semibold text-[var(--home-ink)]">Quotes</h2>
+                <p className="mt-3 text-sm text-[var(--home-muted)] opacity-50">No quotes yet.</p>
               </div>
             </aside>
           </div>
@@ -177,20 +177,20 @@ export default async function BlogPage({
           <section className="space-y-6 lg:col-span-7">
             <div className="flex items-center justify-between gap-4">
               <div className="space-y-1">
-                <h1 className="text-lg font-semibold text-white">Blog</h1>
-                <p className="text-xs text-white/50">Latest posts and short reads.</p>
+                <h1 className="text-lg font-semibold text-[var(--home-ink)]">Blog</h1>
+                <p className="text-xs text-[var(--home-muted)] opacity-50">Latest posts and short reads.</p>
               </div>
-              <p className="text-[10px] uppercase tracking-[0.35em] text-white/40">Phion</p>
+              <p className="text-[10px] uppercase tracking-[0.35em] text-[var(--home-muted)] opacity-40">Phion</p>
             </div>
 
-            <div className="rounded-3xl border border-white/10 bg-black/30 p-6">
+            <div className="rounded-3xl border border-[var(--home-border)] bg-[var(--home-soft)] p-6">
               <div className="flex items-center justify-between gap-4">
-                <h2 className="text-sm font-semibold text-white">Posts</h2>
-                <span className="text-xs text-white/40">{safeBlogs.length}</span>
+                <h2 className="text-sm font-semibold text-[var(--home-ink)]">Posts</h2>
+                <span className="text-xs text-[var(--home-muted)] opacity-40">{safeBlogs.length}</span>
               </div>
 
               {blogRows.length === 0 ? (
-                <p className="mt-3 text-sm text-white/50">No blog posts yet.</p>
+                <p className="mt-3 text-sm text-[var(--home-muted)] opacity-50">No blog posts yet.</p>
               ) : (
                 <BlogSidebarList blogs={blogSidebarItems} />
               )}
@@ -198,16 +198,16 @@ export default async function BlogPage({
           </section>
 
           <aside className="space-y-6 lg:col-span-5 lg:sticky lg:top-24 lg:self-start lg:max-h-[calc(100vh-6rem)] lg:overflow-auto hide-scrollbar">
-            <div className="rounded-3xl border border-white/10 bg-black/30 p-6">
+            <div className="rounded-3xl border border-[var(--home-border)] bg-[var(--home-soft)] p-6">
               <div className="flex items-center justify-between gap-4">
-                <h2 className="text-sm font-semibold text-white">Quotes</h2>
-                <span className="text-xs text-white/40">{safeQuotes.length}</span>
+                <h2 className="text-sm font-semibold text-[var(--home-ink)]">Quotes</h2>
+                <span className="text-xs text-[var(--home-muted)] opacity-40">{safeQuotes.length}</span>
               </div>
 
               {isAdmin ? (
                 <details className="mt-4 flex flex-col">
                   <summary
-                    className="list-none inline-flex h-9 w-9 cursor-pointer select-none self-end items-center justify-center rounded-full border border-white/10 bg-white/[0.06] text-lg font-semibold leading-none text-white/70 transition hover:border-white/20 hover:bg-white/[0.08] hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-white/30 [&::-webkit-details-marker]:hidden"
+                    className="list-none inline-flex h-9 w-9 cursor-pointer select-none self-end items-center justify-center rounded-full border border-[var(--home-border)] bg-[var(--home-soft)] text-lg font-semibold leading-none text-[var(--home-ink)] opacity-70 transition hover:border-[var(--home-border)] hover:bg-[var(--home-soft)] hover:text-[var(--home-ink)] focus:outline-none focus-visible:ring-2 focus-visible:ring-white/30 [&::-webkit-details-marker]:hidden"
                     aria-label="Add quote"
                     title="Add quote">
                     +
@@ -215,22 +215,22 @@ export default async function BlogPage({
                   <form action={createQuote} className="mt-4 w-full space-y-3">
                     <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                       <div className="space-y-1">
-                        <label className="text-[10px] uppercase tracking-[0.3em] text-white/40">Date</label>
+                        <label className="text-[10px] uppercase tracking-[0.3em] text-[var(--home-muted)] opacity-40">Date</label>
                         <input
                           type="date"
                           name="date"
                           defaultValue={today}
-                          className="block w-full rounded-2xl border border-white/10 bg-black/40 px-3 py-2 text-xs text-white/80 outline-none focus:border-white/20"/>
+                          className="block w-full rounded-2xl border border-[var(--home-border)] bg-[var(--home-card)] px-3 py-2 text-xs text-[var(--home-ink)] opacity-80 outline-none focus:border-[var(--home-border)]"/>
                       </div>
                       <div className="space-y-1">
-                        <label className="text-[10px] uppercase tracking-[0.3em] text-white/40">
+                        <label className="text-[10px] uppercase tracking-[0.3em] text-[var(--home-muted)] opacity-40">
                           Author
                         </label>
                         <input
                           type="text"
                           name="author"
                           placeholder="Anonymous"
-                          className="block w-full rounded-2xl border border-white/10 bg-black/40 px-3 py-2 text-xs text-white/80 placeholder:text-white/30 outline-none focus:border-white/20"
+                          className="block w-full rounded-2xl border border-[var(--home-border)] bg-[var(--home-card)] px-3 py-2 text-xs text-[var(--home-ink)] opacity-80 placeholder:text-[var(--home-muted)] opacity-30 outline-none focus:border-[var(--home-border)]"
                           maxLength={80}/>
                       </div>
                     </div>
@@ -240,32 +240,32 @@ export default async function BlogPage({
                       placeholder="Write a quote…"
                       rows={3}
                       maxLength={400}
-                      className="w-full resize-none rounded-2xl border border-white/10 bg-black/40 px-3 py-2 text-xs text-white/80 placeholder:text-white/30 outline-none focus:border-white/20"/>
+                      className="w-full resize-none rounded-2xl border border-[var(--home-border)] bg-[var(--home-card)] px-3 py-2 text-xs text-[var(--home-ink)] opacity-80 placeholder:text-[var(--home-muted)] opacity-30 outline-none focus:border-[var(--home-border)]"/>
 
                     <div className="flex flex-wrap items-center gap-4">
-                      <label className="inline-flex items-center gap-2 text-xs text-white/70">
+                      <label className="inline-flex items-center gap-2 text-xs text-[var(--home-ink)] opacity-70">
                         <input
                           type="checkbox"
                           name="show_on_main"
                           value="true"
                           defaultChecked
-                          className="h-4 w-4 rounded border-white/20 bg-black/40"/>
+                          className="h-4 w-4 rounded border-[var(--home-border)] bg-[var(--home-card)]"/>
                         Show on Main
                       </label>
-                      <label className="inline-flex items-center gap-2 text-xs text-white/70">
+                      <label className="inline-flex items-center gap-2 text-xs text-[var(--home-ink)] opacity-70">
                         <input
                           type="checkbox"
                           name="show_on_phion"
                           value="true"
                           defaultChecked
-                          className="h-4 w-4 rounded border-white/20 bg-black/40"/>
+                          className="h-4 w-4 rounded border-[var(--home-border)] bg-[var(--home-card)]"/>
                         Show on Phion
                       </label>
                     </div>
 
                     <button
                       type="submit"
-                      className="inline-flex w-full items-center justify-center rounded-2xl border border-white/10 bg-white/[0.06] px-4 py-2.5 text-xs font-semibold text-white hover:border-white/20 hover:bg-white/[0.08]">
+                      className="inline-flex w-full items-center justify-center rounded-2xl border border-[var(--home-border)] bg-[var(--home-soft)] px-4 py-2.5 text-xs font-semibold text-[var(--home-ink)] hover:border-[var(--home-border)] hover:bg-[var(--home-soft)]">
                       Add Quote
                     </button>
                   </form>
@@ -273,20 +273,20 @@ export default async function BlogPage({
               ) : null}
 
               {quoteRows.length === 0 ? (
-                <p className="mt-3 text-sm text-white/50">No quotes yet.</p>
+                <p className="mt-3 text-sm text-[var(--home-muted)] opacity-50">No quotes yet.</p>
               ) : (
                 <div className="mt-4 max-h-[420px] space-y-4 overflow-y-auto pr-1 hide-scrollbar">
                   {quoteRows.map((quote) => (
-                    <div key={quote.id} className="rounded-2xl border border-white/10 bg-black/30 p-4">
-                      <p className="text-sm text-white/75 line-clamp-4">&ldquo;{quote.text}&rdquo;</p>
+                    <div key={quote.id} className="rounded-2xl border border-[var(--home-border)] bg-[var(--home-card)] p-4">
+                      <p className="text-sm text-[var(--home-muted)] opacity-75 line-clamp-4">&ldquo;{quote.text}&rdquo;</p>
                       <div className="mt-2 flex items-center justify-between gap-3">
-                        {quote.author ? <p className="text-xs text-white/40">— {quote.author}</p> : <span />}
+                        {quote.author ? <p className="text-xs text-[var(--home-muted)] opacity-40">— {quote.author}</p> : <span />}
                         {isAdmin ? (
                           <form action={deleteQuote}>
                             <input type="hidden" name="id" value={quote.id} />
                             <button
                               type="submit"
-                              className="inline-flex items-center justify-center rounded-full border border-white/10 bg-white/[0.06] px-3 py-1.5 text-[11px] font-semibold text-white/70 hover:border-white/20 hover:text-white">
+                              className="inline-flex items-center justify-center rounded-full border border-[var(--home-border)] bg-[var(--home-soft)] px-3 py-1.5 text-[11px] font-semibold text-[var(--home-ink)] opacity-70 hover:border-[var(--home-border)] hover:text-[var(--home-ink)]">
                               Delete
                             </button>
                           </form>

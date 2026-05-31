@@ -39,7 +39,7 @@ export default function SpokenLanguagesCard({ className }: { className?: string 
                   <div className="min-w-0 flex-1">
                     <span className="block truncate font-medium text-[var(--ui-foreground)]">{language.name}</span>
                     <div
-                      className="mt-2 h-1.5 overflow-hidden rounded-full bg-white/10"
+                      className="mt-2 h-1.5 overflow-hidden rounded-full bg-[var(--home-soft)]"
                       role="progressbar"
                       aria-label={`${language.name} proficiency`}
                       aria-valuemin={0}

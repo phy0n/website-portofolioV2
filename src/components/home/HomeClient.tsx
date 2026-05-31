@@ -62,7 +62,7 @@ export default function HomeClient({ discordUserId, profileImageUrl }: HomeClien
     <HomeSidebarDataProvider>
       <SiteShell scopeRef={scopeRef} navAvatarSrc={heroImageSrc}>
         <section id="top" className="grid gap-10 pb-14 pt-6 lg:grid-cols-[280px_1fr] lg:items-center">
-          <div className="js-hero-image relative mx-auto h-56 w-56 overflow-hidden rounded-full border border-white/10 bg-[var(--home-soft)] shadow-[0_18px_40px_rgba(0,0,0,0.45)] sm:h-64 sm:w-64 lg:mx-0">
+          <div className="js-hero-image relative mx-auto h-56 w-56 overflow-hidden rounded-full border border-[var(--home-border)] bg-[var(--home-soft)] sm:h-64 sm:w-64 lg:mx-0">
             {heroImageErrored ? (
               <div className="flex h-full w-full items-center justify-center text-3xl font-semibold text-[var(--home-ink)]">
                 {HERO_IMAGE_FALLBACK}
@@ -103,14 +103,14 @@ export default function HomeClient({ discordUserId, profileImageUrl }: HomeClien
                     rel="noopener noreferrer"
                     aria-label={social.name}
                     title={social.name}
-                    className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-white/10 bg-black/30 text-white/70 shadow-[0_18px_40px_rgba(0,0,0,0.25)] transition hover:border-white/20 hover:bg-white/[0.06] hover:text-white">
+                    className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-[var(--home-border)] bg-[var(--home-card)] text-[var(--home-ink)] opacity-70 transition hover:border-[var(--home-ink)] hover:bg-[var(--home-soft)] hover:opacity-100">
                     {social.icon}
                   </a>
                 ))}
               </div>
             </div>
 
-            <div className="space-y-4 border-t border-white/10 pt-5">
+            <div className="space-y-4 border-t border-[var(--home-border)] pt-5">
               <div className="flex items-center justify-between gap-3">
                 <p className="text-[11px] uppercase tracking-[0.35em] text-[var(--home-muted)]">Activity</p>
                 <div className="flex items-center gap-2 text-xs text-[var(--home-muted)]">
@@ -183,7 +183,7 @@ export default function HomeClient({ discordUserId, profileImageUrl }: HomeClien
             </section>
           </div>
 
-          <aside className="hidden lg:block lg:border-l lg:border-white/10 lg:pl-10">
+          <aside className="hidden lg:block lg:border-l lg:border-[var(--home-border)] lg:pl-10">
             <HomeRightSidebar />
           </aside>
         </div>

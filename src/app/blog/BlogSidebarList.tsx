@@ -146,9 +146,9 @@ export default function BlogSidebarList({ blogs }: { blogs: BlogSidebarItem[] })
           <Link
             key={blog.id}
             href={`/blog/${encodeURIComponent(normalizedSlug)}`}
-            className="block rounded-2xl border border-white/10 bg-black/30 px-4 py-3 hover:border-white/20">
+            className="block rounded-2xl border border-[var(--home-border)] bg-[var(--home-card)] px-4 py-3 hover:border-[var(--home-ink)]">
             <div className="flex items-start gap-3">
-              <div className="relative mt-0.5 h-12 w-12 shrink-0 overflow-hidden rounded-2xl border border-white/10 bg-[var(--home-soft)]">
+              <div className="relative mt-0.5 h-12 w-12 shrink-0 overflow-hidden rounded-2xl border border-[var(--home-border)] bg-[var(--home-soft)]">
                 {showImage && imageSrc ? (
                   <img
                     src={imageSrc}
@@ -158,16 +158,16 @@ export default function BlogSidebarList({ blogs }: { blogs: BlogSidebarItem[] })
                     className="h-full w-full object-cover"
                     onError={() => markBroken(blog.id)}/>
                 ) : (
-                  <div className="flex h-full w-full items-center justify-center text-[10px] font-semibold text-white/40">
+                  <div className="flex h-full w-full items-center justify-center text-[10px] font-semibold text-[var(--home-muted)]">
                     BLOG
                   </div>
                 )}
               </div>
               <div className="min-w-0">
-                <p className="text-sm font-semibold text-white/80 line-clamp-2">{blog.title}</p>
-                <p className="mt-1 flex flex-wrap items-center gap-2 text-xs text-white/40">
+                <p className="text-sm font-semibold text-[var(--home-ink)] opacity-80 line-clamp-2">{blog.title}</p>
+                <p className="mt-1 flex flex-wrap items-center gap-2 text-xs text-[var(--home-muted)]">
                   <span>{formatBlogDate(String(blog.date || ''))}</span>
-                  <span aria-hidden className="text-white/25">
+                  <span aria-hidden className="text-[var(--home-muted)] opacity-50">
                     •
                   </span>
                   <span className="inline-flex items-center gap-1">

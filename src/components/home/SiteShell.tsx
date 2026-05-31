@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Mail, Menu, MessageSquare, Sparkles, X } from 'lucide-react';
 import gsap from 'gsap';
+import { ThemeToggle } from '@/components/shared/ThemeToggle';
 
 const NAV_LINKS = [
   { label: 'Home', href: '/' },
@@ -321,11 +322,11 @@ export default function SiteShell({
           <div className="mx-auto flex w-full max-w-[1600px] items-center justify-between pointer-events-auto">
             <Link
               href="/"
-              className="inline-flex items-center gap-3 rounded-full border border-white/10 bg-[var(--home-bg)] px-4 py-2 text-white shadow-[0_18px_40px_rgba(0,0,0,0.45)] transition hover:border-white/20"
+              className="inline-flex items-center gap-3 rounded-full border border-[var(--home-border)] bg-[var(--home-bg)] px-4 py-2 text-[var(--home-ink)] transition hover:border-[var(--home-ink)]"
               aria-label="Go to home">
-              <div className="relative hidden h-8 w-8 overflow-hidden rounded-full border border-white/15 bg-[var(--home-bg)] sm:block">
+              <div className="relative hidden h-8 w-8 overflow-hidden rounded-full border border-[var(--home-border)] bg-[var(--home-bg)] sm:block">
                 {navAvatarErrored ? (
-                  <span className="flex h-full w-full items-center justify-center text-sm font-semibold text-white/90">
+                  <span className="flex h-full w-full items-center justify-center text-sm font-semibold text-[var(--home-ink)] opacity-90">
                     {NAV_AVATAR_FALLBACK}
                   </span>
                 ) : (
@@ -340,19 +341,22 @@ export default function SiteShell({
                   />
                 )}
               </div>
-              <span className="text-[11px] font-semibold uppercase tracking-[0.35em] text-white/80">{NAV_BRAND}</span>
+              <span className="text-[11px] font-semibold uppercase tracking-[0.35em] text-[var(--home-ink)] opacity-80">{NAV_BRAND}</span>
             </Link>
 
-            <button
-              type="button"
-              aria-label={navOpen ? 'Close menu' : 'Open menu'}
-              aria-expanded={navOpen}
-              onClick={toggleNav}
-              className="inline-flex h-12 w-12 items-center justify-center rounded-full border border-white/10 bg-[var(--home-bg)] text-white/80 shadow-[0_18px_40px_rgba(0,0,0,0.45)] transition hover:border-white/20 hover:text-white">
-              <span className="flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-[var(--home-bg)]">
-                {navOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-              </span>
-            </button>
+            <div className="flex items-center gap-2">
+              <ThemeToggle />
+              <button
+                type="button"
+                aria-label={navOpen ? 'Close menu' : 'Open menu'}
+                aria-expanded={navOpen}
+                onClick={toggleNav}
+                className="inline-flex h-12 w-12 items-center justify-center rounded-full border border-[var(--home-border)] bg-[var(--home-bg)] text-[var(--home-ink)] opacity-80 hover:opacity-100 transition hover:border-[var(--home-ink)]">
+                <span className="flex h-10 w-10 items-center justify-center rounded-full border border-[var(--home-border)] bg-[var(--home-bg)]">
+                  {navOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+                </span>
+              </button>
+            </div>
           </div>
         </header>
 
@@ -380,7 +384,7 @@ export default function SiteShell({
                     className={[
                       'block w-fit font-sans font-semibold leading-[0.95] tracking-tight transition',
                       'text-[clamp(2.75rem,8vw,6rem)]',
-                      isActive ? 'text-white' : 'text-white/55 hover:text-white',
+                      isActive ? 'text-[var(--home-ink)]' : 'text-[var(--home-muted)] hover:text-[var(--home-ink)]',
                     ].join(' ')}>
                     {item.label}
                   </Link>
@@ -396,7 +400,7 @@ export default function SiteShell({
                   className={[
                     'block w-fit font-sans font-semibold leading-[0.95] tracking-tight transition',
                     'text-[clamp(1.85rem,5vw,3.25rem)]',
-                    pathname?.startsWith('/admin') ? 'text-white' : 'text-white/55 hover:text-white',
+                    pathname?.startsWith('/admin') ? 'text-[var(--home-ink)]' : 'text-[var(--home-muted)] hover:text-[var(--home-ink)]',
                   ].join(' ')}>
                   Admin
                 </Link>
@@ -408,12 +412,12 @@ export default function SiteShell({
         <div ref={pageRef} data-page-content className="animate-page-fade" key={pathname}>
           <main className={mainClassName}>{children}</main>
 
-          <footer className="relative z-10 overflow-hidden border-t border-white/10">
+          <footer className="relative z-10 overflow-hidden border-t border-[var(--home-border)]">
             <div className="relative z-10 mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 pb-10 pt-8 text-xs text-[var(--home-muted)]">
               Copyright {new Date().getFullYear()} Phy0n. All rights reserved.
             </div>
             <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 pb-6 text-center">
-              <p className="text-[clamp(6rem,24vw,18rem)] font-sans font-bold uppercase tracking-[0.12em] leading-none text-white">
+              <p className="text-[clamp(6rem,24vw,18rem)] font-sans font-bold uppercase tracking-[0.12em] leading-none text-[var(--home-ink)] opacity-90">
                 PHY0N
               </p>
             </div>

@@ -321,7 +321,7 @@ export default function BlogClient({
 
   return (
     <div className="relative">
-      <section className="relative border-b border-white/10" data-gsap="reveal">
+      <section className="relative border-b border-[var(--home-border)]" data-gsap="reveal">
         <div className="relative w-full py-8 xs:py-10 sm:py-12 md:py-16">
           <div className="grid lg:grid-cols-4 gap-6 xs:gap-8">
             <div className="lg:col-span-3 space-y-3 xs:space-y-4">
@@ -329,7 +329,7 @@ export default function BlogClient({
                 <div className="h-px w-8 xs:w-10 sm:w-12 bg-[var(--home-accent)]"></div>
                 <span className="text-[10px] xs:text-xs text-[var(--home-muted)] uppercase tracking-widest">Life Pages</span>
               </div>
-              <h1 className="text-2xl xs:text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-tight">
+              <h1 className="text-2xl xs:text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-[var(--home-ink)] leading-tight">
                 Phion story
               </h1>
 
@@ -338,17 +338,17 @@ export default function BlogClient({
               </p>
             </div>
             <div className="lg:col-span-1 grid grid-cols-2 lg:grid-cols-1 gap-3 xs:gap-4">
-              <div className="group relative bg-white/[0.02] backdrop-blur-sm border border-white/10 hover:border-[var(--home-accent)] p-4 xs:p-5 transition-all duration-300 overflow-hidden">
-                <div className="absolute inset-0 bg-black/10 transition-all duration-300 backdrop-blur-sm"></div>
+              <div className="group relative bg-[var(--home-soft)] backdrop-blur-sm border border-[var(--home-border)] hover:border-[var(--home-accent)] p-4 xs:p-5 transition-all duration-300 overflow-hidden">
+                <div className="absolute inset-0 bg-[var(--home-card)] transition-all duration-300 backdrop-blur-sm"></div>
                 <div className="relative z-10">
-                  <div className="text-2xl xs:text-3xl font-bold text-white mb-1">{totalStories}</div>
+                  <div className="text-2xl xs:text-3xl font-bold text-[var(--home-ink)] mb-1">{totalStories}</div>
                   <div className="text-[10px] xs:text-xs text-[var(--home-muted)] uppercase tracking-wider">Total Stories</div>
                 </div>
               </div>
-              <div className="group relative bg-white/[0.02] backdrop-blur-sm border border-white/10 hover:border-[var(--home-accent)] p-4 xs:p-5 transition-all duration-300 overflow-hidden">
-                <div className="absolute inset-0 bg-black/10 transition-all duration-300 backdrop-blur-sm"></div>
+              <div className="group relative bg-[var(--home-soft)] backdrop-blur-sm border border-[var(--home-border)] hover:border-[var(--home-accent)] p-4 xs:p-5 transition-all duration-300 overflow-hidden">
+                <div className="absolute inset-0 bg-[var(--home-card)] transition-all duration-300 backdrop-blur-sm"></div>
                 <div className="relative z-10">
-                  <div className="text-2xl xs:text-3xl font-bold text-white mb-1">{totalWords.toLocaleString()}</div>
+                  <div className="text-2xl xs:text-3xl font-bold text-[var(--home-ink)] mb-1">{totalWords.toLocaleString()}</div>
                   <div className="text-[10px] xs:text-xs text-[var(--home-muted)] uppercase tracking-wider">Total Words</div>
                 </div>
               </div>
@@ -362,14 +362,14 @@ export default function BlogClient({
                   placeholder="Search stories, author, tags..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full bg-white/[0.02] border border-white/10 focus:border-[var(--home-accent)] px-4 xs:px-5 py-3 xs:py-3.5 text-xs xs:text-sm text-white placeholder-[var(--home-muted)] focus:outline-none transition-colors"/>
+                  className="w-full bg-[var(--home-soft)] border border-[var(--home-border)] focus:border-[var(--home-accent)] px-4 xs:px-5 py-3 xs:py-3.5 text-xs xs:text-sm text-[var(--home-ink)] placeholder-[var(--home-muted)] focus:outline-none transition-colors"/>
                 <BookOpen className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--home-muted)]" />
               </div>
               <div className="md:col-span-3">
                 <select
                   value={sortMode}
                   onChange={(event) => setSortMode(event.target.value as SortMode)}
-                  className="w-full bg-white/[0.02] border border-white/10 focus:border-[var(--home-accent)] px-4 xs:px-5 py-3 xs:py-3.5 text-[10px] xs:text-xs text-white/80 focus:outline-none transition-colors admin-select"
+                  className="w-full bg-[var(--home-soft)] border border-[var(--home-border)] focus:border-[var(--home-accent)] px-4 xs:px-5 py-3 xs:py-3.5 text-[10px] xs:text-xs text-[var(--home-ink)] opacity-80 focus:outline-none transition-colors admin-select"
                   aria-label="Sort stories">
                   <option value="newest">Newest</option>
                   <option value="oldest">Oldest</option>
@@ -383,7 +383,7 @@ export default function BlogClient({
                   className={`w-full px-4 xs:px-5 py-3 xs:py-3.5 text-[10px] xs:text-xs border transition-all flex items-center justify-between ${
                     savedOnly
                       ? 'border-[var(--home-accent)] bg-[var(--home-accent)]/10 text-[var(--home-accent)]'
-                      : 'border-white/10 bg-white/[0.02] text-[var(--home-muted)] hover:border-white/20 hover:text-white'
+                      : 'border-[var(--home-border)] bg-[var(--home-soft)] text-[var(--home-muted)] hover:border-[var(--home-border)] hover:text-[var(--home-ink)]'
                   }`}
                   aria-pressed={savedOnly}>
                   <span className="inline-flex items-center gap-2">
@@ -394,14 +394,14 @@ export default function BlogClient({
                     )}
                     Saved only
                   </span>
-                  <span className="text-white/40">{readingList.size}</span>
+                  <span className="text-[var(--home-muted)] opacity-40">{readingList.size}</span>
                 </button>
               </div>
             </div>
 
             {tags.length > 0 && (
               <div className="flex flex-wrap items-center gap-2 xs:gap-3">
-                <span className="inline-flex items-center gap-2 px-3 xs:px-4 py-1.5 xs:py-2 text-[10px] xs:text-xs border border-white/10 text-[var(--home-muted)]">
+                <span className="inline-flex items-center gap-2 px-3 xs:px-4 py-1.5 xs:py-2 text-[10px] xs:text-xs border border-[var(--home-border)] text-[var(--home-muted)]">
                   <Tags className="h-4 w-4" />
                   Tags
                 </span>
@@ -411,7 +411,7 @@ export default function BlogClient({
                   className={`px-3 xs:px-4 py-1.5 xs:py-2 text-[10px] xs:text-xs border transition-all ${
                     !selectedTag
                       ? 'border-[var(--home-accent)] bg-[var(--home-accent)]/10 text-[var(--home-accent)]'
-                      : 'border-white/10 text-[var(--home-muted)] hover:border-white/10 hover:text-[var(--home-muted)]'
+                      : 'border-[var(--home-border)] text-[var(--home-muted)] hover:border-[var(--home-border)] hover:text-[var(--home-muted)]'
                   }`}>
                   All
                 </button>
@@ -423,7 +423,7 @@ export default function BlogClient({
                     className={`px-3 xs:px-4 py-1.5 xs:py-2 text-[10px] xs:text-xs border transition-all ${
                       selectedTag === tag
                         ? 'border-[var(--home-accent)] bg-[var(--home-accent)]/10 text-[var(--home-accent)]'
-                        : 'border-white/10 text-[var(--home-muted)] hover:border-white/10 hover:text-[var(--home-muted)]'
+                        : 'border-[var(--home-border)] text-[var(--home-muted)] hover:border-[var(--home-border)] hover:text-[var(--home-muted)]'
                     }`}>
                     {tag}
                   </button>
@@ -462,10 +462,10 @@ export default function BlogClient({
               <section className="space-y-4">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-xs uppercase tracking-[0.3em] text-white/40">Featured</p>
-                    <h2 className="mt-2 text-xl font-semibold text-white">Top picks</h2>
+                    <p className="text-xs uppercase tracking-[0.3em] text-[var(--home-muted)] opacity-40">Featured</p>
+                    <h2 className="mt-2 text-xl font-semibold text-[var(--home-ink)]">Top picks</h2>
                   </div>
-                  <span className="text-xs text-white/40">{featuredBlogs.length} stories</span>
+                  <span className="text-xs text-[var(--home-muted)] opacity-40">{featuredBlogs.length} stories</span>
                 </div>
                 <div className="grid gap-4 sm:grid-cols-2">
                   {featuredBlogs.map((featured, featuredIndex) => (
@@ -473,7 +473,7 @@ export default function BlogClient({
                       key={featured.id}
                       href={`/blog/${encodeURIComponent(featured.slug)}`}
                       className={`group block ${featuredIndex === 0 ? 'sm:col-span-2' : ''}`}>
-                      <article className="overflow-hidden border border-white/10 bg-white/[0.02] hover:border-white/25 transition-all duration-300">
+                      <article className="overflow-hidden border border-[var(--home-border)] bg-[var(--home-soft)] hover:border-[var(--home-border)] transition-all duration-300">
                         <div className="relative h-44 overflow-hidden bg-gradient-to-br from-white/5 via-black/30 to-black">
                           {resolveBlogImageSrc(featured.image) ? (
                             <>
@@ -486,18 +486,18 @@ export default function BlogClient({
                             </>
                           ) : null}
                           <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
-                          <div className="absolute left-4 top-4 bg-black/80 backdrop-blur-sm border border-white/10 px-3 py-1.5 text-[10px] uppercase tracking-[0.3em] text-white/70">
+                          <div className="absolute left-4 top-4 bg-[var(--home-card)] backdrop-blur-sm border border-[var(--home-border)] px-3 py-1.5 text-[10px] uppercase tracking-[0.3em] text-[var(--home-ink)] opacity-70">
                             Featured
                           </div>
                         </div>
                         <div className="p-5">
-                            <p className="text-xs text-white/50">
+                            <p className="text-xs text-[var(--home-muted)] opacity-50">
                             {formatBlogDate(featured.date)} • {(resolvedViewCounts?.[featured.slug] ?? 0).toLocaleString()} views{showUniqueCounts ? ` • ${(resolvedUniqueViews?.[featured.slug] ?? 0).toLocaleString()} users` : ''}
                             </p>
-                          <h3 className="mt-3 text-lg sm:text-xl font-semibold text-white line-clamp-2">
+                          <h3 className="mt-3 text-lg sm:text-xl font-semibold text-[var(--home-ink)] line-clamp-2">
                             {featured.title}
                           </h3>
-                          <p className="mt-3 text-sm text-white/60 line-clamp-2">{featured.excerpt}</p>
+                          <p className="mt-3 text-sm text-[var(--home-muted)] opacity-60 line-clamp-2">{featured.excerpt}</p>
                         </div>
                       </article>
                     </Link>
@@ -506,10 +506,10 @@ export default function BlogClient({
               </section>
             )}
 
-            <section className={showFeaturedSection ? 'pt-10 border-t border-white/10' : ''}>
+            <section className={showFeaturedSection ? 'pt-10 border-t border-[var(--home-border)]' : ''}>
               {filteredBlogs.length === 0 ? (
                 <div className="text-center py-16 xs:py-20">
-                  <BookOpen className="w-12 h-12 xs:w-16 xs:h-16 text-white/20 mx-auto mb-4" />
+                  <BookOpen className="w-12 h-12 xs:w-16 xs:h-16 text-[var(--home-muted)] opacity-20 mx-auto mb-4" />
                   <h3 className="text-lg xs:text-xl text-[var(--home-muted)] mb-2">No stories found</h3>
                   <p className="text-xs xs:text-sm text-[var(--home-muted)]">Try changing the filter or search keywords</p>
                 </div>
@@ -523,7 +523,7 @@ export default function BlogClient({
                         key={blog.id}
                         href={`/blog/${encodeURIComponent(blog.slug)}`}
                         className="group block">
-                        <article className="relative bg-white/[0.02] border border-white/10 hover:border-white/25 transition-all duration-300 overflow-hidden rounded-2xl">
+                        <article className="relative bg-[var(--home-soft)] border border-[var(--home-border)] hover:border-[var(--home-border)] transition-all duration-300 overflow-hidden rounded-2xl">
                           <div className="grid md:grid-cols-5 gap-0">
                             <div className="md:col-span-2 relative h-48 xs:h-56 sm:h-64 md:h-auto overflow-hidden bg-gradient-to-br from-white/5 via-black/30 to-black">
                               {resolveBlogImageSrc(blog.image) ? (
@@ -539,7 +539,7 @@ export default function BlogClient({
                               ) : null}
                               <div className="absolute inset-0 bg-gradient-to-r from-transparent via-black/30 to-black/60 md:to-black"></div>
                               <div className="absolute top-3 xs:top-4 left-3 xs:left-4 flex flex-wrap items-center gap-2">
-                                <span className="bg-black/80 backdrop-blur-sm border border-white/10 px-2 xs:px-3 py-1 xs:py-1.5 text-[10px] xs:text-xs text-white/80">
+                                <span className="bg-[var(--home-card)] backdrop-blur-sm border border-[var(--home-border)] px-2 xs:px-3 py-1 xs:py-1.5 text-[10px] xs:text-xs text-[var(--home-ink)] opacity-80">
                                   {blog.category || 'Story'}
                               </span>
                               {blog.featured && (
@@ -556,7 +556,7 @@ export default function BlogClient({
                                 const result = toggleReadingListSlug(blog.slug);
                                 setReadingList(new Set(result.list));
                               }}
-                              className="absolute top-3 xs:top-4 right-3 xs:right-4 bg-black/80 backdrop-blur-sm border border-white/10 p-2 text-white/70 hover:text-white hover:border-white/20 transition-colors"
+                              className="absolute top-3 xs:top-4 right-3 xs:right-4 bg-[var(--home-card)] backdrop-blur-sm border border-[var(--home-border)] p-2 text-[var(--home-ink)] opacity-70 hover:text-[var(--home-ink)] hover:border-[var(--home-border)] transition-colors"
                               aria-label={
                                 readingList.has(blog.slug)
                                   ? 'Remove from reading list'
@@ -572,22 +572,22 @@ export default function BlogClient({
                           </div>
                           <div className="md:col-span-3 p-5 xs:p-6 sm:p-8 md:p-10 flex flex-col justify-center">
                             <div className="flex flex-wrap items-center gap-2 text-[10px] xs:text-xs text-[var(--home-muted)] mb-3">
-                              <span className="inline-flex items-center gap-1.5 border border-white/10 bg-white/[0.02] px-2.5 py-1">
+                              <span className="inline-flex items-center gap-1.5 border border-[var(--home-border)] bg-[var(--home-soft)] px-2.5 py-1">
                                 <Calendar className="w-3.5 h-3.5" />
                                 {formatBlogDate(blog.date)}
                               </span>
-                              <span className="inline-flex items-center gap-1.5 border border-white/10 bg-white/[0.02] px-2.5 py-1">
+                              <span className="inline-flex items-center gap-1.5 border border-[var(--home-border)] bg-[var(--home-soft)] px-2.5 py-1">
                                 <Eye className="w-3.5 h-3.5" />
                                 {views.toLocaleString()}
                               </span>
                               {showUniqueCounts ? (
-                                <span className="inline-flex items-center gap-1.5 border border-white/10 bg-white/[0.02] px-2.5 py-1">
+                                <span className="inline-flex items-center gap-1.5 border border-[var(--home-border)] bg-[var(--home-soft)] px-2.5 py-1">
                                   <Users className="w-3.5 h-3.5" />
                                   {uniqueVisitors.toLocaleString()}
                                 </span>
                               ) : null}
                             </div>
-                            <h2 className="text-xl xs:text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-3 xs:mb-4 group-hover:text-gray-300 transition-colors leading-tight">
+                            <h2 className="text-xl xs:text-2xl sm:text-3xl md:text-4xl font-bold text-[var(--home-ink)] mb-3 xs:mb-4 group-hover:text-gray-300 transition-colors leading-tight">
                               {blog.title}
                             </h2>
                             <p className="text-xs xs:text-sm sm:text-base text-[var(--home-muted)] leading-relaxed mb-4 xs:mb-5 sm:mb-6 line-clamp-2 xs:line-clamp-3">
@@ -604,7 +604,7 @@ export default function BlogClient({
                                       event.stopPropagation();
                                       setSelectedTag(tag);
                                     }}
-                                    className="text-[10px] xs:text-xs border border-white/10 bg-white/[0.02] px-2.5 py-1 text-white/60 hover:text-white hover:border-white/20 transition-colors">
+                                    className="text-[10px] xs:text-xs border border-[var(--home-border)] bg-[var(--home-soft)] px-2.5 py-1 text-[var(--home-muted)] opacity-60 hover:text-[var(--home-ink)] hover:border-[var(--home-border)] transition-colors">
                                     #{tag}
                                   </button>
                                 ))}
@@ -634,13 +634,13 @@ export default function BlogClient({
 
           <aside className="hidden lg:block lg:col-span-4" data-gsap="reveal">
             <div className="sticky top-6 space-y-4">
-              <div className="relative bg-white/[0.02] backdrop-blur-sm border border-white/10 p-4 xs:p-5 overflow-hidden">
-                <div className="absolute inset-0 bg-black/10 transition-all duration-300 backdrop-blur-sm"></div>
+              <div className="relative bg-[var(--home-soft)] backdrop-blur-sm border border-[var(--home-border)] p-4 xs:p-5 overflow-hidden">
+                <div className="absolute inset-0 bg-[var(--home-card)] transition-all duration-300 backdrop-blur-sm"></div>
                 <div className="relative z-10">
                   <div className="flex items-start justify-between gap-3">
                     <div className="flex items-center gap-2">
                       <Bookmark className="w-4 h-4 text-[var(--home-accent)]" />
-                      <h2 className="text-sm font-semibold text-white">Reading list</h2>
+                      <h2 className="text-sm font-semibold text-[var(--home-ink)]">Reading list</h2>
                     </div>
                     <span className="text-[10px] text-[var(--home-muted)] whitespace-nowrap">
                       {readingList.size} saved
@@ -653,11 +653,11 @@ export default function BlogClient({
                         <Link
                           key={savedBlog.id}
                           href={`/blog/${encodeURIComponent(savedBlog.slug)}`}
-                          className="block rounded-xl border border-white/10 bg-white/[0.02] px-4 py-3 transition hover:border-white/25 hover:bg-white/[0.04]">
+                          className="block rounded-xl border border-[var(--home-border)] bg-[var(--home-soft)] px-4 py-3 transition hover:border-[var(--home-border)] hover:bg-[var(--home-soft)]">
                           <p className="text-[10px] text-[var(--home-muted)]">
                             {formatBlogDate(savedBlog.date)}
                           </p>
-                          <p className="mt-2 text-sm font-semibold text-white line-clamp-2">
+                          <p className="mt-2 text-sm font-semibold text-[var(--home-ink)] line-clamp-2">
                             {savedBlog.title}
                           </p>
                         </Link>
@@ -666,7 +666,7 @@ export default function BlogClient({
                         <button
                           type="button"
                           onClick={() => setSavedOnly(true)}
-                          className="w-full rounded-xl border border-white/10 bg-white/[0.02] px-4 py-3 text-xs text-white/70 transition hover:border-white/25 hover:text-white">
+                          className="w-full rounded-xl border border-[var(--home-border)] bg-[var(--home-soft)] px-4 py-3 text-xs text-[var(--home-ink)] opacity-70 transition hover:border-[var(--home-border)] hover:text-[var(--home-ink)]">
                           Show saved only
                         </button>
                       )}
@@ -679,13 +679,13 @@ export default function BlogClient({
                 </div>
               </div>
 
-              <div className="relative bg-white/[0.02] backdrop-blur-sm border border-white/10 p-4 xs:p-5 overflow-hidden">
-                <div className="absolute inset-0 bg-black/10 transition-all duration-300 backdrop-blur-sm"></div>
+              <div className="relative bg-[var(--home-soft)] backdrop-blur-sm border border-[var(--home-border)] p-4 xs:p-5 overflow-hidden">
+                <div className="absolute inset-0 bg-[var(--home-card)] transition-all duration-300 backdrop-blur-sm"></div>
                 <div className="relative z-10">
                   <div className="flex items-start justify-between gap-3">
                     <div className="flex items-center gap-2">
                       <Quote className="w-4 h-4 text-[var(--home-accent)]" />
-                      <h2 className="text-sm font-semibold text-white">Daily Quotes</h2>
+                      <h2 className="text-sm font-semibold text-[var(--home-ink)]">Daily Quotes</h2>
                     </div>
                     <span className="text-[10px] text-[var(--home-muted)] whitespace-nowrap">
                       {sortedQuotes.length} quotes
@@ -695,7 +695,7 @@ export default function BlogClient({
                   {sortedQuotes.length > 0 ? (
                     <div className="mt-4 space-y-4 max-h-[calc(100vh-12rem)] overflow-y-auto hide-scrollbar pr-1">
                       {sortedQuotes.map((quote, index) => (
-                        <div key={`${quote.id}-${quote.date}-${index}`} className="border-l border-white/10 pl-3">
+                        <div key={`${quote.id}-${quote.date}-${index}`} className="border-l border-[var(--home-border)] pl-3">
                           <p className="text-[10px] text-[var(--home-muted)] mb-1">{formatQuoteDate(quote.date)}</p>
                           <p className="text-sm text-gray-300 leading-relaxed italic">“{quote.text}”</p>
                           {quote.author && <p className="mt-2 text-xs text-[var(--home-muted)]">— {quote.author}</p>}
@@ -715,7 +715,7 @@ export default function BlogClient({
       <button
         type="button"
         onClick={() => setIsQuotesOpen(true)}
-        className="lg:hidden fixed top-20 right-4 z-40 bg-black/80 backdrop-blur-sm border border-white/10 rounded-full px-3 py-3 flex items-center gap-2 text-[var(--home-muted)] hover:text-white hover:border-white/20 transition-colors"
+        className="lg:hidden fixed top-20 right-4 z-40 bg-[var(--home-card)] backdrop-blur-sm border border-[var(--home-border)] rounded-full px-3 py-3 flex items-center gap-2 text-[var(--home-muted)] hover:text-[var(--home-ink)] hover:border-[var(--home-border)] transition-colors"
         aria-label="Open daily quotes">
         <Quote className="w-4 h-4 text-[var(--home-accent)]" />
         <span className="text-xs font-medium">Quotes</span>
@@ -723,7 +723,7 @@ export default function BlogClient({
 
       <div className={`lg:hidden fixed inset-0 z-50 ${isQuotesOpen ? '' : 'pointer-events-none'}`}>
         <div
-          className={`absolute inset-0 bg-black/70 transition-opacity duration-300 ${
+          className={`absolute inset-0 bg-[var(--home-card)] transition-opacity duration-300 ${
             isQuotesOpen ? 'opacity-100' : 'opacity-0'
           }`}
           onClick={() => setIsQuotesOpen(false)}
@@ -732,19 +732,19 @@ export default function BlogClient({
           role="dialog"
           aria-modal="true"
           aria-label="Daily quotes"
-          className={`absolute top-0 right-0 h-full w-[min(360px,100vw)] bg-black border-l border-white/10 shadow-2xl transition-transform duration-300 ${
+          className={`absolute top-0 right-0 h-full w-[min(360px,100vw)] bg-black border-l border-[var(--home-border)] shadow-2xl transition-transform duration-300 ${
             isQuotesOpen ? 'translate-x-0' : 'translate-x-full'
           }`}>
           <div className="h-full flex flex-col">
-            <div className="flex items-center justify-between px-4 py-4 border-b border-white/10">
+            <div className="flex items-center justify-between px-4 py-4 border-b border-[var(--home-border)]">
               <div className="flex items-center gap-2">
                 <Quote className="w-4 h-4 text-[var(--home-accent)]" />
-                <span className="text-sm font-semibold text-white">Daily Quotes</span>
+                <span className="text-sm font-semibold text-[var(--home-ink)]">Daily Quotes</span>
               </div>
               <button
                 type="button"
                 onClick={() => setIsQuotesOpen(false)}
-                className="p-2 text-[var(--home-muted)] hover:text-white transition-colors"
+                className="p-2 text-[var(--home-muted)] hover:text-[var(--home-ink)] transition-colors"
                 aria-label="Close daily quotes">
                 <X className="w-5 h-5" />
               </button>
@@ -756,8 +756,8 @@ export default function BlogClient({
                   {sortedQuotes.map((quote, index) => (
                     <div
                       key={`${quote.id}-${quote.date}-${index}`}
-                      className="relative bg-white/[0.02] backdrop-blur-sm border border-white/10 p-4 overflow-hidden">
-                      <div className="absolute inset-0 bg-black/10 transition-all duration-300 backdrop-blur-sm"></div>
+                      className="relative bg-[var(--home-soft)] backdrop-blur-sm border border-[var(--home-border)] p-4 overflow-hidden">
+                      <div className="absolute inset-0 bg-[var(--home-card)] transition-all duration-300 backdrop-blur-sm"></div>
                       <div className="relative z-10">
                         <p className="text-xs text-[var(--home-muted)] mb-3">{formatQuoteDate(quote.date)}</p>
                         <p className="text-base text-gray-200 leading-relaxed italic">“{quote.text}”</p>

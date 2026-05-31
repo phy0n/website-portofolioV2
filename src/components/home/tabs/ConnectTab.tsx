@@ -90,51 +90,53 @@ export default function ConnectTab() {
         <p className="max-w-2xl text-sm text-[var(--home-muted)]">Social spaces and places to reach me.</p>
       </div>
 
-      <div className="divide-y divide-white/10 border-y border-white/10" data-gsap="reveal">
-        {SOCIAL_MEDIA.map((social, index) => (
-          <a
-            key={index}
-            href={social.url}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="group flex flex-wrap items-center justify-between gap-4 py-4">
-            <div className="flex items-center gap-4">
-              <div className="flex h-12 w-12 items-center justify-center rounded-2xl border border-red-500/25 bg-red-500/10 text-red-500 transition group-hover:border-red-500/45 group-hover:bg-red-500/15">
-                {social.icon}
+      <div className="grid gap-8 md:grid-cols-2 mt-8" data-gsap="reveal">
+        <div className="space-y-4">
+          <h3 className="text-[11px] uppercase tracking-[0.35em] text-[var(--home-muted)]">Social Media</h3>
+          <div className="grid gap-3">
+            {SOCIAL_MEDIA.map((social, index) => (
+              <a
+                key={index}
+                href={social.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group flex items-center justify-between gap-4 rounded-3xl border border-[var(--home-border)] bg-[var(--home-card)] p-4 transition-all hover:border-[var(--home-accent)] hover:bg-[var(--home-soft)]">
+                <div className="flex items-center gap-4">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-2xl border border-[var(--home-accent)]/20 bg-[var(--home-accent)]/10 text-[var(--home-accent)] transition-all group-hover:scale-110 group-hover:border-[var(--home-accent)]/40 group-hover:bg-[var(--home-accent)]/20">
+                    {social.icon}
+                  </div>
+                  <div>
+                    <p className="text-sm font-semibold text-[var(--home-ink)]">{social.name}</p>
+                    <p className="mt-0.5 text-xs text-[var(--home-muted)] opacity-70">Follow & connect</p>
+                  </div>
+                </div>
+                <ArrowUpRight className="h-5 w-5 text-[var(--home-muted)] opacity-40 transition-all group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-[var(--home-accent)] group-hover:opacity-100" />
+              </a>
+            ))}
+          </div>
+        </div>
+
+        <div className="space-y-4">
+          <h3 className="text-[11px] uppercase tracking-[0.35em] text-[var(--home-muted)]">Direct Contact</h3>
+          <div className="grid gap-3">
+            {CONTACT_INFO.map((contact, index) => (
+              <div
+                key={index}
+                className="flex items-start gap-4 rounded-3xl border border-[var(--home-border)] bg-[var(--home-card)] p-5 transition-all hover:border-[var(--home-ink)]">
+                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border border-[var(--home-border)] bg-[var(--home-soft)] text-[var(--home-ink)] opacity-80">
+                  {contact.icon}
+                </div>
+                <div className="space-y-1 pt-0.5">
+                  <p className="text-[11px] uppercase tracking-[0.35em] text-[var(--home-muted)]">{contact.type}</p>
+                  <p className="text-sm font-semibold text-[var(--home-ink)]">{contact.value}</p>
+                </div>
               </div>
-              <div>
-                <p className="text-sm font-semibold text-[var(--home-ink)]">{social.name}</p>
-                <p className="text-xs text-[var(--home-muted)]">Open link</p>
-              </div>
-            </div>
-            <span className="text-[11px] uppercase tracking-[0.35em] text-[var(--home-muted)] transition group-hover:text-red-500">
-              Open
-            </span>
-          </a>
-        ))}
+            ))}
+          </div>
+        </div>
       </div>
 
-      <div className="space-y-3 border-t border-white/10 pt-6" data-gsap="reveal">
-        <div className="flex items-center justify-between">
-          <p className="text-[11px] uppercase tracking-[0.35em] text-[var(--home-muted)]">Contact</p>
-          <span className="text-xs text-[var(--home-muted)]">Details</span>
-        </div>
-        <div className="grid gap-4 sm:grid-cols-2">
-          {CONTACT_INFO.map((contact, index) => (
-            <div key={index} className="flex items-center gap-3 border-b border-white/10 pb-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-2xl border border-red-500/25 bg-red-500/10 text-red-500">
-                {contact.icon}
-              </div>
-              <div>
-                <p className="text-[11px] uppercase tracking-[0.35em] text-[var(--home-muted)]">{contact.type}</p>
-                <p className="mt-1 text-sm font-semibold text-[var(--home-ink)]">{contact.value}</p>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* <div className="space-y-3 border-t border-white/10 pt-6" data-gsap="reveal">
+      {/* <div className="space-y-3 border-t border-[var(--home-border)] pt-6" data-gsap="reveal">
         <div className="flex items-center justify-between">
           <p className="text-[11px] uppercase tracking-[0.35em] text-[var(--home-muted)]">Services</p>
           <span className="text-xs text-[var(--home-muted)]">Freelance</span>
@@ -145,12 +147,12 @@ export default function ConnectTab() {
             {Array.from({ length: 2 }).map((_, idx) => (
               <div
                 key={idx}
-                className="h-40 rounded-3xl border border-white/10 bg-white/[0.03] animate-pulse"
+                className="h-40 rounded-3xl border border-[var(--home-border)] bg-[var(--home-soft)] animate-pulse"
               />
             ))}
           </div>
         ) : services.length === 0 ? (
-          <div className="rounded-3xl border border-white/10 bg-black/30 p-6">
+          <div className="rounded-3xl border border-[var(--home-border)] bg-[var(--home-card)] p-6">
             <p className="text-sm font-semibold text-[var(--home-ink)]">No services yet.</p>
           </div>
         ) : (
@@ -162,7 +164,7 @@ export default function ConnectTab() {
               return (
                 <div
                   key={service.id}
-                  className="rounded-3xl border border-white/10 bg-black/30 p-6 shadow-[0_18px_40px_rgba(0,0,0,0.45)]">
+                  className="rounded-3xl border border-[var(--home-border)] bg-[var(--home-card)] p-6 shadow-[0_18px_40px_rgba(0,0,0,0.45)]">
                   <div className="flex items-start justify-between gap-4">
                     <div className="min-w-0 space-y-2">
                       <div className="flex flex-wrap items-center gap-2">
@@ -171,7 +173,7 @@ export default function ConnectTab() {
                         </span>
                         <h3 className="text-sm font-semibold text-[var(--home-ink)]">{service.title}</h3>
                         {service.starting_from ? (
-                          <span className="rounded-full border border-white/10 bg-white/[0.04] px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.28em] text-white/60">
+                          <span className="rounded-full border border-[var(--home-border)] bg-[var(--home-soft)] px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.28em] text-[var(--home-muted)]">
                             {service.starting_from}
                           </span>
                         ) : null}
@@ -183,7 +185,7 @@ export default function ConnectTab() {
                       href={ctaHref}
                       target={ctaHref.startsWith('http') ? '_blank' : undefined}
                       rel={ctaHref.startsWith('http') ? 'noreferrer noopener' : undefined}
-                      className="inline-flex shrink-0 items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.28em] text-white/70 transition hover:border-white/20 hover:bg-white/[0.06] hover:text-white"
+                      className="inline-flex shrink-0 items-center gap-2 rounded-full border border-[var(--home-border)] bg-[var(--home-soft)] px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.28em] text-[var(--home-muted)] transition hover:border-[var(--home-ink)] hover:bg-[var(--home-card)] hover:text-[var(--home-ink)]"
                       aria-label={`${ctaLabel} about ${service.title}`}>
                       {ctaLabel}
                       <ArrowUpRight className="h-4 w-4" />
@@ -193,7 +195,7 @@ export default function ConnectTab() {
                   {service.deliverables.length > 0 ? (
                     <div className="mt-4 grid gap-2">
                       {service.deliverables.slice(0, 6).map((item) => (
-                        <div key={item} className="flex items-start gap-2 text-xs text-white/70">
+                        <div key={item} className="flex items-start gap-2 text-xs text-[var(--home-muted)]">
                           <BadgeCheck className="mt-0.5 h-4 w-4 text-[var(--home-accent)]" />
                           <span className="leading-relaxed">{item}</span>
                         </div>
@@ -207,7 +209,7 @@ export default function ConnectTab() {
         )}
       </div>
 
-      <div className="space-y-3 border-t border-white/10 pt-6" data-gsap="reveal">
+      <div className="space-y-3 border-t border-[var(--home-border)] pt-6" data-gsap="reveal">
         <div className="flex items-center justify-between">
           <p className="text-[11px] uppercase tracking-[0.35em] text-[var(--home-muted)]">Testimonials</p>
           <span className="text-xs text-[var(--home-muted)]">What people say</span>
@@ -218,12 +220,12 @@ export default function ConnectTab() {
             {Array.from({ length: 2 }).map((_, idx) => (
               <div
                 key={idx}
-                className="h-40 rounded-3xl border border-white/10 bg-white/[0.03] animate-pulse"
+                className="h-40 rounded-3xl border border-[var(--home-border)] bg-[var(--home-soft)] animate-pulse"
               />
             ))}
           </div>
         ) : testimonials.length === 0 ? (
-          <div className="rounded-3xl border border-white/10 bg-black/30 p-6">
+          <div className="rounded-3xl border border-[var(--home-border)] bg-[var(--home-card)] p-6">
             <p className="text-sm font-semibold text-[var(--home-ink)]">No testimonials yet.</p>
           </div>
         ) : (
@@ -234,25 +236,25 @@ export default function ConnectTab() {
               return (
                 <div
                   key={item.id}
-                  className="rounded-3xl border border-white/10 bg-black/30 p-6 shadow-[0_18px_40px_rgba(0,0,0,0.45)]">
+                  className="rounded-3xl border border-[var(--home-border)] bg-[var(--home-card)] p-6 shadow-[0_18px_40px_rgba(0,0,0,0.45)]">
                   <div className="flex items-start gap-3">
                     <span className="mt-0.5 text-[var(--home-accent)]">
                       <Quote className="h-5 w-5" />
                     </span>
-                    <p className="text-sm leading-relaxed text-white/70">“{item.quote}”</p>
+                    <p className="text-sm leading-relaxed text-[var(--home-ink)] opacity-80">“{item.quote}”</p>
                   </div>
 
                   <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
                     <div>
                       <p className="text-sm font-semibold text-[var(--home-ink)]">{item.name}</p>
-                      {subtitle ? <p className="mt-1 text-xs text-white/50">{subtitle}</p> : null}
+                      {subtitle ? <p className="mt-1 text-xs text-[var(--home-muted)]">{subtitle}</p> : null}
                     </div>
                     {item.source_url ? (
                       <a
                         href={item.source_url}
                         target="_blank"
                         rel="noreferrer noopener"
-                        className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.28em] text-white/70 transition hover:border-white/20 hover:bg-white/[0.06] hover:text-white"
+                        className="inline-flex items-center gap-2 rounded-full border border-[var(--home-border)] bg-[var(--home-soft)] px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.28em] text-[var(--home-muted)] transition hover:border-[var(--home-ink)] hover:bg-[var(--home-card)] hover:text-[var(--home-ink)]"
                         aria-label={`Open testimonial source for ${item.name}`}>
                         Source
                         <ArrowUpRight className="h-4 w-4" />

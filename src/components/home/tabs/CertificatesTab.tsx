@@ -105,7 +105,7 @@ export default function CertificatesTab() {
             return (
               <div
                 key={cert.id}
-                className="js-reveal grid gap-x-4 gap-y-3 border-b border-white/10 py-6 md:grid-cols-[auto_1fr]">
+                className="js-reveal grid gap-x-4 gap-y-3 border-b border-[var(--home-border)] py-6 md:grid-cols-[auto_1fr]">
                 <div className="md:hidden pt-1 text-xs uppercase tracking-[0.35em] text-[var(--home-muted)]">
                   {number}
                 </div>
@@ -127,7 +127,7 @@ export default function CertificatesTab() {
                 </p>
                 <p className="md:col-start-2 md:row-start-4 text-sm text-[var(--home-muted)]">{cert.description}</p>
                 <div className="md:col-start-2 md:row-start-5">
-                  <span className="inline-flex rounded-full border border-white/10 bg-black/30 px-3 py-1 text-xs text-[var(--home-muted)]">
+                  <span className="inline-flex rounded-full border border-[var(--home-border)] bg-[var(--home-card)] px-3 py-1 text-xs text-[var(--home-muted)]">
                     {cert.status}
                   </span>
                 </div>

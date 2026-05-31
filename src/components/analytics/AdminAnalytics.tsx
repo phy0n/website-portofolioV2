@@ -162,7 +162,7 @@ export default function AdminAnalytics({
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
           <p className="text-sm uppercase tracking-[0.3em] text-[var(--admin-accent)]">Audience</p>
-          <h3 className="text-xl font-semibold text-white">User Analytics</h3>
+          <h3 className="text-xl font-semibold text-[var(--home-ink)]">User Analytics</h3>
         </div>
         <div className="admin-analytics-range">
           {rangeOptions.map((option) => (
@@ -179,9 +179,9 @@ export default function AdminAnalytics({
       </div>
 
       {error ? (
-        <div className="rounded-2xl border border-white/10 bg-white/5 p-5 text-sm text-white/70 shadow-[0_20px_60px_rgba(0,0,0,0.35)]">
-          <p className="text-base font-semibold text-white">Analytics not configured</p>
-          <p className="mt-2 text-white/50">{error}</p>
+        <div className="rounded-2xl border border-[var(--home-border)] bg-[var(--home-soft)] p-5 text-sm text-[var(--home-ink)] opacity-70 shadow-[0_20px_60px_rgba(0,0,0,0.35)]">
+          <p className="text-base font-semibold text-[var(--home-ink)]">Analytics not configured</p>
+          <p className="mt-2 text-[var(--home-muted)] opacity-50">{error}</p>
         </div>
       ) : showSkeleton ? (
         <>
@@ -189,38 +189,38 @@ export default function AdminAnalytics({
             {Array.from({ length: 3 }).map((_, index) => (
               <div
                 key={`metric-skeleton-${index}`}
-                className="rounded-2xl border border-white/10 bg-white/5 p-5 shadow-[0_20px_60px_rgba(0,0,0,0.35)]">
-                <div className="h-3 w-32 rounded-full bg-white/10 animate-pulse" />
-                <div className="mt-4 h-7 w-16 rounded-full bg-white/10 animate-pulse" />
-                <div className="mt-3 h-3 w-24 rounded-full bg-white/10 animate-pulse" />
+                className="rounded-2xl border border-[var(--home-border)] bg-[var(--home-soft)] p-5 shadow-[0_20px_60px_rgba(0,0,0,0.35)]">
+                <div className="h-3 w-32 rounded-full bg-[var(--home-soft)] animate-pulse" />
+                <div className="mt-4 h-7 w-16 rounded-full bg-[var(--home-soft)] animate-pulse" />
+                <div className="mt-3 h-3 w-24 rounded-full bg-[var(--home-soft)] animate-pulse" />
               </div>
             ))}
           </div>
 
-          <div className="rounded-2xl border border-white/10 bg-white/5 p-5 shadow-[0_20px_60px_rgba(0,0,0,0.35)]">
-            <div className="h-4 w-40 rounded-full bg-white/10 animate-pulse" />
-            <div className="mt-5 h-52 w-full rounded-2xl bg-white/5 animate-pulse" />
+          <div className="rounded-2xl border border-[var(--home-border)] bg-[var(--home-soft)] p-5 shadow-[0_20px_60px_rgba(0,0,0,0.35)]">
+            <div className="h-4 w-40 rounded-full bg-[var(--home-soft)] animate-pulse" />
+            <div className="mt-5 h-52 w-full rounded-2xl bg-[var(--home-soft)] animate-pulse" />
           </div>
 
           <div className="grid gap-4 lg:grid-cols-5">
-            <div className="rounded-2xl border border-white/10 bg-white/5 p-5 shadow-[0_20px_60px_rgba(0,0,0,0.35)] lg:col-span-3">
-              <div className="h-4 w-28 rounded-full bg-white/10 animate-pulse" />
+            <div className="rounded-2xl border border-[var(--home-border)] bg-[var(--home-soft)] p-5 shadow-[0_20px_60px_rgba(0,0,0,0.35)] lg:col-span-3">
+              <div className="h-4 w-28 rounded-full bg-[var(--home-soft)] animate-pulse" />
               <div className="mt-4 space-y-3">
                 {Array.from({ length: 3 }).map((_, index) => (
                   <div key={`page-skeleton-${index}`} className="space-y-2">
-                    <div className="h-3 w-48 rounded-full bg-white/10 animate-pulse" />
-                    <div className="h-2 w-full rounded-full bg-white/5 animate-pulse" />
+                    <div className="h-3 w-48 rounded-full bg-[var(--home-soft)] animate-pulse" />
+                    <div className="h-2 w-full rounded-full bg-[var(--home-soft)] animate-pulse" />
                   </div>
                 ))}
               </div>
             </div>
-            <div className="rounded-2xl border border-white/10 bg-white/5 p-5 shadow-[0_20px_60px_rgba(0,0,0,0.35)] lg:col-span-2">
-              <div className="h-4 w-32 rounded-full bg-white/10 animate-pulse" />
+            <div className="rounded-2xl border border-[var(--home-border)] bg-[var(--home-soft)] p-5 shadow-[0_20px_60px_rgba(0,0,0,0.35)] lg:col-span-2">
+              <div className="h-4 w-32 rounded-full bg-[var(--home-soft)] animate-pulse" />
               <div className="mt-4 space-y-3">
                 {Array.from({ length: 3 }).map((_, index) => (
                   <div key={`meta-skeleton-${index}`} className="flex items-center justify-between">
-                    <div className="h-3 w-28 rounded-full bg-white/10 animate-pulse" />
-                    <div className="h-3 w-12 rounded-full bg-white/10 animate-pulse" />
+                    <div className="h-3 w-28 rounded-full bg-[var(--home-soft)] animate-pulse" />
+                    <div className="h-3 w-12 rounded-full bg-[var(--home-soft)] animate-pulse" />
                   </div>
                 ))}
               </div>
@@ -240,37 +240,37 @@ export default function AdminAnalytics({
             ].map((metricItem) => (
               <div
                 key={metricItem.label}
-                className="rounded-2xl border border-white/10 bg-white/5 p-5 shadow-[0_20px_60px_rgba(0,0,0,0.35)]">
-                <p className="text-xs uppercase tracking-[0.3em] text-white/40">
+                className="rounded-2xl border border-[var(--home-border)] bg-[var(--home-soft)] p-5 shadow-[0_20px_60px_rgba(0,0,0,0.35)]">
+                <p className="text-xs uppercase tracking-[0.3em] text-[var(--home-muted)] opacity-40">
                   {metricItem.label}
                 </p>
-                <p className="mt-3 text-3xl font-semibold text-white">{metricItem.value}</p>
-                <p className="mt-2 text-xs text-white/40">
+                <p className="mt-3 text-3xl font-semibold text-[var(--home-ink)]">{metricItem.value}</p>
+                <p className="mt-2 text-xs text-[var(--home-muted)] opacity-40">
                   {isLoading ? 'Refreshing...' : `Last ${range}`}
                 </p>
               </div>
             ))}
           </div>
 
-          <div className="rounded-2xl border border-white/10 bg-white/5 p-5 shadow-[0_20px_60px_rgba(0,0,0,0.35)]">
+          <div className="rounded-2xl border border-[var(--home-border)] bg-[var(--home-soft)] p-5 shadow-[0_20px_60px_rgba(0,0,0,0.35)]">
             <div className="flex flex-wrap items-center justify-between gap-3">
               <div>
-                <p className="text-xs uppercase tracking-[0.3em] text-white/40">Date range</p>
-                <p className="mt-2 text-lg font-semibold text-white">{rangeLabel}</p>
-                <div className="mt-2 flex items-center gap-4 text-xs text-white/50">
+                <p className="text-xs uppercase tracking-[0.3em] text-[var(--home-muted)] opacity-40">Date range</p>
+                <p className="mt-2 text-lg font-semibold text-[var(--home-ink)]">{rangeLabel}</p>
+                <div className="mt-2 flex items-center gap-4 text-xs text-[var(--home-muted)] opacity-50">
                   <span className="inline-flex items-center gap-2">
                     <span className="h-2 w-2 rounded-full bg-[var(--admin-accent)]" />
                     Visits
                   </span>
                   <span className="inline-flex items-center gap-2">
-                    <span className="h-2 w-2 rounded-full bg-white/70" />
+                    <span className="h-2 w-2 rounded-full bg-[var(--home-soft)]" />
                     Unique users
                   </span>
                 </div>
               </div>
-              <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2 text-xs uppercase tracking-[0.3em] text-white/60">
+              <div className="inline-flex items-center gap-2 rounded-full border border-[var(--home-border)] bg-[var(--home-soft)] px-4 py-2 text-xs uppercase tracking-[0.3em] text-[var(--home-muted)] opacity-60">
                 <span>Total visits</span>
-                <span className="rounded-full bg-white/10 px-2 py-1 text-white">
+                <span className="rounded-full bg-[var(--home-soft)] px-2 py-1 text-[var(--home-ink)]">
                   {totalVisits.toLocaleString()}
                 </span>
               </div>
@@ -278,11 +278,11 @@ export default function AdminAnalytics({
 
             <div className="mt-6 h-52">
               {!hasMounted ? (
-                <div className="flex h-full items-center justify-center text-sm text-white/40">
+                <div className="flex h-full items-center justify-center text-sm text-[var(--home-muted)] opacity-40">
                   Loading chart...
                 </div>
               ) : chartData.length === 0 ? (
-                <div className="flex h-full items-center justify-center text-sm text-white/40">
+                <div className="flex h-full items-center justify-center text-sm text-[var(--home-muted)] opacity-40">
                   No chart data yet.
                 </div>
               ) : (
@@ -292,7 +292,7 @@ export default function AdminAnalytics({
               )}
             </div>
             <div
-              className="mt-3 grid text-[10px] text-white/40"
+              className="mt-3 grid text-[10px] text-[var(--home-muted)] opacity-40"
               style={{ gridTemplateColumns: `repeat(${labels.length || 1}, minmax(0, 1fr))` }}>
               {labels.map((label, index) => (
                 <span
@@ -304,33 +304,33 @@ export default function AdminAnalytics({
                 </span>
               ))}
             </div>
-            <p className="mt-3 text-[10px] text-white/40">
+            <p className="mt-3 text-[10px] text-[var(--home-muted)] opacity-40">
               Auto-refresh every 30s - Updated {data?.generatedAt ? new Date(data.generatedAt).toLocaleTimeString('en-GB') : '--'}
             </p>
           </div>
 
           <div className="grid gap-4 lg:grid-cols-5">
-            <div className="rounded-2xl border border-white/10 bg-white/5 p-5 shadow-[0_20px_60px_rgba(0,0,0,0.35)] lg:col-span-3">
+            <div className="rounded-2xl border border-[var(--home-border)] bg-[var(--home-soft)] p-5 shadow-[0_20px_60px_rgba(0,0,0,0.35)] lg:col-span-3">
               <div className="flex items-center justify-between">
-                <p className="text-sm font-semibold text-white">Top pages</p>
-                <span className="text-[10px] uppercase tracking-[0.3em] text-white/40">
+                <p className="text-sm font-semibold text-[var(--home-ink)]">Top pages</p>
+                <span className="text-[10px] uppercase tracking-[0.3em] text-[var(--home-muted)] opacity-40">
                   Last {range}
                 </span>
               </div>
               <div className="mt-4 space-y-3">
                 {isLoading && !topPages.length && (
-                  <p className="text-sm text-white/50">Loading pages...</p>
+                  <p className="text-sm text-[var(--home-muted)] opacity-50">Loading pages...</p>
                 )}
                 {!isLoading && topPages.length === 0 && (
-                  <p className="text-sm text-white/50">No data yet.</p>
+                  <p className="text-sm text-[var(--home-muted)] opacity-50">No data yet.</p>
                 )}
                 {topPages.map((page) => (
                   <div key={page.path} className="space-y-2">
-                    <div className="flex items-center justify-between text-sm text-white/70">
+                    <div className="flex items-center justify-between text-sm text-[var(--home-ink)] opacity-70">
                       <span className="truncate">{page.path}</span>
-                      <span className="text-white/50">{page.count}</span>
+                      <span className="text-[var(--home-muted)] opacity-50">{page.count}</span>
                     </div>
-                    <div className="h-1.5 w-full overflow-hidden rounded-full bg-white/5">
+                    <div className="h-1.5 w-full overflow-hidden rounded-full bg-[var(--home-soft)]">
                       <div
                         className="h-full rounded-full bg-[var(--admin-accent)] transition-[width] duration-700 ease-out"
                         style={{
@@ -342,61 +342,61 @@ export default function AdminAnalytics({
                 ))}
               </div>
             </div>
-            <div className="rounded-2xl border border-white/10 bg-white/5 p-5 shadow-[0_20px_60px_rgba(0,0,0,0.35)] lg:col-span-2">
-              <p className="text-sm font-semibold text-white">Traffic overview</p>
-              <div className="mt-4 space-y-4 text-sm text-white/60">
+            <div className="rounded-2xl border border-[var(--home-border)] bg-[var(--home-soft)] p-5 shadow-[0_20px_60px_rgba(0,0,0,0.35)] lg:col-span-2">
+              <p className="text-sm font-semibold text-[var(--home-ink)]">Traffic overview</p>
+              <div className="mt-4 space-y-4 text-sm text-[var(--home-muted)] opacity-60">
                 <div className="flex items-center justify-between">
                   <span>Total events</span>
-                  <span className="text-white">{totalVisits.toLocaleString()}</span>
+                  <span className="text-[var(--home-ink)]">{totalVisits.toLocaleString()}</span>
                 </div>
                 <div className="flex items-center justify-between">
                   <span>Unique visitors</span>
-                  <span className="text-white">{uniqueVisitors.toLocaleString()}</span>
+                  <span className="text-[var(--home-ink)]">{uniqueVisitors.toLocaleString()}</span>
                 </div>
 
                 <div className="grid grid-cols-2 gap-3">
-                  <div className="rounded-xl border border-white/10 bg-white/5 p-3">
-                    <p className="text-[10px] uppercase tracking-[0.3em] text-white/40">
+                  <div className="rounded-xl border border-[var(--home-border)] bg-[var(--home-soft)] p-3">
+                    <p className="text-[10px] uppercase tracking-[0.3em] text-[var(--home-muted)] opacity-40">
                       Direct
                     </p>
-                    <p className="mt-2 text-lg font-semibold text-white">
+                    <p className="mt-2 text-lg font-semibold text-[var(--home-ink)]">
                       {trafficDirect.toLocaleString()}
                     </p>
                   </div>
-                  <div className="rounded-xl border border-white/10 bg-white/5 p-3">
-                    <p className="text-[10px] uppercase tracking-[0.3em] text-white/40">
+                  <div className="rounded-xl border border-[var(--home-border)] bg-[var(--home-soft)] p-3">
+                    <p className="text-[10px] uppercase tracking-[0.3em] text-[var(--home-muted)] opacity-40">
                       Referrals
                     </p>
-                    <p className="mt-2 text-lg font-semibold text-white">
+                    <p className="mt-2 text-lg font-semibold text-[var(--home-ink)]">
                       {trafficReferrals.toLocaleString()}
                     </p>
                   </div>
                 </div>
 
-                <div className="rounded-xl border border-white/10 bg-white/5 p-3">
+                <div className="rounded-xl border border-[var(--home-border)] bg-[var(--home-soft)] p-3">
                   <div className="flex items-center justify-between gap-3">
-                    <p className="text-[10px] uppercase tracking-[0.3em] text-white/40">
+                    <p className="text-[10px] uppercase tracking-[0.3em] text-[var(--home-muted)] opacity-40">
                       Top referrers
                     </p>
                     {data?.capped ? (
-                      <span className="text-[10px] uppercase tracking-[0.3em] text-white/40">
+                      <span className="text-[10px] uppercase tracking-[0.3em] text-[var(--home-muted)] opacity-40">
                         capped
                       </span>
                     ) : null}
                   </div>
                   {topReferrers.length === 0 ? (
-                    <p className="mt-2 text-xs text-white/40">No referrer data yet.</p>
+                    <p className="mt-2 text-xs text-[var(--home-muted)] opacity-40">No referrer data yet.</p>
                   ) : (
                     <div className="mt-3 space-y-2">
                       {topReferrers.map((entry) => (
                         <div key={entry.label} className="space-y-1">
-                          <div className="flex items-center justify-between gap-3 text-xs text-white/60">
+                          <div className="flex items-center justify-between gap-3 text-xs text-[var(--home-muted)] opacity-60">
                             <span className="truncate">{entry.label}</span>
-                            <span className="text-white/60">{entry.count}</span>
+                            <span className="text-[var(--home-muted)] opacity-60">{entry.count}</span>
                           </div>
-                          <div className="h-1.5 w-full overflow-hidden rounded-full bg-white/5">
+                          <div className="h-1.5 w-full overflow-hidden rounded-full bg-[var(--home-soft)]">
                             <div
-                              className="h-full rounded-full bg-white/70 transition-[width] duration-700 ease-out"
+                              className="h-full rounded-full bg-[var(--home-soft)] transition-[width] duration-700 ease-out"
                               style={{
                                 width: topReferrersMax
                                   ? `${(entry.count / topReferrersMax) * 100}%`
@@ -409,7 +409,7 @@ export default function AdminAnalytics({
                     </div>
                   )}
                 </div>
-                <div className="rounded-xl border border-white/10 bg-white/5 p-3 text-xs text-white/50">
+                <div className="rounded-xl border border-[var(--home-border)] bg-[var(--home-soft)] p-3 text-xs text-[var(--home-muted)] opacity-50">
                   Watch live movement as visitors arrive. The chart auto-updates.
                 </div>
               </div>

@@ -86,19 +86,19 @@ export default function ExperienceTab() {
                 </div>
 
                 <div className="relative hidden items-center justify-center md:flex">
-                  <span className="absolute inset-y-0 w-px bg-white/10" />
+                  <span className="absolute inset-y-0 w-px bg-[var(--home-soft)]" />
                   <span className="relative z-10 h-2.5 w-2.5 rounded-full bg-[var(--home-accent)]" />
                 </div>
                 <div className="flex flex-wrap items-center gap-3">
                   <span className="md:hidden h-2.5 w-2.5 rounded-full bg-[var(--home-accent)]" />
                   <h3 className="text-lg font-sans font-semibold text-[var(--home-ink)]">{exp.role}</h3>
-                  <span className="rounded-full border border-white/10 bg-black/30 px-3 py-1 text-xs text-[var(--home-muted)]">
+                  <span className="rounded-full border border-[var(--home-border)] bg-[var(--home-card)] px-3 py-1 text-xs text-[var(--home-muted)]">
                     {exp.status}
                   </span>
                 </div>
 
                 <div className="relative hidden items-center justify-center md:flex">
-                  <span className="absolute inset-y-0 w-px bg-white/10" />
+                  <span className="absolute inset-y-0 w-px bg-[var(--home-soft)]" />
                 </div>
                 <div className="mt-2 flex flex-wrap items-center gap-2 text-sm text-[var(--home-muted)]">
                   <Briefcase className="h-4 w-4" />
@@ -108,7 +108,7 @@ export default function ExperienceTab() {
                 </div>
 
                 <div className="relative hidden items-center justify-center md:flex">
-                  <span className="absolute inset-y-0 w-px bg-white/10" />
+                  <span className="absolute inset-y-0 w-px bg-[var(--home-soft)]" />
                 </div>
                 <p className="mt-3 text-sm leading-relaxed text-[var(--home-muted)]">{exp.description}</p>
               </div>

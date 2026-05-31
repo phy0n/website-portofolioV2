@@ -64,7 +64,7 @@ export default function ContactForm({ source }: { source?: 'home' | 'connect' | 
   };
 
   return (
-    <div className="overflow-hidden rounded-md border border-white/20 bg-black/20 shadow-[inset_0_1px_0_rgba(255,255,255,0.06)]">
+    <div className="overflow-hidden rounded-md border border-[var(--home-border)] bg-[var(--home-card)] shadow-[inset_0_1px_0_rgba(255,255,255,0.06)]">
       <div className="px-4 py-3">
         <p className="text-[10px] uppercase tracking-[0.3em] text-[var(--home-muted)]">Email</p>
         <input
@@ -77,11 +77,11 @@ export default function ContactForm({ source }: { source?: 'home' | 'connect' | 
             if (status !== 'idle') setStatus('idle');
           }}
           placeholder="email@domain.com"
-          className="mt-2 w-full border-0 bg-transparent p-0 text-sm text-[var(--home-ink)] placeholder:text-white/35 outline-none"
+          className="mt-2 w-full border-0 bg-transparent p-0 text-sm text-[var(--home-ink)] placeholder:text-[var(--home-muted)] opacity-35 outline-none"
         />
       </div>
 
-      <div className="border-t border-white/15 px-4 py-3">
+      <div className="border-t border-[var(--home-border)] px-4 py-3">
         <div className="flex items-center justify-between gap-3">
           <p className="text-[10px] uppercase tracking-[0.3em] text-[var(--home-muted)]">Message</p>
           <p className="text-[10px] text-[var(--home-muted)]">
@@ -97,7 +97,7 @@ export default function ContactForm({ source }: { source?: 'home' | 'connect' | 
           placeholder="Write your message..."
           wrap="soft"
           rows={5}
-          className="mt-3 max-h-60 min-h-44 w-full resize-none overflow-y-auto border-0 bg-transparent p-0 text-sm leading-relaxed text-[var(--home-ink)] placeholder:text-white/35 outline-none [overflow-wrap:anywhere] [scrollbar-color:rgba(255,255,255,0.25)_transparent] [scrollbar-width:thin]"
+          className="mt-3 max-h-60 min-h-44 w-full resize-none overflow-y-auto border-0 bg-transparent p-0 text-sm leading-relaxed text-[var(--home-ink)] placeholder:text-[var(--home-muted)] opacity-35 outline-none [overflow-wrap:anywhere] [scrollbar-color:rgba(255,255,255,0.25)_transparent] [scrollbar-width:thin]"
         />
       </div>
 
@@ -110,7 +110,7 @@ export default function ContactForm({ source }: { source?: 'home' | 'connect' | 
         autoComplete="off"
       />
 
-      <div className="flex flex-col gap-3 border-t border-white/15 bg-white/[0.035] px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
+      <div className="flex flex-col gap-3 border-t border-[var(--home-border)] bg-[var(--home-soft)] px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
         <div className="space-y-1">
           <p className="text-xs leading-relaxed text-[var(--home-muted)]">
             {emailOk ? 'Reply by email.' : 'Add email to send.'}
@@ -130,7 +130,7 @@ export default function ContactForm({ source }: { source?: 'home' | 'connect' | 
           type="button"
           onClick={handleSend}
           disabled={!canSend}
-          className="inline-flex min-h-11 items-center justify-center gap-2 rounded-md border border-white/15 bg-white/[0.07] px-4 py-2.5 text-sm font-semibold text-[var(--home-ink)] transition hover:border-white/25 hover:bg-white/[0.1] disabled:cursor-not-allowed disabled:opacity-50">
+          className="inline-flex min-h-11 items-center justify-center gap-2 rounded-md border border-[var(--home-border)] bg-[var(--home-soft)] px-4 py-2.5 text-sm font-semibold text-[var(--home-ink)] transition hover:border-[var(--home-border)] hover:bg-white/[0.1] disabled:cursor-not-allowed disabled:opacity-50">
           <Send className="h-4 w-4" />
           {sending ? 'Sending...' : 'Send'}
         </button>

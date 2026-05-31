@@ -4,6 +4,8 @@ import type { Metadata } from "next";
 import AnalyticsTracker from "@/components/analytics/AnalyticsTracker";
 import GlobalGsap from "@/components/shared/GlobalGsap";
 import VercelAnalytics from "@/components/analytics/VercelAnalytics";
+import { ThemeProvider } from "@/components/shared/ThemeProvider";
+
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -82,9 +84,11 @@ export default function RootLayout({ children }: RootLayoutProps) {
       <body
         suppressHydrationWarning
         className={`minimal-root ${geistSans.variable} ${geistMono.variable} ${nunito.variable} ${manrope.variable} antialiased`}>
-        <GlobalGsap>{children}</GlobalGsap>
-        <AnalyticsTracker />
-        <VercelAnalytics />
+        <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
+          <GlobalGsap>{children}</GlobalGsap>
+          <AnalyticsTracker />
+          <VercelAnalytics />
+        </ThemeProvider>
       </body>
     </html>
   );

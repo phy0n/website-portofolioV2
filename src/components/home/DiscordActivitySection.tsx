@@ -81,7 +81,7 @@ const SpotifyCard = ({
   }, [now, spotify.timestamps?.end, spotify.timestamps?.start]);
 
   return (
-    <div className="rounded-2xl border border-white/10 bg-black/30 p-4 shadow-[0_18px_40px_rgba(0,0,0,0.45)]">
+    <div className="rounded-2xl border border-[var(--home-border)] bg-[var(--home-card)] p-4">
       <div className="flex items-center justify-between gap-3">
         <div className="flex items-center gap-2">
           <FaSpotify className="h-4 w-4 text-[#1DB954]" />
@@ -99,7 +99,7 @@ const SpotifyCard = ({
       </div>
 
       <div className="mt-4 flex gap-3">
-        <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-xl border border-white/10 bg-[var(--home-soft)]">
+        <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-xl border border-[var(--home-border)] bg-[var(--home-soft)]">
           {spotify.albumArtUrl ? (
             <Image
               src={spotify.albumArtUrl}
@@ -120,7 +120,7 @@ const SpotifyCard = ({
               href={spotify.songUrl}
               target="_blank"
               rel="noreferrer"
-              className="block truncate text-sm font-semibold text-[var(--home-ink)] transition hover:text-white"
+              className="block truncate text-sm font-semibold text-[var(--home-ink)] transition hover:opacity-80"
               title={spotify.song}>
               {spotify.song}
             </a>
@@ -139,7 +139,7 @@ const SpotifyCard = ({
 
           {progress !== null && elapsedLabel && durationLabel ? (
             <div className="mt-3 space-y-1.5">
-              <div className="h-1.5 w-full overflow-hidden rounded-full bg-white/10">
+              <div className="h-1.5 w-full overflow-hidden rounded-full bg-[var(--home-border)]">
                 <div className="h-full rounded-full bg-[#1DB954]" style={{ width: `${Math.round(progress * 100)}%` }} />
               </div>
               <div className="flex items-center justify-between text-[11px] tabular-nums text-[var(--home-muted)]">
@@ -164,14 +164,14 @@ const ActivityCard = ({ activity, now }: { activity: DiscordActivity; now: numbe
   }, [activity.timestamps?.start, now]);
 
   return (
-    <div className="rounded-2xl border border-white/10 bg-black/30 p-4 shadow-[0_18px_40px_rgba(0,0,0,0.45)]">
+    <div className="rounded-2xl border border-[var(--home-border)] bg-[var(--home-card)] p-4">
       <div className="flex items-center gap-2">
         <Icon className={`h-4 w-4 ${accent}`} />
         <p className="text-[11px] uppercase tracking-[0.35em] text-[var(--home-muted)]">{label}</p>
       </div>
 
       <div className="mt-4 flex gap-3">
-        <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-xl border border-white/10 bg-[var(--home-soft)]">
+        <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-xl border border-[var(--home-border)] bg-[var(--home-soft)]">
           {activity.largeImage ? (
             <Image
               src={activity.largeImage}
@@ -186,7 +186,7 @@ const ActivityCard = ({ activity, now }: { activity: DiscordActivity; now: numbe
           )}
 
           {activity.smallImage ? (
-            <div className="absolute -bottom-1 -right-1 h-6 w-6 overflow-hidden rounded-full border-2 border-black/60 bg-[var(--home-soft)]">
+            <div className="absolute -bottom-1 -right-1 h-6 w-6 overflow-hidden rounded-full border-2 border-[var(--home-border)] bg-[var(--home-soft)]">
               <Image src={activity.smallImage} alt="" fill sizes="24px" className="object-cover" />
             </div>
           ) : null}

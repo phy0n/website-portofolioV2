@@ -93,12 +93,12 @@ export function ChatPanel({
     const actionsNode = (
       <div className={`flex shrink-0 items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity ${isAuthor ? 'flex-row-reverse' : 'flex-row'} self-center mb-1 mx-2`}>
         {onReplyToChange ? (
-          <button type="button" onClick={() => onReplyToChange(item)} className="rounded-full p-1.5 text-white/40 hover:bg-white/10 hover:text-white transition" title="Reply">
+          <button type="button" onClick={() => onReplyToChange(item)} className="rounded-full p-1.5 text-[var(--home-muted)] opacity-40 hover:bg-[var(--home-soft)] hover:text-[var(--home-ink)] transition" title="Reply">
             <CornerUpLeft className="h-3.5 w-3.5" />
           </button>
         ) : null}
         {isAdmin && onTogglePinMessage ? (
-          <button type="button" onClick={() => onTogglePinMessage(item.id, !item.isPinned)} className={`rounded-full p-1.5 transition ${item.isPinned ? 'text-[var(--home-accent)] hover:bg-[var(--home-accent)]/10' : 'text-white/40 hover:bg-white/10 hover:text-white'}`} title={item.isPinned ? 'Unpin' : 'Pin'}>
+          <button type="button" onClick={() => onTogglePinMessage(item.id, !item.isPinned)} className={`rounded-full p-1.5 transition ${item.isPinned ? 'text-[var(--home-accent)] hover:bg-[var(--home-accent)]/10' : 'text-[var(--home-muted)] opacity-40 hover:bg-[var(--home-soft)] hover:text-[var(--home-ink)]'}`} title={item.isPinned ? 'Unpin' : 'Pin'}>
             <Pin className="h-3.5 w-3.5" />
           </button>
         ) : null}
@@ -115,26 +115,26 @@ export function ChatPanel({
         {isAuthor && actionsNode}
         <div className={`relative flex flex-col max-w-[85%] sm:max-w-[75%] ${isAuthor ? 'items-end' : 'items-start'}`}>
           <div className={`flex items-center gap-2 mb-1.5 px-1 ${isAuthor ? 'flex-row-reverse' : 'flex-row'}`}>
-            <span className={`text-[11px] font-bold tracking-wide ${isAuthor ? 'text-[var(--home-accent)]' : 'text-white/80'}`}>
+            <span className={`text-[11px] font-bold tracking-wide ${isAuthor ? 'text-[var(--home-accent)]' : 'text-[var(--home-ink)] opacity-80'}`}>
               {item.name}
             </span>
             {isAuthor && <Crown className="h-3 w-3 text-[var(--home-accent)]" />}
             {item.isPinned && <Pin className="h-3 w-3 text-[var(--home-accent)]" />}
-            <span className="text-[9px] text-white/30 uppercase tracking-widest">{stamp}</span>
+            <span className="text-[9px] text-[var(--home-muted)] opacity-30 uppercase tracking-widest">{stamp}</span>
           </div>
 
           <div className={`relative px-4 py-3 shadow-sm ${
             isAuthor 
               ? 'bg-[var(--home-accent)] text-white rounded-[20px] rounded-tr-[4px] shadow-[0_4px_20px_rgba(var(--home-accent-rgb),0.2)]' 
-              : 'bg-[#181820] border border-white/5 text-white/90 rounded-[20px] rounded-tl-[4px] shadow-[0_4px_20px_rgba(0,0,0,0.3)]'
+              : 'bg-[var(--home-card)] border border-[var(--home-border)] text-[var(--home-ink)] opacity-90 rounded-[20px] rounded-tl-[4px] shadow-[0_4px_20px_rgba(0,0,0,0.05)]'
           }`}>
             {item.replyToId ? (
               <div className={`mb-2 px-3 py-2 border-l-[3px] text-xs rounded-r-md transition-colors ${
                 isAuthor 
-                  ? 'bg-white/20 border-white text-white' 
-                  : 'bg-white/5 border-[var(--home-accent)] text-white/80'
+                  ? 'bg-[var(--home-soft)] border-[var(--home-ink)] text-[var(--home-ink)]' 
+                  : 'bg-[var(--home-soft)] border-[var(--home-accent)] text-[var(--home-ink)] opacity-80'
               }`}>
-                <p className={`font-bold mb-0.5 tracking-wide ${isAuthor ? 'text-white' : 'text-[var(--home-accent)]'}`}>
+                <p className={`font-bold mb-0.5 tracking-wide ${isAuthor ? 'text-[var(--home-ink)]' : 'text-[var(--home-accent)]'}`}>
                   {replyTarget?.name ?? 'Unknown'}
                 </p>
                 <p className="line-clamp-2 opacity-90 leading-relaxed">
@@ -154,11 +154,11 @@ export function ChatPanel({
 
   return (
     <div className="flex h-full flex-col">
-      <div className="flex items-center justify-between gap-3 border-b border-white/5 bg-[#0a0a0f] px-5 py-4 shrink-0">
+      <div className="flex items-center justify-between gap-3 border-b border-[var(--home-border)] bg-[var(--home-card)] px-5 py-4 shrink-0">
         <div className="flex items-center gap-2">
           <MessageSquare className="h-4 w-4 text-[var(--home-accent)]" />
-          <p className="text-sm font-semibold text-white">Chat</p>
-          <span className="rounded-full border border-white/10 bg-white/[0.03] px-2 py-0.5 text-[10px] uppercase tracking-[0.3em] text-white/50">
+          <p className="text-sm font-semibold text-[var(--home-ink)]">Chat</p>
+          <span className="rounded-full border border-[var(--home-border)] bg-[var(--home-soft)] px-2 py-0.5 text-[10px] uppercase tracking-[0.3em] text-[var(--home-muted)] opacity-50">
             {titleTag}
           </span>
         </div>
@@ -166,7 +166,7 @@ export function ChatPanel({
           <button
             type="button"
             onClick={onClose}
-            className="rounded-full border border-white/10 p-2 text-white/70 transition hover:border-white/20 hover:text-white"
+            className="rounded-full border border-[var(--home-border)] p-2 text-[var(--home-ink)] opacity-70 transition hover:border-[var(--home-border)] hover:text-[var(--home-ink)]"
             aria-label="Close chat">
             <X className="h-4 w-4" />
           </button>
@@ -174,8 +174,8 @@ export function ChatPanel({
       </div>
 
       {pinnedMessages.length > 0 && !loading ? (
-        <div className="border-b border-white/10 px-4 py-3">
-          <div className="flex items-center gap-2 text-[11px] uppercase tracking-[0.35em] text-white/50">
+        <div className="border-b border-[var(--home-border)] px-4 py-3">
+          <div className="flex items-center gap-2 text-[11px] uppercase tracking-[0.35em] text-[var(--home-muted)] opacity-50">
             <Pin className="h-4 w-4 text-[var(--home-accent)]" />
             Pinned
           </div>
@@ -183,18 +183,18 @@ export function ChatPanel({
         </div>
       ) : null}
 
-      <div ref={listRef} className="flex-1 overflow-y-auto px-4 py-6 hide-scrollbar bg-[#0f0f15]">
+      <div ref={listRef} className="flex-1 overflow-y-auto px-4 py-6 hide-scrollbar bg-[var(--home-bg)]">
         {loading ? (
           <div className="space-y-3">
             {Array.from({ length: 6 }).map((_, index) => (
               <div
                 key={index}
-                className="h-12 rounded-2xl border border-white/10 bg-white/[0.03] animate-pulse"
+                className="h-12 rounded-2xl border border-[var(--home-border)] bg-[var(--home-soft)] animate-pulse"
               />
             ))}
           </div>
         ) : pinnedMessages.length === 0 && regularMessages.length === 0 ? (
-          <p className="text-sm text-white/50">No messages yet. Be the first.</p>
+          <p className="text-sm text-[var(--home-muted)] opacity-50">No messages yet. Be the first.</p>
         ) : (
           regularMessages.map(renderMessageCard)
         )}
@@ -206,19 +206,19 @@ export function ChatPanel({
         ) : null}
       </div>
 
-      <div className="border-t border-white/5 bg-[#0a0a0f] px-4 py-4 shrink-0">
+      <div className="border-t border-[var(--home-border)] bg-[var(--home-card)] px-4 py-4 shrink-0">
         {replyTo && onReplyToChange ? (
-          <div className="mb-3 flex items-start justify-between gap-3 rounded-xl border border-white/10 bg-[#181820] px-4 py-3 border-l-4 border-l-[var(--home-accent)]">
+          <div className="mb-3 flex items-start justify-between gap-3 rounded-xl border border-[var(--home-border)] bg-[var(--home-soft)] px-4 py-3 border-l-4 border-l-[var(--home-accent)]">
             <div className="min-w-0">
               <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-[var(--home-accent)]">Replying to</p>
-              <p className="mt-1 truncate text-xs text-white/80">
-                <span className="font-semibold text-white">{replyTo.name}</span>: {replyTo.message}
+              <p className="mt-1 truncate text-xs text-[var(--home-ink)] opacity-80">
+                <span className="font-semibold text-[var(--home-ink)]">{replyTo.name}</span>: {replyTo.message}
               </p>
             </div>
             <button
               type="button"
               onClick={() => onReplyToChange(null)}
-              className="rounded-full p-2 text-white/50 transition hover:bg-white/[0.06] hover:text-white"
+              className="rounded-full p-2 text-[var(--home-muted)] opacity-50 transition hover:bg-[var(--home-soft)] hover:text-[var(--home-ink)]"
               aria-label="Cancel reply"
               title="Cancel reply">
               <X className="h-4 w-4" />
@@ -233,7 +233,7 @@ export function ChatPanel({
             placeholder={isAdmin ? CHAT_AUTHOR_NAME : 'Name'}
             maxLength={40}
             disabled={isAdmin}
-            className="w-full rounded-full border border-white/10 bg-white/5 px-5 py-3 text-sm text-white placeholder:text-white/30 outline-none focus:border-[var(--home-accent)] focus:bg-white/10 transition-colors disabled:cursor-not-allowed disabled:opacity-70 sm:w-44"
+            className="w-full rounded-full border border-[var(--home-border)] bg-[var(--home-soft)] px-5 py-3 text-sm text-[var(--home-ink)] placeholder:text-[var(--home-muted)] opacity-30 outline-none focus:border-[var(--home-accent)] focus:bg-[var(--home-soft)] transition-colors disabled:cursor-not-allowed disabled:opacity-70 sm:w-44"
           />
 
           <div className="w-full flex-1">
@@ -243,7 +243,7 @@ export function ChatPanel({
               placeholder="Message…"
               maxLength={500}
               rows={1}
-              className="w-full resize-none rounded-full border border-white/10 bg-white/5 px-5 py-3 text-sm text-white placeholder:text-white/30 outline-none focus:border-[var(--home-accent)] focus:bg-white/10 transition-colors overflow-hidden leading-snug"
+              className="w-full resize-none rounded-full border border-[var(--home-border)] bg-[var(--home-soft)] px-5 py-3 text-sm text-[var(--home-ink)] placeholder:text-[var(--home-muted)] opacity-30 outline-none focus:border-[var(--home-accent)] focus:bg-[var(--home-soft)] transition-colors overflow-hidden leading-snug"
               onKeyDown={(event) => {
                 if (event.key === 'Enter' && !event.shiftKey) {
                   event.preventDefault();
@@ -263,7 +263,7 @@ export function ChatPanel({
           </button>
         </div>
 
-        <div className="mt-1 flex items-center justify-between text-[10px] text-white/40">
+        <div className="mt-1 flex items-center justify-between text-[10px] text-[var(--home-muted)] opacity-40">
           <p>{message.length}/500</p>
           <p className="hidden sm:block">Enter to send</p>
         </div>
@@ -471,7 +471,7 @@ export default function ChatSidebar() {
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className="lg:hidden fixed bottom-4 right-4 z-40 inline-flex items-center gap-2 rounded-full border border-white/10 bg-black/80 px-4 py-3 text-xs font-semibold uppercase tracking-[0.28em] text-white backdrop-blur transition hover:border-white/20"
+        className="lg:hidden fixed bottom-4 right-4 z-40 inline-flex items-center gap-2 rounded-full border border-[var(--home-border)] bg-[var(--home-card)] px-4 py-3 text-xs font-semibold uppercase tracking-[0.28em] text-[var(--home-ink)] backdrop-blur transition hover:border-[var(--home-border)]"
         aria-label="Open chat">
         <MessageSquare className="h-4 w-4 text-[var(--home-accent)]" />
         Chat
@@ -479,14 +479,14 @@ export default function ChatSidebar() {
 
       <div className={`lg:hidden fixed inset-0 z-50 ${open ? '' : 'pointer-events-none'}`}>
         <div
-          className={`absolute inset-0 bg-black/70 transition-opacity duration-300 ${open ? 'opacity-100' : 'opacity-0'}`}
+          className={`absolute inset-0 bg-[var(--home-card)] transition-opacity duration-300 ${open ? 'opacity-100' : 'opacity-0'}`}
           onClick={() => setOpen(false)}
         />
         <div
           role="dialog"
           aria-modal="true"
           aria-label="Chat"
-          className={`absolute bottom-0 left-0 right-0 h-[min(560px,85vh)] bg-black border-t border-white/10 shadow-2xl transition-transform duration-300 ${
+          className={`absolute bottom-0 left-0 right-0 h-[min(560px,85vh)] bg-[var(--home-bg)] border-t border-[var(--home-border)] shadow-2xl transition-transform duration-300 ${
             open ? 'translate-y-0' : 'translate-y-full'
           }`}>
           <ChatPanel

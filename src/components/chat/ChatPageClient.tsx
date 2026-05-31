@@ -216,10 +216,10 @@ export default function ChatPageClient() {
           <h1 className="text-2xl font-sans font-semibold text-[var(--home-ink)]">Chat</h1>
           <p className="text-sm text-[var(--home-muted)]">Public room. Be respectful.</p>
         </div>
-        <p className="text-[10px] uppercase tracking-[0.35em] text-white/40">{isAdmin ? 'Admin' : 'Community'}</p>
+        <p className="text-[10px] uppercase tracking-[0.35em] text-[var(--home-muted)] opacity-40">{isAdmin ? 'Admin' : 'Community'}</p>
       </div>
 
-      <div className="h-[min(78vh,820px)] overflow-hidden rounded-3xl border border-white/10 bg-black/20">
+      <div className="h-[min(78vh,820px)] overflow-hidden rounded-3xl border border-[var(--home-border)] bg-[var(--home-card)]">
         <ChatPanel
           titleTag="Phion"
           messages={messages}

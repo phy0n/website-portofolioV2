@@ -54,11 +54,30 @@
   color-scheme: dark;
 }
 
+.light .home-portfolio {
+  --home-bg: #f9fafb;
+  --home-ink: #000000;
+  --home-muted: #4b5563;
+  --home-accent: #d14a4a;
+  --home-accent-2: #8b1d1d;
+  --home-card: #ffffff;
+  --home-soft: #f3f4f6;
+  --home-border: rgba(0, 0, 0, 0.1);
+  color-scheme: light;
+}
+
 @media (prefers-color-scheme: dark) {
   :root {
     --background: #0a0a0a;
     --foreground: #ededed;
   }
+}
+
+.light {
+  --background: #ffffff;
+  --foreground: #171717;
+  --ui-background: #ffffff;
+  --ui-foreground: #171717;
 }
 
 body {

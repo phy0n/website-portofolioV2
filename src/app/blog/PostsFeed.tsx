@@ -23,7 +23,7 @@ export default function PostsFeed({
 
   if (posts.length === 0) {
     return (
-      <div className="rounded-3xl border border-white/10 bg-black/30 px-6 py-8 text-sm text-white/50">
+      <div className="rounded-3xl border border-[var(--home-border)] bg-[var(--home-card)] px-6 py-8 text-sm text-[var(--home-muted)] opacity-50">
         No posts yet.
       </div>
     );
