@@ -1,10 +1,10 @@
 'use client';
 
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useRef } from 'react';
 import {
   SiCss3,
   SiC,
-  SiDiscord,
+  SiCplusplus,
   SiDocker,
   SiGithub,
   SiGit,
@@ -26,6 +26,11 @@ import {
   SiVercel,
   SiBun,
   SiAndroidstudio,
+  SiKalilinux,
+  SiWireshark,
+  SiOwasp,
+  SiFedora,
+  SiMetasploit,
 } from 'react-icons/si';
 import { VscVscode } from 'react-icons/vsc';
 
@@ -50,21 +55,33 @@ const SKILL_GROUPS: SkillGroup[] = [
       { name: 'PHP', level: 0, icon: <SiPhp className="h-5 w-5" /> },
       { name: 'Python', level: 0, icon: <SiPython className="h-5 w-5" /> },
       { name: 'C', level: 0, icon: <SiC className="h-5 w-5" /> },
+      { name: 'C++', level: 0, icon: <SiCplusplus className="h-5 w-5" /> },
     ],
-    tones: ['text-orange-400', 'text-sky-400', 'text-yellow-300', 'text-blue-400', 'text-indigo-300'],
+    tones: ['text-orange-400', 'text-sky-400', 'text-yellow-300', 'text-blue-400', 'text-indigo-300', 'text-yellow-400', 'text-blue-500', 'text-blue-600'],
   },
   {
     title: 'Tech Stack',
     caption: 'Frameworks & core libraries',
     items: [
       { name: 'React', level: 0, icon: <SiReact className="h-5 w-5" /> },
-      { name: 'Next.js', level: 0, icon: <SiNextdotjs className="h-5 w-5" /> },
+      { name: 'Next.js', level: 0, icon: <SiNextdotjs className="h-5 w-5 text-[var(--home-ink)]" /> },
       { name: 'Tailwind', level: 0, icon: <SiTailwindcss className="h-5 w-5" /> },
-      { name: 'Shadcn', level: 0, icon: <SiShadcnui className="h-5 w-5" /> },
+      { name: 'Shadcn', level: 0, icon: <SiShadcnui className="h-5 w-5 text-[var(--home-ink)]" /> },
       { name: 'Laravel', level: 0, icon: <SiLaravel className="h-5 w-5" /> },
       { name: 'Node.js', level: 0, icon: <SiNodedotjs className="h-5 w-5 text-green-400" /> },
     ],
-    tones: ['text-cyan-300', 'text-neutral-200', 'text-sky-300', 'text-green-400', 'text-rose-300'],
+    tones: ['text-cyan-300', 'text-neutral-200', 'text-sky-300', 'text-neutral-200', 'text-rose-400', 'text-green-400'],
+  },
+  {
+    title: 'Cyber Security',
+    caption: 'Analysis & security testing tools',
+    items: [
+      { name: 'Kali Linux', level: 0, icon: <SiKalilinux className="h-5 w-5 text-sky-400" /> },
+      { name: 'Wireshark', level: 0, icon: <SiWireshark className="h-5 w-5 text-blue-500" /> },
+      { name: 'Metasploit', level: 0, icon: <SiMetasploit className="h-5 w-5 text-blue-600" /> },
+      { name: 'OWASP', level: 0, icon: <SiOwasp className="h-5 w-5 text-[var(--home-ink)]" /> },
+    ],
+    tones: ['text-sky-400', 'text-blue-500', 'text-blue-600', 'text-neutral-200'],
   },
   {
     title: 'Database',
@@ -73,132 +90,73 @@ const SKILL_GROUPS: SkillGroup[] = [
       { name: 'MySQL', level: 0, icon: <SiMysql className="h-5 w-5" /> },
       { name: 'Supabase', level: 0, icon: <SiSupabase className="h-5 w-5" /> },
     ],
-    tones: ['text-teal-300', 'text-emerald-300'],
+    tones: ['text-teal-400', 'text-emerald-400'],
   },
   {
-    title: 'DevOps',
-    caption: 'Runtime & deployment',
+    title: 'DevOps & OS',
+    caption: 'Runtime, deployment & environments',
     items: [
-      { name: 'Docker', level: 0, icon: <SiDocker className="h-5 w-5" /> },
+      { name: 'Fedora', level: 0, icon: <SiFedora className="h-5 w-5 text-blue-500" /> },
       { name: 'Linux', level: 0, icon: <SiLinux className="h-5 w-5 text-[var(--home-ink)]" /> },
-      { name: 'Vercel', level: 0, icon: <SiVercel className="h-5 w-5" /> },
+      { name: 'Docker', level: 0, icon: <SiDocker className="h-5 w-5" /> },
+      { name: 'Vercel', level: 0, icon: <SiVercel className="h-5 w-5 text-[var(--home-ink)]" /> },
       { name: 'Bun', level: 0, icon: <SiBun className="h-5 w-5 text-[var(--home-ink)]" /> },
     ],
-    tones: ['text-sky-300', 'text-lime-300', 'text-neutral-200', 'text-yellow-300'],
+    tones: ['text-blue-500', 'text-neutral-200', 'text-sky-400', 'text-neutral-200', 'text-amber-100'],
   },
   {
     title: 'Tool Stack',
-    caption: 'Daily workflow tools',
+    caption: 'Daily workflow & development tools',
     items: [
+      { name: 'VS Code', level: 0, icon: <VscVscode className="h-5 w-5 text-sky-400" /> },
       { name: 'GitHub', level: 0, icon: <SiGithub className="h-5 w-5 text-[var(--home-ink)]" /> },
       { name: 'Git', level: 0, icon: <SiGit className="h-5 w-5 text-red-500" /> },
       { name: 'Postman', level: 0, icon: <SiPostman className="h-5 w-5 text-orange-400" /> },
-      { name: 'VS Code', level: 0, icon: <VscVscode className="h-5 w-5 text-sky-400" /> },
       { name: 'Android Studio', level: 0, icon: <SiAndroidstudio className="h-5 w-5" /> },
     ],
-    tones: ['text-purple-300', 'text-orange-300', 'text-amber-300', 'text-sky-300', 'text-green-300'],
+    tones: ['text-sky-400', 'text-neutral-200', 'text-red-500', 'text-orange-400', 'text-green-400'],
   },
 ];
 
-function SkillIcon({
-  name,
-  icon,
-  tone,
-  groupTitle,
-  isActive,
-  onToggle,
-}: {
-  name: string;
-  icon: React.ReactNode;
-  tone: string;
-  groupTitle: string;
-  isActive: boolean;
-  onToggle: () => void;
-}) {
-  return (
-    <div className="js-skill relative">
-      <button
-        type="button"
-        aria-label={name}
-        aria-expanded={isActive}
-        onClick={onToggle}
-        className={[
-          'group flex h-12 w-12 cursor-pointer items-center justify-center rounded-full border border-[var(--home-border)] bg-[var(--home-card)] text-[var(--home-ink)] transition',
-          'hover:border-[var(--home-ink)] hover:bg-[var(--home-soft)]',
-          'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--home-accent)]/40',
-        ].join(' ')}>
-        <span className={`flex h-10 w-10 items-center justify-center rounded-full bg-[var(--home-soft)] ${tone}`}>{icon}</span>
-      </button>
-
-      {isActive ? (
-        <div
-          role="tooltip"
-          className="absolute left-full top-1/2 z-20 ml-3 w-max -translate-y-1/2 rounded-2xl border border-[var(--home-border)] bg-[var(--home-card)] px-3 py-2 shadow-sm">
-          <p className="text-xs font-semibold text-[var(--home-ink)]">{name}</p>
-          <p className="mt-0.5 text-[10px] uppercase tracking-[0.28em] text-[var(--home-muted)]">{groupTitle}</p>
-        </div>
-      ) : null}
-    </div>
-  );
-}
-
 export default function SkillsTab() {
-  const [activeSkill, setActiveSkill] = useState<string | null>(null);
   const rootRef = useRef<HTMLDivElement | null>(null);
 
-  useEffect(() => {
-    if (!activeSkill) return;
-
-    const handlePointerDown = (event: PointerEvent) => {
-      const target = event.target instanceof Element ? event.target : null;
-      if (!target) return;
-      if (target.closest('.js-skill')) return;
-      setActiveSkill(null);
-    };
-
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') setActiveSkill(null);
-    };
-
-    window.addEventListener('pointerdown', handlePointerDown);
-    window.addEventListener('keydown', handleKeyDown);
-    return () => {
-      window.removeEventListener('pointerdown', handlePointerDown);
-      window.removeEventListener('keydown', handleKeyDown);
-    };
-  }, [activeSkill]);
-
   return (
-    <div ref={rootRef} className="space-y-6">
+    <div ref={rootRef} className="space-y-8 pb-12">
       <div className="space-y-3">
         <p className="js-reveal text-[11px] uppercase tracking-[0.35em] text-[var(--home-muted)]">Skills</p>
         <h2 className="js-reveal text-2xl font-sans font-semibold text-[var(--home-ink)] sm:text-3xl">
           Languages and tools
         </h2>
         <p className="js-reveal max-w-2xl text-sm text-[var(--home-muted)]">
-          A focused set of technologies organized by how I use them across the workflow.
+          A focused set of technologies organized by how I use them across the workflow. Includes programming languages, frameworks, security tools, and operating systems.
         </p>
       </div>
 
-      <div className="space-y-10">
+      <div className="space-y-12">
         {SKILL_GROUPS.map((group) => (
-          <div key={group.title} className="space-y-4">
-            <div className="js-reveal flex flex-wrap items-center justify-between gap-3 border-t border-[var(--home-border)] pt-4">
+          <div key={group.title} className="space-y-5">
+            <div className="js-reveal flex flex-wrap items-center justify-between gap-3 border-t border-[var(--home-border)] pt-5">
               <div>
                 <p className="text-[11px] uppercase tracking-[0.35em] text-[var(--home-muted)]">{group.title}</p>
-                <p className="mt-2 text-xs text-[var(--home-muted)]">{group.caption}</p>
+                <p className="mt-1 text-xs text-[var(--home-muted)]">{group.caption}</p>
               </div>
             </div>
-            <div className="flex flex-wrap gap-3">
+            <div className="js-reveal grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
               {group.items.map((skill, index) => (
-                <SkillIcon
+                <div
                   key={skill.name}
-                  name={skill.name}
-                  icon={skill.icon}
-                  tone={group.tones[index % group.tones.length]}
-                  groupTitle={group.title}
-                  isActive={activeSkill === skill.name}
-                  onToggle={() => setActiveSkill((current) => (current === skill.name ? null : skill.name))}/>
+                  className="group flex cursor-default items-center gap-3 rounded-xl border border-[var(--home-border)] bg-[var(--home-card)] p-3 transition-all duration-300 hover:-translate-y-0.5 hover:border-[var(--home-ink)] hover:bg-[var(--home-soft)]"
+                >
+                  <span
+                    className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[var(--home-soft)] transition-transform duration-300 group-hover:scale-110 ${group.tones[index % group.tones.length]}`}
+                  >
+                    {skill.icon}
+                  </span>
+                  <span className="text-sm font-medium text-[var(--home-ink)]">
+                    {skill.name}
+                  </span>
+                </div>
               ))}
             </div>
           </div>

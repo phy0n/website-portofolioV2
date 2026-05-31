@@ -322,9 +322,9 @@ export default function SiteShell({
           <div className="mx-auto flex w-full max-w-[1600px] items-center justify-between pointer-events-auto">
             <Link
               href="/"
-              className="inline-flex items-center gap-3 rounded-full border border-[var(--home-border)] bg-[var(--home-bg)] px-4 py-2 text-[var(--home-ink)] transition hover:border-[var(--home-ink)]"
+              className="inline-flex items-center sm:gap-3 rounded-full border border-[var(--home-border)] bg-[var(--home-bg)] p-1.5 sm:px-4 sm:py-2 text-[var(--home-ink)] transition hover:border-[var(--home-ink)]"
               aria-label="Go to home">
-              <div className="relative hidden h-8 w-8 overflow-hidden rounded-full border border-[var(--home-border)] bg-[var(--home-bg)] sm:block">
+              <div className="relative h-9 w-9 sm:h-8 sm:w-8 overflow-hidden rounded-full border border-[var(--home-border)] bg-[var(--home-bg)]">
                 {navAvatarErrored ? (
                   <span className="flex h-full w-full items-center justify-center text-sm font-semibold text-[var(--home-ink)] opacity-90">
                     {NAV_AVATAR_FALLBACK}
@@ -335,13 +335,13 @@ export default function SiteShell({
                     src={resolvedNavAvatarSrc}
                     alt="Navbar avatar"
                     fill
-                    sizes="32px"
+                    sizes="36px"
                     className="object-cover"
                     onError={() => setNavAvatarErrorSrc(resolvedNavAvatarSrc)}
                   />
                 )}
               </div>
-              <span className="text-[11px] font-semibold uppercase tracking-[0.35em] text-[var(--home-ink)] opacity-80">{NAV_BRAND}</span>
+              <span className="hidden sm:inline-block text-[11px] font-semibold uppercase tracking-[0.35em] text-[var(--home-ink)] opacity-80">{NAV_BRAND}</span>
             </Link>
 
             <div className="flex items-center gap-2">
