@@ -19,24 +19,6 @@ import {
 
 import type { Hobby } from '../types';
 
-const PRINCIPLES = [
-  {
-    icon: <Brain className="h-4 w-4" />,
-    title: 'Understand the system',
-    text: 'Learn how each part works, not just how to use it.',
-  },
-  {
-    icon: <Workflow className="h-4 w-4" />,
-    title: 'Build to learn',
-    text: 'Turn concepts into small projects and real practice.',
-  },
-  {
-    icon: <Sparkles className="h-4 w-4" />,
-    title: 'Keep it clear',
-    text: 'Make the result simple, readable, and useful.',
-  },
-];
-
 const LEARNING_ROADMAP = [
   {
     icon: <Code className="h-4 w-4" />,
@@ -102,20 +84,6 @@ export default function AboutTab() {
             stored, and how operating systems support everything underneath.
           </p>
         </div>
-      </div>
-
-      <div className="grid gap-6 md:grid-cols-3">
-        {PRINCIPLES.map((item) => (
-          <div key={item.title} className="js-reveal space-y-3 py-2">
-            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[var(--home-bg)] text-[var(--home-accent)] ring-1 ring-white/10">
-              {item.icon}
-            </div>
-            <div className="space-y-2">
-              <h3 className="text-sm font-semibold text-[var(--home-ink)]">{item.title}</h3>
-              <p className="text-sm leading-relaxed text-[var(--home-muted)]">{item.text}</p>
-            </div>
-          </div>
-        ))}
       </div>
 
       <div className="space-y-5 py-2">
