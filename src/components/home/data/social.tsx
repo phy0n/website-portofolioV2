@@ -1,6 +1,6 @@
 'use client';
 
-import { FaGithub, FaDiscord, FaXTwitter, FaInstagram, FaTiktok } from 'react-icons/fa6';
+import { FaGithub, FaDiscord, FaXTwitter, FaInstagram, FaTiktok, FaSpotify } from 'react-icons/fa6';
 
 import type { SocialMedia } from '../types';
 
@@ -18,7 +18,7 @@ export const SOCIAL_MEDIA: SocialMedia[] = [
     color: '',
   },
   {
-    name: 'X (Twitter)',
+    name: 'X.com',
     icon: <FaXTwitter className="h-5 w-5" />,
     url: 'https://x.com/phy0n',
     color: '',
@@ -33,6 +33,12 @@ export const SOCIAL_MEDIA: SocialMedia[] = [
     name: 'TikTok',
     icon: <FaTiktok className="h-5 w-5" />,
     url: 'https://www.tiktok.com/@phy0n',
+    color: '',
+  },
+  {
+    name: 'Spotify',
+    icon: <FaSpotify className="h-5 w-5" />,
+    url: 'https://open.spotify.com/user/31v426yxkijy2kdgwfv7izq6gd3e',
     color: '',
   },
 ];
