@@ -1,14 +1,31 @@
 'use client';
 
-import { Instagram } from 'lucide-react';
-import { FaDiscord, FaTiktok } from 'react-icons/fa';
+import { FaGithub, FaDiscord, FaXTwitter, FaInstagram, FaTiktok } from 'react-icons/fa6';
 
 import type { SocialMedia } from '../types';
 
 export const SOCIAL_MEDIA: SocialMedia[] = [
   {
+    name: 'GitHub',
+    icon: <FaGithub className="h-5 w-5" />,
+    url: 'https://github.com/phy0n',
+    color: '',
+  },
+  {
+    name: 'Discord Server',
+    icon: <FaDiscord className="h-5 w-5" />,
+    url: 'https://discord.gg/MwNE7Vfb6t',
+    color: '',
+  },
+  {
+    name: 'X (Twitter)',
+    icon: <FaXTwitter className="h-5 w-5" />,
+    url: 'https://x.com/phy0n',
+    color: '',
+  },
+  {
     name: 'Instagram',
-    icon: <Instagram className="h-5 w-5" />,
+    icon: <FaInstagram className="h-5 w-5" />,
     url: 'https://www.instagram.com/rushandle/',
     color: '',
   },
@@ -16,12 +33,6 @@ export const SOCIAL_MEDIA: SocialMedia[] = [
     name: 'TikTok',
     icon: <FaTiktok className="h-5 w-5" />,
     url: 'https://www.tiktok.com/@phy0n',
-    color: '',
-  },
-  {
-    name: 'Discord Server',
-    icon: <FaDiscord className="h-5 w-5" />,
-    url: 'https://discord.gg/MwNE7Vfb6t',
     color: '',
   },
 ];
