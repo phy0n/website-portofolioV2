@@ -1,10 +1,8 @@
 'use client';
 
 import Image from 'next/image';
-import React, { useRef, useState } from 'react';
-
+import React, { useEffect, useRef, useState } from 'react';
 import { useDiscordStatusRealtime } from '@/lib/discord/useDiscordStatusRealtime';
-
 import DiscordActivitySection from './DiscordActivitySection';
 import HomeRightSidebar from './HomeRightSidebar';
 import { HomeSidebarDataProvider } from './HomeSidebarDataProvider';
@@ -13,6 +11,7 @@ import EducationCard from './EducationCard';
 import LatestPostsCard from './LatestPostsCard';
 import ProfileFactsCard from './ProfileFactsCard';
 import SiteShell from './SiteShell';
+import ToolsMarquee from './ToolsMarquee';
 import AboutTab from './tabs/AboutTab';
 import CertificatesTab from './tabs/CertificatesTab';
 import ContactTab from './tabs/ContactTab';
@@ -44,14 +43,27 @@ const STATUS_STYLES: Record<string, string> = {
 interface HomeClientProps {
   discordUserId: string | null;
   profileImageUrl?: string | null;
+  tools: string[];
 }
 
-export default function HomeClient({ discordUserId, profileImageUrl }: HomeClientProps) {
+export default function HomeClient({ discordUserId, profileImageUrl, tools }: HomeClientProps) {
   const [heroImageErrorSrc, setHeroImageErrorSrc] = useState<string | null>(null);
+  const [avatarDecorationUrl, setAvatarDecorationUrl] = useState<string | null>(null);
   const { discordStatus } = useDiscordStatusRealtime(discordUserId);
   const scopeRef = useRef<HTMLDivElement | null>(null);
   const heroImageSrc = profileImageUrl || HERO_IMAGE_SRC;
   const heroImageErrored = heroImageErrorSrc === heroImageSrc;
+
+  useEffect(() => {
+    fetch('/api/discord-avatar')
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.avatarDecorationUrl) {
+          setAvatarDecorationUrl(data.avatarDecorationUrl);
+        }
+      })
+      .catch(() => {});
+  }, []);
 
   const statusKey = discordStatus?.status ?? 'offline';
   const statusLabel = STATUS_LABELS[statusKey] ?? 'Offline';
@@ -62,25 +74,38 @@ export default function HomeClient({ discordUserId, profileImageUrl }: HomeClien
     <HomeSidebarDataProvider>
       <SiteShell scopeRef={scopeRef} navAvatarSrc={heroImageSrc}>
         <section id="top" className="grid gap-10 pb-14 pt-6 lg:grid-cols-[280px_1fr] lg:items-center">
-          <div className="js-hero-image relative mx-auto h-56 w-56 overflow-hidden rounded-full border border-[var(--home-border)] bg-[var(--home-soft)] sm:h-64 sm:w-64 lg:mx-0">
-            {heroImageErrored ? (
-              <div className="flex h-full w-full items-center justify-center text-3xl font-semibold text-[var(--home-ink)]">
-                {HERO_IMAGE_FALLBACK}
-              </div>
-            ) : (
+          <div className="js-hero-image relative mx-auto h-56 w-56 sm:h-64 sm:w-64 lg:mx-0">
+            <div className="relative h-full w-full overflow-hidden rounded-full border border-[var(--home-border)] bg-[var(--home-soft)]">
+              {heroImageErrored ? (
+                <div className="flex h-full w-full items-center justify-center text-3xl font-semibold text-[var(--home-ink)]">
+                  {HERO_IMAGE_FALLBACK}
+                </div>
+              ) : (
+                <Image
+                  key={heroImageSrc}
+                  src={heroImageSrc}
+                  alt={`${DISPLAY_NAME} profile photo`}
+                  fill
+                  sizes="(max-width: 1024px) 256px, 280px"
+                  className="object-cover"
+                  priority
+                  onError={() => setHeroImageErrorSrc(heroImageSrc)}
+                />
+              )}
+            </div>
+
+            {avatarDecorationUrl && (
               <Image
-                key={heroImageSrc}
-                src={heroImageSrc}
-                alt={`${DISPLAY_NAME} profile photo`}
+                src={avatarDecorationUrl}
+                alt="Avatar Decoration"
                 fill
-                sizes="(max-width: 1024px) 256px, 280px"
-                className="object-cover"
-                priority
-                onError={() => setHeroImageErrorSrc(heroImageSrc)}
+                className="pointer-events-none absolute inset-0 z-10 scale-[1.2] object-contain"
+                unoptimized
               />
             )}
+
             <span
-              className={`absolute bottom-4 right-4 h-4 w-4 rounded-full border-2 border-black/60 ${statusClass}`}
+              className={`absolute bottom-4 right-4 z-20 h-4 w-4 rounded-full border-2 border-[var(--home-card)] ${statusClass}`}
             />
           </div>
 
@@ -123,6 +148,12 @@ export default function HomeClient({ discordUserId, profileImageUrl }: HomeClien
             </div>
           </div>
         </section>
+
+        {tools.length > 0 && (
+          <section className="mb-14">
+            <ToolsMarquee tools={tools} />
+          </section>
+        )}
 
         <div className="mt-20 grid gap-14 lg:grid-cols-[1fr_360px] lg:gap-14">
           <div className="space-y-20">

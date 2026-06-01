@@ -36,10 +36,13 @@ export async function GET(req: NextRequest) {
   }
 
   const data = await response.json();
-  const avatarUrl = `https://cdn.discordapp.com/avatars/${userId}/${data.avatar}.png`;
+  const avatarUrl = data.avatar ? `https://cdn.discordapp.com/avatars/${userId}/${data.avatar}.png?size=512` : null;
+  const avatarDecorationUrl = data.avatar_decoration_data?.asset
+    ? `https://cdn.discordapp.com/avatar-decoration-presets/${data.avatar_decoration_data.asset}.png?size=512&passthrough=true`
+    : null;
 
   return NextResponse.json(
-    { avatarUrl },
+    { avatarUrl, avatarDecorationUrl },
     {
       headers: {
         'Cache-Control': 'public, max-age=3600, stale-while-revalidate=86400',

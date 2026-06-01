@@ -412,14 +412,14 @@ export default function SiteShell({
         <div ref={pageRef} data-page-content className="animate-page-fade" key={pathname}>
           <main className={mainClassName}>{children}</main>
 
-          <footer className="relative z-10 overflow-hidden border-t border-[var(--home-border)]">
-            <div className="relative z-10 mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 pb-10 pt-8 text-xs text-[var(--home-muted)]">
-              Copyright {new Date().getFullYear()} Phy0n. All rights reserved.
-            </div>
-            <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 pb-6 text-center">
-              <p className="text-[clamp(6rem,24vw,18rem)] font-sans font-bold uppercase tracking-[0.12em] leading-none text-[var(--home-ink)] opacity-90">
+          <footer className="relative z-10 flex flex-col items-center justify-center overflow-hidden border-t border-[var(--home-border)] pb-8 pt-12 sm:pb-12">
+            <div className="mx-auto w-full max-w-7xl px-4 text-center sm:px-6 lg:px-8">
+              <p className="text-[clamp(6rem,24vw,18rem)] font-sans font-bold uppercase leading-none tracking-[0.12em] text-[var(--home-ink)] opacity-90">
                 PHY0N
               </p>
+            </div>
+            <div className="relative z-10 mx-auto mt-6 w-full max-w-7xl px-4 text-center text-xs text-[var(--home-muted)] sm:px-6 lg:px-8">
+              Copyright {new Date().getFullYear()} Phy0n. All rights reserved.
             </div>
           </footer>
         </div>

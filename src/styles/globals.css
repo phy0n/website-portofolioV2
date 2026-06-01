@@ -51,6 +51,7 @@
   --home-card: #0d0d0d;
   --home-soft: #141414;
   --home-border: rgba(255, 255, 255, 0.1);
+  --lanyard-shadow: drop-shadow(0 5px 15px rgba(0,0,0,0.4));
   color-scheme: dark;
 }
 
@@ -63,6 +64,7 @@
   --home-card: #ffffff;
   --home-soft: #f3f4f6;
   --home-border: rgba(0, 0, 0, 0.1);
+  --lanyard-shadow: none;
   color-scheme: light;
 }
 
@@ -900,6 +902,19 @@ body {
 
 .animate-spin-slow {
   animation: spin-slow 8s linear infinite;
+}
+
+@keyframes marquee {
+  0% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-marquee {
+  animation: marquee 120s linear infinite;
 }
 
 /* Hardware acceleration for smooth performance */
