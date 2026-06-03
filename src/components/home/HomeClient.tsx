@@ -4,12 +4,10 @@ import Image from 'next/image';
 import React, { useEffect, useRef, useState } from 'react';
 import { useDiscordStatusRealtime } from '@/lib/discord/useDiscordStatusRealtime';
 import DiscordActivitySection from './DiscordActivitySection';
-import HomeRightSidebar from './HomeRightSidebar';
 import { HomeSidebarDataProvider } from './HomeSidebarDataProvider';
 import SpokenLanguagesCard from './SpokenLanguagesCard';
 import EducationCard from './EducationCard';
 import LatestPostsCard from './LatestPostsCard';
-import ProfileFactsCard from './ProfileFactsCard';
 import SiteShell from './SiteShell';
 import ToolsMarquee from './ToolsMarquee';
 import AboutTab from './tabs/AboutTab';
@@ -155,27 +153,43 @@ export default function HomeClient({ discordUserId, profileImageUrl, tools }: Ho
           </section>
         )}
 
-        <div className="mt-20 grid gap-14 lg:grid-cols-[1fr_360px] lg:gap-14">
+        <div className="mt-20">
           <div className="space-y-20">
             <section id="about" className="js-section scroll-mt-24">
               <AboutTab />
             </section>
 
-            <section id="profile" className="js-section scroll-mt-24 lg:hidden">
+            <section id="languages" className="js-section scroll-mt-24">
               <div className="space-y-6">
                 <div className="space-y-3">
-                  <p className="js-reveal text-[11px] uppercase tracking-[0.35em] text-[var(--home-muted)]">At a Glance</p>
+                  <p className="js-reveal text-[11px] uppercase tracking-[0.35em] text-[var(--home-muted)]">Capabilities</p>
                   <h2 className="js-reveal text-2xl font-sans font-semibold text-[var(--home-ink)] sm:text-3xl">
-                    Profile & Background
+                    Spoken Languages
                   </h2>
                   <p className="js-reveal max-w-2xl text-sm text-[var(--home-muted)]">
-                    Quick facts, spoken languages, and educational background.
+                    Languages I can speak and write.
                   </p>
                 </div>
 
-                <div className="js-reveal space-y-12 pt-4">
-                  <ProfileFactsCard />
+                <div className="js-reveal pt-4">
                   <SpokenLanguagesCard />
+                </div>
+              </div>
+            </section>
+
+            <section id="education" className="js-section scroll-mt-24">
+              <div className="space-y-6">
+                <div className="space-y-3">
+                  <p className="js-reveal text-[11px] uppercase tracking-[0.35em] text-[var(--home-muted)]">Background</p>
+                  <h2 className="js-reveal text-2xl font-sans font-semibold text-[var(--home-ink)] sm:text-3xl">
+                    Education
+                  </h2>
+                  <p className="js-reveal max-w-2xl text-sm text-[var(--home-muted)]">
+                    My academic background and formal education.
+                  </p>
+                </div>
+
+                <div className="js-reveal pt-4">
                   <EducationCard />
                 </div>
               </div>
@@ -192,7 +206,7 @@ export default function HomeClient({ discordUserId, profileImageUrl, tools }: Ho
             <section id="projects" className="js-section scroll-mt-24">
               <ProjectsTab />
             </section>
-            <section id="latest-posts" className="js-section scroll-mt-24 lg:hidden">
+            <section id="latest-posts" className="js-section scroll-mt-24">
               <div className="space-y-6">
                 <div className="space-y-3">
                   <p className="js-reveal text-[11px] uppercase tracking-[0.35em] text-[var(--home-muted)]">Blog</p>
@@ -213,10 +227,6 @@ export default function HomeClient({ discordUserId, profileImageUrl, tools }: Ho
               <ContactTab />
             </section>
           </div>
-
-          <aside className="hidden lg:block lg:border-l lg:border-[var(--home-border)] lg:pl-10">
-            <HomeRightSidebar />
-          </aside>
         </div>
       </SiteShell>
     </HomeSidebarDataProvider>

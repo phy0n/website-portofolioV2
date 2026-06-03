@@ -116,7 +116,7 @@ export default function AboutTab() {
         </div>
       </div>
 
-      <div className="space-y-4 pt-2">
+      {/* <div className="space-y-4 pt-2">
         <div className="js-reveal flex items-center gap-2">
           <h3 className="text-[11px] uppercase tracking-[0.35em] text-[var(--home-muted)]">Interests</h3>
         </div>
@@ -130,7 +130,7 @@ export default function AboutTab() {
             </div>
           ))}
         </div>
-      </div>
+      </div> */}
     </div>
   );
 }

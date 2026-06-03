@@ -20,11 +20,6 @@ export default function SpokenLanguagesCard({ className }: { className?: string 
 
   return (
     <section className={className}>
-      <div className="flex items-center gap-2">
-        <Languages className="h-4 w-4 text-[var(--accent)]" />
-        <p className="text-[11px] uppercase tracking-[0.35em] text-[var(--muted)]">Languages</p>
-      </div>
-
       {spokenLanguages === null ? (
         <div className="mt-3 text-sm text-[var(--muted)]">Loading...</div>
       ) : sortedLanguages.length === 0 ? (

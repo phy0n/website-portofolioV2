@@ -34,6 +34,7 @@ export default function ToolsMarquee({ tools }: { tools: string[] }) {
           return (
             <React.Fragment key={`${tool}-${idx}`}>
               <div
+                suppressHydrationWarning
                 title={name}
                 className="group relative flex h-16 w-16 items-center justify-center transition-all duration-300 sm:h-24 sm:w-24">
                 <Image

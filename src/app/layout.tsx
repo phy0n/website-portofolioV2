@@ -3,6 +3,7 @@ import { Geist, Geist_Mono, Nunito, Manrope } from "next/font/google";
 import type { Metadata } from "next";
 import AnalyticsTracker from "@/components/analytics/AnalyticsTracker";
 import GlobalGsap from "@/components/shared/GlobalGsap";
+import LoadingScreen from "@/components/shared/LoadingScreen";
 import VercelAnalytics from "@/components/analytics/VercelAnalytics";
 import { ThemeProvider } from "@/components/shared/ThemeProvider";
 
@@ -85,6 +86,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
         suppressHydrationWarning
         className={`minimal-root ${geistSans.variable} ${geistMono.variable} ${nunito.variable} ${manrope.variable} antialiased`}>
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
+          <LoadingScreen />
           <GlobalGsap>{children}</GlobalGsap>
           <AnalyticsTracker />
           <VercelAnalytics />
