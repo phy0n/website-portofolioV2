@@ -20,9 +20,10 @@ interface Experience {
 export default async function AdminExperiencesPage({
   searchParams,
 }: {
-  searchParams?: { success?: string; error?: string };
+  searchParams?: Promise<{ success?: string; error?: string }>;
 }) {
   const { supabase } = await requireAdmin();
+  const params = await searchParams;
   const safeDecode = (value?: string) => {
     if (!value) return undefined;
     try {
@@ -39,8 +40,8 @@ export default async function AdminExperiencesPage({
     .order('created_at', { ascending: false });
 
   const experienceRows = (experiences as Experience[] | null) ?? [];
-  const successMessage = safeDecode(searchParams?.success);
-  const pageErrorMessage = safeDecode(searchParams?.error);
+  const successMessage = safeDecode(params?.success);
+  const pageErrorMessage = safeDecode(params?.error);
   const errorMessage = pageErrorMessage ?? (error ? `Load experiences failed: ${error.message}` : undefined);
 
   return (
@@ -54,4 +55,5 @@ export default async function AdminExperiencesPage({
     />
   );
 }
+
 

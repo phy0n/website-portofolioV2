@@ -308,9 +308,9 @@ body {
 }
 
 .minimal-root .admin-console .admin-panel {
-  border: 1px solid var(--admin-border) !important;
-  border-radius: 8px !important;
-  background: var(--admin-panel) !important;
+  border: none !important;
+  border-radius: 0 !important;
+  background: transparent !important;
   box-shadow: none !important;
 }
 
@@ -455,8 +455,10 @@ body {
 }
 
 .minimal-root .admin-console .admin-sidebar {
-  border-right: 1px solid var(--admin-border) !important;
-  background: #080808 !important;
+  border-right: 1px solid rgba(255, 255, 255, 0.05) !important;
+  background: rgba(0, 0, 0, 0.6) !important;
+  backdrop-filter: blur(16px) !important;
+  -webkit-backdrop-filter: blur(16px) !important;
   box-shadow: none !important;
 }
 

@@ -505,11 +505,11 @@ export default function BlogManager({
   };
 
   return (
-    <div className="space-y-8">
-      <div className="flex flex-wrap items-center justify-between gap-4" data-gsap="reveal">
+    <div className="space-y-8 font-manrope">
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-8 border-b border-white/10">
         <div>
-          <p className="text-sm uppercase tracking-[0.3em] text-white/50">Content</p>
-          <h2 className="text-3xl font-semibold text-white">Blog Manager</h2>
+          <p className="text-sm font-geist-mono text-white/40 uppercase tracking-[0.2em]">Content</p>
+          <h2 className="text-4xl font-light tracking-tight font-manrope text-white">Blog Manager</h2>
         </div>
         <div className="flex items-center gap-3">
           <span className="text-sm text-white/50">Total: {blogs.length}</span>
@@ -521,7 +521,7 @@ export default function BlogManager({
               setEditId(null);
               setCreateOpen(true);
             }}
-            className="cursor-pointer inline-flex items-center gap-2 rounded-xl border border-[var(--home-accent)] bg-[var(--home-accent)]/10 px-5 py-2.5 text-sm font-semibold text-[var(--home-accent)] shadow-sm transition hover:bg-[var(--home-accent)] hover:text-white">
+            className="cursor-pointer inline-flex items-center gap-2 rounded-full border border-[var(--admin-accent)]/30 px-6 py-2.5 text-sm font-light text-[var(--admin-accent)] transition-all hover:bg-[var(--admin-accent)]/10">
             <BookOpen className="h-4 w-4" />
             Write story
           </button>
@@ -530,9 +530,9 @@ export default function BlogManager({
 
       {toast && <AdminToast message={toast.message} tone={toast.tone} />}
 
-      <section className="space-y-3" data-gsap="reveal">
+      <section className="space-y-3">
         <h3 className="text-lg font-semibold text-white">Blog list</h3>
-        <div className="flex flex-wrap items-center gap-3 rounded-2xl border border-white/10 bg-white/5 p-4 shadow-[0_20px_60px_rgba(0,0,0,0.35)]">
+        <div className="flex flex-wrap items-center gap-3 flex flex-wrap items-center gap-3 border-b border-white/10 pb-4 mb-2">
           <input
             value={listQuery}
             onChange={(event) => setListQuery(event.target.value)}
@@ -559,9 +559,9 @@ export default function BlogManager({
             Showing {filteredRows.length} / {blogs.length}
           </span>
         </div>
-        <div className="overflow-x-auto rounded-2xl border border-white/10 bg-white/5 shadow-[0_20px_60px_rgba(0,0,0,0.35)]">
+        <div className="overflow-x-auto">
           <table className="min-w-full text-sm">
-            <thead className="bg-white/5 text-white/50 uppercase tracking-[0.2em]">
+            <thead className="text-[10px] font-geist-mono uppercase tracking-widest text-white/30 border-b border-white/5">
               <tr>
                 <th className="px-4 py-3 text-left">Title</th>
                 <th className="px-4 py-3 text-left">Category</th>
@@ -570,7 +570,7 @@ export default function BlogManager({
                 <th className="px-4 py-3 text-left">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-white/10">
+            <tbody className="divide-y divide-white/5">
               {blogs.length === 0 && (
                 <tr>
                   <td colSpan={5} className="px-4 py-6 text-center text-white/50">
@@ -657,7 +657,7 @@ export default function BlogManager({
                           setEditActiveChapter(0);
                           setEditId(blog.id);
                         }}
-                        className="cursor-pointer inline-flex items-center gap-2 rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white/70 transition hover:border-[var(--home-accent)] hover:text-[var(--home-accent)] hover:bg-[var(--home-accent)]/10">
+                        className="cursor-pointer inline-flex items-center gap-2 rounded-full border border-white/5 hover:border-white/20 bg-transparent px-4 py-1.5 text-xs font-light text-white/60 transition hover:text-white">
                         <Pencil className="h-4 w-4" />
                         Edit
                       </button>
@@ -665,7 +665,7 @@ export default function BlogManager({
                         href={`/blog/${encodeURIComponent(blog.slug)}`}
                         target="_blank"
                         rel="noreferrer"
-                        className="cursor-pointer inline-flex items-center gap-2 rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white/70 transition hover:border-white/40 hover:text-white hover:bg-white/10">
+                        className="cursor-pointer inline-flex items-center gap-2 rounded-full border border-white/5 hover:border-white/20 bg-transparent px-4 py-1.5 text-xs font-light text-white/60 transition hover:text-white">
                         View
                       </a>
                       <form
@@ -681,7 +681,7 @@ export default function BlogManager({
                         <input type="hidden" name="slug" value={blog.slug} />
                         <AdminSubmitButton
                           pendingText="Deleting..."
-                          className="inline-flex items-center gap-2 rounded-lg border border-red-500/30 bg-red-500/10 px-3 py-2 text-sm text-red-400 transition hover:border-red-500/60 hover:text-red-300 hover:bg-red-500/20">
+                          className="inline-flex items-center gap-2 rounded-full border border-red-500/20 bg-transparent px-4 py-1.5 text-xs font-light text-red-400/70 transition hover:border-red-500/50 hover:text-red-400 hover:bg-red-500/10">
                           <Trash2 className="h-4 w-4" />
                           Delete
                         </AdminSubmitButton>

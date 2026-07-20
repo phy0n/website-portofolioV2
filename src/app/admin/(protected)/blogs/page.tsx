@@ -22,9 +22,10 @@ interface Blog {
 export default async function AdminBlogsPage({
   searchParams,
 }: {
-  searchParams?: { success?: string; error?: string };
+  searchParams?: Promise<{ success?: string; error?: string }>;
 }) {
   const { supabase } = await requireAdmin();
+  const params = await searchParams;
   const safeDecode = (value?: string) => {
     if (!value) return undefined;
     try {
@@ -40,8 +41,8 @@ export default async function AdminBlogsPage({
     .order('date', { ascending: false });
 
   const blogRows = (blogs as Blog[] | null) ?? [];
-  const successMessage = safeDecode(searchParams?.success);
-  const errorMessage = safeDecode(searchParams?.error);
+  const successMessage = safeDecode(params?.success);
+  const errorMessage = safeDecode(params?.error);
 
   return (
     <BlogManager
@@ -55,3 +56,4 @@ export default async function AdminBlogsPage({
     />
   );
 }
+

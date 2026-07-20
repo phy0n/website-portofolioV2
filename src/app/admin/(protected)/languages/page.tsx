@@ -18,9 +18,10 @@ interface Language {
 export default async function AdminLanguagesPage({
   searchParams,
 }: {
-  searchParams?: { success?: string; error?: string };
+  searchParams?: Promise<{ success?: string; error?: string }>;
 }) {
   const { supabase } = await requireAdmin();
+  const params = await searchParams;
   const safeDecode = (value?: string) => {
     if (!value) return undefined;
     try {
@@ -48,8 +49,8 @@ export default async function AdminLanguagesPage({
     loadError = error instanceof Error ? error.message : 'Load languages failed.';
   }
 
-  const successMessage = safeDecode(searchParams?.success);
-  const pageErrorMessage = safeDecode(searchParams?.error);
+  const successMessage = safeDecode(params?.success);
+  const pageErrorMessage = safeDecode(params?.error);
   const errorMessage = pageErrorMessage ?? loadError;
 
   return (
@@ -63,4 +64,5 @@ export default async function AdminLanguagesPage({
     />
   );
 }
+
 

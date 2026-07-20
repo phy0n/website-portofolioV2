@@ -22,9 +22,10 @@ interface Education {
 export default async function AdminEducationPage({
   searchParams,
 }: {
-  searchParams?: { success?: string; error?: string };
+  searchParams?: Promise<{ success?: string; error?: string }>;
 }) {
   const { supabase } = await requireAdmin();
+  const params = await searchParams;
   const safeDecode = (value?: string) => {
     if (!value) return undefined;
     try {
@@ -41,8 +42,8 @@ export default async function AdminEducationPage({
     .order('created_at', { ascending: false });
 
   const educationRows = (education as Education[] | null) ?? [];
-  const successMessage = safeDecode(searchParams?.success);
-  const pageErrorMessage = safeDecode(searchParams?.error);
+  const successMessage = safeDecode(params?.success);
+  const pageErrorMessage = safeDecode(params?.error);
   const errorMessage = pageErrorMessage ?? (error ? `Load education failed: ${error.message}` : undefined);
 
   return (
@@ -56,3 +57,4 @@ export default async function AdminEducationPage({
     />
   );
 }
+

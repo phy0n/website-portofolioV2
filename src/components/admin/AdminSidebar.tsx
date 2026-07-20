@@ -30,11 +30,11 @@ export default function AdminSidebar({
   const pathname = usePathname();
 
   return (
-    <aside className="admin-sidebar h-full w-full px-6 py-8 flex flex-col gap-8">
+    <aside className="admin-sidebar h-full w-full px-6 py-8 flex flex-col gap-8 border-r border-white/5 bg-transparent">
       <div className="flex items-start justify-between gap-3">
         <div>
-          <p className="text-[11px] uppercase tracking-[0.4em] text-[var(--admin-accent)]">Admin</p>
-          <h1 className="text-lg font-semibold text-white">Phion Console</h1>
+          <p className="text-[10px] font-geist-mono uppercase tracking-widest text-[var(--admin-accent)]">Admin</p>
+          <h1 className="text-xl font-light font-manrope tracking-tight text-white">Phion Console</h1>
         </div>
         {onClose && (
           <button
@@ -57,7 +57,7 @@ export default function AdminSidebar({
               prefetch
               aria-current={isActive ? 'page' : undefined}
               onClick={() => onClose?.()}
-              className={`admin-sidebar-link ${isActive ? 'is-active' : ''}`}>
+              className={`flex items-center gap-3 px-4 py-2.5 text-sm font-light rounded-full transition-all ${isActive ? 'bg-white/10 text-white' : 'text-white/50 hover:bg-white/5 hover:text-white'}`}>
               <Icon className="h-4 w-4" />
               {item.label}
             </Link>
@@ -65,7 +65,7 @@ export default function AdminSidebar({
         })}
       </nav>
       <div className="mt-auto space-y-4 text-sm text-white/60">
-        <div className="admin-sidebar-panel px-4 py-3">
+        <div className="border-t border-white/10 pt-4">
           <p className="text-[11px] uppercase tracking-[0.3em] text-white/40">Signed in</p>
           <p className="mt-2 text-sm text-white/80">{email}</p>
         </div>
@@ -73,14 +73,14 @@ export default function AdminSidebar({
           <Link
             href="/"
             onClick={() => onClose?.()}
-            className="admin-sidebar-link admin-sidebar-secondary group justify-between">
+            className="flex items-center gap-3 px-4 py-2.5 text-xs font-light text-white/50 hover:text-white transition-colors rounded-full group justify-between">
             <span>Back to portfolio</span>
             <ArrowUpRight className="h-4 w-4 text-white/60 transition group-hover:text-white" />
           </Link>
           <form action={signOutAction}>
             <AdminSubmitButton
               pendingText="Signing out..."
-              className="admin-sidebar-link admin-sidebar-secondary group w-full justify-between">
+              className="flex items-center gap-3 px-4 py-2.5 text-xs font-light text-white/50 hover:text-white transition-colors rounded-full group w-full justify-between">
               <span className="inline-flex items-center gap-2">
                 <LogOut className="h-4 w-4" />
                 Sign out

@@ -145,11 +145,11 @@ export default function LanguageManager({
   }, [languages, listQuery]);
 
   return (
-    <div className="space-y-8">
-      <div className="flex flex-wrap items-center justify-between gap-4" data-gsap="reveal">
+    <div className="space-y-8 font-manrope">
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-8 border-b border-white/10">
         <div>
-          <p className="text-sm uppercase tracking-[0.3em] text-white/50">Manage</p>
-          <h2 className="text-3xl font-semibold text-white">Languages</h2>
+          <p className="text-sm font-geist-mono text-white/40 uppercase tracking-[0.2em]">Manage</p>
+          <h2 className="text-4xl font-light tracking-tight font-manrope text-white">Languages</h2>
         </div>
         <button
           type="button"
@@ -162,12 +162,12 @@ export default function LanguageManager({
 
       {toast && <AdminToast message={toast.message} tone={toast.tone} />}
 
-      <section className="space-y-4" data-gsap="reveal">
+      <section className="space-y-4">
         <div className="flex items-center justify-between">
           <h3 className="text-lg font-semibold text-white">Language list</h3>
         </div>
 
-        <div className="flex flex-wrap items-center gap-3 rounded-2xl border border-white/10 bg-white/5 p-4 shadow-[0_20px_60px_rgba(0,0,0,0.35)]">
+        <div className="flex flex-wrap items-center gap-3 flex flex-wrap items-center gap-3 border-b border-white/10 pb-4 mb-2">
           <input
             value={listQuery}
             onChange={(event) => setListQuery(event.target.value)}
@@ -178,9 +178,9 @@ export default function LanguageManager({
           </span>
         </div>
 
-        <div className="overflow-x-auto rounded-2xl border border-white/10 bg-white/5 shadow-[0_20px_60px_rgba(0,0,0,0.35)]">
+        <div className="overflow-x-auto">
           <table className="min-w-full text-sm">
-            <thead className="bg-white/5 text-white/50 uppercase tracking-[0.2em]">
+            <thead className="text-[10px] font-geist-mono uppercase tracking-widest text-white/30 border-b border-white/5">
               <tr>
                 <th className="px-4 py-3 text-left">Language</th>
                 <th className="px-4 py-3 text-left">Label</th>
@@ -191,7 +191,7 @@ export default function LanguageManager({
                 <th className="px-4 py-3 text-left">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-white/10">
+            <tbody className="divide-y divide-white/5">
               {languages.length === 0 && (
                 <tr>
                   <td colSpan={7} className="px-4 py-6 text-center text-white/50">

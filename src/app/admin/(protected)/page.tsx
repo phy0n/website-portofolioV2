@@ -1,19 +1,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import {
-  Award,
-  Briefcase,
-  Camera,
-  FileText,
-  ImageIcon,
-  LayoutGrid,
-  Languages,
-  Quote,
-} from 'lucide-react';
 import { requireAdmin } from '@/lib/supabase/admin';
-import AdminAnalytics from '@/components/analytics/AdminAnalytics';
 import AdminToast from '@/components/admin/AdminToast';
-import AdminDashboardSummaryChart from '@/components/analytics/AdminDashboardSummaryChart';
 import AdminSubmitButton from '@/components/admin/AdminSubmitButton';
 import { updateProfilePicture } from './actions';
 
@@ -22,9 +10,7 @@ interface BlogSummary {
   title: string;
   slug: string;
   date: string;
-  updated_at?: string | null;
   is_published: boolean | null;
-  featured: boolean;
 }
 
 const profileImageFallback = '/image/profile.png';
@@ -32,9 +18,11 @@ const profileImageFallback = '/image/profile.png';
 export default async function AdminPage({
   searchParams,
 }: {
-  searchParams?: { success?: string; error?: string; range?: string };
+  searchParams?: Promise<{ success?: string; error?: string }>;
 }) {
   const { supabase } = await requireAdmin();
+  const params = await searchParams;
+  
   const safeDecode = (value?: string) => {
     if (!value) return '';
     try {
@@ -51,355 +39,152 @@ export default async function AdminPage({
     { data: recentDraftsData },
     { data: siteProfileData },
     blogsTotalRes,
-    blogsDraftRes,
-    blogsFeaturedRes,
-    quotesTotalRes,
-    experiencesTotalRes,
-    experiencesDraftRes,
     projectsTotalRes,
-    projectsDraftRes,
-    certificatesTotalRes,
-    certificatesDraftRes,
-    languagesTotalRes,
-    languagesDraftRes,
+    experiencesTotalRes,
   ] = await Promise.all([
-    supabase
-      .from('blogs')
-      .select('id, title, slug, date, updated_at, is_published, featured')
-      .order('date', { ascending: false })
-      .limit(5),
-    supabase
-      .from('blogs')
-      .select('id, title, slug, date, updated_at, is_published, featured')
-      .eq('is_published', false)
-      .order('updated_at', { ascending: false, nullsFirst: false })
-      .order('date', { ascending: false })
-      .limit(5),
+    supabase.from('blogs').select('id, title, slug, date, is_published').order('date', { ascending: false }).limit(4),
+    supabase.from('blogs').select('id, title, slug, date, is_published').eq('is_published', false).order('updated_at', { ascending: false, nullsFirst: false }).limit(4),
     supabase.from('site_profile').select('profile_image_url').eq('id', 'default').maybeSingle(),
     supabase.from('blogs').select('id', { count: 'exact', head: true }),
-    supabase.from('blogs').select('id', { count: 'exact', head: true }).eq('is_published', false),
-    supabase.from('blogs').select('id', { count: 'exact', head: true }).eq('featured', true),
-    supabase.from('quotes').select('id', { count: 'exact', head: true }),
-    supabase.from('experiences').select('id', { count: 'exact', head: true }),
-    supabase.from('experiences').select('id', { count: 'exact', head: true }).eq('is_published', false),
     supabase.from('projects').select('id', { count: 'exact', head: true }),
-    supabase.from('projects').select('id', { count: 'exact', head: true }).eq('is_published', false),
-    supabase.from('certificates').select('id', { count: 'exact', head: true }),
-    supabase.from('certificates').select('id', { count: 'exact', head: true }).eq('is_published', false),
-    supabase.from('languages').select('id', { count: 'exact', head: true }),
-    supabase.from('languages').select('id', { count: 'exact', head: true }).eq('is_published', false),
+    supabase.from('experiences').select('id', { count: 'exact', head: true }),
   ]);
 
   const totalBlogs = !blogsTotalRes.error ? toCount(blogsTotalRes.count) : 0;
-  const draftBlogs = !blogsDraftRes.error ? toCount(blogsDraftRes.count) : 0;
-  const featuredBlogs = !blogsFeaturedRes.error ? toCount(blogsFeaturedRes.count) : 0;
-  const publishedBlogs = Math.max(0, totalBlogs - draftBlogs);
-  const totalQuotes = !quotesTotalRes.error ? toCount(quotesTotalRes.count) : 0;
-
-  const totalExperiences = !experiencesTotalRes.error ? toCount(experiencesTotalRes.count) : 0;
-  const draftExperiences = !experiencesDraftRes.error ? toCount(experiencesDraftRes.count) : 0;
-  const publishedExperiences = Math.max(0, totalExperiences - draftExperiences);
-
   const totalProjects = !projectsTotalRes.error ? toCount(projectsTotalRes.count) : 0;
-  const draftProjects = !projectsDraftRes.error ? toCount(projectsDraftRes.count) : 0;
-  const publishedProjects = Math.max(0, totalProjects - draftProjects);
-
-  const totalCertificates = !certificatesTotalRes.error ? toCount(certificatesTotalRes.count) : 0;
-  const draftCertificates = !certificatesDraftRes.error ? toCount(certificatesDraftRes.count) : 0;
-  const publishedCertificates = Math.max(0, totalCertificates - draftCertificates);
-
-  const totalLanguages = !languagesTotalRes.error ? toCount(languagesTotalRes.count) : 0;
-  const draftLanguages = !languagesDraftRes.error ? toCount(languagesDraftRes.count) : 0;
-  const publishedLanguages = Math.max(0, totalLanguages - draftLanguages);
+  const totalExperiences = !experiencesTotalRes.error ? toCount(experiencesTotalRes.count) : 0;
 
   const recentBlogs = (recentBlogsData as BlogSummary[] | null) ?? [];
   const recentDrafts = (recentDraftsData as BlogSummary[] | null) ?? [];
-  const profileImageUrl =
-    typeof siteProfileData?.profile_image_url === 'string' && siteProfileData.profile_image_url.trim()
+  const profileImageUrl = typeof siteProfileData?.profile_image_url === 'string' && siteProfileData.profile_image_url.trim()
       ? siteProfileData.profile_image_url.trim()
       : profileImageFallback;
 
-  const successMessage = safeDecode(searchParams?.success);
-  const errorMessage = safeDecode(searchParams?.error);
-  const toast = errorMessage
-    ? { message: errorMessage, tone: 'error' as const }
-    : successMessage
-      ? { message: successMessage, tone: 'success' as const }
-      : null;
+  const successMessage = safeDecode(params?.success);
+  const errorMessage = safeDecode(params?.error);
+  const toast = errorMessage ? { message: errorMessage, tone: 'error' as const } : successMessage ? { message: successMessage, tone: 'success' as const } : null;
 
-  const contentMetrics = [
-    { label: 'Blogs', value: totalBlogs, meta: `${publishedBlogs} published` },
-    { label: 'Drafts', value: draftBlogs, meta: 'Hidden from portfolio' },
-    { label: 'Featured', value: featuredBlogs, meta: 'Pinned on home' },
-    { label: 'Quotes', value: totalQuotes, meta: 'Short highlights' },
-    { label: 'Projects', value: totalProjects, meta: `${publishedProjects} published` },
-    { label: 'Certificates', value: totalCertificates, meta: `${publishedCertificates} published` },
-    { label: 'Experiences', value: totalExperiences, meta: `${publishedExperiences} published` },
-    { label: 'Languages', value: totalLanguages, meta: `${publishedLanguages} published` },
-  ];
-
-  const chartMetrics = [
-    { label: 'Blogs', value: totalBlogs },
-    { label: 'Drafts', value: draftBlogs },
-    { label: 'Quotes', value: totalQuotes },
-    { label: 'Projects', value: totalProjects },
-    { label: 'Experiences', value: totalExperiences },
-    { label: 'Certificates', value: totalCertificates },
-    { label: 'Languages', value: totalLanguages },
-  ];
-
-  const quickActions = [
-    {
-      href: '/admin/blogs',
-      eyebrow: 'Manage',
-      title: 'Blogs',
-      body: 'Create, edit, and publish stories.',
-      icon: FileText,
-    },
-    {
-      href: '/admin/quotes',
-      eyebrow: 'Manage',
-      title: 'Quotes',
-      body: 'Curate daily inspiration snippets.',
-      icon: Quote,
-    },
-    {
-      href: '/admin/experiences',
-      eyebrow: 'Manage',
-      title: 'Experiences',
-      body: 'Update timelines and roles.',
-      icon: Briefcase,
-    },
-    {
-      href: '/admin/projects',
-      eyebrow: 'Manage',
-      title: 'Projects',
-      body: 'Showcase portfolio work.',
-      icon: LayoutGrid,
-    },
-    {
-      href: '/admin/certificates',
-      eyebrow: 'Manage',
-      title: 'Certificates',
-      body: 'Track achievements and proof.',
-      icon: Award,
-    },
-    {
-      href: '/admin/languages',
-      eyebrow: 'Manage',
-      title: 'Languages',
-      body: 'Set spoken language levels.',
-      icon: Languages,
-    },
+  const navLinks = [
+    { href: '/admin/blogs', label: 'Blogs' },
+    { href: '/admin/projects', label: 'Projects' },
+    { href: '/admin/experiences', label: 'Experiences' },
+    { href: '/admin/education', label: 'Education' },
+    { href: '/admin/certificates', label: 'Certificates' },
+    { href: '/admin/languages', label: 'Languages' },
+    { href: '/admin/quotes', label: 'Quotes' },
   ];
 
   return (
-    <div className="space-y-6">
-      <section className="admin-panel admin-panel-accent p-5 sm:p-7" data-gsap="reveal">
-        <div className="flex flex-col gap-6 xl:flex-row xl:items-end xl:justify-between">
-          <div className="max-w-2xl">
-            <p className="text-[11px] font-semibold uppercase tracking-[0.38em] text-[var(--admin-accent)]">
-              Dashboard
-            </p>
-            <h2 className="mt-3 text-3xl font-semibold tracking-tight text-white sm:text-4xl">
-              Portfolio Snapshot
-            </h2>
-            <p className="mt-3 max-w-xl text-sm leading-relaxed text-white/58 sm:text-base">
-              Monitor content, drafts, and profile assets from one clean workspace.
-            </p>
-          </div>
-
-          <div className="flex flex-wrap gap-2">
-            <Link href="/admin/blogs" className="admin-button">
-              <FileText className="h-4 w-4" />
-              Blogs
-            </Link>
-            <Link href="/admin/quotes" className="admin-button">
-              <Quote className="h-4 w-4" />
-              Quotes
-            </Link>
-            <Link href="/admin/projects" className="admin-button-primary">
-              <LayoutGrid className="h-4 w-4" />
-              Projects
-            </Link>
-          </div>
+    <div className="w-full space-y-16 pb-20 font-manrope">
+      
+      {/* HEADER SECTION */}
+      <header className="flex flex-col-reverse md:flex-row md:items-end justify-between gap-8 pb-8 border-b border-white/10">
+        <div className="space-y-2">
+          <h1 className="text-4xl md:text-5xl font-light tracking-tight text-white">
+            Workspace
+          </h1>
+          <p className="text-sm font-geist-mono text-white/40 uppercase tracking-[0.2em]">
+            Admin Control Center
+          </p>
         </div>
 
-        {toast && <div className="mt-6">{<AdminToast message={toast.message} tone={toast.tone} />}</div>}
-      </section>
-
-      <section className="grid gap-4 xl:grid-cols-[1fr_360px]" data-gsap="reveal">
-        <div className="admin-panel overflow-hidden">
-          <div className="grid sm:grid-cols-2 xl:grid-cols-4">
-            {contentMetrics.map((metric) => (
-              <div key={metric.label} className="admin-stat-card p-5">
-                <p className="text-[11px] font-semibold uppercase tracking-[0.28em] text-white/42">
-                  {metric.label}
-                </p>
-                <p className="mt-3 text-3xl font-semibold tracking-tight text-white">{metric.value}</p>
-                <p className="mt-2 text-xs text-white/42">{metric.meta}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        <form action={updateProfilePicture} className="admin-panel p-5">
+        <form action={updateProfilePicture} className="flex items-center gap-4">
           <input type="hidden" name="redirect_to" value="/admin" />
-          <div className="flex items-start justify-between gap-4">
-            <div>
-              <p className="text-[11px] font-semibold uppercase tracking-[0.3em] text-white/42">
-                Profile
-              </p>
-              <h3 className="mt-2 text-lg font-semibold text-white">Main photo</h3>
-              <p className="mt-2 text-sm leading-relaxed text-white/52">
-                Used by the homepage hero and navbar avatar.
-              </p>
-            </div>
-            <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-full border border-[var(--admin-border-strong)] bg-[#111111]">
-              <Image src={profileImageUrl} alt="Current profile picture" fill sizes="64px" className="object-cover" />
-            </div>
+          <div className="flex flex-col items-end gap-2">
+            <label className="text-[10px] font-geist-mono uppercase tracking-widest text-white/40 hover:text-white/80 cursor-pointer transition-colors">
+              Select Photo
+              <input name="image_file" type="file" accept="image/png,image/jpeg,image/webp" className="hidden" />
+            </label>
+            <AdminSubmitButton pendingText="Saving..." className="text-[10px] font-geist-mono uppercase tracking-widest text-[var(--admin-accent)] bg-transparent border-none p-0 h-auto hover:text-white transition-colors">
+              Save
+            </AdminSubmitButton>
           </div>
-          <label className="admin-file-label mt-5 flex items-center gap-3">
-            <ImageIcon className="h-4 w-4 text-white/60" />
-            <input
-              name="image_file"
-              type="file"
-              accept="image/png,image/jpeg,image/webp"
-              className="admin-file-input"/>
-          </label>
-          <AdminSubmitButton pendingText="Uploading..." className="admin-button-primary mt-4 w-full justify-center">
-            <Camera className="h-4 w-4" />
-            Update photo
-          </AdminSubmitButton>
+          <div className="relative h-14 w-14 overflow-hidden rounded-full border border-white/20">
+            <Image src={profileImageUrl} alt="Profile" fill sizes="56px" className="object-cover" />
+          </div>
         </form>
+      </header>
+
+      {toast && (
+        <div className="animate-in fade-in slide-in-from-top-4 duration-500">
+          <AdminToast message={toast.message} tone={toast.tone} />
+        </div>
+      )}
+
+      {/* METRICS STRIP */}
+      <section className="flex flex-wrap items-center gap-12 md:gap-24">
+        {[
+          { label: 'Articles', value: totalBlogs },
+          { label: 'Projects', value: totalProjects },
+          { label: 'Timeline', value: totalExperiences },
+        ].map((stat) => (
+          <div key={stat.label} className="flex flex-col gap-2">
+            <span className="text-5xl font-light text-white">{stat.value}</span>
+            <span className="text-[10px] font-geist-mono uppercase tracking-widest text-white/40">{stat.label}</span>
+          </div>
+        ))}
       </section>
 
-      <section className="grid gap-4 lg:grid-cols-3" data-gsap="reveal">
-        <div className="admin-panel p-5 lg:col-span-2">
-          <div className="flex items-center justify-between gap-3">
-            <div>
-              <p className="text-xs font-semibold uppercase tracking-[0.3em] text-white/42">Summary</p>
-              <h3 className="mt-2 text-lg font-semibold text-white">Content distribution</h3>
-              <p className="mt-2 text-sm text-white/52">Quick view of totals across sections.</p>
-            </div>
-            <div className="admin-muted-pill">Counts</div>
-          </div>
-          <div className="mt-5 h-56">
-            <AdminDashboardSummaryChart metrics={chartMetrics} />
-          </div>
-        </div>
-
-        <div className="admin-panel p-5">
-          <p className="text-xs font-semibold uppercase tracking-[0.3em] text-white/42">Notes</p>
-          <h3 className="mt-2 text-lg font-semibold text-white">At a glance</h3>
-          <div className="mt-4 space-y-3 text-sm text-white/62">
-            <p>
-              Draft blogs: <span className="font-semibold text-white">{draftBlogs}</span>
-            </p>
-            <p>
-              Featured blogs: <span className="font-semibold text-white">{featuredBlogs}</span>
-            </p>
-            <p>
-              Draft projects: <span className="font-semibold text-white">{draftProjects}</span>
-            </p>
-            <p>
-              Draft certificates: <span className="font-semibold text-white">{draftCertificates}</span>
-            </p>
-          </div>
-        </div>
-      </section>
-
-      <section className="space-y-4" data-gsap="reveal">
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.3em] text-white/42">
-              Actions
-            </p>
-            <h3 className="mt-2 text-xl font-semibold text-white">Quick actions</h3>
-          </div>
-          <p className="text-sm text-white/52">Jump to content updates</p>
-        </div>
-        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-          {quickActions.map((item) => {
-            const Icon = item.icon;
-            return (
-              <Link key={item.href} href={item.href} className="admin-link-card group p-5">
-                <div className="flex items-center justify-between gap-5">
-                  <div>
-                    <p className="text-xs font-semibold uppercase tracking-[0.3em] text-white/42">{item.eyebrow}</p>
-                    <p className="mt-2 text-lg font-semibold text-white">{item.title}</p>
-                    <p className="mt-2 text-sm text-white/52">{item.body}</p>
-                  </div>
-                  <div className="admin-icon-box">
-                    <Icon className="h-5 w-5" />
-                  </div>
-                </div>
-              </Link>
-            );
-          })}
-        </div>
-      </section>
-
-      <section className="grid gap-4 lg:grid-cols-2" data-gsap="reveal">
-        <div className="admin-panel p-5">
-          <div className="flex items-center justify-between gap-3">
-            <div>
-              <p className="text-xs font-semibold uppercase tracking-[0.3em] text-white/42">Queue</p>
-              <h3 className="mt-2 text-lg font-semibold text-white">Drafts to review</h3>
-            </div>
-            <Link href="/admin/blogs" className="admin-text-link">
-              Open
+      {/* NAVIGATION PILLS */}
+      <section className="space-y-6">
+        <h2 className="text-[11px] font-geist-mono uppercase tracking-[0.25em] text-white/30">Modules</h2>
+        <div className="flex flex-wrap gap-3">
+          {navLinks.map((link) => (
+            <Link 
+              key={link.href} 
+              href={link.href}
+              className="px-6 py-2.5 rounded-full border border-white/10 text-sm text-white/70 hover:text-white hover:border-white/30 hover:bg-white/5 transition-all duration-300 font-light"
+            >
+              {link.label}
             </Link>
-          </div>
-          {recentDrafts.length === 0 ? (
-            <p className="mt-4 text-sm text-white/52">No drafts right now.</p>
-          ) : (
-            <div className="mt-4 space-y-3">
-              {recentDrafts.map((blog) => (
-                <Link
-                  key={blog.id}
-                  href={`/admin/blogs?edit=${encodeURIComponent(blog.id)}`}
-                  className="admin-row-link block px-4 py-3">
-                  <p className="text-xs text-white/42">/{blog.slug}</p>
-                  <p className="mt-2 line-clamp-1 text-sm font-semibold text-white">{blog.title}</p>
-                </Link>
-              ))}
-            </div>
-          )}
-        </div>
-
-        <div className="admin-panel p-5">
-          <div className="flex items-center justify-between gap-3">
-            <div>
-              <p className="text-xs font-semibold uppercase tracking-[0.3em] text-white/42">Recent</p>
-              <h3 className="mt-2 text-lg font-semibold text-white">Latest stories</h3>
-            </div>
-            <Link href="/admin/blogs" className="admin-text-link">
-              Manage
-            </Link>
-          </div>
-          {recentBlogs.length === 0 ? (
-            <p className="mt-4 text-sm text-white/52">No stories yet.</p>
-          ) : (
-            <div className="mt-4 space-y-3">
-              {recentBlogs.map((blog) => (
-                <Link
-                  key={blog.id}
-                  href={`/blog/${encodeURIComponent(blog.slug)}`}
-                  className="admin-row-link flex items-start justify-between gap-3 px-4 py-3">
-                  <div className="min-w-0">
-                    <p className="text-xs text-white/42">{blog.is_published === false ? 'Draft' : 'Published'}</p>
-                    <p className="mt-1 line-clamp-1 text-sm font-semibold text-white">{blog.title}</p>
-                  </div>
-                  <span className="whitespace-nowrap text-xs text-white/42">/{blog.slug}</span>
-                </Link>
-              ))}
-            </div>
-          )}
+          ))}
         </div>
       </section>
 
-      <AdminAnalytics initialRange={searchParams?.range} />
+      {/* RECENT LISTS */}
+      <section className="grid md:grid-cols-2 gap-16 pt-8">
+        
+        {/* LATEST */}
+        <div className="space-y-6">
+          <div className="flex items-center justify-between border-b border-white/10 pb-4">
+            <h2 className="text-[11px] font-geist-mono uppercase tracking-[0.25em] text-white/30">Latest Published</h2>
+            <Link href="/admin/blogs" className="text-[11px] font-geist-mono uppercase tracking-widest text-white/50 hover:text-white transition-colors">View All</Link>
+          </div>
+          <div className="space-y-4">
+            {recentBlogs.length === 0 ? (
+              <p className="text-sm font-light text-white/40">No entries yet.</p>
+            ) : (
+              recentBlogs.map((blog) => (
+                <Link key={blog.id} href={`/blog/${blog.slug}`} className="group block">
+                  <p className="text-base font-light text-white/80 group-hover:text-white transition-colors line-clamp-1">{blog.title}</p>
+                  <p className="text-xs font-geist-mono text-white/30 mt-1">/{blog.slug}</p>
+                </Link>
+              ))
+            )}
+          </div>
+        </div>
+
+        {/* DRAFTS */}
+        <div className="space-y-6">
+          <div className="flex items-center justify-between border-b border-white/10 pb-4">
+            <h2 className="text-[11px] font-geist-mono uppercase tracking-[0.25em] text-white/30">Draft Queue</h2>
+          </div>
+          <div className="space-y-4">
+            {recentDrafts.length === 0 ? (
+              <p className="text-sm font-light text-white/40">Queue is empty.</p>
+            ) : (
+              recentDrafts.map((blog) => (
+                <Link key={blog.id} href={`/admin/blogs?edit=${blog.id}`} className="group block">
+                  <p className="text-base font-light text-[var(--admin-accent)] group-hover:text-white transition-colors line-clamp-1">{blog.title}</p>
+                  <p className="text-xs font-geist-mono text-white/30 mt-1">Needs review</p>
+                </Link>
+              ))
+            )}
+          </div>
+        </div>
+
+      </section>
+
     </div>
   );
 }

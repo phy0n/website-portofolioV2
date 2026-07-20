@@ -14,9 +14,10 @@ interface Quote {
 export default async function AdminQuotesPage({
   searchParams,
 }: {
-  searchParams?: { success?: string; error?: string };
+  searchParams?: Promise<{ success?: string; error?: string }>;
 }) {
   const { supabase } = await requireAdmin();
+  const params = await searchParams;
   const safeDecode = (value?: string) => {
     if (!value) return undefined;
     try {
@@ -32,8 +33,8 @@ export default async function AdminQuotesPage({
     .order('date', { ascending: false });
 
   const quoteRows = (quotes as Quote[] | null) ?? [];
-  const successMessage = safeDecode(searchParams?.success);
-  const errorMessage = safeDecode(searchParams?.error);
+  const successMessage = safeDecode(params?.success);
+  const errorMessage = safeDecode(params?.error);
 
   return (
     <QuoteManager
@@ -46,3 +47,4 @@ export default async function AdminQuotesPage({
     />
   );
 }
+
