@@ -482,7 +482,7 @@ export default function BlogDetailClient({
       data-page-content>
       <div className="fixed top-0 left-0 right-0 z-50 h-1 bg-[var(--home-soft)]">
         <div
-          className="h-full bg-gradient-to-r from-[var(--home-accent)] to-[var(--home-accent-2)] transition-all duration-150"
+          className="h-full bg-gradient-to-r from-[var(--home-accent)] to-[var(--home-accent-2)] transition-[width] duration-150"
           style={{ width: `${readingProgress}%` }}/>
       </div>
 
@@ -541,8 +541,8 @@ export default function BlogDetailClient({
             </span>
           </div>
 
-          <h1 className="text-3xl sm:text-5xl md:text-6xl font-serif font-medium text-[var(--home-ink)] leading-tight mb-8 max-w-3xl mx-auto">
-            {blog.title}
+          <h1 className="text-3xl sm:text-5xl md:text-6xl font-serif font-medium text-[var(--home-ink)] leading-tight mb-8 w-full flex justify-center text-center">
+            {blog.title?.trim()}
           </h1>
 
           <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-3 text-xs font-mono text-[var(--home-muted)] opacity-40 uppercase tracking-wider">

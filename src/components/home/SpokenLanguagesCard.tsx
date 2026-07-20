@@ -45,21 +45,20 @@ export default function SpokenLanguagesCard({ className }: { className?: string 
             return (
               <div 
                 key={language.id} 
-                className="group relative overflow-hidden rounded-2xl border border-[var(--home-border)] bg-[var(--home-card)] p-5 transition-all duration-300 hover:border-[var(--accent)] hover:bg-[var(--home-soft)] hover:shadow-[0_8px_30px_rgb(0,0,0,0.12)] hover:-translate-y-1"
+                className="relative overflow-hidden rounded-2xl border border-[var(--home-border)] bg-[var(--home-card)] p-5 transition-all duration-300"
                 style={{
                   opacity: mounted ? 1 : 0,
                   transform: mounted ? 'translateY(0)' : 'translateY(10px)',
                   transitionDelay: mounted ? delay : '0ms'
                 }}
               >
-                {/* Subtle Background Glow */}
-                <div className="absolute -right-6 -top-6 h-24 w-24 rounded-full bg-red-500/10 blur-2xl transition-all duration-500 group-hover:bg-red-500/20 group-hover:scale-150" />
+                <div className="absolute -right-6 -top-6 h-24 w-24 rounded-full bg-red-500/10 blur-2xl transition-all duration-500" />
 
                 <div className="relative z-10 flex flex-col gap-4">
                   {/* Header: Icon, Name, Label */}
                   <div className="flex items-start justify-between">
                     <div className="flex items-center gap-3">
-                      <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[var(--home-soft)] border border-[var(--home-border)] text-[var(--home-ink)] transition-colors duration-300 group-hover:border-[var(--accent)] group-hover:text-[var(--accent)] group-hover:bg-[var(--home-bg)] shadow-sm">
+                      <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[var(--home-soft)] border border-[var(--home-border)] text-[var(--home-ink)] transition-colors duration-300 shadow-sm">
                         <Globe2 className="h-5 w-5" />
                       </div>
                       <div>
@@ -79,11 +78,9 @@ export default function SpokenLanguagesCard({ className }: { className?: string 
                   <div className="relative mt-2">
                     <div className="h-2 w-full overflow-hidden rounded-full bg-[var(--home-soft)] border border-[var(--home-border)]">
                       <div
-                        className="h-full rounded-full bg-[var(--accent)] shadow-[0_0_10px_rgba(209,74,74,0.35)] transition-all duration-1000 ease-out relative"
+                        className="h-full rounded-full bg-[var(--accent)] shadow-[0_0_10px_rgba(209,74,74,0.35)] transition-[width] duration-1000 ease-out"
                         style={{ width: mounted ? `${level}%` : '0%' }}
-                      >
-                         <div className="absolute top-0 right-0 bottom-0 w-10 bg-gradient-to-r from-transparent to-white/20 animate-pulse" />
-                      </div>
+                      />
                     </div>
                   </div>
                 </div>

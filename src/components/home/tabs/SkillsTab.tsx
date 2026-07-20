@@ -154,11 +154,11 @@ export default function SkillsTab() {
               {group.items.map((skill, index) => (
                 <div
                   key={skill.name}
-                  className="group relative overflow-hidden flex flex-col justify-between cursor-default gap-3 rounded-xl border border-[var(--home-border)] bg-[var(--home-card)] p-3 transition-all duration-300 hover:-translate-y-1 hover:shadow-md hover:border-[var(--accent)]"
+                  className="relative overflow-hidden flex flex-col justify-between cursor-default gap-3 rounded-xl border border-[var(--home-border)] bg-[var(--home-card)] p-3 transition-all duration-300"
                 >
                   <div className="flex items-center gap-3">
                     <span
-                      className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[var(--home-soft)] transition-colors duration-300 group-hover:bg-[var(--home-ink)] group-hover:text-[var(--home-bg)] ${group.tones[index % group.tones.length]}`}
+                      className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[var(--home-soft)] transition-colors duration-300 ${group.tones[index % group.tones.length]}`}
                     >
                       {skill.icon}
                     </span>
@@ -173,11 +173,9 @@ export default function SkillsTab() {
                   {/* Progress bar */}
                   <div className="h-1.5 w-full bg-[var(--home-soft)] rounded-full overflow-hidden mt-1">
                     <div 
-                      className="h-full bg-[var(--accent)] rounded-full transition-all duration-1000 ease-out shadow-[0_0_8px_rgba(209,74,74,0.4)] relative"
+                      className="h-full bg-[var(--accent)] rounded-full transition-[width] duration-1000 ease-out shadow-[0_0_8px_rgba(209,74,74,0.4)]"
                       style={{ width: mounted ? `${skill.level}%` : '0%' }}
-                    >
-                       <div className="absolute top-0 right-0 bottom-0 w-8 bg-gradient-to-r from-transparent to-white/30 animate-pulse" />
-                    </div>
+                    />
                   </div>
                 </div>
               ))}

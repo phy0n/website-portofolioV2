@@ -11,7 +11,6 @@ import { ThemeToggle } from '@/components/shared/ThemeToggle';
 const NAV_LINKS = [
   { label: 'Home', href: '/' },
   { label: 'Blog', href: '/blog' },
-  { label: 'Chat', href: '/chat' },
   { label: 'Connect', href: '/connect' },
 ];
 
