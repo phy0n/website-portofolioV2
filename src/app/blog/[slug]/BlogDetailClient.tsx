@@ -118,6 +118,55 @@ const resolveBlogImageSrc = (value?: string | null) => {
   return `/${raw}`;
 };
 
+function ScrollProgress() {
+  const [readingProgress, setReadingProgress] = useState(0);
+  const rafRef = useRef<number | null>(null);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (rafRef.current !== null) return;
+      rafRef.current = window.requestAnimationFrame(() => {
+        rafRef.current = null;
+        const windowHeight = window.innerHeight;
+        const documentHeight = document.documentElement.scrollHeight - windowHeight;
+        const scrolled = window.scrollY;
+        const progress = documentHeight > 0 ? (scrolled / documentHeight) * 100 : 0;
+        setReadingProgress(Math.min(progress, 100));
+      });
+    };
+
+    handleScroll();
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => {
+      if (rafRef.current !== null) {
+        window.cancelAnimationFrame(rafRef.current);
+      }
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
+
+  return (
+    <>
+      <div className="fixed top-0 left-0 right-0 z-50 h-1 bg-[var(--home-soft)]">
+        <div
+          className="h-full bg-gradient-to-r from-[var(--home-accent)] to-[var(--home-accent-2)] transition-[width] duration-150"
+          style={{ width: `${readingProgress}%` }}
+        />
+      </div>
+
+      {readingProgress > 12 && (
+        <button
+          type="button"
+          onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+          className="fixed bottom-6 right-6 z-40 inline-flex h-11 w-11 items-center justify-center rounded-full border border-[var(--home-border)] bg-[var(--home-card)] text-[var(--home-ink)] opacity-80 backdrop-blur-xl transition hover:border-[var(--home-border)] hover:text-[var(--home-ink)] shadow-xl"
+          aria-label="Back to top">
+          <ArrowUp className="h-5 w-5" />
+        </button>
+      )}
+    </>
+  );
+}
+
 export default function BlogDetailClient({
   blog,
   relatedBlogs = [],
@@ -130,7 +179,6 @@ export default function BlogDetailClient({
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const [readingProgress, setReadingProgress] = useState(0);
   const [activeHeadingId, setActiveHeadingId] = useState<string | null>(null);
   const [toast, setToast] = useState<string | null>(null);
   const [saved, setSaved] = useState(() => (blog?.slug ? readReadingList().has(blog.slug) : false));
@@ -139,7 +187,6 @@ export default function BlogDetailClient({
     unique: number;
   } | null>(null);
   const pageRef = useRef<HTMLDivElement | null>(null);
-  const rafRef = useRef<number | null>(null);
   const articleRef = useRef<HTMLElement | null>(null);
   const chapterContentRef = useRef<HTMLDivElement | null>(null);
   const toastTimerRef = useRef<number | null>(null);
@@ -379,28 +426,7 @@ export default function BlogDetailClient({
     }
   }, [activeChapterIndex]);
 
-  useEffect(() => {
-    const handleScroll = () => {
-      if (rafRef.current !== null) return;
-      rafRef.current = window.requestAnimationFrame(() => {
-        rafRef.current = null;
-        const windowHeight = window.innerHeight;
-        const documentHeight = document.documentElement.scrollHeight - windowHeight;
-        const scrolled = window.scrollY;
-        const progress = documentHeight > 0 ? (scrolled / documentHeight) * 100 : 0;
-        setReadingProgress(Math.min(progress, 100));
-      });
-    };
-
-    handleScroll();
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => {
-      if (rafRef.current !== null) {
-        window.cancelAnimationFrame(rafRef.current);
-      }
-      window.removeEventListener('scroll', handleScroll);
-    };
-  }, []);
+  // Reading progress and back to top button are handled by ScrollProgress component
 
   const showToast = (message: string) => {
     setToast(message);
@@ -480,26 +506,12 @@ export default function BlogDetailClient({
       ref={pageRef}
       className="home-portfolio min-h-screen bg-[var(--home-bg)] text-[var(--home-ink)] font-nunito relative selection:bg-[var(--home-accent)] selection:text-[var(--home-ink)] pb-24"
       data-page-content>
-      <div className="fixed top-0 left-0 right-0 z-50 h-1 bg-[var(--home-soft)]">
-        <div
-          className="h-full bg-gradient-to-r from-[var(--home-accent)] to-[var(--home-accent-2)] transition-[width] duration-150"
-          style={{ width: `${readingProgress}%` }}/>
-      </div>
+      <ScrollProgress />
 
       {toast && (
         <div className="fixed bottom-6 left-1/2 z-50 -translate-x-1/2 rounded-full border border-[var(--home-border)] bg-[var(--home-card)] px-4 py-2 text-xs text-[var(--home-ink)] opacity-80 backdrop-blur-xl shadow-[0_20px_60px_rgba(0,0,0,0.55)]">
           {toast}
         </div>
-      )}
-
-      {readingProgress > 12 && (
-        <button
-          type="button"
-          onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-          className="fixed bottom-6 right-6 z-40 inline-flex h-11 w-11 items-center justify-center rounded-full border border-[var(--home-border)] bg-[var(--home-card)] text-[var(--home-ink)] opacity-80 backdrop-blur-xl transition hover:border-[var(--home-border)] hover:text-[var(--home-ink)] shadow-xl"
-          aria-label="Back to top">
-          <ArrowUp className="h-5 w-5" />
-        </button>
       )}
 
       <div className="relative mx-auto w-full max-w-4xl px-4 sm:px-6 py-12 md:py-20">
@@ -613,7 +625,7 @@ export default function BlogDetailClient({
         {relatedBlogs.length > 0 && (
           <div className="mt-24 max-w-4xl mx-auto" data-gsap="reveal">
             <h3 className="text-center text-sm font-mono uppercase tracking-widest text-[var(--home-muted)] opacity-40 mb-10">Further Reading</h3>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
               {relatedBlogs.map(item => {
                 const img = resolveBlogImageSrc(item.image);
                 return (
