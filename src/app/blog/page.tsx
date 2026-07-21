@@ -180,17 +180,11 @@ export default async function BlogPage({
                 <h1 className="text-lg font-semibold text-[var(--home-ink)]">Blog</h1>
                 <p className="text-xs text-[var(--home-muted)] opacity-50">Latest posts and short reads.</p>
               </div>
-              <p className="text-[10px] uppercase tracking-[0.35em] text-[var(--home-muted)] opacity-40">Phion</p>
             </div>
 
             <div className="rounded-3xl border border-[var(--home-border)] bg-[var(--home-soft)] p-6">
-              <div className="flex items-center justify-between gap-4">
-                <h2 className="text-sm font-semibold text-[var(--home-ink)]">Posts</h2>
-                <span className="text-xs text-[var(--home-muted)] opacity-40">{safeBlogs.length}</span>
-              </div>
-
               {blogRows.length === 0 ? (
-                <p className="mt-3 text-sm text-[var(--home-muted)] opacity-50">No blog posts yet.</p>
+                <p className="text-sm text-[var(--home-muted)] opacity-50">No blog posts yet.</p>
               ) : (
                 <BlogSidebarList blogs={blogSidebarItems} />
               )}
@@ -198,21 +192,20 @@ export default async function BlogPage({
           </section>
 
           <aside className="space-y-6 lg:col-span-5 lg:sticky lg:top-24 lg:self-start lg:max-h-[calc(100vh-6rem)] lg:overflow-auto hide-scrollbar">
-            <div className="rounded-3xl border border-[var(--home-border)] bg-[var(--home-soft)] p-6">
-              <div className="flex items-center justify-between gap-4">
-                <h2 className="text-sm font-semibold text-[var(--home-ink)]">Quotes</h2>
-                <span className="text-xs text-[var(--home-muted)] opacity-40">{safeQuotes.length}</span>
+            <div className="flex items-start justify-between gap-4">
+              <div className="space-y-1">
+                <h2 className="text-lg font-semibold text-[var(--home-ink)]">Quotes</h2>
+                <p className="text-xs text-[var(--home-muted)] opacity-50">Words to remember.</p>
               </div>
-
               {isAdmin ? (
-                <details className="mt-4 flex flex-col">
+                <details className="flex flex-col relative z-20">
                   <summary
                     className="list-none inline-flex h-9 w-9 cursor-pointer select-none self-end items-center justify-center rounded-full border border-[var(--home-border)] bg-[var(--home-soft)] text-lg font-semibold leading-none text-[var(--home-ink)] opacity-70 transition hover:border-[var(--home-border)] hover:bg-[var(--home-soft)] hover:text-[var(--home-ink)] focus:outline-none focus-visible:ring-2 focus-visible:ring-white/30 [&::-webkit-details-marker]:hidden"
                     aria-label="Add quote"
                     title="Add quote">
                     +
                   </summary>
-                  <form action={createQuote} className="mt-4 w-full space-y-3">
+                  <form action={createQuote} className="absolute right-0 top-full mt-2 w-full min-w-[320px] rounded-3xl border border-[var(--home-border)] bg-[var(--home-card)] p-4 shadow-xl z-50 space-y-3">
                     <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                       <div className="space-y-1">
                         <label className="text-[10px] uppercase tracking-[0.3em] text-[var(--home-muted)] opacity-40">Date</label>
@@ -271,16 +264,18 @@ export default async function BlogPage({
                   </form>
                 </details>
               ) : null}
+            </div>
 
+            <div className="rounded-3xl border border-[var(--home-border)] bg-[var(--home-soft)] p-6">
               {quoteRows.length === 0 ? (
-                <p className="mt-3 text-sm text-[var(--home-muted)] opacity-50">No quotes yet.</p>
+                <p className="text-sm text-[var(--home-muted)] opacity-50">No quotes yet.</p>
               ) : (
-                <div className="mt-4 max-h-[420px] space-y-4 overflow-y-auto pr-1 hide-scrollbar">
+                <div className="max-h-[420px] space-y-4 overflow-y-auto pr-1 hide-scrollbar">
                   {quoteRows.map((quote) => (
                     <div key={quote.id} className="rounded-2xl border border-[var(--home-border)] bg-[var(--home-card)] p-4">
                       <p className="text-sm text-[var(--home-muted)] opacity-75 line-clamp-4">&ldquo;{quote.text}&rdquo;</p>
                       <div className="mt-2 flex items-center justify-between gap-3">
-                        {quote.author ? <p className="text-xs text-[var(--home-muted)] opacity-40">— {quote.author}</p> : <span />}
+                        {quote.author ? <p className="text-xs text-[var(--home-muted)] opacity-40">by: {quote.author}</p> : <span />}
                         {isAdmin ? (
                           <form action={deleteQuote}>
                             <input type="hidden" name="id" value={quote.id} />

@@ -134,7 +134,7 @@ export default function BlogSidebarList({ blogs }: { blogs: BlogSidebarItem[] })
   }, [slugs]);
 
   return (
-    <div className="mt-4 max-h-[420px] space-y-3 overflow-y-auto pr-1 hide-scrollbar">
+    <div className="max-h-[420px] space-y-3 overflow-y-auto pr-1 hide-scrollbar">
       {blogs.map((blog) => {
         const slug = String(blog.slug || '');
         const normalizedSlug = normalizeSlug(slug) ?? slug;

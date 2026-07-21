@@ -695,10 +695,12 @@ export default function BlogClient({
                   {sortedQuotes.length > 0 ? (
                     <div className="mt-4 space-y-4 max-h-[calc(100vh-12rem)] overflow-y-auto hide-scrollbar pr-1">
                       {sortedQuotes.map((quote, index) => (
-                        <div key={`${quote.id}-${quote.date}-${index}`} className="border-l border-[var(--home-border)] pl-3">
-                          <p className="text-[10px] text-[var(--home-muted)] mb-1">{formatQuoteDate(quote.date)}</p>
-                          <p className="text-sm text-gray-300 leading-relaxed italic">“{quote.text}”</p>
-                          {quote.author && <p className="mt-2 text-xs text-[var(--home-muted)]">— {quote.author}</p>}
+                        <div key={`${quote.id}-${quote.date}-${index}`} className="group relative bg-[var(--home-card)] border border-[var(--home-border)] hover:border-[var(--home-accent)] rounded-2xl p-4 transition-all duration-300 overflow-hidden shadow-sm hover:shadow-md">
+                          <div className="absolute top-0 left-0 w-1 h-full bg-[var(--home-border)] group-hover:bg-[var(--home-accent)] transition-colors"></div>
+                          <Quote className="absolute top-4 right-4 w-4 h-4 text-[var(--home-accent)] opacity-10 group-hover:opacity-30 transition-opacity" />
+                          <p className="text-[10px] text-[var(--home-accent)] uppercase tracking-widest mb-2 font-mono">{formatQuoteDate(quote.date)}</p>
+                          <p className="text-sm text-gray-200 leading-relaxed font-serif italic pr-4">"{quote.text}"</p>
+                          {quote.author && <p className="mt-3 text-xs text-[var(--home-muted)] font-medium">- {quote.author}</p>}
                         </div>
                       ))}
                     </div>
@@ -756,12 +758,15 @@ export default function BlogClient({
                   {sortedQuotes.map((quote, index) => (
                     <div
                       key={`${quote.id}-${quote.date}-${index}`}
-                      className="relative bg-[var(--home-soft)] backdrop-blur-sm border border-[var(--home-border)] p-4 overflow-hidden">
+                      className="group relative bg-[var(--home-soft)] backdrop-blur-sm border border-[var(--home-border)] p-4 rounded-2xl overflow-hidden shadow-sm"
+                    >
                       <div className="absolute inset-0 bg-[var(--home-card)] transition-all duration-300 backdrop-blur-sm"></div>
+                      <div className="absolute top-0 left-0 w-1 h-full bg-[var(--home-accent)] opacity-50"></div>
                       <div className="relative z-10">
-                        <p className="text-xs text-[var(--home-muted)] mb-3">{formatQuoteDate(quote.date)}</p>
-                        <p className="text-base text-gray-200 leading-relaxed italic">“{quote.text}”</p>
-                        {quote.author && <p className="mt-3 text-sm text-[var(--home-muted)]">— {quote.author}</p>}
+                        <Quote className="absolute top-0 right-0 w-4 h-4 text-[var(--home-accent)] opacity-20" />
+                        <p className="text-[10px] text-[var(--home-accent)] uppercase tracking-widest mb-2 font-mono">{formatQuoteDate(quote.date)}</p>
+                        <p className="text-sm text-gray-200 leading-relaxed font-serif italic pr-4">"{quote.text}"</p>
+                        {quote.author && <p className="mt-3 text-sm text-[var(--home-muted)] font-medium">- {quote.author}</p>}
                       </div>
                     </div>
                   ))}
