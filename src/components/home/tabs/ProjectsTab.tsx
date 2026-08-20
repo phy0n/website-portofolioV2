@@ -267,88 +267,99 @@ export default function ProjectsTab() {
         )}
       </div>
 
-      <div className="divide-y divide-white/10 border-y border-[var(--home-border)]">
+      <div className="space-y-6">
         {projects === null ? (
           <div className="space-y-3 py-6">
             {Array.from({ length: 6 }).map((_, idx) => (
-              <div key={idx} className="h-16 rounded-2xl border border-[var(--home-border)] bg-[var(--home-soft)] animate-pulse" />
+              <div key={idx} className="h-24 rounded-xl border border-[var(--home-border)] bg-[var(--home-soft)] animate-pulse" />
             ))}
           </div>
         ) : otherProjects.length === 0 ? (
           <div className="js-reveal py-6 text-sm text-[var(--home-muted)]">No more projects available</div>
         ) : (
           otherProjects.map((project, index) => {
-            const number = String(index + 1).padStart(2, '0');
             const caseSlug = caseStudyByProjectId.get(project.id) ?? null;
             const chips = project.stack.length > 0 ? project.stack : project.tags;
 
             return (
-              <div key={project.id} className="js-reveal grid gap-4 py-6 md:grid-cols-[auto_1fr_auto]">
-                <div className="pt-2 text-xs uppercase tracking-[0.35em] text-[var(--home-muted)]">{number}</div>
-                <div className="space-y-3">
-                  <div className="flex flex-wrap items-center gap-x-2 gap-y-2">
-                    <span className="text-[var(--home-accent)]">{renderProjectIcon(project.icon)}</span>
-                    <h3 className="text-lg font-sans font-semibold text-[var(--home-ink)]">{project.title}</h3>
-                    <span className="rounded-full border border-[var(--home-border)] bg-[var(--home-soft)] px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.28em] text-[var(--home-muted)]">
-                      {project.status}
-                    </span>
-                  </div>
-                  <p className="text-sm text-[var(--home-muted)]">{project.description}</p>
-                  {project.highlights.length > 0 ? (
-                    <ul className="space-y-1 text-xs text-[var(--home-muted)]">
-                      {project.highlights.slice(0, 2).map((highlight) => (
-                        <li key={highlight} className="flex items-start gap-2">
-                          <span className="mt-1 h-1.5 w-1.5 rounded-full bg-[var(--home-accent)]" aria-hidden="true" />
-                          <span className="leading-relaxed">{highlight}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  ) : null}
-                  {chips.length > 0 ? (
-                    <div className="flex flex-wrap gap-2">
-                      {chips.slice(0, 6).map((chip) => (
-                        <span
-                          key={chip}
-                          className="rounded-full border border-[var(--home-border)] bg-[var(--home-card)] px-3 py-1 text-xs text-[var(--home-muted)]">
-                          {chip}
-                        </span>
-                      ))}
-                    </div>
-                  ) : null}
+              <div
+                key={project.id}
+                className="js-reveal group relative flex flex-col overflow-hidden rounded-xl border border-[var(--home-border)] bg-[var(--home-soft)] p-6 sm:p-7 transition-all duration-500 hover:-translate-y-1 hover:border-white/20 hover:shadow-[0_8px_30px_rgb(0,0,0,0.12)]">
+                
+                {/* Tech Top Highlight */}
+                <div className="absolute left-0 right-0 top-0 h-1 bg-[var(--home-border)] transition-colors duration-500 group-hover:bg-[var(--home-accent)]" />
 
-                  <div className="flex flex-wrap gap-2 pt-1">
+                <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-4">
+                  <div className="flex items-center gap-3">
+                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-[#111] border border-[var(--home-border)] text-[var(--home-muted)] group-hover:text-[var(--home-accent)] transition-colors duration-300">
+                      {renderProjectIcon(project.icon)}
+                    </div>
+                    <h3 className="text-xl font-sans font-bold text-[var(--home-ink)] leading-tight">{project.title}</h3>
+                  </div>
+                  <span className="shrink-0 rounded-md border border-[var(--home-border)] bg-[#111] px-2.5 py-1 text-[9px] font-mono font-bold uppercase tracking-widest text-[var(--home-accent)] self-start sm:self-auto">
+                    {project.status}
+                  </span>
+                </div>
+                
+                <p className="text-sm leading-relaxed text-[var(--home-muted)] group-hover:text-[var(--home-ink)]/90 transition-colors duration-300">
+                  {project.description}
+                </p>
+                
+                {project.highlights.length > 0 ? (
+                  <ul className="space-y-2 text-xs text-[var(--home-muted)] mt-4">
+                    {project.highlights.slice(0, 2).map((highlight) => (
+                      <li key={highlight} className="flex items-start gap-2">
+                        <span className="mt-1 h-1 w-1 shrink-0 bg-[var(--home-accent)]" aria-hidden="true" />
+                        <span className="leading-relaxed">{highlight}</span>
+                      </li>
+                    ))}
+                  </ul>
+                ) : null}
+
+                {chips.length > 0 ? (
+                  <div className="flex flex-wrap gap-2 mt-5">
+                    {chips.slice(0, 6).map((chip) => (
+                      <span
+                        key={chip}
+                        className="rounded border border-[var(--home-border)] bg-[#111] px-2 py-1 text-[10px] font-mono text-[var(--home-muted)]">
+                        {chip}
+                      </span>
+                    ))}
+                  </div>
+                ) : null}
+
+                <div className="flex flex-wrap gap-2 mt-5 border-t border-[var(--home-border)] pt-5">
+                  <a
+                    href={project.link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 rounded bg-[#111] border border-[var(--home-border)] px-4 py-2 text-[10px] font-mono font-bold uppercase tracking-widest text-[var(--home-muted)] transition hover:border-[var(--home-accent)] hover:text-[var(--home-accent)]"
+                    aria-label={`Open ${project.title}`}>
+                    <ArrowUpRight className="h-3.5 w-3.5" />
+                    Live
+                  </a>
+
+                  {project.github_url ? (
                     <a
-                      href={project.link}
+                      href={project.github_url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-2 rounded-full border border-[var(--home-border)] bg-[var(--home-soft)] px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.28em] text-[var(--home-ink)] opacity-70 transition hover:border-[var(--home-border)] hover:bg-[var(--home-soft)] hover:text-[var(--home-ink)]"
-                      aria-label={`Open ${project.title}`}>
-                      Live
-                      <ArrowUpRight className="h-4 w-4" />
+                      className="inline-flex items-center gap-2 rounded bg-transparent border border-[var(--home-border)] px-4 py-2 text-[10px] font-mono font-bold uppercase tracking-widest text-[var(--home-muted)] transition hover:border-[var(--home-ink)] hover:text-[var(--home-ink)]"
+                      aria-label={`Open ${project.title} repository`}>
+                      <Github className="h-3.5 w-3.5" />
+                      Repo
                     </a>
+                  ) : null}
 
-                    {project.github_url ? (
-                      <a
-                        href={project.github_url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center gap-2 rounded-full border border-[var(--home-border)] bg-[var(--home-soft)] px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.28em] text-[var(--home-ink)] opacity-70 transition hover:border-[var(--home-border)] hover:bg-[var(--home-soft)] hover:text-[var(--home-ink)]"
-                        aria-label={`Open ${project.title} repository`}>
-                        <Github className="h-4 w-4" />
-                        Repo
-                      </a>
-                    ) : null}
-
-                    {caseSlug ? (
-                      <Link
-                        href={`/projects/${encodeURIComponent(caseSlug)}`}
-                        className="inline-flex items-center gap-2 rounded-full border border-[var(--home-border)] bg-[var(--home-soft)] px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.28em] text-[var(--home-ink)] opacity-70 transition hover:border-[var(--home-border)] hover:bg-[var(--home-soft)] hover:text-[var(--home-ink)]"
-                        aria-label={`Open case study for ${project.title}`}>
-                        <BookOpen className="h-4 w-4" />
-                        Case
-                      </Link>
-                    ) : null}
-                  </div>
+                  {caseSlug ? (
+                    <Link
+                      href={`/projects/${encodeURIComponent(caseSlug)}`}
+                      className="inline-flex items-center gap-2 rounded bg-transparent border border-[var(--home-border)] px-4 py-2 text-[10px] font-mono font-bold uppercase tracking-widest text-[var(--home-muted)] transition hover:border-[var(--home-ink)] hover:text-[var(--home-ink)]"
+                      aria-label={`Open case study for ${project.title}`}>
+                      <BookOpen className="h-3.5 w-3.5" />
+                      Case
+                    </Link>
+                  ) : null}
                 </div>
               </div>
             );

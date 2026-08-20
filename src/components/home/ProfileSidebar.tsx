@@ -15,21 +15,34 @@ interface ProfileSidebarProps {
 const STATUS_LABELS: Record<string, string> = {
   online: 'Online',
   idle: 'Idle',
-  dnd: 'Do not disturb',
-  offline: 'Offline',
+  dnd: 'Do Not Disturb',
+  offline: 'Invisible',
 };
 
-const STATUS_STYLES: Record<string, string> = {
-  online: 'bg-emerald-500',
-  idle: 'bg-amber-400',
-  dnd: 'bg-rose-500',
-  offline: 'bg-slate-500',
+const StatusIcon = ({ status, className = "" }: { status: string, className?: string }) => {
+  const color = status === 'online' ? '#23a559' : status === 'idle' ? '#f0b232' : status === 'dnd' ? '#ed4245' : '#80848e';
+  
+  return (
+    <svg viewBox="0 0 24 24" className={className}>
+      {status === 'online' && (
+        <circle cx="12" cy="12" r="12" fill={color} />
+      )}
+      {status === 'idle' && (
+        <path fill={color} fillRule="evenodd" clipRule="evenodd" d="M12 24C18.6274 24 24 18.6274 24 12C24 5.37258 18.6274 0 12 0C5.37258 0 0 5.37258 0 12C0 18.6274 5.37258 24 12 24ZM10.5 4.5C10.5 7.81371 7.81371 10.5 4.5 10.5C4.24965 10.5 4.00289 10.4845 3.76106 10.4545C5.07478 14.8876 9.17646 18 13.5 18C19.299 18 24 13.299 24 7.5C24 6.78652 23.9288 6.09015 23.7937 5.4178C22.6515 8.91971 19.3496 11.5 15.5 11.5C11.3579 11.5 8 8.14214 8 4C8 3.53982 8.0414 3.08933 8.12035 2.65175C9.37893 3.82103 10.5 4.5 10.5 4.5Z" />
+      )}
+      {status === 'dnd' && (
+        <path fill={color} fillRule="evenodd" clipRule="evenodd" d="M12 24C18.6274 24 24 18.6274 24 12C24 5.37258 18.6274 0 12 0C5.37258 0 0 5.37258 0 12C0 18.6274 5.37258 24 12 24ZM17 14.5H7V9.5H17V14.5Z" />
+      )}
+      {status === 'offline' && (
+        <path fill={color} fillRule="evenodd" clipRule="evenodd" d="M12 24C18.6274 24 24 18.6274 24 12C24 5.37258 18.6274 0 12 0C5.37258 0 0 5.37258 0 12C0 18.6274 5.37258 24 12 24ZM12 18.5C15.5899 18.5 18.5 15.5899 18.5 12C18.5 8.41015 15.5899 5.5 12 5.5C8.41015 5.5 5.5 8.41015 5.5 12C5.5 15.5899 8.41015 18.5 12 18.5Z" />
+      )}
+    </svg>
+  );
 };
 
 export default function ProfileSidebar({ avatarUrl, discordStatus, skills }: ProfileSidebarProps) {
   const statusKey = discordStatus?.status ?? 'offline';
   const statusLabel = STATUS_LABELS[statusKey] ?? 'Offline';
-  const statusClass = STATUS_STYLES[statusKey] ?? STATUS_STYLES.offline;
 
   let presenceLabel = 'Status';
   let presenceLine = 'Learning and growing every day.';
@@ -76,7 +89,10 @@ export default function ProfileSidebar({ avatarUrl, discordStatus, skills }: Pro
                 <span className="text-lg font-semibold text-[var(--home-ink)]">P</span>
               )}
             </div>
-            <span className={`absolute -bottom-1 -right-1 h-4 w-4 rounded-full border-2 border-[var(--home-card)] ${statusClass}`} />
+            {/* The wrapper bg matches the card background to give a cutout effect */}
+            <div className="absolute -bottom-0.5 -right-0.5 flex h-6 w-6 items-center justify-center rounded-full bg-[var(--home-card)]">
+              <StatusIcon status={statusKey} className="h-4 w-4" />
+            </div>
           </div>
           <div>
             <p className="text-[11px] uppercase tracking-[0.35em] text-[var(--home-muted)]">Profile</p>
@@ -98,8 +114,8 @@ export default function ProfileSidebar({ avatarUrl, discordStatus, skills }: Pro
         <div className="mt-6 space-y-4 border-t border-[var(--home-border)] pt-5">
           <div className="js-profile-item flex items-center justify-between gap-3">
             <p className="text-[11px] uppercase tracking-[0.35em] text-[var(--home-muted)]">{presenceLabel}</p>
-            <div className="flex items-center gap-2 text-xs text-[var(--home-muted)]">
-              <span className={`h-2 w-2 rounded-full ${statusClass}`} />
+            <div className="flex items-center gap-1.5 text-xs font-semibold text-[var(--home-muted)]">
+              <StatusIcon status={statusKey} className="h-3 w-3" />
               {statusLabel}
             </div>
           </div>

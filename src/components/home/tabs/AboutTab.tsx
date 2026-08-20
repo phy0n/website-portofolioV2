@@ -1,136 +1,119 @@
 'use client';
 
 import React from 'react';
-import {
-  BookOpen,
-  Brain,
-  Code,
-  Database,
-  Gamepad2,
-  GitBranch,
-  Layers3,
-  Music,
-  Network,
-  ServerCog,
-  Sparkles,
-  Star,
-  Workflow,
-} from 'lucide-react';
-
-import type { Hobby } from '../types';
 
 const LEARNING_ROADMAP = [
   {
-    icon: <Code className="h-4 w-4" />,
-    title: 'Programming fundamentals',
-    text: 'Writing logic clearly and understanding how code runs.',
+    title: 'The Global Network',
+    subtitle: 'How the Internet Works',
+    text: 'Started by demystifying the web. Explored how data packets travel across the globe via undersea cables, understanding TCP/IP protocols, DNS resolution, and the fundamental client-server model that powers the modern internet.',
   },
   {
-    icon: <Layers3 className="h-4 w-4" />,
-    title: 'Data structures & algorithms',
-    text: 'Learning how data is organized and problems are solved efficiently.',
+    title: 'Computer Architecture',
+    subtitle: 'Hardware & Bare Metal',
+    text: 'Moved down to the metal to understand what actually processes those packets. Explored CPU instruction sets, memory hierarchies (RAM, L1/L2 Cache), and how electrical signals translate into binary logic gates.',
   },
   {
-    icon: <Network className="h-4 w-4" />,
-    title: 'Web systems',
-    text: 'Exploring how frontend, backend, APIs, and servers communicate.',
+    title: 'Operating Systems',
+    subtitle: 'The Software Foundation',
+    text: 'Bridged the gap between hardware and software. Dove deep into Linux environments, kernel architectures, process scheduling, memory paging, and how operating systems abstract complex hardware for user applications.',
   },
   {
-    icon: <Workflow className="h-4 w-4" />,
-    title: 'Application architecture',
-    text: 'Understanding how app features are structured and connected.',
+    title: 'Computational Logic',
+    subtitle: 'Programming & Algorithms',
+    text: 'Began instructing the machine. Learned to formulate precise computational procedures through programming languages. Mastered data structures, Big-O algorithmic complexity, and turning abstract logic into executable code.',
   },
   {
-    icon: <Database className="h-4 w-4" />,
-    title: 'Databases',
-    text: 'Modeling data, writing queries, and managing relationships.',
+    title: 'Data Persistence',
+    subtitle: 'Databases & State',
+    text: 'Focused on how information is stored and retrieved efficiently. Mastered relational database design, query optimization, indexing strategies, and ensuring ACID compliance across large-scale stateful applications.',
   },
   {
-    icon: <ServerCog className="h-4 w-4" />,
-    title: 'Operating systems',
-    text: 'Studying processes, files, memory, and the system layer underneath.',
+    title: 'Systems Engineering',
+    subtitle: 'Building & Orchestrating',
+    text: 'Brought everything together to build scalable systems. Explored distributed architectures, decoupled services, RESTful API design, and orchestrated robust backends capable of handling real-world computational loads.',
   },
-  {
-    icon: <GitBranch className="h-4 w-4" />,
-    title: 'Git, Linux & tooling',
-    text: 'Using developer tools to work, debug, and manage projects better.',
-  },
-  {
-    icon: <Brain className="h-4 w-4" />,
-    title: 'Problem solving',
-    text: 'Breaking complex ideas into smaller steps that can be tested.',
-  },
-];
-
-const HOBBIES: Hobby[] = [
-  { icon: <Code className="h-4 w-4" />, text: 'Programming', color: '' },
-  { icon: <Gamepad2 className="h-4 w-4" />, text: 'Games', color: '' },
-  { icon: <Music className="h-4 w-4" />, text: 'Music', color: '' },
-  { icon: <BookOpen className="h-4 w-4" />, text: 'Art', color: '' },
 ];
 
 export default function AboutTab() {
   return (
-    <div className="space-y-12">
-      <div className="max-w-5xl space-y-4">
-        <p className="js-reveal text-[11px] uppercase tracking-[0.35em] text-[var(--home-muted)]">About</p>
-        <div className="space-y-3">
-          <h2 className="js-reveal max-w-4xl text-2xl font-sans font-semibold text-[var(--home-ink)] sm:text-3xl">
-            Exploring how computer science works
-          </h2>
-          <p className="js-reveal max-w-4xl text-sm leading-relaxed text-[var(--home-muted)] sm:text-base">
-            I am Phion Rushandle, a Computer Science Enthusiast. I enjoy learning how software works
-            from the inside: how code becomes applications, how web systems communicate, how data is
-            stored, and how operating systems support everything underneath.
-          </p>
-        </div>
+    <div className="space-y-16">
+      <div className="space-y-3">
+        <p className="js-reveal text-[11px] uppercase tracking-[0.35em] text-[var(--home-muted)]">
+          Profile & Scope
+        </p>
+        <h2 className="js-reveal text-2xl font-sans font-semibold text-[var(--home-ink)] sm:text-3xl">
+          The Computer Science Journey
+        </h2>
+        <p className="js-reveal max-w-2xl text-sm text-[var(--home-muted)]">
+          I am Phion Rushandle, a Computer Science Enthusiast. My passion lies in understanding
+          systems from the ground up unraveling the magic behind the screen. This is the
+          mental map of how I systematically deconstructed and learned the world of computing,
+          from global networks down to microscopic logic gates.
+        </p>
       </div>
 
-      <div className="space-y-5 py-2">
+      <div className="space-y-10 py-2">
         <div className="js-reveal max-w-2xl space-y-3">
           <div className="flex items-center gap-2">
-            <p className="text-[11px] uppercase tracking-[0.35em] text-[var(--home-muted)]">Currently learning</p>
+            <p className="text-[11px] font-bold uppercase tracking-[0.35em] text-[var(--home-accent)]">
+              Path of Exploration
+            </p>
           </div>
-          <p className="text-sm leading-relaxed text-[var(--home-muted)]">
-            Areas I am exploring step by step to understand the bigger picture of computer science.
+          <p className="text-base leading-relaxed text-[var(--home-muted)]">
+            A chronological breakdown of how I built my foundational understanding of modern technology.
           </p>
         </div>
 
-        <div className="grid gap-3 sm:grid-flow-col sm:grid-cols-2 sm:grid-rows-4">
-          {LEARNING_ROADMAP.map((item, index) => (
-            <div
-              key={item.title}
-              className="js-reveal flex min-h-24 items-start gap-3 rounded-md border border-[var(--home-border)] bg-[var(--home-soft)] px-4 py-3">
-              <span className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[var(--home-bg)] text-[var(--home-accent)] ring-1 ring-white/10">
-                {item.icon}
-              </span>
-              <div className="min-w-0">
-                <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[var(--home-muted)]">
+        <div className="grid gap-6 pt-6 sm:grid-cols-2 sm:gap-8">
+          {LEARNING_ROADMAP.map((item, index) => {
+            return (
+              <div 
+                key={item.title} 
+                className="js-reveal group relative transition-transform duration-500 hover:-translate-y-1"
+              >
+                
+                {/* Background Number - Watermark Style */}
+                <span 
+                  className="pointer-events-none absolute select-none font-black leading-none tracking-tighter"
+                  style={{ 
+                    top: '50%', 
+                    right: '0', 
+                    transform: 'translateY(-50%)', 
+                    fontSize: 'clamp(80px, 10vw, 120px)',
+                    color: 'var(--home-muted)',
+                    opacity: 0.1
+                  }}
+                >
                   {String(index + 1).padStart(2, '0')}
-                </p>
-                <p className="mt-0.5 text-sm font-semibold leading-snug text-[var(--home-ink)]">{item.title}</p>
-                <p className="mt-1 text-xs leading-relaxed text-[var(--home-muted)]">{item.text}</p>
+                </span>
+
+                {/* Subtle Hover Gradient - Optimized for GPU Performance */}
+                <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-[var(--home-accent)]/5 to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+
+                <div className="relative z-10 space-y-4 py-4">
+                  <div>
+                    <p className="flex items-center gap-3 text-[11px] font-bold uppercase tracking-[0.2em] text-[var(--home-accent)]">
+                      <span className="h-px w-6 bg-[var(--home-accent)]" />
+                      Phase {String(index + 1).padStart(2, '0')}
+                    </p>
+                    <h3 className="mt-3 text-xl font-bold tracking-tight text-[var(--home-ink)] sm:text-2xl">
+                      {item.title}
+                    </h3>
+                    <p className="mt-2 font-mono text-[10px] uppercase tracking-widest text-[var(--home-muted)]">
+                      [ {item.subtitle} ]
+                    </p>
+                  </div>
+
+                  <p className="text-sm leading-relaxed text-[var(--home-muted)] pr-6 sm:pr-12">
+                    {item.text}
+                  </p>
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
-
-      {/* <div className="space-y-4 pt-2">
-        <div className="js-reveal flex items-center gap-2">
-          <h3 className="text-[11px] uppercase tracking-[0.35em] text-[var(--home-muted)]">Interests</h3>
-        </div>
-        <div className="flex flex-wrap gap-3">
-          {HOBBIES.map((hobby) => (
-            <div
-              key={hobby.text}
-              className="js-reveal flex items-center gap-2 rounded-full bg-[var(--home-bg)] px-4 py-2 text-sm text-[var(--home-muted)] ring-1 ring-white/10">
-              <span className="text-[var(--home-accent)]">{hobby.icon}</span>
-              {hobby.text}
-            </div>
-          ))}
-        </div>
-      </div> */}
     </div>
   );
 }

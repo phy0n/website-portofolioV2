@@ -55,19 +55,11 @@ export default function SpokenLanguagesCard({ className }: { className?: string 
                 <div className="absolute -right-6 -top-6 h-24 w-24 rounded-full bg-red-500/10 blur-2xl transition-all duration-500" />
 
                 <div className="relative z-10 flex flex-col gap-4">
-                  {/* Header: Icon, Name, Label */}
-                  <div className="flex items-start justify-between">
-                    <div className="flex items-center gap-3">
-                      <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[var(--home-soft)] border border-[var(--home-border)] text-[var(--home-ink)] transition-colors duration-300 shadow-sm">
-                        <Globe2 className="h-5 w-5" />
-                      </div>
-                      <div>
-                        <h3 className="font-semibold text-[var(--ui-foreground)]">{language.name}</h3>
-                        <div className="flex items-center gap-1.5 mt-0.5">
-                          <Sparkles className="h-3 w-3 text-[var(--accent)]" />
-                          <span className="text-xs font-medium text-[var(--muted)]">{language.label}</span>
-                        </div>
-                      </div>
+                  {/* Header: Name, Label */}
+                  <div className="flex items-end justify-between">
+                    <div>
+                      <h3 className="text-lg font-semibold text-[var(--ui-foreground)]">{language.name}</h3>
+                      <span className="mt-1 block text-xs font-medium text-[var(--muted)]">{language.label}</span>
                     </div>
                     <div className="flex h-7 items-center justify-center rounded-full bg-[var(--home-soft)] px-2.5 border border-[var(--home-border)]">
                       <span className="text-xs font-bold text-[var(--ui-foreground)]">{level}%</span>

@@ -74,43 +74,45 @@ export default function ExperienceTab() {
       ) : experiences.length === 0 ? (
         <div className="js-reveal text-sm text-[var(--home-muted)]">No data available</div>
       ) : (
-        <div className="space-y-10">
+        <div className="space-y-6">
           {experiences.map((exp, index) => {
             const number = String(index + 1).padStart(2, '0');
             return (
               <div
                 key={exp.id}
-                className="js-reveal grid grid-cols-[auto_1fr] gap-x-4 gap-y-0 md:grid-cols-[auto_14px_1fr]">
-                <div className="row-span-3 pt-1 text-xs uppercase tracking-[0.35em] text-[var(--home-muted)]">
+                className="js-reveal group relative flex flex-col justify-between overflow-hidden rounded-2xl border border-[var(--home-border)] bg-[var(--home-soft)] p-6 sm:p-8 transition-all duration-500 hover:-translate-y-1 hover:bg-[#1a1a1a] hover:shadow-[0_8px_30px_rgb(0,0,0,0.12)]">
+                
+                {/* Foolproof Left Accent Border */}
+                <div className="absolute left-0 top-0 bottom-0 w-1.5 bg-[var(--home-accent)]" />
+
+                {/* Premium Number Watermark */}
+                <div className="absolute -right-4 -top-6 select-none text-[120px] font-black text-[var(--home-bg)] opacity-50 group-hover:opacity-80 transition-opacity duration-500">
                   {number}
                 </div>
 
-                <div className="relative hidden items-center justify-center md:flex">
-                  <span className="absolute inset-y-0 w-px bg-[var(--home-soft)]" />
-                  <span className="relative z-10 h-2.5 w-2.5 rounded-full bg-[var(--home-accent)]" />
-                </div>
-                <div className="flex flex-wrap items-center gap-3">
-                  <span className="md:hidden h-2.5 w-2.5 rounded-full bg-[var(--home-accent)]" />
-                  <h3 className="text-lg font-sans font-semibold text-[var(--home-ink)]">{exp.role}</h3>
-                  <span className="rounded-full border border-[var(--home-border)] bg-[var(--home-card)] px-3 py-1 text-xs text-[var(--home-muted)]">
-                    {exp.status}
-                  </span>
-                </div>
+                <div className="relative z-10 flex flex-col">
+                  <div className="space-y-1.5">
+                    <div className="flex flex-wrap items-center gap-3">
+                      <span className="rounded-full border border-[var(--home-border)] bg-[var(--home-bg)] px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-[var(--home-accent)]">
+                        {exp.status}
+                      </span>
+                      <h3 className="text-xl font-sans font-bold text-[var(--home-ink)]">{exp.role}</h3>
+                    </div>
+                    
+                    <div className="flex flex-wrap items-center gap-2 text-sm font-medium text-[var(--home-muted)]">
+                      <Briefcase className="h-4 w-4 text-[var(--home-accent)]" />
+                      <span className="text-[var(--home-ink)]">{exp.company}</span>
+                      <span className="opacity-50">|</span>
+                      <span>{exp.period}</span>
+                    </div>
+                  </div>
 
-                <div className="relative hidden items-center justify-center md:flex">
-                  <span className="absolute inset-y-0 w-px bg-[var(--home-soft)]" />
+                  <div className="mt-4 border-t border-[var(--home-border)] pt-4">
+                    <p className="text-sm leading-relaxed text-[var(--home-muted)] group-hover:text-[var(--home-ink)]/90 transition-colors duration-300">
+                      {exp.description}
+                    </p>
+                  </div>
                 </div>
-                <div className="mt-2 flex flex-wrap items-center gap-2 text-sm text-[var(--home-muted)]">
-                  <Briefcase className="h-4 w-4" />
-                  <span>{exp.company}</span>
-                  <span>|</span>
-                  <span>{exp.period}</span>
-                </div>
-
-                <div className="relative hidden items-center justify-center md:flex">
-                  <span className="absolute inset-y-0 w-px bg-[var(--home-soft)]" />
-                </div>
-                <p className="mt-3 text-sm leading-relaxed text-[var(--home-muted)]">{exp.description}</p>
               </div>
             );
           })}

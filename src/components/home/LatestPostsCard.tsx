@@ -10,10 +10,6 @@ export default function LatestPostsCard({ className }: { className?: string }) {
 
   return (
     <section className={className}>
-      <div className="flex items-center gap-2">
-        <BookOpen className="h-4 w-4 text-[var(--accent)]" />
-        <p className="text-[11px] uppercase tracking-[0.35em] text-[var(--muted)]">Latest Posts</p>
-      </div>
 
       {latestBlogs === null ? (
         <div className="mt-3 text-sm text-[var(--muted)]">Loading...</div>

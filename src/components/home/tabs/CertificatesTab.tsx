@@ -94,42 +94,41 @@ export default function CertificatesTab() {
         </p>
       </div>
 
-      <div className="space-y-6">
+      <div className="space-y-4">
         {certificates === null ? (
           <div className="js-reveal text-sm text-[var(--home-muted)]">Loading...</div>
         ) : certificates.length === 0 ? (
           <div className="js-reveal text-sm text-[var(--home-muted)]">No data available</div>
         ) : (
-          certificates.map((cert, index) => {
-            const number = String(index + 1).padStart(2, '0');
+          certificates.map((cert) => {
             return (
               <div
                 key={cert.id}
-                className="js-reveal grid gap-x-4 gap-y-3 border-b border-[var(--home-border)] py-6 md:grid-cols-[auto_1fr]">
-                <div className="md:hidden pt-1 text-xs uppercase tracking-[0.35em] text-[var(--home-muted)]">
-                  {number}
-                </div>
-
-                <div className="md:col-start-2 md:row-start-1 flex items-center gap-2 text-[var(--home-accent)]">
+                className="js-reveal group relative flex flex-col sm:flex-row gap-5 overflow-hidden rounded-2xl border border-[var(--home-border)] bg-[var(--home-card)] p-6 transition-all duration-300 hover:-translate-y-1 hover:border-[var(--home-ink)]/30 hover:bg-[var(--home-soft)] hover:shadow-lg hover:shadow-black/20">
+                
+                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-[var(--home-soft)] border border-[var(--home-border)] text-[var(--home-ink)] group-hover:border-[var(--home-accent)] group-hover:text-[var(--home-accent)] transition-colors duration-300">
                   {renderCertificateIcon(cert.icon)}
-                  <p className="text-xs uppercase tracking-[0.35em] text-[var(--home-muted)]">Certificate</p>
                 </div>
 
-                <div className="hidden md:block md:col-start-1 md:row-start-2 pt-1 text-xs uppercase tracking-[0.35em] text-[var(--home-muted)]">
-                  {number}
-                </div>
-                <h3 className="md:col-start-2 md:row-start-2 text-lg font-sans font-semibold text-[var(--home-ink)]">
-                  {cert.title}
-                </h3>
+                <div className="flex-1 min-w-0">
+                  <div className="flex flex-wrap items-start justify-between gap-3 mb-2">
+                    <h3 className="text-lg font-sans font-bold text-[var(--home-ink)] leading-tight">{cert.title}</h3>
+                    <span className="shrink-0 rounded-full bg-[var(--home-soft)] border border-[var(--home-border)] px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-widest text-[var(--home-muted)] group-hover:text-[var(--home-ink)] transition-colors duration-300">
+                      {cert.status}
+                    </span>
+                  </div>
+                  
+                  <div className="flex items-center gap-2 text-sm font-medium">
+                    <span className="text-[var(--home-accent)]">{cert.issuer}</span>
+                    <span className="text-[var(--home-muted)] opacity-50">•</span>
+                    <span className="text-[var(--home-muted)]">{cert.date}</span>
+                  </div>
 
-                <p className="md:col-start-2 md:row-start-3 text-xs uppercase tracking-[0.35em] text-[var(--home-muted)]">
-                  {cert.issuer} | {cert.date}
-                </p>
-                <p className="md:col-start-2 md:row-start-4 text-sm text-[var(--home-muted)]">{cert.description}</p>
-                <div className="md:col-start-2 md:row-start-5">
-                  <span className="inline-flex rounded-full border border-[var(--home-border)] bg-[var(--home-card)] px-3 py-1 text-xs text-[var(--home-muted)]">
-                    {cert.status}
-                  </span>
+                  {cert.description && (
+                    <p className="mt-3 text-sm leading-relaxed text-[var(--home-muted)]">
+                      {cert.description}
+                    </p>
+                  )}
                 </div>
               </div>
             );

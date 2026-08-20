@@ -146,36 +146,35 @@ export default function BlogSidebarList({ blogs }: { blogs: BlogSidebarItem[] })
           <Link
             key={blog.id}
             href={`/blog/${encodeURIComponent(normalizedSlug)}`}
-            className="block rounded-2xl border border-[var(--home-border)] bg-[var(--home-card)] px-4 py-3 hover:border-[var(--home-ink)]">
-            <div className="flex items-start gap-3">
-              <div className="relative mt-0.5 h-12 w-12 shrink-0 overflow-hidden rounded-2xl border border-[var(--home-border)] bg-[var(--home-soft)]">
-                {showImage && imageSrc ? (
-                  <img
-                    src={imageSrc}
-                    alt={blog.title}
-                    loading="lazy"
-                    decoding="async"
-                    className="h-full w-full object-cover"
-                    onError={() => markBroken(blog.id)}/>
-                ) : (
-                  <div className="flex h-full w-full items-center justify-center text-[10px] font-semibold text-[var(--home-muted)]">
-                    BLOG
-                  </div>
-                )}
-              </div>
-              <div className="min-w-0">
-                <p className="text-sm font-semibold text-[var(--home-ink)] opacity-80 line-clamp-2">{blog.title}</p>
-                <p className="mt-1 flex flex-wrap items-center gap-2 text-xs text-[var(--home-muted)]">
-                  <span>{formatBlogDate(String(blog.date || ''))}</span>
-                  <span aria-hidden className="text-[var(--home-muted)] opacity-50">
-                    •
-                  </span>
-                  <span className="inline-flex items-center gap-1">
-                    <Users className="h-3.5 w-3.5" />
-                    <span className="tabular-nums">{uniqueVisitors.toLocaleString()}</span>
-                  </span>
-                </p>
-              </div>
+            className="group relative flex items-center gap-5 border-b border-[var(--home-border)] py-4 last:border-0 transition-colors duration-300">
+            
+            <div className="relative h-16 w-20 sm:h-20 sm:w-28 shrink-0 overflow-hidden rounded-lg bg-[var(--home-bg)] border border-[var(--home-border)]">
+              {showImage && imageSrc ? (
+                <img
+                  src={imageSrc}
+                  alt={blog.title}
+                  loading="lazy"
+                  decoding="async"
+                  className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+                  onError={() => markBroken(blog.id)}/>
+              ) : (
+                <div className="flex h-full w-full items-center justify-center text-[10px] font-bold tracking-widest text-[var(--home-muted)]">
+                  POST
+                </div>
+              )}
+            </div>
+            
+            <div className="flex-1 min-w-0 py-1">
+              <h4 className="text-sm sm:text-base font-bold text-[var(--home-ink)] group-hover:text-[var(--home-accent)] transition-colors duration-300 line-clamp-2">
+                {blog.title}
+              </h4>
+              <p className="mt-2 flex flex-wrap items-center gap-3 text-[10px] sm:text-xs font-medium uppercase tracking-wider text-[var(--home-muted)]">
+                <span>{formatBlogDate(String(blog.date || ''))}</span>
+                <span className="flex items-center gap-1.5 text-[var(--home-accent)]">
+                  <Users className="h-3 w-3" />
+                  {uniqueVisitors.toLocaleString()} views
+                </span>
+              </p>
             </div>
           </Link>
         );
