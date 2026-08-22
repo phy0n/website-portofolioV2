@@ -84,7 +84,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
       <body
         suppressHydrationWarning
         className={`minimal-root ${geistSans.variable} ${geistMono.variable} ${nunito.variable} ${manrope.variable} antialiased`}>
-        <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
+        <ThemeProvider attribute="class" defaultTheme="dark" enableSystem disableTransitionOnChange>
           <GlobalGsap>{children}</GlobalGsap>
           <AnalyticsTracker />
           <VercelAnalytics />

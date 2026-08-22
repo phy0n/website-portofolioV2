@@ -63,7 +63,8 @@ export default function DiscordStatus() {
           href={`https://open.spotify.com/track/${status.spotify.track_id}`}
           target="_blank"
           rel="noopener noreferrer"
-          className="flex items-center w-full gap-3 p-3 rounded-2xl bg-[#1DB954]/10 border border-[#1DB954]/20 shadow-lg backdrop-blur-sm transition-transform hover:scale-[1.02] active:scale-[0.98]">
+          className="group relative flex w-full items-center gap-4 rounded-xl p-4 bg-[#111214] border border-[#1e1f22] shadow-[0_4px_20px_-10px_rgba(0,0,0,0.5)] transition-colors duration-300 hover:border-[#1DB954]/50"
+        >
           <div className="relative w-12 h-12 flex-shrink-0">
             <img
               src={status.spotify.album_art_url || ""}
