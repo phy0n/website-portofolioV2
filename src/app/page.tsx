@@ -1,7 +1,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { getSiteProfile } from '@/lib/site-profile';
-import { FaInstagram, FaTiktok, FaDiscord, FaGlobe, FaBlog, FaUsers, FaGithub, FaCode, FaDumbbell, FaMusic, FaFilm, FaCoffee, FaMapMarkerAlt, FaYoutube } from 'react-icons/fa';
+import { FaInstagram, FaTiktok, FaDiscord, FaGlobe, FaBook, FaBlog, FaUsers, FaGithub, FaCode, FaDumbbell, FaMusic, FaFilm, FaCoffee, FaMapMarkerAlt, FaYoutube } from 'react-icons/fa';
 import { FaArrowRight } from 'react-icons/fa6';
 import { SiRoblox } from 'react-icons/si';
 import DiscordStatus from '@/components/home/DiscordStatus';
@@ -57,7 +57,7 @@ export default async function Page() {
       title: 'Personal Blog',
       subtitle: 'phy0n.site/blog',
       url: 'https://phy0n.site/blog',
-      icon: <FaBlog className="text-xl" />,
+      icon: <FaBook className="text-xl" />,
       color: 'bg-zinc-800',
     },
     {
