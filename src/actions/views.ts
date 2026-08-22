@@ -2,6 +2,7 @@
 
 import fs from 'fs';
 import path from 'path';
+import { revalidatePath } from 'next/cache';
 
 export async function incrementAndGetViews() {
   const filePath = path.join(process.cwd(), 'views.json');
@@ -24,5 +25,6 @@ export async function incrementAndGetViews() {
     console.error("Failed to write views.json", e);
   }
   
+  revalidatePath('/');
   return views;
 }
