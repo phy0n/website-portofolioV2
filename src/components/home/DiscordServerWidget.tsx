@@ -71,7 +71,7 @@ export default async function DiscordServerWidget() {
         {/* Stats */}
         <div className="flex items-center gap-5 mb-6">
           <div className="flex items-center gap-2">
-            <div className="w-2.5 h-2.5 rounded-full bg-[#23a559] animate-pulse"></div>
+            <div className="w-2.5 h-2.5 rounded-full bg-[#23a559]"></div>
             <span className="text-zinc-300 text-[14px] font-semibold">{online.toLocaleString()} Online</span>
           </div>
           <div className="flex items-center gap-2">
