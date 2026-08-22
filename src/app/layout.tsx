@@ -34,8 +34,8 @@ export const metadata: Metadata = {
     default: "Phy0n",
     template: "Phy0n %s",
   },
-  description: "Developer building modern web experiences with clean UI and smooth interactions.",
-  metadataBase: new URL("https://phy0n.my.id"),
+  description: "Welcome to phy0n.site",
+  metadataBase: new URL("https://phy0n.site"),
   icons: {
     icon: [
       { url: '/image/logo.png', type: 'image/png' },
@@ -46,9 +46,9 @@ export const metadata: Metadata = {
   },
   openGraph: {
     title: 'Phy0n',
-    description: 'Developer building modern web experiences with clean UI and smooth interactions.',
+    description: 'Welcome to phy0n.site',
     type: 'website',
-    url: 'https://phy0n.my.id/',
+    url: 'https://phy0n.site/',
     images: [
       {
         url: '/image/og-banner.jpg',
@@ -61,7 +61,7 @@ export const metadata: Metadata = {
   twitter: {
     card: 'summary_large_image',
     title: 'Phy0n',
-    description: 'Developer building modern web experiences with clean UI and smooth interactions.',
+    description: 'Welcome to phy0n.site',
     images: ['/image/og-banner.jpg'],
   },
   robots: {
