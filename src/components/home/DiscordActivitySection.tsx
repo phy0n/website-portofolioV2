@@ -81,31 +81,31 @@ const SpotifyCard = ({
   }, [now, spotify.timestamps?.end, spotify.timestamps?.start]);
 
   return (
-    <div className="rounded-2xl border border-[var(--home-border)] bg-[var(--home-card)] p-4">
-      <div className="flex items-center justify-between gap-3">
-        <div className="flex items-center gap-2">
-          <FaSpotify className="h-4 w-4 text-[#1DB954]" />
-          <p className="text-[11px] uppercase tracking-[0.35em] text-[var(--home-muted)]">Listening to Spotify</p>
-        </div>
-        {spotify.songUrl ? (
+    <div className="flex flex-col w-full p-4 rounded-xl bg-[#111214] border border-[#1e1f22] shadow-xl text-left">
+      <div className="flex items-center justify-between gap-3 mb-3">
+        <p className="text-[11px] font-bold uppercase tracking-wider text-[#1DB954] flex items-center gap-1.5">
+          <FaSpotify className="h-3.5 w-3.5" />
+          Listening to Spotify
+        </p>
+        {spotify.songUrl && (
           <a
             href={spotify.songUrl}
             target="_blank"
             rel="noreferrer"
-            className="text-[11px] uppercase tracking-[0.35em] text-[var(--home-muted)] transition hover:text-[#1DB954]">
+            className="text-[10px] uppercase tracking-wider text-zinc-500 transition hover:text-[#1DB954] font-bold">
             Open
           </a>
-        ) : null}
+        )}
       </div>
 
-      <div className="mt-4 flex gap-3">
-        <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-xl border border-[var(--home-border)] bg-[var(--home-soft)]">
+      <div className="flex items-start gap-3.5">
+        <div className="relative w-16 h-16 shrink-0 overflow-hidden rounded-xl bg-[#2b2d31] shadow-inner">
           {spotify.albumArtUrl ? (
             <Image
               src={spotify.albumArtUrl}
               alt={`Album art for ${spotify.song}`}
               fill
-              sizes="56px"
+              sizes="64px"
               className="object-cover"/>
           ) : (
             <div className="flex h-full w-full items-center justify-center text-[#1DB954]">
@@ -114,40 +114,40 @@ const SpotifyCard = ({
           )}
         </div>
 
-        <div className="min-w-0 flex-1">
+        <div className="flex flex-col flex-grow min-w-0 pt-0.5">
           {spotify.songUrl ? (
             <a
               href={spotify.songUrl}
               target="_blank"
               rel="noreferrer"
-              className="block truncate text-sm font-semibold text-[var(--home-ink)] transition hover:opacity-80"
+              className="block truncate text-[15px] font-bold text-zinc-100 transition hover:text-[#1DB954] leading-tight mb-0.5"
               title={spotify.song}>
               {spotify.song}
             </a>
           ) : (
-            <p className="truncate text-sm font-semibold text-[var(--home-ink)]" title={spotify.song}>
+            <p className="truncate text-[15px] font-bold text-zinc-100 leading-tight mb-0.5" title={spotify.song}>
               {spotify.song}
             </p>
           )}
 
-          <p className="mt-1 truncate text-xs text-[var(--home-muted)]" title={spotify.artist}>
-            {spotify.artist}
+          <p className="truncate text-[13px] text-zinc-300 leading-snug" title={spotify.artist}>
+            by {spotify.artist}
           </p>
-          <p className="mt-1 truncate text-xs text-[var(--home-muted)]" title={spotify.album}>
-            {spotify.album}
+          <p className="truncate text-[13px] text-zinc-400 leading-snug" title={spotify.album}>
+            on {spotify.album}
           </p>
 
-          {progress !== null && elapsedLabel && durationLabel ? (
-            <div className="mt-3 space-y-1.5">
-              <div className="h-1.5 w-full overflow-hidden rounded-full bg-[var(--home-border)]">
+          {progress !== null && elapsedLabel && durationLabel && (
+            <div className="mt-2 space-y-1.5 w-full">
+              <div className="h-1.5 w-full overflow-hidden rounded-full bg-zinc-800">
                 <div className="h-full rounded-full bg-[#1DB954]" style={{ width: `${Math.round(progress * 100)}%` }} />
               </div>
-              <div className="flex items-center justify-between text-[11px] tabular-nums text-[var(--home-muted)]">
+              <div className="flex items-center justify-between text-[11px] font-medium text-zinc-400 tabular-nums">
                 <span>{elapsedLabel}</span>
                 <span>{durationLabel}</span>
               </div>
             </div>
-          ) : null}
+          )}
         </div>
       </div>
     </div>
@@ -164,57 +164,57 @@ const ActivityCard = ({ activity, now }: { activity: DiscordActivity; now: numbe
   }, [activity.timestamps?.start, now]);
 
   return (
-    <div className="rounded-2xl border border-[var(--home-border)] bg-[var(--home-card)] p-4">
-      <div className="flex items-center gap-2">
-        <Icon className={`h-4 w-4 ${accent}`} />
-        <p className="text-[11px] uppercase tracking-[0.35em] text-[var(--home-muted)]">{label}</p>
+    <div className="flex flex-col w-full p-4 rounded-xl bg-[#111214] border border-[#1e1f22] shadow-xl text-left">
+      <div className="flex items-center gap-2 mb-3">
+        <Icon className={`h-3.5 w-3.5 text-zinc-400`} />
+        <p className="text-[11px] font-bold uppercase tracking-wider text-zinc-300">{label}</p>
       </div>
 
-      <div className="mt-4 flex gap-3">
-        <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-xl border border-[var(--home-border)] bg-[var(--home-soft)]">
+      <div className="flex items-start gap-3.5">
+        <div className="relative w-16 h-16 shrink-0 overflow-hidden rounded-xl bg-[#2b2d31] shadow-inner">
           {activity.largeImage ? (
             <Image
               src={activity.largeImage}
               alt={activity.assets?.largeText ?? `Activity artwork for ${activity.name}`}
               fill
-              sizes="56px"
+              sizes="64px"
               className="object-cover"/>
           ) : (
-            <div className="flex h-full w-full items-center justify-center text-[var(--home-muted)]">
+            <div className="flex h-full w-full items-center justify-center text-zinc-500">
               <Icon className="h-6 w-6" />
             </div>
           )}
 
-          {activity.smallImage ? (
-            <div className="absolute -bottom-1 -right-1 h-6 w-6 overflow-hidden rounded-full border-2 border-[var(--home-border)] bg-[var(--home-soft)]">
+          {activity.smallImage && (
+            <div className="absolute -bottom-1 -right-1 h-6 w-6 overflow-hidden rounded-full border-2 border-[#111214] bg-[#2b2d31]">
               <Image src={activity.smallImage} alt="" fill sizes="24px" className="object-cover" />
             </div>
-          ) : null}
+          )}
         </div>
 
-        <div className="min-w-0 flex-1">
-          <p className="truncate text-sm font-semibold text-[var(--home-ink)]" title={activity.name}>
+        <div className="flex flex-col flex-grow min-w-0 pt-0.5">
+          <p className="truncate text-[15px] font-bold text-zinc-100 leading-tight mb-0.5" title={activity.name}>
             {activity.name}
           </p>
 
-          {activity.details ? (
-            <p className="mt-1 truncate text-xs text-[var(--home-muted)]" title={activity.details ?? undefined}>
+          {activity.details && (
+            <p className="truncate text-[13px] text-zinc-300 leading-snug" title={activity.details ?? undefined}>
               {activity.details}
             </p>
-          ) : null}
+          )}
 
-          {activity.state ? (
-            <p className="mt-1 truncate text-xs text-[var(--home-muted)]" title={activity.state ?? undefined}>
+          {activity.state && (
+            <p className="truncate text-[13px] text-zinc-300 leading-snug" title={activity.state ?? undefined}>
               {activity.state}
             </p>
-          ) : null}
+          )}
 
-          {elapsedLabel ? (
-            <div className="mt-3 flex items-center justify-between text-[11px] uppercase tracking-[0.35em] text-[var(--home-muted)]">
-              <span>Elapsed</span>
-              <span className="tabular-nums normal-case tracking-normal">{elapsedLabel}</span>
-            </div>
-          ) : null}
+          {elapsedLabel && (
+            <p className="text-[#23a559] text-[13px] font-medium flex items-center gap-1.5 mt-0.5">
+              <Icon className="h-[12px] w-[12px]" />
+              {elapsedLabel} elapsed
+            </p>
+          )}
         </div>
       </div>
     </div>

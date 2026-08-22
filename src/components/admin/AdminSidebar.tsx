@@ -71,7 +71,7 @@ export default function AdminSidebar({
         </div>
         <div className="grid gap-2">
           <Link
-            href="/"
+            href="/portfolio"
             onClick={() => onClose?.()}
             className="flex items-center gap-3 px-4 py-2.5 text-xs font-light text-white/50 hover:text-white transition-colors rounded-full group justify-between">
             <span>Back to portfolio</span>

@@ -68,15 +68,15 @@ export default function AboutTab() {
         <div className="grid gap-6 pt-6 sm:grid-cols-2 sm:gap-8">
           {LEARNING_ROADMAP.map((item, index) => {
             return (
-              <div 
-                key={item.title} 
+              <div
+                key={item.title}
                 data-number={String(index + 1).padStart(2, '0')}
                 className="js-reveal group relative z-0 transition-transform duration-500 hover:-translate-y-1 before:pointer-events-none before:absolute before:right-0 before:top-1/2 before:-z-10 before:-translate-y-1/2 before:text-[clamp(80px,10vw,120px)] before:font-black before:leading-none before:tracking-tighter before:text-[var(--home-muted)] before:opacity-15 before:content-[attr(data-number)]"
               >
-                
+
                 {/* Subtle Hover Gradient - Optimized for GPU Performance */}
                 <div className="pointer-events-none absolute inset-0 -z-20 bg-gradient-to-br from-[var(--home-accent)]/5 to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
-                
+
                 <div className="relative z-10 space-y-4 py-4">
                   <div>
                     <p className="flex items-center gap-3 text-[11px] font-bold uppercase tracking-[0.2em] text-[var(--home-accent)]">

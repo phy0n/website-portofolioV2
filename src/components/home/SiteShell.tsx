@@ -9,7 +9,7 @@ import gsap from 'gsap';
 import { ThemeToggle } from '@/components/shared/ThemeToggle';
 
 const NAV_LINKS = [
-  { label: 'Home', href: '/' },
+  { label: 'Home', href: '/portfolio' },
   { label: 'Blog', href: '/blog' },
   { label: 'Connect', href: '/connect' },
 ];
@@ -320,7 +320,7 @@ export default function SiteShell({
         <header className="js-nav fixed left-0 right-0 top-0 z-40 px-4 sm:px-8 xl:px-12 pt-5 animate-slide-down pointer-events-none">
           <div className="mx-auto flex w-full max-w-[1600px] items-center justify-between pointer-events-auto">
             <Link
-              href="/"
+              href="/portfolio"
               className="inline-flex items-center sm:gap-3 rounded-full border border-[var(--home-border)] bg-[var(--home-bg)] p-1.5 sm:px-4 sm:py-2 text-[var(--home-ink)] transition hover:border-[var(--home-ink)]"
               aria-label="Go to home">
               <div className="relative h-9 w-9 sm:h-8 sm:w-8 overflow-hidden rounded-full border border-[var(--home-border)] bg-[var(--home-bg)]">
@@ -373,7 +373,7 @@ export default function SiteShell({
             aria-label="Navigation menu"
             className="mx-auto flex w-full max-w-7xl flex-col gap-5 px-6 sm:gap-6 sm:px-10">
             {NAV_LINKS.map((item) => {
-              const isActive = item.href === '/' ? pathname === '/' : pathname?.startsWith(item.href);
+              const isActive = item.href === '/portfolio' ? pathname === '/portfolio' : pathname?.startsWith(item.href);
 
               return (
                 <li key={item.href} data-nav-item>

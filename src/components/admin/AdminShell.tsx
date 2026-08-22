@@ -60,7 +60,7 @@ export default function AdminShell({
             Menu
           </button>
           <Link
-            href="/"
+            href="/portfolio"
             className="admin-text-link">
             Back to portfolio
           </Link>

@@ -1,7 +1,8 @@
 'use client';
 
 import Image from 'next/image';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
+import { useLanyard } from 'use-lanyard';
 import { useDiscordStatusRealtime } from '@/lib/discord/useDiscordStatusRealtime';
 import DiscordActivitySection from './DiscordActivitySection';
 import { HomeSidebarDataProvider } from './HomeSidebarDataProvider';
@@ -33,7 +34,7 @@ const STATUS_LABELS: Record<string, string> = {
 
 const StatusIcon = ({ status, className = "" }: { status: string, className?: string }) => {
   const color = status === 'online' ? '#23a559' : status === 'idle' ? '#f0b232' : status === 'dnd' ? '#ed4245' : '#80848e';
-  
+
   return (
     <svg viewBox="0 0 24 24" className={className}>
       {status === 'online' && (
@@ -60,22 +61,25 @@ interface HomeClientProps {
 
 export default function HomeClient({ discordUserId, profileImageUrl, tools }: HomeClientProps) {
   const [heroImageErrorSrc, setHeroImageErrorSrc] = useState<string | null>(null);
-  const [avatarDecorationUrl, setAvatarDecorationUrl] = useState<string | null>(null);
   const { discordStatus } = useDiscordStatusRealtime(discordUserId);
+  const lanyardStatus = useLanyard((discordUserId ?? '494169184175915019') as `${bigint}`);
   const scopeRef = useRef<HTMLDivElement | null>(null);
-  const heroImageSrc = profileImageUrl || HERO_IMAGE_SRC;
-  const heroImageErrored = heroImageErrorSrc === heroImageSrc;
 
-  useEffect(() => {
-    fetch('/api/discord-avatar')
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.avatarDecorationUrl) {
-          setAvatarDecorationUrl(data.avatarDecorationUrl);
-        }
-      })
-      .catch(() => {});
-  }, []);
+  const lanyardUser = lanyardStatus?.discord_user;
+  const lanyardDecorationAsset = (lanyardUser as any)?.avatar_decoration_data?.asset;
+
+  let dynamicAvatarUrl = profileImageUrl || HERO_IMAGE_SRC;
+  if (lanyardUser?.avatar) {
+    const isGif = lanyardUser.avatar.startsWith('a_');
+    dynamicAvatarUrl = `https://cdn.discordapp.com/avatars/${lanyardUser.id}/${lanyardUser.avatar}.${isGif ? 'gif' : 'png'}?size=512`;
+  }
+
+  const finalDecorationUrl = lanyardDecorationAsset
+    ? `https://cdn.discordapp.com/avatar-decoration-presets/${lanyardDecorationAsset}.png?size=256`
+    : null;
+
+  const heroImageSrc = dynamicAvatarUrl;
+  const heroImageErrored = heroImageErrorSrc === heroImageSrc;
 
   const statusKey = discordStatus?.status ?? 'offline';
   const statusLabel = STATUS_LABELS[statusKey] ?? 'Offline';
@@ -105,14 +109,15 @@ export default function HomeClient({ discordUserId, profileImageUrl, tools }: Ho
               )}
             </div>
 
-            {avatarDecorationUrl && (
-              <Image
-                src={avatarDecorationUrl}
-                alt="Avatar Decoration"
-                fill
-                className="pointer-events-none absolute inset-0 z-10 scale-[1.2] object-contain"
-                unoptimized
-              />
+            {finalDecorationUrl && (
+              <div className="absolute inset-[-12%] z-10 pointer-events-none">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={finalDecorationUrl}
+                  alt="Avatar Decoration"
+                  className="w-full h-full object-contain"
+                />
+              </div>
             )}
 
             {/* The wrapper bg matches the background to give a cutout effect */}
@@ -148,14 +153,6 @@ export default function HomeClient({ discordUserId, profileImageUrl, tools }: Ho
             </div>
 
             <div className="space-y-4 border-t border-[var(--home-border)] pt-5">
-              <div className="flex items-center justify-between gap-3">
-                <p className="text-[11px] uppercase tracking-[0.35em] text-[var(--home-muted)]">Activity</p>
-                <div className="flex items-center gap-1.5 text-xs font-semibold text-[var(--home-muted)]">
-                  <StatusIcon status={statusKey} className="h-3 w-3" />
-                  {statusLabel}
-                </div>
-              </div>
-
               {hasLiveActivity && discordStatus ? <DiscordActivitySection discordStatus={discordStatus} /> : null}
             </div>
           </div>
