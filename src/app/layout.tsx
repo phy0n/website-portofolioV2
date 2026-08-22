@@ -51,7 +51,7 @@ export const metadata: Metadata = {
     url: 'https://phy0n.site/',
     images: [
       {
-        url: '/image/og-banner.jpg',
+        url: '/image/banner.jpg',
         width: 1200,
         height: 630,
         alt: 'Phy0n',
@@ -62,7 +62,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'Phy0n',
     description: 'Welcome to phy0n.site',
-    images: ['/image/og-banner.jpg'],
+    images: ['/image/banner.jpg'],
   },
   robots: {
     index: true,
