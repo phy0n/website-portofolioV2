@@ -8,6 +8,7 @@ import DiscordStatus from '@/components/home/DiscordStatus';
 import DiscordProfile from '@/components/home/DiscordProfile';
 import DiscordBadges from '@/components/home/DiscordBadges';
 import ViewCounter from '@/components/home/ViewCounter';
+import LocalTimeWeather from '@/components/home/LocalTimeWeather';
 
 export default async function Page() {
   const { profileImageUrl } = await getSiteProfile();
@@ -98,11 +99,12 @@ export default async function Page() {
           <DiscordBadges />
         </div>
 
-        <div className="flex items-center gap-2 mb-8">
+        <div className="flex flex-wrap justify-center items-center gap-2 mb-8 px-4">
           <div className="flex items-center gap-1.5 text-zinc-400 text-[13px] font-medium px-3 py-1 rounded-full bg-white/5 border border-white/5">
             <FaMapMarkerAlt className="text-zinc-500 text-[12px]" />
             Singapore
           </div>
+          <LocalTimeWeather />
           <ViewCounter />
         </div>
 
