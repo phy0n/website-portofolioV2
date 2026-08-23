@@ -1,11 +1,9 @@
 'use client';
 
-import { useState, useRef, useEffect } from 'react';
-import { FaVolumeUp, FaVolumeMute } from 'react-icons/fa';
+import { useState, useRef } from 'react';
 
 export default function EnterScreen() {
   const [entered, setEntered] = useState(false);
-  const [isPlaying, setIsPlaying] = useState(true);
   const audioRef = useRef<HTMLAudioElement>(null);
   const [isFading, setIsFading] = useState(false);
 
@@ -18,17 +16,6 @@ export default function EnterScreen() {
     setTimeout(() => {
       setEntered(true);
     }, 500); // Small delay to allow fade out to start
-  };
-
-  const toggleAudio = () => {
-    if (audioRef.current) {
-      if (isPlaying) {
-        audioRef.current.pause();
-      } else {
-        audioRef.current.play();
-      }
-      setIsPlaying(!isPlaying);
-    }
   };
 
   return (
@@ -72,16 +59,6 @@ export default function EnterScreen() {
         preload="auto"
       />
 
-      {/* Music Toggle Button */}
-      <div className={`xl:hidden fixed bottom-6 right-6 z-[90] transition-all duration-1000 ${entered ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4 pointer-events-none'}`}>
-        <button 
-          onClick={toggleAudio}
-          className="bg-white/10 backdrop-blur-md border border-white/20 text-white p-3 rounded-full hover:bg-white/20 hover:scale-110 active:scale-95 transition-all shadow-[0_0_15px_rgba(255,255,255,0.1)] flex items-center justify-center group"
-          title={isPlaying ? "Mute Music" : "Play Music"}
-        >
-          {isPlaying ? <FaVolumeUp className="text-xl" /> : <FaVolumeMute className="text-xl" />}
-        </button>
-      </div>
     </>
   );
 }

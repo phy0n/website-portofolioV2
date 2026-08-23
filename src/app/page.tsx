@@ -160,6 +160,9 @@ export default async function Page() {
                 <FaArrowRight className="text-sm opacity-70 transition-transform" />
               </Link>
             </div>
+            <div className="xl:hidden w-full mt-8">
+              <CustomMusicPlayerWidget />
+            </div>
           </main>
 
           <aside className="hidden xl:flex w-[350px] flex-col gap-6 sticky top-24 pt-10 shrink-0">
