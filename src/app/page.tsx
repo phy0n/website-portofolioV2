@@ -114,9 +114,9 @@ export default async function Page() {
               <DiscordBadges />
             </div>
 
-            <div className="flex flex-wrap justify-center items-center gap-2 mb-8 px-4">
-              <div className="flex items-center gap-1.5 text-white text-[13px] font-medium px-3 py-1 rounded-full bg-white/5 border border-white/5">
-                <FaMapMarkerAlt className="text-white/80 text-[12px]" />
+            <div className="flex flex-nowrap justify-center items-center gap-1.5 sm:gap-2 mb-8 px-2 w-full max-w-full overflow-x-auto no-scrollbar">
+              <div className="flex items-center gap-1 sm:gap-1.5 text-white text-[11px] sm:text-[13px] font-medium px-2 sm:px-3 py-1 rounded-full bg-white/5 border border-white/5 whitespace-nowrap shrink-0">
+                <FaMapMarkerAlt className="text-white/80 text-[10px] sm:text-[12px]" />
                 Singapore
               </div>
               <LocalTimeWeather />

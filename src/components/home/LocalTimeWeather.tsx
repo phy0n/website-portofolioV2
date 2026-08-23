@@ -60,14 +60,14 @@ export default function LocalTimeWeather() {
   return (
     <>
       {time && (
-        <div className="flex items-center gap-1.5 text-white text-[13px] font-medium px-3 py-1 rounded-full bg-white/5 border border-white/5 hover:text-white hover:bg-white/10 transition-colors cursor-default">
-          <FaClock className="text-white/80 text-[12px]" />
+        <div className="flex items-center gap-1 sm:gap-1.5 text-white text-[11px] sm:text-[13px] font-medium px-2 sm:px-3 py-1 rounded-full bg-white/5 border border-white/5 hover:text-white hover:bg-white/10 transition-colors cursor-default whitespace-nowrap shrink-0">
+          <FaClock className="text-white/80 text-[10px] sm:text-[12px]" />
           {time}
         </div>
       )}
 
       {weather && (
-        <div className="flex items-center gap-1.5 text-white text-[13px] font-medium px-3 py-1 rounded-full bg-white/5 border border-white/5 hover:text-white hover:bg-white/10 transition-colors cursor-default">
+        <div className="flex items-center gap-1 sm:gap-1.5 text-white text-[11px] sm:text-[13px] font-medium px-2 sm:px-3 py-1 rounded-full bg-white/5 border border-white/5 hover:text-white hover:bg-white/10 transition-colors cursor-default whitespace-nowrap shrink-0">
           {getWeatherIcon(weather.code, weather.isDay)}
           {weather.temp}°C
         </div>

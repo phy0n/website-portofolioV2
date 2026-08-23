@@ -41,7 +41,7 @@ export default function EnterScreen() {
         onClick={handleEnter}
       >
         <div className={`flex flex-col items-center justify-center gap-4 animate-pulse transition-opacity duration-500 ${isFading ? 'opacity-0' : 'opacity-100'}`}>
-          <p className="text-white text-lg font-mono tracking-[0.2em] uppercase">
+          <p className="text-white text-xs sm:text-sm md:text-base font-mono tracking-[0.2em] uppercase text-center px-4">
             Click anywhere to enter
           </p>
           <div className="w-12 h-[1px] bg-white/30" />
@@ -59,8 +59,8 @@ export default function EnterScreen() {
         >
           <source src="/video/background.mp4" type="video/mp4" />
         </video>
-        {/* Dark overlay to make text readable */}
-        <div className="absolute inset-0 bg-[rgba(0,0,0,0.4)]" />
+        {/* Dark overlay specifically for the video */}
+        <div className="absolute inset-0 bg-black/60 pointer-events-none transition-opacity duration-1000"></div>
       </div>
 
       {/* Audio Element */}
