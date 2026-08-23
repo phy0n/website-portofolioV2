@@ -43,7 +43,7 @@ export default function AboutTab() {
           Profile & Scope
         </p>
         <h2 className="js-reveal text-2xl font-sans font-semibold text-[var(--home-ink)] sm:text-3xl">
-          The Computer Science Journey
+          Computer Science Journey
         </h2>
         <p className="js-reveal max-w-2xl text-sm text-[var(--home-muted)]">
           I am Phion Rushandle, a Computer Science Enthusiast. My passion lies in understanding
@@ -71,10 +71,7 @@ export default function AboutTab() {
               <div
                 key={item.title}
                 data-number={String(index + 1).padStart(2, '0')}
-                className="js-reveal group relative z-0 transition-transform duration-500 hover:-translate-y-1 before:pointer-events-none before:absolute before:right-0 before:top-1/2 before:-z-10 before:-translate-y-1/2 before:text-[clamp(80px,10vw,120px)] before:font-black before:leading-none before:tracking-tighter before:text-[var(--home-muted)] before:opacity-15 before:content-[attr(data-number)]"
-              >
-
-                {/* Subtle Hover effect removed per user request */}
+                className="js-reveal group relative z-0 transition-transform duration-500 hover:-translate-y-1 before:pointer-events-none before:absolute before:right-0 before:top-1/2 before:-z-10 before:-translate-y-1/2 before:text-[clamp(80px,10vw,120px)] before:font-black before:leading-none before:tracking-tighter before:text-[var(--home-muted)] before:opacity-15 before:content-[attr(data-number)]">
                 <div className="relative z-10 space-y-4 py-4">
                   <div>
                     <p className="flex items-center gap-3 text-[11px] font-bold uppercase tracking-[0.2em] text-[var(--home-muted)]">

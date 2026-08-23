@@ -92,7 +92,7 @@ export default async function Page() {
   return (
     <>
       <EnterScreen />
-      <div className="min-h-screen relative flex flex-col items-center py-16 px-4 overflow-hidden bg-transparent text-white font-nunito selection:bg-white/20">
+      <div className="min-h-screen relative flex flex-col items-center py-16 px-4 overflow-hidden bg-[#0a0a0a] text-white font-nunito selection:bg-white/20">
         <div className="absolute inset-0 z-0">
           <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 brightness-100 contrast-150 mix-blend-overlay pointer-events-none"></div>
         </div>
