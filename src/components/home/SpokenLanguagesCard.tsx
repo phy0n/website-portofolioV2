@@ -43,8 +43,8 @@ export default function SpokenLanguagesCard({ className }: { className?: string 
             const delay = `${i * 150}ms`;
 
             return (
-              <div 
-                key={language.id} 
+              <div
+                key={language.id}
                 className="relative overflow-hidden rounded-2xl border border-[var(--home-border)] bg-[var(--home-card)] p-5 transition-all duration-300"
                 style={{
                   opacity: mounted ? 1 : 0,

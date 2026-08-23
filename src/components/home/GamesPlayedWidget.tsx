@@ -30,7 +30,7 @@ export default function GamesPlayedWidget() {
   ];
 
   return (
-    <div className="w-full flex flex-col rounded-2xl bg-black/80 backdrop-blur-md border border-white/10 p-5 shadow-2xl relative group overflow-hidden">
+    <div className="hidden sm:flex w-full flex-col rounded-2xl bg-black/80 backdrop-blur-md border border-white/10 p-5 shadow-2xl relative group overflow-hidden">
 
       <div className="flex items-center gap-3 mb-5 relative z-10">
         <FaGamepad className="text-3xl text-white/70 group-hover:text-white transition-colors drop-shadow-md" />
