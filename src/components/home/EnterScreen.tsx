@@ -48,14 +48,14 @@ export default function EnterScreen() {
         </div>
       </div>
 
-      {/* Background Video */}
-      <div className="fixed inset-0 z-0 pointer-events-none">
-        <video
-          autoPlay
-          loop
-          muted
-          playsInline
-          className="w-full h-full object-cover opacity-80"
+      {/* Main Content Background Video */}
+      <div className={`fixed top-0 left-0 w-full h-[100vh] z-[-1] transition-opacity duration-1000 ${entered ? 'opacity-100' : 'opacity-0'}`}>
+        <video 
+          autoPlay 
+          loop 
+          muted 
+          playsInline 
+          className="absolute top-0 left-0 w-full h-full object-cover scale-105 pointer-events-none"
         >
           <source src="/video/background.mp4" type="video/mp4" />
         </video>
