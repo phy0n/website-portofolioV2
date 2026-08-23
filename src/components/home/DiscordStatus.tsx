@@ -63,7 +63,7 @@ export default function DiscordStatus() {
           href={`https://open.spotify.com/track/${status.spotify.track_id}`}
           target="_blank"
           rel="noopener noreferrer"
-          className="group relative flex w-full items-center gap-4 rounded-xl p-4 bg-[#111214] border border-[#1e1f22] shadow-[0_4px_20px_-10px_rgba(0,0,0,0.5)] transition-colors duration-300 hover:border-[#1DB954]/50"
+          className="group relative flex w-full items-center gap-4 rounded-2xl p-4 bg-[#0d0d0d] border border-white/10 shadow-[0_4px_20px_-10px_rgba(0,0,0,0.5)] transition-colors duration-300 hover:border-[#1DB954]/50"
         >
           <div className="relative w-12 h-12 flex-shrink-0">
             <img
@@ -87,7 +87,7 @@ export default function DiscordStatus() {
       )}
 
       {currentActivity && !isPlayingSpotify && (
-        <div className="flex flex-col w-full p-4 rounded-xl bg-[#111214] border border-[#1e1f22] shadow-xl text-left">
+        <div className="flex flex-col w-full p-4 rounded-2xl bg-[#0d0d0d] border border-white/10 shadow-[0_4px_20px_-10px_rgba(0,0,0,0.5)] text-left">
           <p className="text-[11px] font-bold uppercase tracking-wider text-zinc-300 mb-3">Playing</p>
           <div className="flex items-start gap-3.5">
             <div className="relative w-16 h-16 flex-shrink-0 bg-[#2b2d31] rounded-xl flex items-center justify-center overflow-hidden shadow-inner">
