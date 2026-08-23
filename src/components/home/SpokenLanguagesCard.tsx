@@ -44,7 +44,7 @@ export default function SpokenLanguagesCard({ className }: { className?: string 
             return (
               <div
                 key={language.id}
-                className="relative overflow-hidden rounded-2xl border border-[var(--home-border)] bg-[var(--home-card)] p-5 transition-all duration-300"
+                className="relative overflow-hidden rounded-2xl border border-[var(--home-border)] bg-[var(--home-card)]/30 backdrop-blur-sm p-5 transition-all duration-300 hover:border-[var(--home-accent)]/50 hover:bg-[var(--home-card)]/80"
                 style={{
                   opacity: mounted ? 1 : 0,
                   transform: mounted ? 'translateY(0)' : 'translateY(10px)',

@@ -81,7 +81,7 @@ const SpotifyCard = ({
   }, [now, spotify.timestamps?.end, spotify.timestamps?.start]);
 
   return (
-    <div className="flex flex-col w-full p-4 rounded-xl bg-[var(--home-card)] border border-[var(--home-border)] text-left">
+    <div className="flex flex-col w-full p-4 rounded-xl bg-[var(--home-card)]/30 backdrop-blur-sm border border-[var(--home-border)] text-left transition-all duration-300 hover:border-[var(--home-accent)]/50 hover:bg-[var(--home-card)]/80">
       <div className="flex items-center justify-between gap-3 mb-3">
         <p className="text-[11px] font-bold uppercase tracking-wider text-[#1DB954] flex items-center gap-1.5">
           <FaSpotify className="h-3.5 w-3.5" />
@@ -164,7 +164,7 @@ const ActivityCard = ({ activity, now }: { activity: DiscordActivity; now: numbe
   }, [activity.timestamps?.start, now]);
 
   return (
-    <div className="flex flex-col w-full p-4 rounded-xl bg-[var(--home-card)] border border-[var(--home-border)] text-left">
+    <div className="flex flex-col w-full p-4 rounded-xl bg-[var(--home-card)]/30 backdrop-blur-sm border border-[var(--home-border)] text-left transition-all duration-300 hover:border-[var(--home-accent)]/50 hover:bg-[var(--home-card)]/80">
       <div className="flex items-center gap-2 mb-3">
         <Icon className={`h-3.5 w-3.5 text-[var(--home-muted)]`} />
         <p className="text-[11px] font-bold uppercase tracking-wider text-[var(--home-muted)]">{label}</p>

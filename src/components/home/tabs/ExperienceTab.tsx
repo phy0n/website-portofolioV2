@@ -80,7 +80,7 @@ export default function ExperienceTab() {
             return (
               <div
                 key={exp.id}
-                className="js-reveal group relative flex flex-col justify-between overflow-hidden rounded-2xl border border-[var(--home-border)] bg-[var(--home-soft)] p-6 sm:p-8 transition-all duration-500">
+                className="js-reveal group relative flex flex-col justify-between overflow-hidden rounded-2xl border border-[var(--home-border)] bg-[var(--home-card)]/30 backdrop-blur-sm p-6 sm:p-8 transition-all duration-500 hover:border-[var(--home-accent)]/50 hover:bg-[var(--home-card)]/80">
                 <div className="absolute left-0 top-0 bottom-0 w-1.5 bg-[var(--home-accent)]" />
                 <div className="relative z-10 flex flex-col">
                   <div className="space-y-1.5">

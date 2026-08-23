@@ -272,7 +272,7 @@ export default async function BlogPage({
               ) : (
                 <div className="max-h-[600px] space-y-4 overflow-y-auto pr-1 hide-scrollbar">
                   {quoteRows.map((quote) => (
-                    <div key={quote.id} className="rounded-3xl border border-[var(--home-border)] bg-[var(--home-soft)] p-5 transition-all hover:-translate-y-0.5 hover:shadow-lg">
+                    <div key={quote.id} className="rounded-3xl border border-[var(--home-border)] bg-[var(--home-card)]/30 backdrop-blur-sm p-5 transition-all hover:-translate-y-0.5 hover:border-[var(--home-accent)]/50 hover:bg-[var(--home-card)]/80 hover:shadow-lg">
                       <p className="text-sm text-[var(--home-muted)] opacity-75 line-clamp-4">&ldquo;{quote.text}&rdquo;</p>
                       <div className="mt-2 flex items-center justify-between gap-3">
                         {quote.author ? <p className="text-xs text-[var(--home-muted)] opacity-40">by: {quote.author}</p> : <span />}

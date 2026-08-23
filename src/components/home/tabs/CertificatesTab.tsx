@@ -105,7 +105,7 @@ export default function CertificatesTab() {
             return (
               <div
                 key={cert.id}
-                className="js-reveal group relative flex flex-col sm:flex-row gap-5 overflow-hidden rounded-2xl border border-[var(--home-border)] bg-[var(--home-card)] p-6 transition-all duration-300">
+                className="js-reveal group relative flex flex-col sm:flex-row gap-5 overflow-hidden rounded-2xl border border-[var(--home-border)] bg-[var(--home-card)]/30 backdrop-blur-sm p-6 transition-all duration-300 hover:border-[var(--home-accent)]/50 hover:bg-[var(--home-card)]/80">
 
                 {renderCertificateIcon(
                   cert.icon,

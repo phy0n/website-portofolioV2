@@ -100,7 +100,7 @@ export default function ConnectTab() {
                 href={social.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="group flex items-center justify-between gap-4 rounded-3xl border border-[var(--home-border)] bg-[var(--home-card)] p-4 transition-all hover:border-[var(--home-accent)] hover:bg-[var(--home-soft)]">
+                className="group flex items-center justify-between gap-4 rounded-3xl border border-[var(--home-border)] bg-[var(--home-card)]/30 backdrop-blur-sm p-4 transition-all hover:border-[var(--home-accent)]/50 hover:bg-[var(--home-card)]/80">
                 <div className="flex items-center gap-4">
                   <div className="text-[var(--home-ink)] opacity-90 transition-opacity group-hover:opacity-100 flex items-center justify-center shrink-0 w-12 h-12">
                     {React.isValidElement(social.icon) ? React.cloneElement(social.icon as React.ReactElement, { className: 'h-7 w-7' } as any) : social.icon}
@@ -122,7 +122,7 @@ export default function ConnectTab() {
             {CONTACT_INFO.map((contact, index) => (
               <div
                 key={index}
-                className="group flex items-start gap-4 rounded-3xl border border-[var(--home-border)] bg-[var(--home-card)] p-5 transition-all hover:border-[var(--home-accent)] hover:bg-[var(--home-soft)]">
+                className="group flex items-start gap-4 rounded-3xl border border-[var(--home-border)] bg-[var(--home-card)]/30 backdrop-blur-sm p-5 transition-all hover:border-[var(--home-accent)]/50 hover:bg-[var(--home-card)]/80">
                 <div className="text-[var(--home-ink)] opacity-80 transition-opacity group-hover:opacity-100 flex items-center justify-center shrink-0 w-12 h-12">
                   {React.isValidElement(contact.icon) ? React.cloneElement(contact.icon as React.ReactElement, { className: 'h-7 w-7' } as any) : contact.icon}
                 </div>
