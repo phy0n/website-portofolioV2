@@ -1,6 +1,5 @@
 'use client';
 import { useLanyard } from 'use-lanyard';
-import { FaChevronDown } from 'react-icons/fa';
 import { useEffect, useState } from 'react';
 
 const DISCORD_ID = '494169184175915019';
@@ -39,8 +38,7 @@ export default function DiscordBadges() {
             alt="Clan Badge" 
             className="w-3.5 h-3.5 object-contain"
           />
-          {primaryGuild.tag}
-          <FaChevronDown className="w-2 h-2 text-zinc-500 ml-0.5" />
+          <span className="leading-none mt-[1px]">{primaryGuild.tag}</span>
         </div>
       )}
       
