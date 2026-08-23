@@ -6,10 +6,10 @@ export default function SpotifyPlaylistWidget() {
   const embedLink = SPOTIFY_SHARE_LINK.replace('open.spotify.com/', 'open.spotify.com/embed/').split('?')[0] + '?utm_source=generator&theme=0';
 
   return (
-    <div className="w-full h-[420px] rounded-2xl overflow-hidden bg-transparent">
+    <div className="w-full h-[420px] rounded-[15px] overflow-hidden bg-transparent" style={{ transform: 'translateZ(0)' }}>
       <iframe
         key={embedLink}
-        style={{ borderRadius: '16px' }}
+        style={{ borderRadius: '12px', backgroundColor: 'transparent' }}
         src={embedLink}
         width="100%"
         height="100%"

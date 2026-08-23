@@ -13,6 +13,8 @@ import RobloxProfileWidget from '@/components/home/RobloxProfileWidget';
 import RandomImageWidget from '@/components/home/RandomImageWidget';
 import DiscordServerWidget from '@/components/home/DiscordServerWidget';
 import SpotifyPlaylistWidget from '@/components/home/SpotifyPlaylistWidget';
+import MinecraftProfileWidget from '@/components/home/MinecraftProfileWidget';
+import ValorantProfileWidget from '@/components/home/ValorantProfileWidget';
 
 export default async function Page() {
   const { profileImageUrl } = await getSiteProfile();
@@ -100,6 +102,7 @@ export default async function Page() {
         <aside className="hidden xl:flex w-[350px] flex-col gap-6 sticky top-24 pt-10 shrink-0">
           <DiscordServerWidget />
           <RobloxProfileWidget />
+          {/* <MinecraftProfileWidget /> */}
         </aside>
 
         <main className="w-full max-w-[440px] flex flex-col items-center mx-auto shrink-0">
@@ -163,6 +166,7 @@ export default async function Page() {
         <aside className="hidden xl:flex w-[350px] flex-col gap-6 sticky top-24 pt-10 shrink-0">
           <SpotifyPlaylistWidget />
           <RandomImageWidget />
+          {/* <ValorantProfileWidget /> */}
         </aside>
 
       </div>
