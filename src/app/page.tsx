@@ -18,10 +18,14 @@ import MinecraftProfileWidget from '@/components/home/MinecraftProfileWidget';
 import ValorantProfileWidget from '@/components/home/ValorantProfileWidget';
 import EnterScreen from '@/components/home/EnterScreen';
 import GamesPlayedWidget from '@/components/home/GamesPlayedWidget';
+import { Suspense } from 'react';
 
-export default async function Page() {
+async function ProfileWithSupabase() {
   const { profileImageUrl } = await getSiteProfile();
+  return <DiscordProfile fallbackImageUrl={profileImageUrl ?? ''} />;
+}
 
+export default function Page() {
   const links = [
     {
       title: 'Instagram',
@@ -94,19 +98,23 @@ export default async function Page() {
       <EnterScreen />
       <div className="min-h-screen relative flex flex-col items-center py-16 px-4 overflow-hidden bg-transparent text-white font-nunito selection:bg-white/20">
         <div className="absolute inset-0 z-0">
-          <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 brightness-100 contrast-150 mix-blend-overlay pointer-events-none"></div>
+          <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-[0.03] pointer-events-none"></div>
         </div>
 
         <div className="relative z-10 w-full max-w-[1200px] mx-auto flex flex-col xl:flex-row justify-center items-start gap-8 mt-8">
           <aside className="hidden xl:flex w-[350px] flex-col gap-6 sticky top-24 pt-10 shrink-0">
-            <DiscordServerWidget />
+            <Suspense fallback={<div className="w-full h-[320px] bg-black/80 rounded-2xl border border-white/10 animate-pulse"></div>}>
+              <DiscordServerWidget />
+            </Suspense>
             {/* <RobloxProfileWidget /> */}
             <GamesPlayedWidget />
             {/* <MinecraftProfileWidget /> */}
           </aside>
 
           <main className="w-full max-w-[440px] flex flex-col items-center mx-auto shrink-0">
-            <DiscordProfile fallbackImageUrl={profileImageUrl ?? ''} />
+            <Suspense fallback={<div className="relative flex justify-center mb-5 w-32 h-32 mx-auto rounded-full bg-zinc-900 border-4 border-[#0a0a0a] animate-pulse"></div>}>
+              <ProfileWithSupabase />
+            </Suspense>
 
             <h1 className="text-3xl font-bold tracking-tight mb-0.5 text-center text-white/90 leading-tight">Phion Rushandle</h1>
 
@@ -149,16 +157,16 @@ export default async function Page() {
             </div>
 
             <div className="w-full relative">
-              <div className="absolute -inset-1 bg-gradient-to-r from-zinc-500 to-zinc-300 rounded-2xl blur opacity-20"></div>
+              <div className="absolute -inset-1 bg-gradient-to-r from-red-500 to-orange-500 rounded-2xl blur opacity-20 transition-opacity duration-300 group-hover:opacity-40"></div>
               <Link
                 href="/portfolio"
-                className="group relative flex w-full items-center justify-center gap-3 overflow-hidden rounded-2xl bg-white px-6 py-4.5 text-black transition-all duration-300 active:scale-[0.98] shadow-xl">
+                className="group relative flex w-full items-center justify-center gap-3 overflow-hidden rounded-2xl bg-black/80 backdrop-blur-md border border-white/10 px-6 py-4.5 text-white transition-all duration-300 active:scale-[0.98] shadow-xl hover:border-white/25 hover:bg-white/5">
                 <div className="absolute inset-0 flex h-full w-full justify-center [transform:skew(-12deg)_translateX(-100%)] group-hover:duration-1000 group-hover:[transform:skew(-12deg)_translateX(100%)]">
-                  <div className="relative h-full w-8 bg-black/10" />
+                  <div className="relative h-full w-8 bg-white/10" />
                 </div>
-                <FaGlobe className="text-xl" />
-                <span className="font-bold text-lg tracking-tight">Enter Portfolio</span>
-                <FaArrowRight className="text-sm opacity-70 transition-transform" />
+                <FaGlobe className="text-xl text-white/80" />
+                <span className="font-bold text-lg tracking-tight text-white/95">Enter Portfolio</span>
+                <FaArrowRight className="text-sm opacity-70 transition-transform group-hover:translate-x-1" />
               </Link>
             </div>
             <div className="xl:hidden w-full mt-8 flex flex-col gap-6">
