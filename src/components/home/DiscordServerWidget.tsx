@@ -84,7 +84,7 @@ export default async function DiscordServerWidget() {
           href="https://discord.gg/kh1ev"
           target="_blank"
           rel="noopener noreferrer"
-          className="w-full py-3 bg-[#23a559] hover:bg-[#1f934f] text-white font-bold text-[15px] rounded-xl transition-colors text-center shadow-lg active:scale-[0.98]"
+          className="w-full py-3 bg-orange-600 hover:bg-orange-700 text-white font-bold text-[15px] rounded-xl transition-colors text-center shadow-lg active:scale-[0.98]"
         >
           Join Server
         </a>

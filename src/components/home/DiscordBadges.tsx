@@ -31,7 +31,7 @@ export default function DiscordBadges() {
     <div className="flex items-center gap-1.5 justify-center">
       {/* Clan Badge */}
       {primaryGuild?.badge && (
-        <div className="flex items-center gap-1 bg-[#111214] border border-white/10 px-1.5 py-0.5 rounded-md text-[10px] font-bold text-zinc-300 tracking-wide cursor-pointer hover:bg-white/10 transition mr-1" title="Clan Badge">
+        <div className="flex items-center gap-1 bg-white/5 border border-white/5 px-2 py-0.5 rounded-full text-[10px] font-bold text-white tracking-wide cursor-pointer hover:bg-white/10 transition mr-1" title="Clan Badge">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img 
             src={`https://cdn.discordapp.com/guild-tag-badges/${primaryGuild.identity_guild_id}/${primaryGuild.badge}.png`} 

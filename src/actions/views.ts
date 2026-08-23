@@ -10,13 +10,13 @@ export async function incrementAndGetViews() {
   const filePath = path.join(process.cwd(), 'views.json');
   let views = 0;
   let ips: string[] = [];
-  
+
   const headersList = await headers();
   const forwardedFor = headersList.get('x-forwarded-for');
   const realIp = headersList.get('x-real-ip');
   const ip = forwardedFor ? forwardedFor.split(',')[0] : (realIp || 'unknown-ip');
   const ipHash = crypto.createHash('sha256').update(ip).digest('hex');
-  
+
   try {
     if (fs.existsSync(filePath)) {
       const data = fs.readFileSync(filePath, 'utf-8');
@@ -27,7 +27,7 @@ export async function incrementAndGetViews() {
   } catch (e) {
     console.error("Failed to read views.json", e);
   }
-  
+
   let hasUpdated = false;
 
   if (!ips.includes(ipHash)) {
@@ -35,7 +35,7 @@ export async function incrementAndGetViews() {
     views += 1;
     hasUpdated = true;
   }
-  
+
   if (hasUpdated) {
     try {
       fs.writeFileSync(filePath, JSON.stringify({ views, ips }));
@@ -43,7 +43,7 @@ export async function incrementAndGetViews() {
       console.error("Failed to write views.json", e);
     }
   }
-  
+
   revalidatePath('/');
   return views;
 }

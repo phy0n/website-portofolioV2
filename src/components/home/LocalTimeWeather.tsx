@@ -50,24 +50,24 @@ export default function LocalTimeWeather() {
   }, []);
 
   const getWeatherIcon = (code: number, isDay: boolean) => {
-    if (code === 0) return isDay ? <FaSun className="text-zinc-500 text-[12px]" /> : <FaMoon className="text-zinc-500 text-[12px]" />;
-    if (code >= 1 && code <= 3) return <FaCloud className="text-zinc-500 text-[12px]" />;
-    if (code >= 51 && code <= 67) return <FaCloudRain className="text-zinc-500 text-[12px]" />;
-    if (code >= 80 && code <= 99) return <FaCloudRain className="text-zinc-500 text-[12px]" />;
-    return <FaCloud className="text-zinc-500 text-[12px]" />;
+    if (code === 0) return isDay ? <FaSun className="text-white/80 text-[12px]" /> : <FaMoon className="text-white/80 text-[12px]" />;
+    if (code >= 1 && code <= 3) return <FaCloud className="text-white/80 text-[12px]" />;
+    if (code >= 51 && code <= 67) return <FaCloudRain className="text-white/80 text-[12px]" />;
+    if (code >= 80 && code <= 99) return <FaCloudRain className="text-white/80 text-[12px]" />;
+    return <FaCloud className="text-white/80 text-[12px]" />;
   };
 
   return (
     <>
       {time && (
-        <div className="flex items-center gap-1.5 text-zinc-400 text-[13px] font-medium px-3 py-1 rounded-full bg-white/5 border border-white/5 hover:text-white hover:bg-white/10 transition-colors cursor-default">
-          <FaClock className="text-zinc-500 text-[12px]" />
+        <div className="flex items-center gap-1.5 text-white text-[13px] font-medium px-3 py-1 rounded-full bg-white/5 border border-white/5 hover:text-white hover:bg-white/10 transition-colors cursor-default">
+          <FaClock className="text-white/80 text-[12px]" />
           {time}
         </div>
       )}
 
       {weather && (
-        <div className="flex items-center gap-1.5 text-zinc-400 text-[13px] font-medium px-3 py-1 rounded-full bg-white/5 border border-white/5 hover:text-white hover:bg-white/10 transition-colors cursor-default">
+        <div className="flex items-center gap-1.5 text-white text-[13px] font-medium px-3 py-1 rounded-full bg-white/5 border border-white/5 hover:text-white hover:bg-white/10 transition-colors cursor-default">
           {getWeatherIcon(weather.code, weather.isDay)}
           {weather.temp}°C
         </div>

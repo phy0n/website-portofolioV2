@@ -90,62 +90,56 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Minimal mode overrides: removes nested 'card' visuals and heavy borders */
-.minimal-root .rounded-2xl,
-.minimal-root .rounded-3xl,
-.minimal-root .rounded-xl,
-.minimal-root .bg-black\/30,
-.minimal-root [class*="bg-black/"] {
-  background: var(--home-bg, #000000) !important;
-  border-radius: 0 !important;
-  box-shadow: none !important;
+/* Glassmorphism overrides for the aesthetic portfolio look */
+body .rounded-2xl,
+body .rounded-3xl,
+body .rounded-xl,
+body [style*="background-color: #121212"],
+body [style*="background-color: rgb(18, 18, 18)"] {
+  background: rgba(0, 0, 0, 0.85) !important;
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5) !important;
 }
 
-.minimal-root .border,
-.minimal-root [class*="border-"] {
-  border: none !important;
+body .bg-\[\#1e1f22\] {
+  background: transparent !important;
 }
 
-.minimal-root .px-5,
-.minimal-root .py-4,
-.minimal-root .p-5 {
-  padding: var(--space-3) !important;
+body .bg-\[\#121212\] {
+  background: rgba(0, 0, 0, 0.85) !important;
 }
 
-.minimal-root h1,
-.minimal-root h2,
-.minimal-root h3 {
+body .border,
+body [class*="border-"] {
+  border-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+body h1,
+body h2,
+body h3 {
   font-weight: 600;
   color: var(--ui-foreground);
   margin: 0 0 var(--space-2) 0;
 }
 
-.minimal-root .muted {
+body .muted {
   color: var(--muted);
 }
 
-/* Keep control chrome solid instead of forcing transparent UI */
-.minimal-root a,
-.minimal-root button {
-  color: var(--ui-foreground) !important;
+body a,
+body button {
+  color: var(--ui-foreground);
 }
 
-.minimal-root a:hover,
-.minimal-root button:hover {
-  text-decoration: underline !important;
+body a:hover,
+body button:hover {
+  text-decoration: underline;
 }
 
-.minimal-root .home-portfolio [class*="bg-black/"],
-.minimal-root .home-portfolio [class*="bg-white/"],
-.minimal-root .home-portfolio [class*="bg-white["],
-.minimal-root .home-portfolio [class*="bg-"][class*="/"],
-.minimal-root .home-portfolio .bg-transparent {
-  background: var(--home-bg) !important;
-}
-
-.minimal-root .home-portfolio [class*="backdrop-blur"] {
-  -webkit-backdrop-filter: none !important;
-  backdrop-filter: none !important;
+body .home-portfolio .bg-transparent {
+  background: transparent !important;
 }
 
 .minimal-root .home-portfolio .js-nav a,
