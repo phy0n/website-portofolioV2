@@ -92,31 +92,7 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Glassmorphism overrides for the aesthetic portfolio look */
-.dark body .rounded-2xl,
-.dark body .rounded-3xl,
-.dark body .rounded-xl,
-.dark body [style*="background-color: #121212"],
-.dark body [style*="background-color: rgb(18, 18, 18)"] {
-  background: rgba(0, 0, 0, 0.85) !important;
-  backdrop-filter: blur(12px) !important;
-  -webkit-backdrop-filter: blur(12px) !important;
-  border: 1px solid rgba(255, 255, 255, 0.08) !important;
-  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5) !important;
-}
 
-.dark body .bg-\[\#1e1f22\] {
-  background: transparent !important;
-}
-
-.dark body .bg-\[\#121212\] {
-  background: rgba(0, 0, 0, 0.85) !important;
-}
-
-.dark body .border,
-.dark body [class*="border-"] {
-  border-color: rgba(255, 255, 255, 0.08) !important;
-}
 
 body h1,
 body h2,
