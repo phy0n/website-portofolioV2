@@ -20,8 +20,8 @@ export default async function Page() {
   const links = [
     {
       title: 'Instagram',
-      subtitle: '@rushandle',
-      url: 'https://www.instagram.com/rushandle/',
+      subtitle: '@phy0n.me',
+      url: 'https://instagram.com/phy0n.me',
       icon: <FaInstagram className="text-xl" />,
       color: 'bg-[#E1306C]',
     },

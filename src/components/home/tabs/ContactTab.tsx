@@ -21,10 +21,10 @@ const CONTACT_INFO = [
   },
   {
     type: 'Instagram',
-    value: '@rushandle',
+    value: '@phy0n.me',
     label: 'Follow me',
     icon: <Instagram className="h-6 w-6" />,
-    url: 'https://instagram.com/rushandle'
+    url: 'https://instagram.com/phy0n.me'
   },
 ];
 
@@ -45,10 +45,10 @@ export default function ContactTab() {
         {CONTACT_INFO.map((contact) => {
           const isLink = Boolean(contact.url);
           const Wrapper = isLink ? 'a' : 'div';
-          
+
           return (
-            <Wrapper 
-              key={contact.type} 
+            <Wrapper
+              key={contact.type}
               {...(isLink ? { href: contact.url, target: contact.url.startsWith('http') ? '_blank' : undefined, rel: contact.url.startsWith('http') ? 'noreferrer' : undefined } : {})}
               className="group relative flex min-h-[220px] flex-col justify-between overflow-hidden rounded-[2rem] border border-[var(--home-border)] bg-[var(--home-card)] p-6 transition-colors duration-300"
             >
