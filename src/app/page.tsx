@@ -45,7 +45,7 @@ export default async function Page() {
       color: 'bg-[#0d0d0d] transition-all duration-300',
     },
     {
-      title: 'GitHub',
+      title: 'Github',
       subtitle: '@phy0n',
       url: 'https://github.com/phy0n',
       icon: <FaGithub className="text-3xl text-white drop-shadow-md" />,
