@@ -36,10 +36,9 @@ export default function SpokenLanguagesCard({ className }: { className?: string 
           No languages yet.
         </div>
       ) : (
-        <div className="mt-4 grid gap-4 sm:grid-cols-2 max-w-4xl">
+        <div className="mt-4 grid gap-4 grid-cols-1 sm:grid-cols-3 w-full">
           {sortedLanguages.map((language, i) => {
             const level = Math.max(0, Math.min(language.level, 100));
-            // Calculate a delay for a stagger effect
             const delay = `${i * 150}ms`;
 
             return (
@@ -50,11 +49,8 @@ export default function SpokenLanguagesCard({ className }: { className?: string 
                   opacity: mounted ? 1 : 0,
                   transform: mounted ? 'translateY(0)' : 'translateY(10px)',
                   transitionDelay: mounted ? delay : '0ms'
-                }}
-              >
-                {/* Removed red blur gradient */}
+                }}>
                 <div className="relative z-10 flex flex-col gap-4">
-                  {/* Header: Name, Label */}
                   <div className="flex items-end justify-between">
                     <div>
                       <h3 className="text-lg font-semibold text-[var(--ui-foreground)]">{language.name}</h3>
@@ -65,7 +61,6 @@ export default function SpokenLanguagesCard({ className }: { className?: string 
                     </div>
                   </div>
 
-                  {/* Progress Bar */}
                   <div className="relative mt-2">
                     <div className="h-2 w-full overflow-hidden rounded-full bg-[var(--home-soft)] border border-[var(--home-border)]">
                       <div

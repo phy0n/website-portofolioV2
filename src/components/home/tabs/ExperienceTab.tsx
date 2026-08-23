@@ -92,11 +92,11 @@ export default function ExperienceTab() {
 
                 <div className="relative z-10 flex flex-col">
                   <div className="space-y-1.5">
-                    <div className="flex flex-wrap items-center gap-3">
-                      <span className="rounded-full border border-[var(--home-border)] bg-[var(--home-bg)] px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-[var(--home-accent)]">
+                    <div className="flex items-center gap-3">
+                      <span className="inline-flex items-center justify-center rounded-full border border-[var(--home-border)] bg-[var(--home-bg)] px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-[var(--home-accent)]">
                         {exp.status}
                       </span>
-                      <h3 className="text-xl font-sans font-bold text-[var(--home-ink)]">{exp.role}</h3>
+                      <h3 className="text-xl font-sans font-bold text-[var(--home-ink)] !mb-0 leading-none">{exp.role}</h3>
                     </div>
                     
                     <div className="flex flex-wrap items-center gap-2 text-sm font-medium text-[var(--home-muted)]">
