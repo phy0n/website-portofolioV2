@@ -179,6 +179,13 @@ const ActivityCard = ({ activity, now }: { activity: DiscordActivity; now: numbe
               fill
               sizes="64px"
               className="object-cover"/>
+          ) : activity.applicationId ? (
+            <Image
+              src={`https://dcdn.dstn.to/app-icons/${activity.applicationId}`}
+              alt={`App icon for ${activity.name}`}
+              fill
+              sizes="64px"
+              className="object-cover"/>
           ) : (
             <div className="flex h-full w-full items-center justify-center text-zinc-500">
               <Icon className="h-6 w-6" />

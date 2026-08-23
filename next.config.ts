@@ -26,6 +26,11 @@ const remotePatterns: NonNullable<NextConfig["images"]>["remotePatterns"] = [
   },
   {
     protocol: "https",
+    hostname: "dcdn.dstn.to",
+    pathname: "/**",
+  },
+  {
+    protocol: "https",
     hostname: "images.unsplash.com",
     pathname: "/**",
   },
