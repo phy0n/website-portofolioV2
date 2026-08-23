@@ -128,7 +128,7 @@ export default function SkillsTab() {
         <h2 className="js-reveal text-2xl font-sans font-semibold text-[var(--home-ink)] sm:text-3xl">
           Development Stack & Instrumentation
         </h2>
-        <p className="js-reveal max-w-2xl text-sm text-[var(--home-muted)]">
+        <p className="js-reveal max-w-4xl text-sm sm:text-base md:text-lg leading-relaxed text-[var(--home-muted)]">
           A comprehensive mapping of my technical proficiencies within a unified matrix.
         </p>
       </div>

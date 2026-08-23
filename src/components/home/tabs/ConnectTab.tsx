@@ -102,8 +102,8 @@ export default function ConnectTab() {
                 rel="noopener noreferrer"
                 className="group flex items-center justify-between gap-4 rounded-3xl border border-[var(--home-border)] bg-[var(--home-card)] p-4 transition-all hover:border-[var(--home-accent)] hover:bg-[var(--home-soft)]">
                 <div className="flex items-center gap-4">
-                  <div className="flex h-12 w-12 items-center justify-center rounded-2xl border border-[var(--home-accent)]/20 bg-[var(--home-accent)]/10 text-[var(--home-accent)] transition-all group-hover:scale-110 group-hover:border-[var(--home-accent)]/40 group-hover:bg-[var(--home-accent)]/20">
-                    {social.icon}
+                  <div className="text-[var(--home-ink)] opacity-90 transition-opacity group-hover:opacity-100 flex items-center justify-center shrink-0 w-12 h-12">
+                    {React.isValidElement(social.icon) ? React.cloneElement(social.icon as React.ReactElement, { className: 'h-7 w-7' } as any) : social.icon}
                   </div>
                   <div>
                     <p className="text-sm font-semibold text-[var(--home-ink)]">{social.name}</p>
@@ -122,9 +122,9 @@ export default function ConnectTab() {
             {CONTACT_INFO.map((contact, index) => (
               <div
                 key={index}
-                className="flex items-start gap-4 rounded-3xl border border-[var(--home-border)] bg-[var(--home-card)] p-5 transition-all hover:border-[var(--home-ink)]">
-                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border border-[var(--home-border)] bg-[var(--home-soft)] text-[var(--home-ink)] opacity-80">
-                  {contact.icon}
+                className="group flex items-start gap-4 rounded-3xl border border-[var(--home-border)] bg-[var(--home-card)] p-5 transition-all hover:border-[var(--home-accent)] hover:bg-[var(--home-soft)]">
+                <div className="text-[var(--home-ink)] opacity-80 transition-opacity group-hover:opacity-100 flex items-center justify-center shrink-0 w-12 h-12">
+                  {React.isValidElement(contact.icon) ? React.cloneElement(contact.icon as React.ReactElement, { className: 'h-7 w-7' } as any) : contact.icon}
                 </div>
                 <div className="space-y-1 pt-0.5">
                   <p className="text-[11px] uppercase tracking-[0.35em] text-[var(--home-muted)]">{contact.type}</p>

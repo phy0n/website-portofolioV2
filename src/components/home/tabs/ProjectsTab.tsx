@@ -151,7 +151,7 @@ export default function ProjectsTab() {
       <div className="space-y-3">
         <p className="js-reveal text-[11px] uppercase tracking-[0.35em] text-[var(--home-muted)]">Projects</p>
         <h2 className="js-reveal text-2xl font-sans font-semibold text-[var(--home-ink)] sm:text-3xl">Personal Project</h2>
-        <p className="js-reveal max-w-2xl text-sm text-[var(--home-muted)]">
+        <p className="js-reveal max-w-4xl text-sm sm:text-base md:text-lg leading-relaxed text-[var(--home-muted)]">
           A focused set of projects with clear details and stable delivery.
         </p>
       </div>
@@ -171,7 +171,6 @@ export default function ProjectsTab() {
         ) : featuredProjects.length === 0 ? (
           <div className="rounded-3xl border border-[var(--home-border)] bg-[var(--home-card)] p-6">
             <p className="text-sm font-semibold text-[var(--home-ink)]">No projects yet.</p>
-            <p className="mt-1 text-xs text-[var(--home-muted)]">Add projects in Supabase to show them here.</p>
           </div>
         ) : (
           <div className="grid gap-4 md:grid-cols-2">
@@ -191,7 +190,7 @@ export default function ProjectsTab() {
                         alt={`${project.title} preview`}
                         fill
                         sizes="(max-width: 768px) 100vw, 50vw"
-                        className="object-cover transition duration-300 group-hover:scale-[1.02]"/>
+                        className="object-cover transition duration-300 group-hover:scale-[1.02]" />
                     ) : (
                       <div className="absolute inset-0 grid place-items-center text-[var(--home-ink)] opacity-40">
                         {renderProjectIcon(project.icon)}
@@ -283,7 +282,7 @@ export default function ProjectsTab() {
               <div
                 key={project.id}
                 className="js-reveal group relative flex flex-col overflow-hidden rounded-xl border border-[var(--home-border)] bg-[var(--home-soft)] p-6 sm:p-7 transition-all duration-500 hover:-translate-y-1 hover:border-white/20 hover:shadow-[0_8px_30px_rgb(0,0,0,0.12)]">
-                
+
                 {/* Tech Top Highlight */}
                 <div className="absolute left-0 right-0 top-0 h-1 bg-[var(--home-border)] transition-colors duration-500 group-hover:bg-[var(--home-accent)]" />
 
@@ -298,11 +297,11 @@ export default function ProjectsTab() {
                     {project.status}
                   </span>
                 </div>
-                
+
                 <p className="text-sm leading-relaxed text-[var(--home-muted)] group-hover:text-[var(--home-ink)]/90 transition-colors duration-300">
                   {project.description}
                 </p>
-                
+
                 {project.highlights.length > 0 ? (
                   <ul className="space-y-2 text-xs text-[var(--home-muted)] mt-4">
                     {project.highlights.slice(0, 2).map((highlight) => (

@@ -81,7 +81,7 @@ const SpotifyCard = ({
   }, [now, spotify.timestamps?.end, spotify.timestamps?.start]);
 
   return (
-    <div className="flex flex-col w-full p-4 rounded-xl bg-[#111214] border border-[#1e1f22] shadow-xl text-left">
+    <div className="flex flex-col w-full p-4 rounded-xl bg-[var(--home-card)] border border-[var(--home-border)] text-left">
       <div className="flex items-center justify-between gap-3 mb-3">
         <p className="text-[11px] font-bold uppercase tracking-wider text-[#1DB954] flex items-center gap-1.5">
           <FaSpotify className="h-3.5 w-3.5" />
@@ -92,14 +92,14 @@ const SpotifyCard = ({
             href={spotify.songUrl}
             target="_blank"
             rel="noreferrer"
-            className="text-[10px] uppercase tracking-wider text-zinc-500 transition hover:text-[#1DB954] font-bold">
+            className="text-[10px] uppercase tracking-wider text-[var(--home-muted)] opacity-70 transition hover:text-[#1DB954] hover:opacity-100 font-bold">
             Open
           </a>
         )}
       </div>
 
       <div className="flex items-start gap-3.5">
-        <div className="relative w-16 h-16 shrink-0 overflow-hidden rounded-xl bg-[#2b2d31] shadow-inner">
+        <div className="relative w-16 h-16 shrink-0 overflow-hidden rounded-xl bg-[var(--home-soft)] shadow-inner">
           {spotify.albumArtUrl ? (
             <Image
               src={spotify.albumArtUrl}
@@ -120,29 +120,29 @@ const SpotifyCard = ({
               href={spotify.songUrl}
               target="_blank"
               rel="noreferrer"
-              className="block truncate text-[15px] font-bold text-zinc-100 transition hover:text-[#1DB954] leading-tight mb-0.5"
+              className="block truncate text-[15px] font-bold text-[var(--home-ink)] transition hover:text-[#1DB954] leading-tight mb-0.5"
               title={spotify.song}>
               {spotify.song}
             </a>
           ) : (
-            <p className="truncate text-[15px] font-bold text-zinc-100 leading-tight mb-0.5" title={spotify.song}>
+            <p className="truncate text-[15px] font-bold text-[var(--home-ink)] leading-tight mb-0.5" title={spotify.song}>
               {spotify.song}
             </p>
           )}
 
-          <p className="truncate text-[13px] text-zinc-300 leading-snug" title={spotify.artist}>
+          <p className="truncate text-[13px] text-[var(--home-muted)] leading-snug" title={spotify.artist}>
             by {spotify.artist}
           </p>
-          <p className="truncate text-[13px] text-zinc-400 leading-snug" title={spotify.album}>
+          <p className="truncate text-[13px] text-[var(--home-muted)] leading-snug" title={spotify.album}>
             on {spotify.album}
           </p>
 
           {progress !== null && elapsedLabel && durationLabel && (
             <div className="mt-2 space-y-1.5 w-full">
-              <div className="h-1.5 w-full overflow-hidden rounded-full bg-zinc-800">
+              <div className="h-1.5 w-full overflow-hidden rounded-full bg-[var(--home-soft)] border border-[var(--home-border)]/50">
                 <div className="h-full rounded-full bg-[#1DB954]" style={{ width: `${Math.round(progress * 100)}%` }} />
               </div>
-              <div className="flex items-center justify-between text-[11px] font-medium text-zinc-400 tabular-nums">
+              <div className="flex items-center justify-between text-[11px] font-medium text-[var(--home-muted)] tabular-nums">
                 <span>{elapsedLabel}</span>
                 <span>{durationLabel}</span>
               </div>
@@ -164,14 +164,14 @@ const ActivityCard = ({ activity, now }: { activity: DiscordActivity; now: numbe
   }, [activity.timestamps?.start, now]);
 
   return (
-    <div className="flex flex-col w-full p-4 rounded-xl bg-[#111214] border border-[#1e1f22] shadow-xl text-left">
+    <div className="flex flex-col w-full p-4 rounded-xl bg-[var(--home-card)] border border-[var(--home-border)] text-left">
       <div className="flex items-center gap-2 mb-3">
-        <Icon className={`h-3.5 w-3.5 text-zinc-400`} />
-        <p className="text-[11px] font-bold uppercase tracking-wider text-zinc-300">{label}</p>
+        <Icon className={`h-3.5 w-3.5 text-[var(--home-muted)]`} />
+        <p className="text-[11px] font-bold uppercase tracking-wider text-[var(--home-muted)]">{label}</p>
       </div>
 
       <div className="flex items-start gap-3.5">
-        <div className="relative w-16 h-16 shrink-0 overflow-hidden rounded-xl bg-[#2b2d31] shadow-inner">
+        <div className="relative w-16 h-16 shrink-0 overflow-hidden rounded-xl bg-[var(--home-soft)] shadow-inner">
           {activity.largeImage ? (
             <Image
               src={activity.largeImage}
@@ -187,31 +187,31 @@ const ActivityCard = ({ activity, now }: { activity: DiscordActivity; now: numbe
               sizes="64px"
               className="object-cover"/>
           ) : (
-            <div className="flex h-full w-full items-center justify-center text-zinc-500">
+            <div className="flex h-full w-full items-center justify-center text-[var(--home-muted)] opacity-50">
               <Icon className="h-6 w-6" />
             </div>
           )}
 
           {activity.smallImage && (
-            <div className="absolute -bottom-1 -right-1 h-6 w-6 overflow-hidden rounded-full border-2 border-[#111214] bg-[#2b2d31]">
+            <div className="absolute -bottom-1 -right-1 h-6 w-6 overflow-hidden rounded-full border-2 border-[var(--home-card)] bg-[var(--home-soft)]">
               <Image src={activity.smallImage} alt="" fill sizes="24px" className="object-cover" />
             </div>
           )}
         </div>
 
         <div className="flex flex-col flex-grow min-w-0 pt-0.5">
-          <p className="truncate text-[15px] font-bold text-zinc-100 leading-tight mb-0.5" title={activity.name}>
+          <p className="truncate text-[15px] font-bold text-[var(--home-ink)] leading-tight mb-0.5" title={activity.name}>
             {activity.name}
           </p>
 
           {activity.details && (
-            <p className="truncate text-[13px] text-zinc-300 leading-snug" title={activity.details ?? undefined}>
+            <p className="truncate text-[13px] text-[var(--home-muted)] leading-snug" title={activity.details ?? undefined}>
               {activity.details}
             </p>
           )}
 
           {activity.state && (
-            <p className="truncate text-[13px] text-zinc-300 leading-snug" title={activity.state ?? undefined}>
+            <p className="truncate text-[13px] text-[var(--home-muted)] leading-snug" title={activity.state ?? undefined}>
               {activity.state}
             </p>
           )}

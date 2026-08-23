@@ -31,7 +31,7 @@ export default function EducationCard({ className, id }: { className?: string; i
             const number = String(index + 1).padStart(2, '0');
             return (
               <div key={row.id} className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-0 md:grid-cols-[auto_14px_1fr]">
-                <div className="row-span-4 pt-1 text-xs uppercase tracking-[0.35em] text-[var(--muted)] opacity-70">
+                <div className="row-span-4 pt-1.5 text-xs uppercase tracking-[0.35em] text-[var(--muted)] opacity-70">
                   {number}
                 </div>
                 
@@ -42,7 +42,7 @@ export default function EducationCard({ className, id }: { className?: string; i
                 
                 <div className="flex flex-wrap items-center gap-3">
                   <span className="md:hidden h-2.5 w-2.5 rounded-full bg-[var(--accent)]" />
-                  <h3 className="text-lg font-sans font-semibold text-[var(--ui-foreground)]">{row.degree}</h3>
+                  <h3 className="text-lg font-sans font-semibold text-[var(--ui-foreground)] !mb-0 leading-none">{row.degree}</h3>
                   <span className="rounded-full border border-[var(--home-border)] bg-[var(--home-card)] px-3 py-1 text-xs text-[var(--muted)]">
                     {row.period}
                   </span>

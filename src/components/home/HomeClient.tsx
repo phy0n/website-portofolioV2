@@ -141,8 +141,8 @@ export default function HomeClient({ discordUserId, profileImageUrl, tools }: Ho
                 {DISPLAY_NAME}
               </h1>
               <div className="space-y-2">
-                <p className="text-sm font-semibold text-[var(--home-ink)]">{HERO_DEGREE}</p>
-                <p className="max-w-xl text-sm leading-relaxed text-[var(--home-muted)]">{HERO_TAGLINE}</p>
+                <p className="text-base font-semibold text-[var(--home-ink)] md:text-lg">{HERO_DEGREE}</p>
+                <p className="max-w-xl text-base leading-relaxed text-[var(--home-muted)] md:text-lg">{HERO_TAGLINE}</p>
               </div>
               <div className="flex flex-wrap items-center gap-2 pt-1">
                 {SOCIAL_MEDIA.map((social) => (
@@ -185,7 +185,7 @@ export default function HomeClient({ discordUserId, profileImageUrl, tools }: Ho
                   <h2 className="js-reveal text-2xl font-sans font-semibold text-[var(--home-ink)] sm:text-3xl">
                     Spoken Languages
                   </h2>
-                  <p className="js-reveal max-w-2xl text-sm text-[var(--home-muted)]">
+                  <p className="js-reveal max-w-4xl text-sm sm:text-base md:text-lg leading-relaxed text-[var(--home-muted)]">
                     Languages I can speak and write.
                   </p>
                 </div>
@@ -203,7 +203,7 @@ export default function HomeClient({ discordUserId, profileImageUrl, tools }: Ho
                   <h2 className="js-reveal text-2xl font-sans font-semibold text-[var(--home-ink)] sm:text-3xl">
                     Education
                   </h2>
-                  <p className="js-reveal max-w-2xl text-sm text-[var(--home-muted)]">
+                  <p className="js-reveal max-w-4xl text-sm sm:text-base md:text-lg leading-relaxed text-[var(--home-muted)]">
                     My academic background and formal education.
                   </p>
                 </div>
@@ -232,7 +232,7 @@ export default function HomeClient({ discordUserId, profileImageUrl, tools }: Ho
                   <h2 className="js-reveal text-2xl font-sans font-semibold text-[var(--home-ink)] sm:text-3xl">
                     Latest Posts
                   </h2>
-                  <p className="js-reveal max-w-2xl text-sm text-[var(--home-muted)]">
+                  <p className="js-reveal max-w-4xl text-sm sm:text-base md:text-lg leading-relaxed text-[var(--home-muted)]">
                     Recent updates and short reads from the blog.
                   </p>
                 </div>

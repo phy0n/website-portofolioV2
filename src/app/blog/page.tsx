@@ -75,14 +75,14 @@ export default async function BlogPage({
                 <p className="text-xs text-[var(--home-muted)] opacity-50">Latest posts and short reads.</p>
               </div>
 
-              <div className="rounded-3xl border border-[var(--home-border)] bg-[var(--home-soft)] p-6">
+              <div className="mt-4">
                 <h2 className="text-sm font-semibold text-[var(--home-ink)]">Posts</h2>
                 <p className="mt-3 text-sm text-[var(--home-muted)] opacity-50">No blog posts yet.</p>
               </div>
             </section>
 
             <aside className="space-y-6 lg:col-span-5 lg:sticky lg:top-24 lg:self-start lg:max-h-[calc(100vh-6rem)] lg:overflow-auto hide-scrollbar">
-              <div className="rounded-3xl border border-[var(--home-border)] bg-[var(--home-soft)] p-6">
+              <div className="mt-4">
                 <h2 className="text-sm font-semibold text-[var(--home-ink)]">Quotes</h2>
                 <p className="mt-3 text-sm text-[var(--home-muted)] opacity-50">No quotes yet.</p>
               </div>
@@ -182,7 +182,7 @@ export default async function BlogPage({
               </div>
             </div>
 
-            <div className="rounded-3xl border border-[var(--home-border)] bg-[var(--home-soft)] p-6">
+            <div className="mt-6">
               {blogRows.length === 0 ? (
                 <p className="text-sm text-[var(--home-muted)] opacity-50">No blog posts yet.</p>
               ) : (
@@ -266,13 +266,13 @@ export default async function BlogPage({
               ) : null}
             </div>
 
-            <div className="rounded-3xl border border-[var(--home-border)] bg-[var(--home-soft)] p-6">
+            <div className="mt-6">
               {quoteRows.length === 0 ? (
                 <p className="text-sm text-[var(--home-muted)] opacity-50">No quotes yet.</p>
               ) : (
-                <div className="max-h-[420px] space-y-4 overflow-y-auto pr-1 hide-scrollbar">
+                <div className="max-h-[600px] space-y-4 overflow-y-auto pr-1 hide-scrollbar">
                   {quoteRows.map((quote) => (
-                    <div key={quote.id} className="rounded-2xl border border-[var(--home-border)] bg-[var(--home-card)] p-4">
+                    <div key={quote.id} className="rounded-3xl border border-[var(--home-border)] bg-[var(--home-soft)] p-5 transition-all hover:-translate-y-0.5 hover:shadow-lg">
                       <p className="text-sm text-[var(--home-muted)] opacity-75 line-clamp-4">&ldquo;{quote.text}&rdquo;</p>
                       <div className="mt-2 flex items-center justify-between gap-3">
                         {quote.author ? <p className="text-xs text-[var(--home-muted)] opacity-40">by: {quote.author}</p> : <span />}

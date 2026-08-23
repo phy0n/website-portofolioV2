@@ -64,7 +64,7 @@ export default function ExperienceTab() {
         <h2 className="js-reveal text-2xl font-sans font-semibold text-[var(--home-ink)] sm:text-3xl">
           Focused on community work
         </h2>
-        <p className="js-reveal max-w-2xl text-sm text-[var(--home-muted)]">
+        <p className="js-reveal max-w-4xl text-sm sm:text-base md:text-lg leading-relaxed text-[var(--home-muted)]">
           Roles that prioritize clean delivery, steady collaboration, and thoughtful outcomes.
         </p>
       </div>
@@ -80,16 +80,8 @@ export default function ExperienceTab() {
             return (
               <div
                 key={exp.id}
-                className="js-reveal group relative flex flex-col justify-between overflow-hidden rounded-2xl border border-[var(--home-border)] bg-[var(--home-soft)] p-6 sm:p-8 transition-all duration-500 hover:-translate-y-1 hover:bg-[#1a1a1a] hover:shadow-[0_8px_30px_rgb(0,0,0,0.12)]">
-                
-                {/* Foolproof Left Accent Border */}
+                className="js-reveal group relative flex flex-col justify-between overflow-hidden rounded-2xl border border-[var(--home-border)] bg-[var(--home-soft)] p-6 sm:p-8 transition-all duration-500">
                 <div className="absolute left-0 top-0 bottom-0 w-1.5 bg-[var(--home-accent)]" />
-
-                {/* Premium Number Watermark */}
-                <div className="absolute -right-4 -top-6 select-none text-[120px] font-black text-[var(--home-bg)] opacity-50 group-hover:opacity-80 transition-opacity duration-500">
-                  {number}
-                </div>
-
                 <div className="relative z-10 flex flex-col">
                   <div className="space-y-1.5">
                     <div className="flex items-center gap-3">
@@ -98,7 +90,7 @@ export default function ExperienceTab() {
                       </span>
                       <h3 className="text-xl font-sans font-bold text-[var(--home-ink)] !mb-0 leading-none">{exp.role}</h3>
                     </div>
-                    
+
                     <div className="flex flex-wrap items-center gap-2 text-sm font-medium text-[var(--home-muted)]">
                       <Briefcase className="h-4 w-4 text-[var(--home-accent)]" />
                       <span className="text-[var(--home-ink)]">{exp.company}</span>

@@ -45,14 +45,14 @@ export default function AboutTab() {
         <h2 className="js-reveal text-2xl font-sans font-semibold text-[var(--home-ink)] sm:text-3xl">
           Computer Science Journey
         </h2>
-        <p className="js-reveal max-w-2xl text-sm text-[var(--home-muted)]">
+        <p className="js-reveal max-w-4xl text-sm sm:text-base md:text-lg leading-relaxed text-[var(--home-muted)]">
           I am Phion Rushandle, a Computer Science Enthusiast. My passion lies in understanding
           systems from the ground up unraveling the magic behind the screen. This is the
           mental map of how I systematically deconstructed and learned the world of computing,
           from global networks down to microscopic logic gates.
         </p>
       </div>
-
+      {/* 
       <div className="space-y-10 py-2">
         <div className="js-reveal max-w-2xl space-y-3">
           <div className="flex items-center gap-2">
@@ -94,7 +94,7 @@ export default function AboutTab() {
             );
           })}
         </div>
-      </div>
+      </div> */}
     </div>
   );
 }

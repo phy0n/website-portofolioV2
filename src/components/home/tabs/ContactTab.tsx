@@ -36,7 +36,7 @@ export default function ContactTab() {
         <h2 className="js-reveal text-2xl font-sans font-semibold text-[var(--home-ink)] sm:text-3xl">
           Let&apos;s talk
         </h2>
-        <p className="js-reveal text-sm leading-relaxed text-[var(--home-muted)] sm:text-base">
+        <p className="js-reveal max-w-4xl text-sm sm:text-base md:text-lg leading-relaxed text-[var(--home-muted)]">
           Projects, collabs, or questions.
         </p>
       </div>

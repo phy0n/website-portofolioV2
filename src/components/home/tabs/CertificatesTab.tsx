@@ -90,7 +90,7 @@ export default function CertificatesTab() {
         <h2 className="js-reveal text-2xl font-sans font-semibold text-[var(--home-ink)] sm:text-3xl">
           Personal Certificate
         </h2>
-        <p className="js-reveal max-w-2xl text-sm text-[var(--home-muted)]">
+        <p className="js-reveal max-w-4xl text-sm sm:text-base md:text-lg leading-relaxed text-[var(--home-muted)]">
           Formal learning that supports my daily build process.
         </p>
       </div>
@@ -105,10 +105,10 @@ export default function CertificatesTab() {
             return (
               <div
                 key={cert.id}
-                className="js-reveal group relative flex flex-col sm:flex-row gap-5 overflow-hidden rounded-2xl border border-[var(--home-border)] bg-[var(--home-card)] p-6 transition-all duration-300 hover:-translate-y-1 hover:border-[var(--home-ink)]/30 hover:bg-[var(--home-soft)] hover:shadow-lg hover:shadow-black/20">
-                
+                className="js-reveal group relative flex flex-col sm:flex-row gap-5 overflow-hidden rounded-2xl border border-[var(--home-border)] bg-[var(--home-card)] p-6 transition-all duration-300">
+
                 {renderCertificateIcon(
-                  cert.icon, 
+                  cert.icon,
                   "shrink-0 h-10 w-10 text-[var(--home-muted)] group-hover:text-[var(--home-accent)] transition-colors duration-300 mt-1"
                 )}
 
@@ -119,7 +119,7 @@ export default function CertificatesTab() {
                       {cert.status}
                     </span>
                   </div>
-                  
+
                   <div className="flex items-center gap-2 text-sm font-medium">
                     <span className="text-[var(--home-accent)]">{cert.issuer}</span>
                     <span className="text-[var(--home-muted)] opacity-50">•</span>
