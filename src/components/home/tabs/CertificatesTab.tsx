@@ -29,23 +29,24 @@ const normalizeCertificate = (value: any): CertificateRow | null => {
   return { id, title, issuer, date, status, description, image, icon };
 };
 
-const renderCertificateIcon = (icon?: string | null) => {
+const renderCertificateIcon = (icon?: string | null, className?: string) => {
+  const defaultClass = className || "h-4 w-4";
   switch (icon) {
     case 'BadgeCheck':
-      return <BadgeCheck className="h-4 w-4" />;
+      return <BadgeCheck className={defaultClass} />;
     case 'GraduationCap':
-      return <GraduationCap className="h-4 w-4" />;
+      return <GraduationCap className={defaultClass} />;
     case 'BookOpen':
-      return <BookOpen className="h-4 w-4" />;
+      return <BookOpen className={defaultClass} />;
     case 'FileText':
-      return <FileText className="h-4 w-4" />;
+      return <FileText className={defaultClass} />;
     case 'Star':
-      return <Star className="h-4 w-4" />;
+      return <Star className={defaultClass} />;
     case 'Trophy':
-      return <Trophy className="h-4 w-4" />;
+      return <Trophy className={defaultClass} />;
     case 'Award':
     default:
-      return <Award className="h-4 w-4" />;
+      return <Award className={defaultClass} />;
   }
 };
 
@@ -87,7 +88,7 @@ export default function CertificatesTab() {
       <div className="space-y-3">
         <p className="js-reveal text-[11px] uppercase tracking-[0.35em] text-[var(--home-muted)]">Certificates</p>
         <h2 className="js-reveal text-2xl font-sans font-semibold text-[var(--home-ink)] sm:text-3xl">
-          Personal Ceritificate
+          Personal Certificate
         </h2>
         <p className="js-reveal max-w-2xl text-sm text-[var(--home-muted)]">
           Formal learning that supports my daily build process.
@@ -106,9 +107,10 @@ export default function CertificatesTab() {
                 key={cert.id}
                 className="js-reveal group relative flex flex-col sm:flex-row gap-5 overflow-hidden rounded-2xl border border-[var(--home-border)] bg-[var(--home-card)] p-6 transition-all duration-300 hover:-translate-y-1 hover:border-[var(--home-ink)]/30 hover:bg-[var(--home-soft)] hover:shadow-lg hover:shadow-black/20">
                 
-                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-[var(--home-soft)] border border-[var(--home-border)] text-[var(--home-ink)] group-hover:border-[var(--home-accent)] group-hover:text-[var(--home-accent)] transition-colors duration-300">
-                  {renderCertificateIcon(cert.icon)}
-                </div>
+                {renderCertificateIcon(
+                  cert.icon, 
+                  "shrink-0 h-10 w-10 text-[var(--home-muted)] group-hover:text-[var(--home-accent)] transition-colors duration-300 mt-1"
+                )}
 
                 <div className="flex-1 min-w-0">
                   <div className="flex flex-wrap items-start justify-between gap-3 mb-2">

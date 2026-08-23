@@ -56,7 +56,7 @@ export default function AboutTab() {
       <div className="space-y-10 py-2">
         <div className="js-reveal max-w-2xl space-y-3">
           <div className="flex items-center gap-2">
-            <p className="text-[11px] font-bold uppercase tracking-[0.35em] text-[var(--home-accent)]">
+            <p className="text-[11px] font-bold uppercase tracking-[0.35em] text-[var(--home-ink)]">
               Path of Exploration
             </p>
           </div>
@@ -74,13 +74,11 @@ export default function AboutTab() {
                 className="js-reveal group relative z-0 transition-transform duration-500 hover:-translate-y-1 before:pointer-events-none before:absolute before:right-0 before:top-1/2 before:-z-10 before:-translate-y-1/2 before:text-[clamp(80px,10vw,120px)] before:font-black before:leading-none before:tracking-tighter before:text-[var(--home-muted)] before:opacity-15 before:content-[attr(data-number)]"
               >
 
-                {/* Subtle Hover Gradient - Optimized for GPU Performance */}
-                <div className="pointer-events-none absolute inset-0 -z-20 bg-gradient-to-br from-[var(--home-accent)]/5 to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
-
+                {/* Subtle Hover effect removed per user request */}
                 <div className="relative z-10 space-y-4 py-4">
                   <div>
-                    <p className="flex items-center gap-3 text-[11px] font-bold uppercase tracking-[0.2em] text-[var(--home-accent)]">
-                      <span className="h-px w-6 bg-[var(--home-accent)]" />
+                    <p className="flex items-center gap-3 text-[11px] font-bold uppercase tracking-[0.2em] text-[var(--home-muted)]">
+                      <span className="h-px w-6 bg-white/20" />
                       Phase {String(index + 1).padStart(2, '0')}
                     </p>
                     <h3 className="mt-3 text-xl font-bold tracking-tight text-[var(--home-ink)] sm:text-2xl">

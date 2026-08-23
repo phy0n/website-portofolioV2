@@ -137,10 +137,10 @@ export default function SkillsTab() {
         {allSkills.map((skill) => (
           <div
             key={skill.name}
-            className="js-reveal group relative flex aspect-square cursor-default flex-col items-center justify-center gap-3 overflow-hidden rounded-2xl border border-[var(--home-border)] bg-[var(--home-card)]/30 p-2 backdrop-blur-sm transition-all duration-300 hover:z-10 hover:scale-110 hover:border-[var(--home-accent)]/50 hover:bg-[var(--home-card)]/80 hover:shadow-lg"
+            className="js-reveal group relative flex aspect-square cursor-default flex-col items-center justify-center gap-3 overflow-hidden rounded-2xl border border-[var(--home-border)] bg-[var(--home-card)]/30 p-2 backdrop-blur-sm transition-all duration-300 hover:border-[var(--home-accent)]/50 hover:bg-[var(--home-card)]/80"
           >
             <span
-              className={`relative z-10 text-3xl transition-transform duration-500 group-hover:scale-110 ${skill.tone}`}
+              className={`relative z-10 text-3xl transition-transform duration-500 ${skill.tone}`}
             >
               {skill.icon}
             </span>

@@ -17,6 +17,7 @@ import CustomMusicPlayerWidget from '@/components/home/CustomMusicPlayerWidget';
 import MinecraftProfileWidget from '@/components/home/MinecraftProfileWidget';
 import ValorantProfileWidget from '@/components/home/ValorantProfileWidget';
 import EnterScreen from '@/components/home/EnterScreen';
+import GamesPlayedWidget from '@/components/home/GamesPlayedWidget';
 
 export default async function Page() {
   const { profileImageUrl } = await getSiteProfile();
@@ -100,7 +101,7 @@ export default async function Page() {
           <aside className="hidden xl:flex w-[350px] flex-col gap-6 sticky top-24 pt-10 shrink-0">
             <DiscordServerWidget />
             {/* <RobloxProfileWidget /> */}
-            <CustomMusicPlayerWidget />
+            <GamesPlayedWidget />
             {/* <MinecraftProfileWidget /> */}
           </aside>
 
@@ -160,13 +161,15 @@ export default async function Page() {
                 <FaArrowRight className="text-sm opacity-70 transition-transform" />
               </Link>
             </div>
-            <div className="xl:hidden w-full mt-8">
+            <div className="xl:hidden w-full mt-8 flex flex-col gap-6">
               <CustomMusicPlayerWidget />
+              <GamesPlayedWidget />
             </div>
           </main>
 
           <aside className="hidden xl:flex w-[350px] flex-col gap-6 sticky top-24 pt-10 shrink-0">
             <SpotifyPlaylistWidget />
+            <CustomMusicPlayerWidget />
             <RandomImageWidget />
             {/* <ValorantProfileWidget /> */}
           </aside>

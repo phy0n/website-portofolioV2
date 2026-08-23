@@ -274,9 +274,7 @@ export default function ProjectsTab() {
               <div key={idx} className="h-24 rounded-xl border border-[var(--home-border)] bg-[var(--home-soft)] animate-pulse" />
             ))}
           </div>
-        ) : otherProjects.length === 0 ? (
-          <div className="js-reveal py-6 text-sm text-[var(--home-muted)]">No more projects available</div>
-        ) : (
+        ) : otherProjects.length === 0 ? null : (
           otherProjects.map((project, index) => {
             const caseSlug = caseStudyByProjectId.get(project.id) ?? null;
             const chips = project.stack.length > 0 ? project.stack : project.tags;

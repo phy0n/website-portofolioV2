@@ -52,8 +52,7 @@ export default function SpokenLanguagesCard({ className }: { className?: string 
                   transitionDelay: mounted ? delay : '0ms'
                 }}
               >
-                <div className="absolute -right-6 -top-6 h-24 w-24 rounded-full bg-red-500/10 blur-2xl transition-all duration-500" />
-
+                {/* Removed red blur gradient */}
                 <div className="relative z-10 flex flex-col gap-4">
                   {/* Header: Name, Label */}
                   <div className="flex items-end justify-between">
@@ -70,7 +69,7 @@ export default function SpokenLanguagesCard({ className }: { className?: string 
                   <div className="relative mt-2">
                     <div className="h-2 w-full overflow-hidden rounded-full bg-[var(--home-soft)] border border-[var(--home-border)]">
                       <div
-                        className="h-full rounded-full bg-[var(--accent)] shadow-[0_0_10px_rgba(209,74,74,0.35)] transition-[width] duration-1000 ease-out"
+                        className="h-full rounded-full bg-[var(--accent)] transition-[width] duration-1000 ease-out"
                         style={{ width: mounted ? `${level}%` : '0%' }}
                       />
                     </div>
