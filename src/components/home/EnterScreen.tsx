@@ -42,6 +42,7 @@ export default function EnterScreen() {
           loop 
           muted 
           playsInline 
+          preload="auto"
           className="absolute top-0 left-0 w-full h-full object-cover scale-105 pointer-events-none"
         >
           <source src="/video/background.mp4" type="video/mp4" />
