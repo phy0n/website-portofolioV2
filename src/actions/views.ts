@@ -14,8 +14,15 @@ export async function incrementAndGetViews() {
   const headersList = await headers();
   const forwardedFor = headersList.get('x-forwarded-for');
   const realIp = headersList.get('x-real-ip');
-  const ip = forwardedFor ? forwardedFor.split(',')[0] : (realIp || 'unknown-ip');
-  const ipHash = crypto.createHash('sha256').update(ip).digest('hex');
+  const cfIp = headersList.get('cf-connecting-ip');
+  
+  const ip = cfIp || (forwardedFor ? forwardedFor.split(',')[0].trim() : (realIp || 'unknown-ip'));
+  const userAgent = headersList.get('user-agent') || 'unknown-ua';
+  
+  // Combine IP and User-Agent to create a more unique identifier for each visitor,
+  // especially useful if behind a proxy that doesn't forward the real IP properly.
+  const identifier = `${ip}-${userAgent}`;
+  const ipHash = crypto.createHash('sha256').update(identifier).digest('hex');
 
   try {
     if (fs.existsSync(filePath)) {
