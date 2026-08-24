@@ -338,14 +338,14 @@ export default function BlogClient({
               </p>
             </div>
             <div className="lg:col-span-1 grid grid-cols-2 lg:grid-cols-1 gap-3 xs:gap-4">
-              <div className="group relative bg-[var(--home-soft)] backdrop-blur-sm border border-[var(--home-border)] hover:border-[var(--home-accent)] p-4 xs:p-5 transition-all duration-300 overflow-hidden">
+              <div className="group relative bg-[var(--home-soft)] backdrop-blur-sm border border-[var(--home-border)] hover:border-[var(--home-border)] p-4 xs:p-5 transition-all duration-300 overflow-hidden">
                 <div className="absolute inset-0 bg-[var(--home-card)] transition-all duration-300 backdrop-blur-sm"></div>
                 <div className="relative z-10">
                   <div className="text-2xl xs:text-3xl font-bold text-[var(--home-ink)] mb-1">{totalStories}</div>
                   <div className="text-[10px] xs:text-xs text-[var(--home-muted)] uppercase tracking-wider">Total Stories</div>
                 </div>
               </div>
-              <div className="group relative bg-[var(--home-soft)] backdrop-blur-sm border border-[var(--home-border)] hover:border-[var(--home-accent)] p-4 xs:p-5 transition-all duration-300 overflow-hidden">
+              <div className="group relative bg-[var(--home-soft)] backdrop-blur-sm border border-[var(--home-border)] hover:border-[var(--home-border)] p-4 xs:p-5 transition-all duration-300 overflow-hidden">
                 <div className="absolute inset-0 bg-[var(--home-card)] transition-all duration-300 backdrop-blur-sm"></div>
                 <div className="relative z-10">
                   <div className="text-2xl xs:text-3xl font-bold text-[var(--home-ink)] mb-1">{totalWords.toLocaleString()}</div>
@@ -695,7 +695,7 @@ export default function BlogClient({
                   {sortedQuotes.length > 0 ? (
                     <div className="mt-4 space-y-4 max-h-[calc(100vh-12rem)] overflow-y-auto hide-scrollbar pr-1">
                       {sortedQuotes.map((quote, index) => (
-                        <div key={`${quote.id}-${quote.date}-${index}`} className="group relative bg-[var(--home-card)] border border-[var(--home-border)] hover:border-[var(--home-accent)] rounded-2xl p-4 transition-all duration-300 overflow-hidden shadow-sm hover:shadow-md">
+                        <div key={`${quote.id}-${quote.date}-${index}`} className="group relative bg-[var(--home-card)] border border-[var(--home-border)] hover:border-[var(--home-border)] rounded-2xl p-4 transition-all duration-300 overflow-hidden shadow-sm hover:shadow-md">
                           <div className="absolute top-0 left-0 w-1 h-full bg-[var(--home-border)] group-hover:bg-[var(--home-accent)] transition-colors"></div>
                           <Quote className="absolute top-4 right-4 w-4 h-4 text-[var(--home-accent)] opacity-10 group-hover:opacity-30 transition-opacity" />
                           <p className="text-[10px] text-[var(--home-accent)] uppercase tracking-widest mb-2 font-mono">{formatQuoteDate(quote.date)}</p>

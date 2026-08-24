@@ -109,7 +109,7 @@ export default function GamesTab({
                   href="https://www.roblox.com/users/8883015179/profile"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="mt-4 inline-flex rounded-full border border-[var(--home-border)] px-4 py-2 text-xs uppercase tracking-[0.35em] text-[var(--home-ink)] transition hover:border-[var(--home-accent)]">
+                  className="mt-4 inline-flex rounded-full border border-[var(--home-border)] px-4 py-2 text-xs uppercase tracking-[0.35em] text-[var(--home-ink)] transition hover:border-[var(--home-border)]">
                   View profile
                 </a>
               </div>
@@ -119,7 +119,7 @@ export default function GamesTab({
               <p className="text-sm text-[var(--home-muted)]">Failed to load profile.</p>
               <button
                 onClick={onRetryRoblox}
-                className="inline-flex rounded-full border border-[var(--home-border)] px-4 py-2 text-xs uppercase tracking-[0.35em] text-[var(--home-ink)] transition hover:border-[var(--home-accent)]">
+                className="inline-flex rounded-full border border-[var(--home-border)] px-4 py-2 text-xs uppercase tracking-[0.35em] text-[var(--home-ink)] transition hover:border-[var(--home-border)]">
                 Retry
               </button>
             </div>
@@ -166,7 +166,7 @@ export default function GamesTab({
                   href={`https://namemc.com/profile/${encodeURIComponent(minecraftProfile.username)}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="mt-4 inline-flex rounded-full border border-[var(--home-border)] px-4 py-2 text-xs uppercase tracking-[0.35em] text-[var(--home-ink)] transition hover:border-[var(--home-accent)]">
+                  className="mt-4 inline-flex rounded-full border border-[var(--home-border)] px-4 py-2 text-xs uppercase tracking-[0.35em] text-[var(--home-ink)] transition hover:border-[var(--home-border)]">
                   View profile
                 </a>
               </div>
@@ -176,7 +176,7 @@ export default function GamesTab({
               <p className="text-sm text-[var(--home-muted)]">Failed to load profile.</p>
               <button
                 onClick={onRetryMinecraft}
-                className="inline-flex rounded-full border border-[var(--home-border)] px-4 py-2 text-xs uppercase tracking-[0.35em] text-[var(--home-ink)] transition hover:border-[var(--home-accent)]">
+                className="inline-flex rounded-full border border-[var(--home-border)] px-4 py-2 text-xs uppercase tracking-[0.35em] text-[var(--home-ink)] transition hover:border-[var(--home-border)]">
                 Retry
               </button>
             </div>

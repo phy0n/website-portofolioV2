@@ -492,7 +492,7 @@ export default function BlogDetailClient({
           <p className="text-[var(--home-muted)]">The story you&apos;re looking for doesn&apos;t exist.</p>
           <Link
             href="/blog"
-            className="inline-flex items-center gap-2 px-6 py-3 border border-[var(--home-border)] hover:border-[var(--home-accent)] transition-colors text-[var(--home-ink)]">
+            className="inline-flex items-center gap-2 px-6 py-3 border border-[var(--home-border)] hover:border-[var(--home-border)] transition-colors text-[var(--home-ink)]">
             <ArrowLeft className="w-4 h-4" />
             Back to Journal
           </Link>

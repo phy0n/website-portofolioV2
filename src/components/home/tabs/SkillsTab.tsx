@@ -129,7 +129,7 @@ export default function SkillsTab() {
             Development Stack & Instrumentation
           </h2>
           <p className="js-reveal max-w-4xl text-sm sm:text-base md:text-lg leading-relaxed text-[var(--home-muted)]">
-            A comprehensive mapping of my technical proficiencies within a unified matrix.
+            I am Phion Rushandle, a Computer Science Enthusiast. My passion lies in understanding systems from the ground up unraveling the magic behind the screen. This is the mental map of how I systematically deconstructed and learned the world of computing, from global networks down to microscopic logic gates.
           </p>
         </div>
 
@@ -145,7 +145,7 @@ export default function SkillsTab() {
                   return (
                     <div
                       key={skill.name}
-                      className="js-reveal group relative flex aspect-square cursor-default flex-col items-center justify-center gap-3 overflow-hidden rounded-2xl border border-[var(--home-border)] bg-[var(--home-card)]/30 p-2 backdrop-blur-sm transition-all duration-300 hover:border-[var(--home-accent)]/50 hover:bg-[var(--home-card)]/80"
+                      className="js-reveal group relative flex aspect-square cursor-default flex-col items-center justify-center gap-3 overflow-hidden rounded-2xl border border-[var(--home-border)] bg-[var(--home-card)]/30 p-2 backdrop-blur-sm transition-all duration-300 hover:border-[var(--home-border)] hover:bg-[var(--home-card)]/80"
                     >
                       <span
                         className={`relative z-10 text-3xl transition-transform duration-500 ${tone}`}

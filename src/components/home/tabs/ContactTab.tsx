@@ -50,7 +50,7 @@ export default function ContactTab() {
             <Wrapper
               key={contact.type}
               {...(isLink ? { href: contact.url, target: contact.url.startsWith('http') ? '_blank' : undefined, rel: contact.url.startsWith('http') ? 'noreferrer' : undefined } : {})}
-              className="group relative flex min-h-[220px] flex-col justify-between overflow-hidden rounded-[2rem] border border-[var(--home-border)] bg-[var(--home-card)]/30 backdrop-blur-sm p-6 transition-all duration-300 hover:border-[var(--home-accent)]/50 hover:bg-[var(--home-card)]/80"
+              className="group relative flex min-h-[220px] flex-col justify-between overflow-hidden rounded-[2rem] border border-[var(--home-border)] bg-[var(--home-card)]/30 backdrop-blur-sm p-6 transition-all duration-300 hover:border-[var(--home-border)] hover:bg-[var(--home-card)]/80"
             >
               <div className="flex items-start justify-between">
                 <div className="flex shrink-0 items-center justify-center text-[var(--home-accent)] transition-colors duration-300">
