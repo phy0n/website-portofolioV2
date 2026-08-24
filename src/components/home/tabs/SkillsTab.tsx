@@ -120,37 +120,49 @@ export default function SkillsTab() {
   );
 
   return (
-    <div className="space-y-12 pb-12">
-      <div className="space-y-3">
-        <p className="js-reveal text-[11px] uppercase tracking-[0.35em] text-[var(--home-muted)]">
-          Technological Competencies
-        </p>
-        <h2 className="js-reveal text-2xl font-sans font-semibold text-[var(--home-ink)] sm:text-3xl">
-          Development Stack & Instrumentation
-        </h2>
-        <p className="js-reveal max-w-4xl text-sm sm:text-base md:text-lg leading-relaxed text-[var(--home-muted)]">
-          A comprehensive mapping of my technical proficiencies within a unified matrix.
-        </p>
-      </div>
+      <div className="space-y-12 pb-12">
+        <div className="space-y-3">
+          <p className="js-reveal text-[11px] uppercase tracking-[0.35em] text-[var(--home-muted)]">
+            Technological Competencies
+          </p>
+          <h2 className="js-reveal text-2xl font-sans font-semibold text-[var(--home-ink)] sm:text-3xl">
+            Development Stack & Instrumentation
+          </h2>
+          <p className="js-reveal max-w-4xl text-sm sm:text-base md:text-lg leading-relaxed text-[var(--home-muted)]">
+            A comprehensive mapping of my technical proficiencies within a unified matrix.
+          </p>
+        </div>
 
-      <div className="grid grid-cols-3 gap-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8">
-        {allSkills.map((skill) => (
-          <div
-            key={skill.name}
-            className="js-reveal group relative flex aspect-square cursor-default flex-col items-center justify-center gap-3 overflow-hidden rounded-2xl border border-[var(--home-border)] bg-[var(--home-card)]/30 p-2 backdrop-blur-sm transition-all duration-300 hover:border-[var(--home-accent)]/50 hover:bg-[var(--home-card)]/80"
-          >
-            <span
-              className={`relative z-10 text-3xl transition-transform duration-500 ${skill.tone}`}
-            >
-              {skill.icon}
-            </span>
-            
-            <span className="relative z-10 text-center text-[10px] font-semibold leading-tight text-[var(--home-muted)] transition-colors duration-300 group-hover:text-[var(--home-ink)]">
-              {skill.name}
-            </span>
-          </div>
-        ))}
+        <div className="flex flex-col gap-10">
+          {SKILL_GROUPS.map((group) => (
+            <div key={group.title} className="flex flex-col gap-4">
+              <h3 className="js-reveal text-sm font-semibold tracking-widest uppercase text-[var(--home-ink)]/70 pl-1">
+                {group.title}
+              </h3>
+              <div className="grid grid-cols-3 gap-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8">
+                {group.items.map((skill, index) => {
+                  const tone = group.tones[index % group.tones.length];
+                  return (
+                    <div
+                      key={skill.name}
+                      className="js-reveal group relative flex aspect-square cursor-default flex-col items-center justify-center gap-3 overflow-hidden rounded-2xl border border-[var(--home-border)] bg-[var(--home-card)]/30 p-2 backdrop-blur-sm transition-all duration-300 hover:border-[var(--home-accent)]/50 hover:bg-[var(--home-card)]/80"
+                    >
+                      <span
+                        className={`relative z-10 text-3xl transition-transform duration-500 ${tone}`}
+                      >
+                        {skill.icon}
+                      </span>
+
+                      <span className="relative z-10 text-center text-[10px] font-semibold leading-tight text-[var(--home-muted)] transition-colors duration-300 group-hover:text-[var(--home-ink)]">
+                        {skill.name}
+                      </span>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
-    </div>
   );
 }
