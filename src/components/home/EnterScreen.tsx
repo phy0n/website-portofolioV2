@@ -1,9 +1,6 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
-
-import { FaVideo } from 'react-icons/fa';
-
 const bgVideos = ['/video/background1.mp4', '/video/background2.mp4', '/video/background3.mp4'];
 
 export default function EnterScreen() {
@@ -94,25 +91,6 @@ export default function EnterScreen() {
         src="/music/music4.mp3"
         loop
         preload="auto"
-      />
-
-      {entered && (
-        <button
-          onClick={() => {
-            const nextIdx = (videoIndex + 1) % bgVideos.length;
-            setVideoIndex(nextIdx);
-            videoRefs.current[nextIdx]?.play().catch(console.error);
-            setTimeout(() => {
-              videoRefs.current[videoIndex]?.pause();
-            }, 1000);
-          }}
-          className="hidden md:flex cursor-pointer fixed bottom-8 right-8 z-[100] items-center gap-3 px-6 py-3 bg-black/60 backdrop-blur-md border border-white/10 rounded-full text-white/50 hover:text-white transition-all duration-500 shadow-2xl group"
-          title="Switch Background">
-          <FaVideo className="text-sm transition-transform duration-500 group-hover:scale-110" />
-          <span className="text-[11px] font-bold tracking-[0.2em] uppercase mt-[1px]">Next Scene</span>
-        </button>
-      )}
-
-    </>
+      />    </>
   );
 }
