@@ -9,29 +9,42 @@ export default function CustomMusicPlayerWidget() {
   const [duration, setDuration] = useState(0);
 
   useEffect(() => {
-    const audio = document.getElementById('bg-audio') as HTMLAudioElement;
-    
-    if (!audio) return;
+    let audio: HTMLAudioElement | null = null;
+    let pollInterval: NodeJS.Timeout;
 
     const updateState = () => {
+      if (!audio) return;
       setIsPlaying(!audio.paused);
       setProgress(audio.currentTime);
       setDuration(audio.duration || 0);
     };
 
-    // Update state immediately in case audio is already playing
-    updateState();
+    const attachListeners = () => {
+      audio = document.getElementById('bg-audio') as HTMLAudioElement;
+      if (audio) {
+        if (pollInterval) clearInterval(pollInterval);
+        
+        updateState();
+        audio.addEventListener('play', updateState);
+        audio.addEventListener('pause', updateState);
+        audio.addEventListener('timeupdate', updateState);
+        audio.addEventListener('loadedmetadata', updateState);
+      }
+    };
 
-    audio.addEventListener('play', updateState);
-    audio.addEventListener('pause', updateState);
-    audio.addEventListener('timeupdate', updateState);
-    audio.addEventListener('loadedmetadata', updateState);
+    attachListeners();
+    if (!audio) {
+      pollInterval = setInterval(attachListeners, 500);
+    }
 
     return () => {
-      audio.removeEventListener('play', updateState);
-      audio.removeEventListener('pause', updateState);
-      audio.removeEventListener('timeupdate', updateState);
-      audio.removeEventListener('loadedmetadata', updateState);
+      if (pollInterval) clearInterval(pollInterval);
+      if (audio) {
+        audio.removeEventListener('play', updateState);
+        audio.removeEventListener('pause', updateState);
+        audio.removeEventListener('timeupdate', updateState);
+        audio.removeEventListener('loadedmetadata', updateState);
+      }
     };
   }, []);
 
@@ -63,75 +76,52 @@ export default function CustomMusicPlayerWidget() {
   };
 
   return (
-    <div className="w-full rounded-2xl bg-black/80 backdrop-blur-md border border-white/10 p-4 shadow-xl overflow-hidden relative group">
-      <div className="flex items-center gap-3 mb-4 relative z-10">
-        <FaSpotify className="text-[#1DB954] text-xl" />
-        <span className="text-white/80 text-sm font-bold tracking-wide">Now Playing</span>
+    <div className="w-full p-5 overflow-hidden relative group flex items-center gap-4 transition-colors duration-300">
+      
+      {/* Album Art */}
+      <div className="relative w-14 h-14 rounded-xl overflow-hidden shadow-lg border border-white/10 flex-shrink-0">
+        <img src="/image/lazypaws.png" alt="Lazy Paws" className="w-full h-full object-cover" />
+        <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors"></div>
       </div>
 
-      <div className="flex items-center gap-4 mb-5 relative z-10">
-        <div className="w-16 h-16 rounded-lg overflow-hidden shadow-lg border border-white/10 flex-shrink-0">
-          <img src="/image/lazypaws.png" alt="Lazy Paws" className="w-full h-full object-cover" />
-        </div>
-        <div className="flex-1 min-w-0 pr-4">
-          <h4 className="text-white font-bold text-[16px] truncate leading-tight mb-1 hover:underline cursor-pointer">
+      {/* Track Info & Progress */}
+      <div className="flex-1 min-w-0 flex flex-col justify-center gap-1.5">
+        <div className="flex items-center gap-2">
+          <FaSpotify className="text-[#1DB954] text-xs flex-shrink-0" />
+          <h4 className="text-white/90 font-bold text-[13px] truncate leading-none">
             Lazy Paws
           </h4>
-          <p className="text-zinc-400 text-[13px] truncate">
-            Chill & Aesthetic Vibes
-          </p>
+        </div>
+        <p className="text-white/50 text-[11px] truncate leading-none">
+          Chill & Aesthetic Vibes
+        </p>
+
+        {/* Minimal Progress */}
+        <div className="flex items-center gap-2 mt-1">
+          <span className="text-[9px] text-white/40 font-medium w-6">{formatTime(progress)}</span>
+          <input
+            type="range"
+            min="0"
+            max={duration || 100}
+            value={progress}
+            onChange={handleSeek}
+            style={{
+              background: `linear-gradient(to right, #ffffff ${(progress / (duration || 1)) * 100}%, rgba(255,255,255,0.1) ${(progress / (duration || 1)) * 100}%)`
+            }}
+            className="flex-1 h-[2px] rounded-full appearance-none outline-none [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-2 [&::-webkit-slider-thumb]:h-2 [&::-webkit-slider-thumb]:bg-white [&::-webkit-slider-thumb]:rounded-full cursor-pointer hover:[&::-webkit-slider-thumb]:scale-150 transition-all"
+          />
+          <span className="text-[9px] text-white/40 font-medium w-6 text-right">{formatTime(duration)}</span>
         </div>
       </div>
 
-      <div className="flex flex-col gap-2 relative z-10">
-        <input
-          type="range"
-          min="0"
-          max={duration || 100}
-          value={progress}
-          onChange={handleSeek}
-          style={{
-            background: `linear-gradient(to right, #1DB954 ${(progress / (duration || 1)) * 100}%, rgba(255,255,255,0.2) ${(progress / (duration || 1)) * 100}%)`
-          }}
-          className="w-full h-1.5 rounded-full appearance-none outline-none [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-3 [&::-webkit-slider-thumb]:h-3 [&::-webkit-slider-thumb]:bg-white [&::-webkit-slider-thumb]:rounded-full cursor-pointer hover:[&::-webkit-slider-thumb]:scale-125 transition-all"
-        />
-        <div className="flex justify-between items-center text-[11px] text-zinc-400 font-medium">
-          <span>{formatTime(progress)}</span>
-          <span>{formatTime(duration)}</span>
-        </div>
-      </div>
+      {/* Play/Pause Button */}
+      <button 
+        onClick={togglePlay}
+        className="cursor-pointer w-10 h-10 flex-shrink-0 flex items-center justify-center bg-white/10 text-white rounded-full transition-all duration-300 active:scale-95 hover:bg-white/20"
+      >
+        {isPlaying ? <FaPause className="text-[13px]" /> : <FaPlay className="text-[13px] pl-0.5" />}
+      </button>
 
-      <div className="flex items-center justify-center gap-6 mt-2 relative z-10">
-        <button 
-          className="text-zinc-400 hover:text-white transition-colors"
-          onClick={() => {
-            const audio = document.getElementById('bg-audio') as HTMLAudioElement;
-            if(audio) audio.currentTime = 0;
-          }}
-        >
-          <FaStepBackward className="text-lg" />
-        </button>
-        
-        <button 
-          onClick={togglePlay}
-          className="w-12 h-12 flex items-center justify-center bg-white !text-black rounded-full hover:scale-105 active:scale-95 transition-all shadow-[0_0_15px_rgba(255,255,255,0.2)]"
-        >
-          {isPlaying ? <FaPause className="text-xl" /> : <FaPlay className="text-xl pl-1" />}
-        </button>
-        
-        <button 
-          className="text-zinc-400 hover:text-white transition-colors"
-          onClick={() => {
-            const audio = document.getElementById('bg-audio') as HTMLAudioElement;
-            if(audio) {
-              audio.currentTime = 0;
-              if (audio.paused) audio.play();
-            }
-          }}
-        >
-          <FaStepForward className="text-lg" />
-        </button>
-      </div>
     </div>
   );
 }

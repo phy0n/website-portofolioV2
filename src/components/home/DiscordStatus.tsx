@@ -57,19 +57,18 @@ export default function DiscordStatus() {
   if (!isPlayingSpotify && !currentActivity) return null;
 
   return (
-    <div className="w-full mb-8 flex flex-col items-center gap-3 animate-fade-in">
+    <div className="w-full flex flex-col items-center gap-3 animate-fade-in">
       {isPlayingSpotify && status.spotify && (
         <a
           href={`https://open.spotify.com/track/${status.spotify.track_id}`}
           target="_blank"
           rel="noopener noreferrer"
-          className="group relative flex w-full items-center gap-4 rounded-2xl p-4 bg-[#0d0d0d] border border-white/10 shadow-[0_4px_20px_-10px_rgba(0,0,0,0.5)] transition-colors duration-300 hover:border-[#1DB954]/50"
-        >
+          className="group relative flex w-full items-center gap-4 p-5 transition-colors duration-300">
           <div className="relative w-12 h-12 flex-shrink-0">
             <img
               src={status.spotify.album_art_url || ""}
               alt="Album Art"
-              className="rounded-lg object-cover w-full h-full"
+              className="w-full h-full rounded-xl object-cover shadow-lg border border-white/10"
             />
             <div className="absolute -bottom-1 -right-1 bg-[#0a0a0a] rounded-full p-0.5">
               <FaSpotify className="text-[#1DB954] text-xs" />
@@ -87,14 +86,14 @@ export default function DiscordStatus() {
       )}
 
       {currentActivity && !isPlayingSpotify && (
-        <div className="flex flex-col w-full p-4 rounded-2xl bg-[#0d0d0d] border border-white/10 shadow-[0_4px_20px_-10px_rgba(0,0,0,0.5)] text-left">
-          <p className="text-[11px] font-bold uppercase tracking-wider text-zinc-300 mb-3">Playing</p>
-          <div className="flex items-start gap-3.5">
-            <div className="relative w-16 h-16 flex-shrink-0 bg-[#2b2d31] rounded-xl flex items-center justify-center overflow-hidden shadow-inner">
+        <div className="flex flex-col w-full p-5 text-left transition-colors duration-300">
+          <p className="text-[10px] font-bold uppercase tracking-widest text-white/50 mb-3 ml-0.5">Playing</p>
+          <div className="flex items-start gap-4">
+            <div className="relative w-14 h-14 flex-shrink-0 bg-white/5 rounded-xl flex items-center justify-center overflow-hidden shadow-inner border border-white/5">
               {currentActivity.assets?.large_image ? (
                 <img
                   src={getAssetUrl(currentActivity.application_id, currentActivity.assets.large_image)}
-                  alt="Game Art"
+                  alt={currentActivity.assets.large_text || 'Activity'}
                   className="w-full h-full object-cover"
                 />
               ) : (

@@ -17,12 +17,9 @@ export default function ToolsMarquee({ tools }: { tools: string[] }) {
 
   return (
     <div className="relative flex w-full flex-col items-center justify-center overflow-hidden py-10 sm:py-14">
-      {/* Edge Fades */}
       <div className="pointer-events-none absolute left-0 top-0 z-10 h-full w-24 bg-gradient-to-r from-[var(--home-bg)] to-transparent sm:w-40" />
       <div className="pointer-events-none absolute right-0 top-0 z-10 h-full w-24 bg-gradient-to-l from-[var(--home-bg)] to-transparent sm:w-40" />
-
-      {/* Marquee Track */}
-      <div 
+      <div
         className="relative flex w-max animate-marquee items-center gap-12 sm:gap-20 pr-12 sm:pr-20 gpu-accelerated will-change-transform"
         style={{ animationDuration: '180s' }}>
         {duplicatedTools.map((tool, idx) => {
@@ -45,9 +42,8 @@ export default function ToolsMarquee({ tools }: { tools: string[] }) {
                 />
               </div>
               <span
-                className={`flex items-center gap-4 text-[11px] font-bold uppercase tracking-[0.3em] sm:text-xs ${
-                  isHighlight ? 'text-[var(--home-ink)]' : 'text-[var(--home-muted)]'
-                }`}>
+                className={`flex items-center gap-4 text-[11px] font-bold uppercase tracking-[0.3em] sm:text-xs ${isHighlight ? 'text-[var(--home-ink)]' : 'text-[var(--home-muted)]'
+                  }`}>
                 {text}
               </span>
             </React.Fragment>

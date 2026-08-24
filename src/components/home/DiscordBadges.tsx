@@ -24,27 +24,23 @@ export default function DiscordBadges() {
           setBadges(data.badges);
         }
       })
-      .catch(() => {});
+      .catch(() => { });
   }, []);
 
   return (
     <div className="flex items-center gap-1.5 justify-center">
-      {/* Clan Badge */}
       {primaryGuild?.badge && (
         <div className="flex items-center gap-1 bg-white/5 border border-white/5 px-2 py-0.5 rounded-full text-[10px] font-bold text-white tracking-wide cursor-pointer hover:bg-white/10 transition mr-1" title="Clan Badge">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img 
-            src={`https://cdn.discordapp.com/guild-tag-badges/${primaryGuild.identity_guild_id}/${primaryGuild.badge}.png`} 
-            alt="Clan Badge" 
+          <img
+            src={`https://cdn.discordapp.com/guild-tag-badges/${primaryGuild.identity_guild_id}/${primaryGuild.badge}.png`}
+            alt="Clan Badge"
             className="w-3.5 h-3.5 object-contain"
           />
           <span className="leading-none mt-[1px]">{primaryGuild.tag}</span>
         </div>
       )}
-      
-      {/* Dynamic Profile Badges */}
+
       {badges.map((badge) => (
-        /* eslint-disable-next-line @next/next/no-img-element */
         <img
           key={badge.id}
           src={`https://cdn.discordapp.com/badge-icons/${badge.icon}.png`}

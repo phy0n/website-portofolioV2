@@ -78,6 +78,8 @@ interface RootLayoutProps {
   children: React.ReactNode;
 }
 
+import GlobalTransition from "@/components/shared/GlobalTransition";
+
 export default function RootLayout({ children }: RootLayoutProps) {
   return (
     <html lang="en" suppressHydrationWarning>
@@ -86,6 +88,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
         className={`${geistSans.variable} ${geistMono.variable} ${nunito.variable} ${manrope.variable} antialiased`}>
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem disableTransitionOnChange>
           <GlobalGsap>{children}</GlobalGsap>
+          <GlobalTransition />
           <AnalyticsTracker />
           <VercelAnalytics />
         </ThemeProvider>

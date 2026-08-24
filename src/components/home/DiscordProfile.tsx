@@ -46,8 +46,8 @@ export default function DiscordProfile({ fallbackImageUrl }: { fallbackImageUrl:
   }
 
   return (
-    <div className="relative flex justify-center mb-5 w-32 h-32 mx-auto">
-      <div className="relative w-full h-full rounded-full border-4 border-[#0a0a0a] overflow-hidden bg-zinc-900 group shadow-2xl z-0">
+    <div className="relative flex justify-center mb-6 w-28 h-28 mx-auto">
+      <div className="relative w-full h-full rounded-full border-[3px] border-white/10 overflow-hidden bg-black/60 backdrop-blur-md group shadow-2xl z-0 ring-4 ring-black/20">
         {imageUrl ? (
           <img
             src={imageUrl}
@@ -55,23 +55,24 @@ export default function DiscordProfile({ fallbackImageUrl }: { fallbackImageUrl:
             className="w-full h-full object-cover"
           />
         ) : (
-          <div className="w-full h-full flex items-center justify-center text-4xl font-bold">
+          <div className="w-full h-full flex items-center justify-center text-3xl font-bold text-white/50">
             P
           </div>
         )}
       </div>
 
-      <div className={`absolute bottom-[2px] right-[2px] h-[28px] w-[28px] ${statusColor} bg-[#0a0a0a] rounded-full z-20 flex items-center justify-center p-1 transition-colors duration-500`}>
+      {/* Clean Status Dot */}
+      <div className={`absolute bottom-[4px] right-[4px] h-[24px] w-[24px] ${statusColor} bg-[#0a0a0a] rounded-full z-20 flex items-center justify-center p-[4px] ring-2 ring-black/40 transition-colors duration-500`}>
         {statusSvg}
       </div>
+      
+      {/* Avatar decoration */}
       {decoration && (
-        <div className="absolute inset-[-12%] z-10 pointer-events-none">
-          <img
-            src={`https://cdn.discordapp.com/avatar-decoration-presets/${decoration}.png?size=256`}
-            alt="Avatar Decoration"
-            className="w-full h-full object-contain"
-          />
-        </div>
+        <img
+          src={`https://cdn.discordapp.com/avatar-decoration-presets/${decoration}.png`}
+          alt="Avatar Decoration"
+          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] max-w-none z-10 pointer-events-none"
+        />
       )}
     </div>
   );
