@@ -1,3 +1,4 @@
+import { Suspense } from 'react';
 import "../styles/globals.css";
 import { Geist, Geist_Mono, Nunito, Manrope } from "next/font/google";
 import type { Metadata } from "next";
@@ -88,7 +89,9 @@ export default function RootLayout({ children }: RootLayoutProps) {
         className={`${geistSans.variable} ${geistMono.variable} ${nunito.variable} ${manrope.variable} antialiased`}>
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem disableTransitionOnChange>
           <GlobalGsap>{children}</GlobalGsap>
-          <GlobalTransition />
+          <Suspense fallback={null}>
+            <GlobalTransition />
+          </Suspense>
           <AnalyticsTracker />
           <VercelAnalytics />
         </ThemeProvider>
