@@ -182,7 +182,7 @@ export default function ProjectsTab() {
               return (
                 <div
                   key={project.id}
-                  className="group overflow-hidden rounded-3xl border border-[var(--home-border)] bg-[var(--home-card)]/30 backdrop-blur-sm shadow-[0_18px_40px_rgba(0,0,0,0.45)] transition-all duration-300 hover:border-[var(--home-border)] hover:bg-[var(--home-card)]/80">
+                  className="group overflow-hidden rounded-3xl border border-[var(--home-border)] bg-[var(--home-card)]/30 backdrop-blur-sm shadow-[0_18px_40px_rgba(0,0,0,0.45)] transition-all duration-300 hover:border-[var(--home-border)]">
                   <div className="relative h-36 w-full border-b border-[var(--home-border)] bg-[var(--home-soft)]">
                     {imageOk ? (
                       <Image
@@ -281,7 +281,7 @@ export default function ProjectsTab() {
             return (
               <div
                 key={project.id}
-                className="js-reveal group relative flex flex-col overflow-hidden rounded-xl border border-[var(--home-border)] bg-[var(--home-card)]/30 backdrop-blur-sm p-6 sm:p-7 transition-all duration-500 hover:-translate-y-1 hover:border-[var(--home-border)] hover:bg-[var(--home-card)]/80 hover:shadow-[0_8px_30px_rgb(0,0,0,0.12)]">
+                className="js-reveal group relative flex flex-col overflow-hidden rounded-xl border border-[var(--home-border)] bg-[var(--home-card)]/30 backdrop-blur-sm p-6 sm:p-7 transition-all duration-500 hover:-translate-y-1 hover:border-[var(--home-border)] hover:shadow-[0_8px_30px_rgb(0,0,0,0.12)]">
 
                 {/* Tech Top Highlight */}
                 <div className="absolute left-0 right-0 top-0 h-1 bg-[var(--home-border)] transition-colors duration-500 group-hover:bg-[var(--home-accent)]" />

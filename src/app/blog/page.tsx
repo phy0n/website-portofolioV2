@@ -272,16 +272,24 @@ export default async function BlogPage({
               ) : (
                 <div className="max-h-[600px] space-y-4 overflow-y-auto pr-1 hide-scrollbar">
                   {quoteRows.map((quote) => (
-                    <div key={quote.id} className="rounded-3xl border border-[var(--home-border)] bg-[var(--home-card)]/30 backdrop-blur-sm p-5 transition-all hover:-translate-y-0.5 hover:border-[var(--home-border)] hover:bg-[var(--home-card)]/80 hover:shadow-lg">
-                      <p className="text-sm text-[var(--home-muted)] opacity-75 line-clamp-4">&ldquo;{quote.text}&rdquo;</p>
-                      <div className="mt-2 flex items-center justify-between gap-3">
-                        {quote.author ? <p className="text-xs text-[var(--home-muted)] opacity-40">by: {quote.author}</p> : <span />}
+                    <div key={quote.id} className="group relative mb-6 pb-6 border-b border-[var(--home-border)] last:border-0 last:mb-0 last:pb-0 transition-all">
+                      <p className="text-sm sm:text-base text-[var(--home-ink)] opacity-80 leading-relaxed font-serif italic">
+                        &ldquo;{quote.text}&rdquo;
+                      </p>
+                      <div className="mt-4 flex items-center justify-between gap-3">
+                        {quote.author ? (
+                          <p className="text-[10px] sm:text-xs font-medium uppercase tracking-[0.2em] text-[var(--home-muted)] opacity-60">
+                            — {quote.author}
+                          </p>
+                        ) : (
+                          <span />
+                        )}
                         {isAdmin ? (
-                          <form action={deleteQuote}>
+                          <form action={deleteQuote} className="opacity-0 group-hover:opacity-100 transition-opacity">
                             <input type="hidden" name="id" value={quote.id} />
                             <button
                               type="submit"
-                              className="inline-flex items-center justify-center rounded-full border border-[var(--home-border)] bg-[var(--home-soft)] px-3 py-1.5 text-[11px] font-semibold text-[var(--home-ink)] opacity-70 hover:border-[var(--home-border)] hover:text-[var(--home-ink)]">
+                              className="text-[10px] font-semibold uppercase tracking-widest text-[var(--home-muted)] hover:text-red-500 transition-colors">
                               Delete
                             </button>
                           </form>

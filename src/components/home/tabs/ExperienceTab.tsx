@@ -62,10 +62,10 @@ export default function ExperienceTab() {
       <div className="space-y-3">
         <p className="js-reveal text-[11px] uppercase tracking-[0.35em] text-[var(--home-muted)]">Experience</p>
         <h2 className="js-reveal text-2xl font-sans font-semibold text-[var(--home-ink)] sm:text-3xl">
-          Focused on community work
+          Professional Experience
         </h2>
         <p className="js-reveal max-w-4xl text-sm sm:text-base md:text-lg leading-relaxed text-[var(--home-muted)]">
-          Roles that prioritize clean delivery, steady collaboration, and thoughtful outcomes.
+          A timeline of my roles, emphasizing continuous learning, steady collaboration, and impactful outcomes.
         </p>
       </div>
 
@@ -80,7 +80,7 @@ export default function ExperienceTab() {
             return (
               <div
                 key={exp.id}
-                className="js-reveal group relative flex flex-col justify-between overflow-hidden rounded-2xl border border-[var(--home-border)] bg-[var(--home-card)]/30 backdrop-blur-sm p-6 sm:p-8 transition-all duration-500 hover:border-[var(--home-border)] hover:bg-[var(--home-card)]/80">
+                className="js-reveal group relative flex flex-col justify-between overflow-hidden rounded-2xl border border-[var(--home-border)] bg-[var(--home-card)]/30 backdrop-blur-sm p-6 sm:p-8 transition-all duration-500 hover:border-[var(--home-border)]">
                 <div className="absolute left-0 top-0 bottom-0 w-1.5 bg-[var(--home-accent)]" />
                 <div className="relative z-10 flex flex-col">
                   <div className="space-y-1.5">

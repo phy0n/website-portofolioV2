@@ -43,13 +43,11 @@ export default function AboutTab() {
           Profile & Scope
         </p>
         <h2 className="js-reveal text-2xl font-sans font-semibold text-[var(--home-ink)] sm:text-3xl">
-          Computer Science Journey
+          About Me
         </h2>
         <p className="js-reveal max-w-4xl text-sm sm:text-base md:text-lg leading-relaxed text-[var(--home-muted)]">
           I am Phion Rushandle, a Computer Science Enthusiast. My passion lies in understanding
-          systems from the ground up unraveling the magic behind the screen. This is the
-          mental map of how I systematically deconstructed and learned the world of computing,
-          from global networks down to microscopic logic gates.
+          systems from the ground up and unraveling the magic behind the screen.
         </p>
       </div>
       {/* 

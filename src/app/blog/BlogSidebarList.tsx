@@ -134,7 +134,7 @@ export default function BlogSidebarList({ blogs }: { blogs: BlogSidebarItem[] })
   }, [slugs]);
 
   return (
-    <div className="max-h-[420px] space-y-3 overflow-y-auto pr-1 hide-scrollbar">
+    <div className="max-h-[600px] space-y-3 overflow-y-auto pr-1 hide-scrollbar">
       {blogs.map((blog) => {
         const slug = String(blog.slug || '');
         const normalizedSlug = normalizeSlug(slug) ?? slug;
@@ -146,33 +146,34 @@ export default function BlogSidebarList({ blogs }: { blogs: BlogSidebarItem[] })
           <Link
             key={blog.id}
             href={`/blog/${encodeURIComponent(normalizedSlug)}`}
-            className="group relative flex items-center gap-5 border-b border-[var(--home-border)] py-4 last:border-0 transition-colors duration-300">
+            className="group relative flex items-center mb-3 rounded-2xl border border-transparent hover:border-[var(--home-border)] transition-all duration-300 overflow-hidden bg-transparent hover:bg-[var(--home-card)]/10">
             
-            <div className="relative h-16 w-20 sm:h-20 sm:w-28 shrink-0 overflow-hidden rounded-lg bg-[var(--home-bg)] border border-[var(--home-border)]">
+            <div className="relative h-20 w-28 sm:h-24 sm:w-36 shrink-0 bg-[var(--home-soft)] border-r border-[var(--home-border)]">
               {showImage && imageSrc ? (
                 <img
                   src={imageSrc}
                   alt={blog.title}
                   loading="lazy"
                   decoding="async"
-                  className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+                  className="h-full w-full object-cover grayscale opacity-80 transition-all duration-500 group-hover:grayscale-0 group-hover:opacity-100"
                   onError={() => markBroken(blog.id)}/>
               ) : (
-                <div className="flex h-full w-full items-center justify-center text-[10px] font-bold tracking-widest text-[var(--home-muted)]">
+                <div className="flex h-full w-full items-center justify-center text-[9px] font-bold tracking-widest text-[var(--home-muted)]">
                   POST
                 </div>
               )}
             </div>
             
-            <div className="flex-1 min-w-0 py-1">
-              <h4 className="text-sm sm:text-base font-bold text-[var(--home-ink)] group-hover:text-[var(--home-accent)] transition-colors duration-300 line-clamp-2">
+            <div className="flex-1 min-w-0 p-3 sm:p-4">
+              <h4 className="text-sm font-semibold text-[var(--home-ink)] opacity-90 transition-opacity duration-300 group-hover:opacity-100 line-clamp-2">
                 {blog.title}
               </h4>
-              <p className="mt-2 flex flex-wrap items-center gap-3 text-[10px] sm:text-xs font-medium uppercase tracking-wider text-[var(--home-muted)]">
+              <p className="mt-2 flex flex-wrap items-center gap-2 text-[9px] font-medium uppercase tracking-[0.2em] text-[var(--home-muted)] opacity-60">
                 <span>{formatBlogDate(String(blog.date || ''))}</span>
-                <span className="flex items-center gap-1.5 text-[var(--home-accent)]">
+                <span>&bull;</span>
+                <span className="flex items-center gap-1">
                   <Users className="h-3 w-3" />
-                  {uniqueVisitors.toLocaleString()} views
+                  {uniqueVisitors.toLocaleString()}
                 </span>
               </p>
             </div>
