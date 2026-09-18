@@ -1,16 +1,18 @@
 'use server';
 
-import fs from 'fs';
-import path from 'path';
-import { revalidatePath } from 'next/cache';
 import { headers } from 'next/headers';
 import crypto from 'crypto';
+import { createClient } from '@supabase/supabase-js';
+
+const supabaseUrl = process.env.SUPABASE_URL ?? process.env.NEXT_PUBLIC_SUPABASE_URL;
+const supabaseAnonKey = process.env.SUPABASE_ANON_KEY ?? process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY ?? supabaseAnonKey;
+
+const supabase = supabaseUrl && supabaseKey 
+  ? createClient(supabaseUrl, supabaseKey, { auth: { persistSession: false } }) 
+  : null;
 
 export async function incrementAndGetViews() {
-  const filePath = path.join(process.cwd(), 'views.json');
-  let views = 0;
-  let ips: string[] = [];
-
   const headersList = await headers();
   const forwardedFor = headersList.get('x-forwarded-for');
   const realIp = headersList.get('x-real-ip');
@@ -19,38 +21,46 @@ export async function incrementAndGetViews() {
   const ip = cfIp || (forwardedFor ? forwardedFor.split(',')[0].trim() : (realIp || 'unknown-ip'));
   const userAgent = headersList.get('user-agent') || 'unknown-ua';
   
-  // Combine IP and User-Agent to create a more unique identifier for each visitor,
-  // especially useful if behind a proxy that doesn't forward the real IP properly.
+  // Combine IP and User-Agent to create a more unique identifier
   const identifier = `${ip}-${userAgent}`;
   const ipHash = crypto.createHash('sha256').update(identifier).digest('hex');
+  const path = '/portfolio-views';
+
+  // Base views to keep the existing count from views.json
+  const baseViews = 16; 
+
+  if (!supabase) {
+    return baseViews; // Fallback if Supabase is not configured
+  }
 
   try {
-    if (fs.existsSync(filePath)) {
-      const data = fs.readFileSync(filePath, 'utf-8');
-      const parsed = JSON.parse(data);
-      views = parseInt(parsed.views || '0', 10);
-      ips = Array.isArray(parsed.ips) ? parsed.ips : [];
+    // Check if this ipHash already exists to ensure unique visitor counting
+    const { data: existing } = await supabase
+      .from('analytics_events')
+      .select('id')
+      .eq('path', path)
+      .eq('ip_hash', ipHash)
+      .limit(1);
+
+    if (!existing || existing.length === 0) {
+      // Insert new view event
+      await supabase.from('analytics_events').insert({
+        visitor_id: ipHash, 
+        ip_hash: ipHash,
+        path: path,
+        user_agent: userAgent
+      });
     }
+
+    // Get total unique views for this path
+    const { count } = await supabase
+      .from('analytics_events')
+      .select('*', { count: 'exact', head: true })
+      .eq('path', path);
+
+    return (count || 0) + baseViews;
   } catch (e) {
-    console.error("Failed to read views.json", e);
+    console.error("Failed to update Supabase views", e);
+    return baseViews;
   }
-
-  let hasUpdated = false;
-
-  if (!ips.includes(ipHash)) {
-    ips.push(ipHash);
-    views += 1;
-    hasUpdated = true;
-  }
-
-  if (hasUpdated) {
-    try {
-      fs.writeFileSync(filePath, JSON.stringify({ views, ips }));
-    } catch (e) {
-      console.error("Failed to write views.json", e);
-    }
-  }
-
-  revalidatePath('/');
-  return views;
 }
