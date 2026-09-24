@@ -42,13 +42,16 @@ export async function incrementAndGetViews() {
       user_agent: userAgent
     });
 
-    // Get total views for this path
-    const { count } = await supabase
-      .from('analytics_events')
-      .select('*', { count: 'exact', head: true })
-      .eq('path', path);
+    // Get total views for this path from the readable view
+    const { data: counterRows } = await supabase
+      .from('analytics_page_counters')
+      .select('total_views')
+      .eq('path', path)
+      .limit(1);
 
-    return (count || 0) + baseViews;
+    const dbCount = counterRows && counterRows.length > 0 ? counterRows[0].total_views : 0;
+
+    return dbCount + baseViews;
   } catch (e) {
     console.error("Failed to update Supabase views", e);
     return baseViews;
