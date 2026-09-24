@@ -34,22 +34,31 @@ export async function incrementAndGetViews() {
   }
 
   try {
-    // Insert new view event for every visit (like blog views)
-    await supabase.from('analytics_events').insert({
-      visitor_id: ipHash, 
-      ip_hash: ipHash,
-      path: path,
-      user_agent: userAgent
-    });
+    // Check if this ipHash already exists to ensure unique visitor counting
+    const { data: existing } = await supabase
+      .from('analytics_events')
+      .select('id')
+      .eq('path', path)
+      .eq('ip_hash', ipHash)
+      .limit(1);
 
-    // Get total views for this path from the readable view
+    if (!existing || existing.length === 0) {
+      await supabase.from('analytics_events').insert({
+        visitor_id: ipHash, 
+        ip_hash: ipHash,
+        path: path,
+        user_agent: userAgent
+      });
+    }
+
+    // Get unique visitors for this path from the readable view
     const { data: counterRows } = await supabase
       .from('analytics_page_counters')
-      .select('total_views')
+      .select('unique_visitors')
       .eq('path', path)
       .limit(1);
 
-    const dbCount = counterRows && counterRows.length > 0 ? counterRows[0].total_views : 0;
+    const dbCount = counterRows && counterRows.length > 0 ? counterRows[0].unique_visitors : 0;
 
     return dbCount + baseViews;
   } catch (e) {
