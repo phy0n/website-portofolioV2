@@ -269,6 +269,9 @@ body .home-portfolio .bg-transparent {
 .admin-console {
   --admin-accent: #d14a4a;
   --admin-accent-strong: #e05d5d;
+  --home-accent: #d14a4a;
+  --home-accent-2: #8b1d1d;
+  --home-accent-rgb: 209, 74, 74;
   --admin-bg: #000000;
   --admin-panel: var(--admin-bg);
   --admin-panel-soft: var(--admin-bg);

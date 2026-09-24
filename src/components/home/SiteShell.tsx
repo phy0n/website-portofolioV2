@@ -321,7 +321,7 @@ export default function SiteShell({
           <div className="mx-auto flex w-full max-w-[1600px] items-center justify-between pointer-events-auto">
             <Link
               href="/portfolio"
-              className="inline-flex items-center sm:gap-3 rounded-full border border-[var(--home-border)] bg-[var(--home-bg)] p-1.5 sm:px-4 sm:py-2 text-[var(--home-ink)] transition hover:border-[var(--home-ink)]"
+              className="cursor-pointer inline-flex items-center sm:gap-3 rounded-full border border-[var(--home-border)] bg-[var(--home-bg)] p-1.5 sm:px-4 sm:py-2 text-[var(--home-ink)] transition hover:border-[var(--home-ink)]"
               aria-label="Go to home">
               <div className="relative h-9 w-9 sm:h-8 sm:w-8 overflow-hidden rounded-full border border-[var(--home-border)] bg-[var(--home-bg)]">
                 {navAvatarErrored ? (
@@ -350,7 +350,7 @@ export default function SiteShell({
                 aria-label={navOpen ? 'Close menu' : 'Open menu'}
                 aria-expanded={navOpen}
                 onClick={toggleNav}
-                className="inline-flex h-12 w-12 items-center justify-center rounded-full border border-[var(--home-border)] bg-[var(--home-bg)] text-[var(--home-ink)] opacity-80 hover:opacity-100 transition hover:border-[var(--home-ink)]">
+                className="cursor-pointer inline-flex h-12 w-12 items-center justify-center rounded-full border border-[var(--home-border)] bg-[var(--home-bg)] text-[var(--home-ink)] opacity-80 hover:opacity-100 transition hover:border-[var(--home-ink)]">
                 <span className="flex h-10 w-10 items-center justify-center rounded-full border border-[var(--home-border)] bg-[var(--home-bg)]">
                   {navOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
                 </span>

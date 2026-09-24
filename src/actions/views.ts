@@ -34,25 +34,15 @@ export async function incrementAndGetViews() {
   }
 
   try {
-    // Check if this ipHash already exists to ensure unique visitor counting
-    const { data: existing } = await supabase
-      .from('analytics_events')
-      .select('id')
-      .eq('path', path)
-      .eq('ip_hash', ipHash)
-      .limit(1);
+    // Insert new view event for every visit (like blog views)
+    await supabase.from('analytics_events').insert({
+      visitor_id: ipHash, 
+      ip_hash: ipHash,
+      path: path,
+      user_agent: userAgent
+    });
 
-    if (!existing || existing.length === 0) {
-      // Insert new view event
-      await supabase.from('analytics_events').insert({
-        visitor_id: ipHash, 
-        ip_hash: ipHash,
-        path: path,
-        user_agent: userAgent
-      });
-    }
-
-    // Get total unique views for this path
+    // Get total views for this path
     const { count } = await supabase
       .from('analytics_events')
       .select('*', { count: 'exact', head: true })

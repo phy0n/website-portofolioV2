@@ -16,7 +16,7 @@ export function ThemeToggle() {
     return (
       <button
         type="button"
-        className="inline-flex h-12 w-12 items-center justify-center rounded-full border border-[var(--home-border)] bg-[var(--home-bg)] text-[var(--home-ink)]"
+        className="cursor-pointer inline-flex h-12 w-12 items-center justify-center rounded-full border border-[var(--home-border)] bg-[var(--home-bg)] text-[var(--home-ink)]"
       >
         <div className="h-5 w-5" />
       </button>
@@ -30,7 +30,7 @@ export function ThemeToggle() {
       type="button"
       aria-label="Toggle theme"
       onClick={() => setTheme(isDark ? "light" : "dark")}
-      className="inline-flex h-12 w-12 items-center justify-center rounded-full border border-[var(--home-border)] bg-[var(--home-bg)] text-[var(--home-ink)] opacity-80 hover:opacity-100 transition hover:border-[var(--home-ink)]"
+      className="cursor-pointer inline-flex h-12 w-12 items-center justify-center rounded-full border border-[var(--home-border)] bg-[var(--home-bg)] text-[var(--home-ink)] opacity-80 hover:opacity-100 transition hover:border-[var(--home-ink)]"
     >
       <span className="flex h-10 w-10 items-center justify-center rounded-full border border-[var(--home-border)] bg-[var(--home-bg)] transition-colors">
         {isDark ? <Moon className="h-5 w-5" /> : <Sun className="h-5 w-5" />}
