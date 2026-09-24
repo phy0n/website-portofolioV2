@@ -92,7 +92,7 @@ function Modal({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-6">
       <div className="absolute inset-0 cursor-pointer" onClick={onClose} />
-      <div className="relative w-full max-w-2xl rounded-2xl border border-white/10 bg-[#13131b] p-6 text-white shadow-[0_30px_120px_rgba(0,0,0,0.6)]">
+      <div className="relative w-full max-w-2xl rounded-2xl border border-white/10 bg-[#121212] p-6 text-white shadow-[0_30px_120px_rgba(0,0,0,0.6)]">
         <div className="mb-6 flex items-center justify-between">
           <h3 className="text-xl font-semibold">{title}</h3>
           <button
@@ -272,7 +272,7 @@ export default function CertificateManager({
             value={listQuery}
             onChange={(event) => setListQuery(event.target.value)}
             placeholder="Search title, issuer, date..."
-            className="flex-1 min-w-[220px] rounded-xl border border-white/10 bg-[#13131b] px-3 py-2 text-sm text-white placeholder-white/40 shadow-[0_0_0_1px_rgba(255,255,255,0.02)] focus:border-white/40 focus:outline-none"/>
+            className="flex-1 min-w-[220px] rounded-xl border border-white/10 bg-[#121212] px-3 py-2 text-sm text-white placeholder-white/40 shadow-[0_0_0_1px_rgba(255,255,255,0.02)] focus:border-white/40 focus:outline-none"/>
           <span className="ml-auto text-sm text-white/50">
             Showing {filteredCertificates.length} / {certificates.length}
           </span>

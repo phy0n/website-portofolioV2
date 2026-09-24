@@ -80,7 +80,7 @@ export default function IconPicker({
       {open && (
         <div
           role="listbox"
-          className="absolute left-0 right-0 z-50 mt-2 rounded-2xl border border-white/10 bg-[#13131b] p-2 shadow-[0_30px_120px_rgba(0,0,0,0.6)]">
+          className="absolute left-0 right-0 z-50 mt-2 rounded-2xl border border-white/10 bg-[#121212] p-2 shadow-[0_30px_120px_rgba(0,0,0,0.6)]">
           <div className="grid grid-cols-6 gap-1">
             {options.map((option) => {
               const isActive = option.value === value;

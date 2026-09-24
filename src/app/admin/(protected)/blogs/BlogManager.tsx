@@ -40,9 +40,9 @@ const inputClassName =
 const textareaClassName =
   'mt-2 w-full rounded-xl border border-white/5 bg-white/[0.02] px-4 py-3 text-sm text-white placeholder-white/20 focus:border-[var(--home-accent)] focus:bg-white/5 transition-colors focus:outline-none';
 const selectClassName =
-  'mt-2 w-full rounded-xl border border-white/5 bg-[#0f0f15] px-4 py-3 text-sm text-white focus:border-[var(--home-accent)] transition-colors focus:outline-none admin-select';
+  'mt-2 w-full rounded-xl border border-white/5 bg-[#0f0f0f] px-4 py-3 text-sm text-white focus:border-[var(--home-accent)] transition-colors focus:outline-none admin-select';
 const tableSelectClassName =
-  'w-full rounded-lg border border-white/10 bg-[#0f0f15] px-3 py-1.5 text-xs text-white focus:border-[var(--home-accent)] transition-colors focus:outline-none admin-select';
+  'w-full rounded-lg border border-white/10 bg-[#0f0f0f] px-3 py-1.5 text-xs text-white focus:border-[var(--home-accent)] transition-colors focus:outline-none admin-select';
 
 const resolveTargetValue = (value: boolean | null | undefined) => value !== false;
 
@@ -179,7 +179,7 @@ function ChapterEditor({
   const btnClass = "p-2 rounded-lg hover:bg-white/10 text-white/60 hover:text-white transition-colors focus:outline-none";
 
   return (
-    <div className="bg-[#0b0b0f] border border-white/5 rounded-[2rem] p-6 md:p-12 shadow-2xl relative min-h-[75vh] flex flex-col group">
+    <div className="bg-[#0a0a0a] border border-white/5 rounded-[2rem] p-6 md:p-12 shadow-2xl relative min-h-[75vh] flex flex-col group">
       <style dangerouslySetInnerHTML={{__html: `
         .wysiwyg-content b, .wysiwyg-content strong { font-weight: bold; }
         .wysiwyg-content i, .wysiwyg-content em { font-style: italic; }
@@ -537,7 +537,7 @@ export default function BlogManager({
             value={listQuery}
             onChange={(event) => setListQuery(event.target.value)}
             placeholder="Search title or /slug..."
-            className="flex-1 min-w-[220px] rounded-xl border border-white/10 bg-[#13131b] px-3 py-2 text-sm text-white placeholder-white/40 shadow-[0_0_0_1px_rgba(255,255,255,0.02)] focus:border-white/40 focus:outline-none"/>
+            className="flex-1 min-w-[220px] rounded-xl border border-white/10 bg-[#121212] px-3 py-2 text-sm text-white placeholder-white/40 shadow-[0_0_0_1px_rgba(255,255,255,0.02)] focus:border-white/40 focus:outline-none"/>
           <select
             value={statusFilter}
             onChange={(event) => setStatusFilter(event.target.value as typeof statusFilter)}
@@ -738,7 +738,7 @@ export default function BlogManager({
             </div>
 
             <aside className="lg:col-span-4">
-              <div className="sticky top-6 space-y-8 bg-[#0b0b0f] border border-white/5 p-6 rounded-3xl">
+              <div className="sticky top-6 space-y-8 bg-[#0a0a0a] border border-white/5 p-6 rounded-3xl">
                 <div className="flex items-center justify-between mb-2">
                   <p className="text-sm font-mono uppercase tracking-widest text-white/40">Story Details</p>
                 </div>
@@ -879,7 +879,7 @@ export default function BlogManager({
               </div>
 
               <aside className="lg:col-span-4">
-                <div className="sticky top-6 space-y-8 bg-[#0b0b0f] border border-white/5 p-6 rounded-3xl">
+                <div className="sticky top-6 space-y-8 bg-[#0a0a0a] border border-white/5 p-6 rounded-3xl">
                   <div className="flex items-center justify-between mb-2">
                     <p className="text-sm font-mono uppercase tracking-widest text-white/40">Story Details</p>
                   </div>

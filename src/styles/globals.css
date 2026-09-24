@@ -311,11 +311,11 @@ body .home-portfolio .bg-transparent {
   background: var(--admin-bg) !important;
 }
 
-.minimal-root .admin-console .bg-\[\#13131b\] {
+.minimal-root .admin-console .bg-\[\#121212\] {
   background: #0c0c0d !important;
 }
 
-.minimal-root .admin-console .bg-\[\#0b0b10\] {
+.minimal-root .admin-console .bg-\[\#0a0a0a\] {
   background: #09090a !important;
 }
 
@@ -600,7 +600,7 @@ body .home-portfolio .bg-transparent {
 
 .admin-select option,
 .admin-select optgroup {
-  background-color: #13131b;
+  background-color: #121212;
   color: #f2f2f2;
 }
 
