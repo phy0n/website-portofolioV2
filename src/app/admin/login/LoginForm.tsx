@@ -16,7 +16,7 @@ function SubmitButton() {
     <button
       type="submit"
       disabled={pending}
-      className="admin-login-submit">
+      className="admin-login-submit cursor-pointer">
       {pending ? (
         <LoaderCircle className="h-4 w-4 animate-spin" aria-hidden="true" />
       ) : (
@@ -33,7 +33,7 @@ export default function LoginForm() {
   return (
     <form action={formAction} className="space-y-5">
       <div className="space-y-2">
-        <label className="text-[11px] uppercase tracking-[0.32em] text-white/45">
+        <label className="text-[11px] uppercase tracking-[0.32em] text-[var(--home-muted)]">
           Email
         </label>
         <div className="admin-login-field">
@@ -49,7 +49,7 @@ export default function LoginForm() {
         </div>
       </div>
       <div className="space-y-2">
-        <label className="text-[11px] uppercase tracking-[0.32em] text-white/45">
+        <label className="text-[11px] uppercase tracking-[0.32em] text-[var(--home-muted)]">
           Password
         </label>
         <div className="admin-login-field">
