@@ -95,6 +95,7 @@ export async function GET(request: Request) {
             .select('*', { count: 'exact', head: true })
             .eq('path', path);
           totals[slug] = error || typeof count !== 'number' ? 0 : count;
+          uniques[slug] = totals[slug];
         })
       );
     }
@@ -102,8 +103,8 @@ export async function GET(request: Request) {
     const response = NextResponse.json({
       ok: true,
       source: 'counters',
-      counts: totals,
-      totals,
+      counts: uniques,
+      totals: uniques,
       uniques,
     });
     response.headers.set('Cache-Control', 'no-store');
@@ -119,14 +120,15 @@ export async function GET(request: Request) {
         .eq('path', path);
 
       totals[slug] = error || typeof count !== 'number' ? 0 : count;
+      uniques[slug] = totals[slug];
     })
   );
 
   const response = NextResponse.json({
     ok: true,
     source: 'events',
-    counts: totals,
-    totals,
+    counts: uniques,
+    totals: uniques,
     uniques,
   });
   response.headers.set('Cache-Control', 'no-store');
