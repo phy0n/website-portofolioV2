@@ -79,9 +79,9 @@ export default function CustomMusicPlayerWidget() {
     <div className="w-full p-5 overflow-hidden relative group flex items-center gap-4 transition-colors duration-300">
       
       {/* Album Art */}
-      <div className="relative w-14 h-14 rounded-xl overflow-hidden shadow-lg border border-white/10 flex-shrink-0">
-        <img src="/image/lazypaws.png" alt="Lazy Paws" className="w-full h-full object-cover" />
-        <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors"></div>
+      <div className="relative w-14 h-14 rounded-xl overflow-hidden shadow-lg border border-white/10 flex-shrink-0 flex items-center justify-center bg-[#181818]">
+        <FaSpotify className="text-[#1DB954] text-3xl" />
+        <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors pointer-events-none"></div>
       </div>
 
       {/* Track Info & Progress */}
@@ -89,11 +89,11 @@ export default function CustomMusicPlayerWidget() {
         <div className="flex items-center gap-2">
           <FaSpotify className="text-[#1DB954] text-xs flex-shrink-0" />
           <h4 className="text-white/90 font-bold text-[13px] truncate leading-none">
-            Lazy Paws
+            My love Mine All Mine
           </h4>
         </div>
         <p className="text-white/50 text-[11px] truncate leading-none">
-          Chill & Aesthetic Vibes
+          Mitski
         </p>
 
         {/* Minimal Progress */}
