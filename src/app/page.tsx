@@ -85,7 +85,7 @@ export default async function Page() {
     {
       title: 'SociaBuzz',
       subtitle: 'Support & Donate',
-      url: 'https://sociabuzz.com/phy0n/tribe',
+      url: 'https://sociabuzz.com/phy0n/support',
       icon: <FaCoffee className="text-3xl text-white drop-shadow-md" />,
       color: 'transition-all duration-300',
     },
