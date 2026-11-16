@@ -85,7 +85,7 @@ export default async function Page() {
     {
       title: 'SociaBuzz',
       subtitle: 'Support & Donate',
-      url: 'https://sociabuzz.com/phionne/tribe',
+      url: 'https://sociabuzz.com/phy0n/tribe',
       icon: <FaCoffee className="text-3xl text-white drop-shadow-md" />,
       color: 'transition-all duration-300',
     },
@@ -140,8 +140,8 @@ export default async function Page() {
                   className="group relative flex w-full items-center gap-4 rounded-2xl bg-black/60 backdrop-blur-md border border-white/10 px-5 py-4 text-white transition-all duration-300 active:scale-[0.98] shadow-lg shadow-black/20 hover:border-white/30 hover:bg-black/80">
                   {React.isValidElement(link.icon)
                     ? React.cloneElement(link.icon as React.ReactElement<{ className?: string }>, {
-                        className: 'text-3xl text-white drop-shadow-md shrink-0 group-hover:scale-110 transition-transform duration-300',
-                      })
+                      className: 'text-3xl text-white drop-shadow-md shrink-0 group-hover:scale-110 transition-transform duration-300',
+                    })
                     : link.icon}
                   <div className="flex flex-col text-left min-w-0 flex-1">
                     <span className="font-semibold text-[15px] text-white/90 group-hover:text-white tracking-wide truncate transition-colors leading-tight">
