@@ -63,6 +63,15 @@ const nextConfig: NextConfig = {
   images: {
     remotePatterns,
   },
+  async redirects() {
+    return [
+      {
+        source: '/support',
+        destination: 'https://sociabuzz.com/phy0n',
+        permanent: false,
+      },
+    ];
+  },
   async headers() {
     const headers = [
       { key: 'X-Frame-Options', value: 'DENY' },
