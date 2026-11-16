@@ -67,7 +67,7 @@ const nextConfig: NextConfig = {
     return [
       {
         source: '/support',
-        destination: 'https://sociabuzz.com/phy0n',
+        destination: 'https://sociabuzz.com/phy0n/support',
         permanent: false,
       },
     ];
