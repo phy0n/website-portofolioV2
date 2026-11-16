@@ -24,72 +24,88 @@ import GamesPlayedWidget from '@/components/home/GamesPlayedWidget';
 export default async function Page() {
   const { profileImageUrl } = await getSiteProfile();
 
-  const links = [
+  const linkCategories = [
     {
-      title: 'Instagram',
-      subtitle: '@phy0n.me',
-      url: 'https://instagram.com/phy0n.me',
-      icon: <FaInstagram className="text-3xl text-white drop-shadow-md" />,
-      color: 'transition-all duration-300',
+      name: 'Social Media',
+      items: [
+        {
+          title: 'Instagram',
+          subtitle: '@phy0n.me',
+          url: 'https://instagram.com/phy0n.me',
+          icon: <FaInstagram className="text-3xl text-white drop-shadow-md" />,
+          color: 'transition-all duration-300',
+        },
+        {
+          title: 'TikTok',
+          subtitle: '@phy0n',
+          url: 'https://www.tiktok.com/@phy0n',
+          icon: <FaTiktok className="text-3xl text-white drop-shadow-md" />,
+          color: 'transition-all duration-300',
+        },
+        {
+          title: 'YouTube',
+          subtitle: '@PhionRushandle',
+          url: 'https://youtube.com/@PhionRushandle',
+          icon: <FaYoutube className="text-3xl text-white drop-shadow-md" />,
+          color: 'transition-all duration-300',
+        },
+        {
+          title: 'Github',
+          subtitle: '@phy0n',
+          url: 'https://github.com/phy0n',
+          icon: <FaGithub className="text-3xl text-white drop-shadow-md" />,
+          color: 'transition-all duration-300',
+        },
+      ],
     },
     {
-      title: 'TikTok',
-      subtitle: '@phy0n',
-      url: 'https://www.tiktok.com/@phy0n',
-      icon: <FaTiktok className="text-3xl text-white drop-shadow-md" />,
-      color: 'transition-all duration-300',
+      name: 'Community',
+      items: [
+        {
+          title: 'Kh1ev Community',
+          subtitle: 'kh1ev.my.id',
+          url: 'https://kh1ev.my.id/',
+          icon: <FaFire className="text-3xl text-white drop-shadow-md" />,
+          color: 'transition-all duration-300',
+        },
+        {
+          title: '4Fun Clan',
+          subtitle: '4funclan.site',
+          url: 'https://4funclan.site',
+          icon: <FaUsers className="text-3xl text-white drop-shadow-md" />,
+          color: 'transition-all duration-300',
+        },
+      ],
     },
     {
-      title: 'YouTube',
-      subtitle: '@PhionRushandle',
-      url: 'https://youtube.com/@PhionRushandle',
-      icon: <FaYoutube className="text-3xl text-white drop-shadow-md" />,
-      color: 'transition-all duration-300',
-    },
-    {
-      title: 'Github',
-      subtitle: '@phy0n',
-      url: 'https://github.com/phy0n',
-      icon: <FaGithub className="text-3xl text-white drop-shadow-md" />,
-      color: 'transition-all duration-300',
-    },
-    {
-      title: 'Discord Server',
-      subtitle: 'discord.gg/kh1ev',
-      url: 'https://discord.gg/MwNE7Vfb6t',
-      icon: <FaDiscord className="text-3xl text-white drop-shadow-md" />,
-      color: 'transition-all duration-300',
-    },
-    {
-      title: 'Personal Blog',
-      subtitle: 'phy0n.site/blog',
-      url: 'https://phy0n.site/blog',
-      icon: <FaBook className="text-3xl text-white drop-shadow-md" />,
-      color: 'transition-all duration-300',
-    },
-    {
-      title: 'Kh1ev Community',
-      subtitle: 'kh1ev.my.id',
-      url: 'https://kh1ev.my.id/',
-      icon: <FaFire className="text-3xl text-white drop-shadow-md" />,
-      color: 'transition-all duration-300',
-    },
-
-    {
-      title: 'Roblox Profile',
-      subtitle: '@Phy0nn',
-      url: 'https://www.roblox.com/users/8883015179/profile',
-      icon: <SiRoblox className="text-3xl text-white drop-shadow-md" />,
-      color: 'transition-all duration-300',
-    },
-    {
-      title: 'SociaBuzz',
-      subtitle: 'Support & Donate',
-      url: 'https://sociabuzz.com/phy0n/support',
-      icon: <FaCoffee className="text-3xl text-white drop-shadow-md" />,
-      color: 'transition-all duration-300',
+      name: 'Other Links',
+      items: [
+        {
+          title: 'Personal Blog',
+          subtitle: 'phy0n.site/blog',
+          url: 'https://phy0n.site/blog',
+          icon: <FaBook className="text-3xl text-white drop-shadow-md" />,
+          color: 'transition-all duration-300',
+        },
+        {
+          title: 'Roblox Profile',
+          subtitle: '@Phy0nn',
+          url: 'https://www.roblox.com/users/8883015179/profile',
+          icon: <SiRoblox className="text-3xl text-white drop-shadow-md" />,
+          color: 'transition-all duration-300',
+        },
+        {
+          title: 'SociaBuzz',
+          subtitle: 'Support & Donate',
+          url: 'https://sociabuzz.com/phy0n',
+          icon: <FaCoffee className="text-3xl text-white drop-shadow-md" />,
+          color: 'transition-all duration-300',
+        },
+      ],
     },
   ];
+
+  const allLinks = linkCategories.flatMap((category) => category.items);
 
   return (
     <>
@@ -129,39 +145,52 @@ export default async function Page() {
               </div>
             </div>
 
-            {/* Mobile View: Linktree-style rectangular block buttons */}
-            <div className="w-full flex flex-col gap-2.5 sm:hidden mb-8 px-1">
-              {links.map((link) => (
-                <a
-                  key={link.title}
-                  href={link.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="group relative flex w-full items-center gap-4 rounded-2xl bg-black/60 backdrop-blur-md border border-white/10 px-5 py-4 text-white transition-all duration-300 active:scale-[0.98] shadow-lg shadow-black/20 hover:border-white/30 hover:bg-black/80">
-                  {React.isValidElement(link.icon)
-                    ? React.cloneElement(link.icon as React.ReactElement<{ className?: string }>, {
-                      className: 'text-3xl text-white drop-shadow-md shrink-0 group-hover:scale-110 transition-transform duration-300',
-                    })
-                    : link.icon}
-                  <div className="flex flex-col text-left min-w-0 flex-1">
-                    <span className="font-semibold text-[15px] text-white/90 group-hover:text-white tracking-wide truncate transition-colors leading-tight">
-                      {link.title}
+            {/* Mobile View: Linktree-style categorized rectangular block buttons */}
+            <div className="w-full flex flex-col gap-6 sm:hidden mb-8 px-1">
+              {linkCategories.map((category) => (
+                <div key={category.name} className="w-full flex flex-col gap-2.5">
+                  <div className="flex items-center gap-2.5 px-1 mb-0.5">
+                    <span className="text-[11px] font-bold uppercase tracking-[0.22em] text-white/50">
+                      {category.name}
                     </span>
-                    {link.subtitle && (
-                      <span className="text-xs text-white/50 group-hover:text-white/70 font-medium truncate mt-0.5 transition-colors leading-tight">
-                        {link.subtitle}
-                      </span>
-                    )}
+                    <div className="h-[1px] flex-1 bg-gradient-to-r from-white/15 to-transparent" />
                   </div>
-                  <FaArrowRight className="text-xs text-white/40 group-hover:text-white/80 group-hover:translate-x-0.5 transition-all duration-300 shrink-0 ml-auto" />
-                </a>
+
+                  <div className="flex flex-col gap-2.5">
+                    {category.items.map((link) => (
+                      <a
+                        key={link.title}
+                        href={link.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="group relative flex w-full items-center gap-4 rounded-2xl bg-black/60 backdrop-blur-md border border-white/10 px-5 py-4 text-white transition-all duration-300 active:scale-[0.98] shadow-lg shadow-black/20 hover:border-white/30 hover:bg-black/80">
+                        {React.isValidElement(link.icon)
+                          ? React.cloneElement(link.icon as React.ReactElement<{ className?: string }>, {
+                            className: 'text-3xl text-white drop-shadow-md shrink-0 group-hover:scale-110 transition-transform duration-300',
+                          })
+                          : link.icon}
+                        <div className="flex flex-col text-left min-w-0 flex-1">
+                          <span className="font-semibold text-[15px] text-white/90 group-hover:text-white tracking-wide truncate transition-colors leading-tight">
+                            {link.title}
+                          </span>
+                          {link.subtitle && (
+                            <span className="text-xs text-white/50 group-hover:text-white/70 font-medium truncate mt-0.5 transition-colors leading-tight">
+                              {link.subtitle}
+                            </span>
+                          )}
+                        </div>
+                        <FaArrowRight className="text-xs text-white/40 group-hover:text-white/80 group-hover:translate-x-0.5 transition-all duration-300 shrink-0 ml-auto" />
+                      </a>
+                    ))}
+                  </div>
+                </div>
               ))}
             </div>
 
             {/* Desktop / Tablet View: Compact Horizontal Icon Row */}
             <div className="hidden sm:flex w-full justify-center mb-10 px-1 sm:px-2">
               <div className="flex flex-nowrap items-center justify-center gap-1 sm:gap-1.5 p-2">
-                {links.map((link) => (
+                {allLinks.map((link) => (
                   <a
                     key={link.title}
                     href={link.url}
