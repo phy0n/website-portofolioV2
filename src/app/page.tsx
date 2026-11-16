@@ -1,3 +1,4 @@
+import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { getSiteProfile } from '@/lib/site-profile';
@@ -93,7 +94,7 @@ export default async function Page() {
   return (
     <>
       <EnterScreen />
-      <div className="min-h-screen relative flex flex-col items-center py-16 px-4 overflow-hidden bg-transparent text-white font-nunito selection:bg-white/20">
+      <div className="min-h-screen relative flex flex-col items-center py-12 sm:py-16 px-4 overflow-x-hidden bg-transparent text-white font-nunito selection:bg-white/20">
         <div className="relative z-10 w-full max-w-[1200px] mx-auto flex flex-col xl:flex-row justify-center items-start gap-8 mt-8 opacity-0 translate-y-12 transition-all duration-[1500ms] ease-[cubic-bezier(0.16,1,0.3,1)] [.content-visible_&]:opacity-100 [.content-visible_&]:translate-y-0">
           <aside className="hidden xl:flex w-[350px] flex-col gap-6 sticky top-24 pt-10 shrink-0">
             {/* <DiscordServerWidget /> */}
@@ -128,7 +129,37 @@ export default async function Page() {
               </div>
             </div>
 
-            <div className="w-full flex justify-center mb-10 px-1 sm:px-2">
+            {/* Mobile View: Linktree-style rectangular block buttons */}
+            <div className="w-full flex flex-col gap-2.5 sm:hidden mb-8 px-1">
+              {links.map((link) => (
+                <a
+                  key={link.title}
+                  href={link.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group relative flex w-full items-center gap-4 rounded-2xl bg-black/60 backdrop-blur-md border border-white/10 px-5 py-4 text-white transition-all duration-300 active:scale-[0.98] shadow-lg shadow-black/20 hover:border-white/30 hover:bg-black/80">
+                  {React.isValidElement(link.icon)
+                    ? React.cloneElement(link.icon as React.ReactElement<{ className?: string }>, {
+                        className: 'text-3xl text-white drop-shadow-md shrink-0 group-hover:scale-110 transition-transform duration-300',
+                      })
+                    : link.icon}
+                  <div className="flex flex-col text-left min-w-0 flex-1">
+                    <span className="font-semibold text-[15px] text-white/90 group-hover:text-white tracking-wide truncate transition-colors leading-tight">
+                      {link.title}
+                    </span>
+                    {link.subtitle && (
+                      <span className="text-xs text-white/50 group-hover:text-white/70 font-medium truncate mt-0.5 transition-colors leading-tight">
+                        {link.subtitle}
+                      </span>
+                    )}
+                  </div>
+                  <FaArrowRight className="text-xs text-white/40 group-hover:text-white/80 group-hover:translate-x-0.5 transition-all duration-300 shrink-0 ml-auto" />
+                </a>
+              ))}
+            </div>
+
+            {/* Desktop / Tablet View: Compact Horizontal Icon Row */}
+            <div className="hidden sm:flex w-full justify-center mb-10 px-1 sm:px-2">
               <div className="flex flex-nowrap items-center justify-center gap-1 sm:gap-1.5 p-2">
                 {links.map((link) => (
                   <a
@@ -141,10 +172,10 @@ export default async function Page() {
                       {link.icon}
                     </div>
                     <span className="absolute -top-12 left-1/2 -translate-x-1/2 px-3 py-1.5 bg-[#0d0d0d] border border-white/10 text-white/90 text-[11px] font-semibold rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none whitespace-nowrap shadow-xl z-50">
-                    {link.title}
-                  </span>
-                </a>
-              ))}
+                      {link.title}
+                    </span>
+                  </a>
+                ))}
               </div>
             </div>
 

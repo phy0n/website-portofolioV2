@@ -23,7 +23,7 @@ export default function CustomMusicPlayerWidget() {
       audio = document.getElementById('bg-audio') as HTMLAudioElement;
       if (audio) {
         if (pollInterval) clearInterval(pollInterval);
-        
+
         updateState();
         audio.addEventListener('play', updateState);
         audio.addEventListener('pause', updateState);
@@ -77,7 +77,7 @@ export default function CustomMusicPlayerWidget() {
 
   return (
     <div className="w-full p-5 overflow-hidden relative group flex items-center gap-4 transition-colors duration-300">
-      
+
       {/* Album Art */}
       <div className="relative w-14 h-14 rounded-xl overflow-hidden shadow-lg border border-white/10 flex-shrink-0 flex items-center justify-center bg-[#181818]">
         <FaSpotify className="text-[#1DB954] text-3xl" />
@@ -115,7 +115,7 @@ export default function CustomMusicPlayerWidget() {
       </div>
 
       {/* Play/Pause Button */}
-      <button 
+      <button
         onClick={togglePlay}
         className="cursor-pointer w-10 h-10 flex-shrink-0 flex items-center justify-center bg-white/10 text-white rounded-full transition-all duration-300 active:scale-95 hover:bg-white/20"
       >
